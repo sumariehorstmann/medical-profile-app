@@ -25,25 +25,28 @@ export default function LoginPage() {
       }
 
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+
         if (error) throw error;
 
         setMessage(
-          "✅ Signup successful. If email confirmation is enabled, check your inbox."
+          "✅ Signup successful. Check your email if confirmation is required."
         );
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
+
         if (error) throw error;
 
-        setMessage("✅ Logged in successfully. Redirecting...");
-window.location.assign("/profile");
+        setMessage("✅ Logged in successfully. Redirecting…");
 
-// go to the page you actually want after login:
-window.location.assign("/profile"); // or "/"
-
+        // FULL PAGE RELOAD so Supabase session is available everywhere
+        window.location.assign("/profile");
       }
     } catch (err: any) {
       setMessage(`❌ ${err?.message ?? "Something went wrong"}`);
@@ -54,7 +57,7 @@ window.location.assign("/profile"); // or "/"
 
   return (
     <main style={{ padding: 24, maxWidth: 420 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 700 }}>OMI</h1>
+      <h1 style={{ fontSize: 28, fontWeight: 700 }}>OMI LOGIN v2</h1>
       <p style={{ marginTop: 6, marginBottom: 18 }}>Online Medical Info</p>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
@@ -71,6 +74,7 @@ window.location.assign("/profile"); // or "/"
         >
           Login
         </button>
+
         <button
           type="button"
           onClick={() => setMode("signup")}
@@ -93,7 +97,6 @@ window.location.assign("/profile"); // or "/"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
-            placeholder="you@example.com"
             autoComplete="email"
             disabled={loading}
             style={{ padding: 10, border: "1px solid #ddd" }}
@@ -106,8 +109,9 @@ window.location.assign("/profile"); // or "/"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
-            placeholder="••••••••"
-            autoComplete={mode === "signup" ? "new-password" : "current-password"}
+            autoComplete={
+              mode === "signup" ? "new-password" : "current-password"
+            }
             disabled={loading}
             style={{ padding: 10, border: "1px solid #ddd" }}
           />
@@ -132,9 +136,9 @@ window.location.assign("/profile"); // or "/"
             : "Log in"}
         </button>
 
-        {message ? (
+        {message && (
           <p style={{ marginTop: 8, lineHeight: 1.4 }}>{message}</p>
-        ) : null}
+        )}
       </form>
     </main>
   );
