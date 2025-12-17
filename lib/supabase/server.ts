@@ -1,8 +1,7 @@
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
-// NOTE: cookies() is async in your setup, so this helper is async too.
-export const createSupabaseServer = async () => {
+export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -13,21 +12,21 @@ export const createSupabaseServer = async () => {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: CookieOptions) {
+        set(name: string, value: string, options: any) {
           try {
             cookieStore.set({ name, value, ...options });
           } catch {
-            // ignore set errors during SSR
+            // Some server contexts can't set cookies
           }
         },
-        remove(name: string, options: CookieOptions) {
+        remove(name: string, options: any) {
           try {
             cookieStore.set({ name, value: "", ...options });
           } catch {
-            // ignore remove errors during SSR
+            // Some server contexts can't remove cookies
           }
         },
       },
     }
   );
-};
+}
