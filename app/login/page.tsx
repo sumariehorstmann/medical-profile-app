@@ -1,129 +1,155 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const supabase = createSupabaseBrowser();
-  const router = useRouter();
 
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = password;
+
+    if (!cleanEmail || !cleanPassword) {
+      setMessage("Please enter an email and password.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      if (!email || !password) {
-        setMessage("Please enter an email and password.");
+      if (mode === "signup") {
+        const { error } = await supabase.auth.signUp({
+          email: cleanEmail,
+          password: cleanPassword,
+        });
+
+        if (error) throw error;
+
+        // If email confirmations are ON, user may not be logged in yet.
+        // Still send them to profile; your profile page can show a "not logged in" state if needed.
+        window.location.href = "/profile";
         return;
       }
 
-      if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+      const { error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: cleanPassword,
+      });
 
-        if (error) throw error;
+      if (error) throw error;
 
-        // ✅ Hard redirect avoids stuck state
-        window.location.href = "/profile";
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-
-        if (error) throw error;
-
-        setMessage("Signup successful. You can now log in.");
-        setMode("login");
-      }
+      // HARD redirect avoids router/session timing issues on Vercel
+      window.location.href = "/profile";
     } catch (err: any) {
-      setMessage(err.message || "Something went wrong.");
-    } finally {
+      setMessage(err?.message ?? "Something went wrong. Please try again.");
       setLoading(false);
     }
   }
 
   return (
-    <main style={{ maxWidth: 400, margin: "40px auto" }}>
-      <h1>OMI LOGIN v2</h1>
-      <p>Online Medical Info</p>
+    <div style={{ maxWidth: 520, padding: 24 }}>
+      <h1 style={{ fontSize: 42, fontWeight: 800, marginBottom: 6 }}>
+        OMI LOGIN v2
+      </h1>
+      <div style={{ marginBottom: 18 }}>Online Medical Info</div>
 
-      <div style={{ marginBottom: 10 }}>
+      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
         <button
+          type="button"
           onClick={() => setMode("login")}
-          disabled={mode === "login"}
-          style={{ marginRight: 6 }}
+          style={{
+            padding: "6px 10px",
+            border: "1px solid #ddd",
+            background: mode === "login" ? "#eee" : "#fff",
+            cursor: "pointer",
+          }}
         >
           Login
         </button>
+
         <button
+          type="button"
           onClick={() => setMode("signup")}
-          disabled={mode === "signup"}
+          style={{
+            padding: "6px 10px",
+            border: "1px solid #ddd",
+            background: mode === "signup" ? "#eee" : "#fff",
+            cursor: "pointer",
+          }}
         >
           Sign up
         </button>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ width: "100%", marginBottom: 8 }}
-          />
-        </div>
+        <label style={{ display: "block", marginBottom: 6 }}>Email</label>
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          type="email"
+          autoComplete="email"
+          placeholder="you@example.com"
+          style={{
+            width: "100%",
+            padding: 10,
+            border: "1px solid #ddd",
+            marginBottom: 14,
+          }}
+        />
 
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ width: "100%", marginBottom: 12 }}
-          />
-        </div>
+        <label style={{ display: "block", marginBottom: 6 }}>Password</label>
+        <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+          autoComplete={mode === "signup" ? "new-password" : "current-password"}
+          placeholder="••••••••"
+          style={{
+            width: "100%",
+            padding: 10,
+            border: "1px solid #ddd",
+            marginBottom: 14,
+          }}
+        />
 
         <button
           type="submit"
           disabled={loading}
           style={{
             width: "100%",
-            padding: 10,
+            marginTop: 6,
+            padding: 12,
+            border: "1px solid #000",
             background: "#111",
-            color: "#fff",
-            cursor: "pointer",
+            color: "white",
+            cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading
-            ? "Please wait..."
-            : mode === "login"
-            ? "Log in"
-            : "Sign up"}
+          {loading ? "Please wait..." : mode === "signup" ? "Create account" : "Log in"}
         </button>
       </form>
 
-      {message && (
-        <p style={{ marginTop: 12 }}>
+      {message ? (
+        <div style={{ marginTop: 14, padding: 10, border: "1px solid #ddd" }}>
           {message}
-        </p>
-      )}
+        </div>
+      ) : null}
 
-      <p style={{ marginTop: 12, fontSize: 12 }}>
+      <div style={{ marginTop: 14, fontSize: 12, color: "#666" }}>
         If you do NOT see “OMI LOGIN v2”, you are viewing a different /login page
-        (cached route or wrong deployment).
-      </p>
-    </main>
+        (wrong server or cached route).
+      </div>
+    </div>
   );
 }
