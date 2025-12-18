@@ -7,45 +7,34 @@ export default function LoginPage() {
   const supabase = createSupabaseBrowser();
 
   const [mode, setMode] = useState<"login" | "signup">("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setMessage(null);
     setLoading(true);
 
     try {
+      const form = new FormData(e.currentTarget);
+      const email = String(form.get("email") ?? "").trim();
+      const password = String(form.get("password") ?? "");
+
       if (!email || !password) {
         setMessage("Please enter an email and password.");
         return;
       }
 
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-
+        const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
 
-        setMessage(
-          "✅ Signup successful. Check your email if confirmation is required."
-        );
+        setMessage("✅ Signup successful. Check your email if confirmation is required.");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
 
         setMessage("✅ Logged in successfully. Redirecting…");
-
-        // FULL PAGE RELOAD so Supabase session is available everywhere
         window.location.assign("/profile");
       }
     } catch (err: any) {
@@ -94,8 +83,7 @@ export default function LoginPage() {
         <label style={{ display: "grid", gap: 6 }}>
           Email
           <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
             type="email"
             autoComplete="email"
             disabled={loading}
@@ -106,12 +94,9 @@ export default function LoginPage() {
         <label style={{ display: "grid", gap: 6 }}>
           Password
           <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
             type="password"
-            autoComplete={
-              mode === "signup" ? "new-password" : "current-password"
-            }
+            autoComplete={mode === "signup" ? "new-password" : "current-password"}
             disabled={loading}
             style={{ padding: 10, border: "1px solid #ddd" }}
           />
@@ -129,16 +114,10 @@ export default function LoginPage() {
             cursor: "pointer",
           }}
         >
-          {loading
-            ? "Please wait..."
-            : mode === "signup"
-            ? "Create account"
-            : "Log in"}
+          {loading ? "Please wait..." : mode === "signup" ? "Create account" : "Log in"}
         </button>
 
-        {message && (
-          <p style={{ marginTop: 8, lineHeight: 1.4 }}>{message}</p>
-        )}
+        {message && <p style={{ marginTop: 8, lineHeight: 1.4 }}>{message}</p>}
       </form>
     </main>
   );
