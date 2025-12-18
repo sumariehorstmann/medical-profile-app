@@ -1,45 +1,54 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const supabase = createSupabaseBrowser();
+  const router = useRouter();
 
   const [mode, setMode] = useState<"login" | "signup">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
     setLoading(true);
 
     try {
-      const form = new FormData(e.currentTarget);
-      const email = String(form.get("email") ?? "").trim();
-      const password = String(form.get("password") ?? "");
-
       if (!email || !password) {
         setMessage("Please enter an email and password.");
         return;
       }
 
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+
         if (error) throw error;
 
-        setMessage("✅ Signup successful. Check your email if confirmation is required.");
+        setMessage(
+          "✅ Signup successful. Check your email if confirmation is required."
+        );
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
         if (error) throw error;
 
         setMessage("✅ Logged in successfully. Redirecting…");
 
-const { data: userData } = await supabase.auth.getUser();
-console.log("LOGIN SUCCESS user:", userData?.user);
-console.log("About to redirect to /profile");
-window.location.href = "/profile";
+        // ✅ CORRECT redirect for Next.js App Router
+        router.replace("/profile");
       }
     } catch (err: any) {
       setMessage(`❌ ${err?.message ?? "Something went wrong"}`);
@@ -87,7 +96,8 @@ window.location.href = "/profile";
         <label style={{ display: "grid", gap: 6 }}>
           Email
           <input
-            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             type="email"
             autoComplete="email"
             disabled={loading}
@@ -98,9 +108,12 @@ window.location.href = "/profile";
         <label style={{ display: "grid", gap: 6 }}>
           Password
           <input
-            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             type="password"
-            autoComplete={mode === "signup" ? "new-password" : "current-password"}
+            autoComplete={
+              mode === "signup" ? "new-password" : "current-password"
+            }
             disabled={loading}
             style={{ padding: 10, border: "1px solid #ddd" }}
           />
@@ -118,10 +131,16 @@ window.location.href = "/profile";
             cursor: "pointer",
           }}
         >
-          {loading ? "Please wait..." : mode === "signup" ? "Create account" : "Log in"}
+          {loading
+            ? "Please wait..."
+            : mode === "signup"
+            ? "Create account"
+            : "Log in"}
         </button>
 
-        {message && <p style={{ marginTop: 8, lineHeight: 1.4 }}>{message}</p>}
+        {message && (
+          <p style={{ marginTop: 8, lineHeight: 1.4 }}>{message}</p>
+        )}
       </form>
     </main>
   );
