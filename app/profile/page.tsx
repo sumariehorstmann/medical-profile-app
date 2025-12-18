@@ -35,7 +35,6 @@ export default function ProfilePage() {
   const [message, setMessage] = useState<string | null>(null);
 
   const [profile, setProfile] = useState<ProfileRow | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
 
   // form fields
   const [fullName, setFullName] = useState("");
@@ -48,15 +47,13 @@ export default function ProfilePage() {
   const [emergencyContactPhone, setEmergencyContactPhone] = useState("");
   const [notes, setNotes] = useState("");
 
-  const baseUrl =
-    typeof window !== "undefined"
-      ? process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
-      : "";
+  // ✅ Always use the domain the user is currently on (prod or preview)
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
   const emergencyLink =
     profile?.public_id ? `${baseUrl}/e/${profile.public_id}` : null;
 
-  // 🔐 AUTH + PROFILE LOAD (more reliable in production)
+  // 🔐 AUTH + PROFILE LOAD
   useEffect(() => {
     let mounted = true;
 
@@ -64,10 +61,8 @@ export default function ProfilePage() {
       setLoading(true);
       setMessage(null);
 
-      // ✅ Use getUser() instead of getSession() to avoid "null session" race on deploy
-      const { data: userData, error: userError } =
-        await supabase.auth.getUser();
-
+      // ✅ getUser() is more reliable than getSession() on deploy
+      const { data: userData, error: userError } = await supabase.auth.getUser();
       const user = userData?.user;
 
       if (userError || !user) {
@@ -76,9 +71,6 @@ export default function ProfilePage() {
       }
 
       const uid = user.id;
-      if (!mounted) return;
-
-      setUserId(uid);
 
       const { data, error } = await supabase
         .from("profiles")
