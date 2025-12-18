@@ -1,38 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+  const supabase = createSupabaseBrowser();
   const router = useRouter();
-  const supabase = useMemo(() => createSupabaseBrowser(), []);
 
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-
-  // ✅ If already logged in, skip login page
-  useEffect(() => {
-    let alive = true;
-
-    (async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!alive) return;
-
-      if (data.session) {
-        router.replace("/profile");
-        router.refresh();
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, [router, supabase]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -45,16 +25,7 @@ export default function LoginPage() {
         return;
       }
 
-      if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-
-        if (error) throw error;
-
-        setMessage("✅ Signup successful. Check your email if confirmation is required.");
-      } else {
+      if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -62,99 +33,97 @@ export default function LoginPage() {
 
         if (error) throw error;
 
-        setMessage("✅ Logged in successfully. Redirecting…");
+        // ✅ Hard redirect avoids stuck state
+        window.location.href = "/profile";
+      } else {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
 
-        // ✅ Prefer app-router navigation
-        router.replace("/profile");
-        router.refresh();
+        if (error) throw error;
 
-        // ✅ Fallback full reload if router navigation is blocked/cached
-        setTimeout(() => window.location.assign("/profile"), 300);
+        setMessage("Signup successful. You can now log in.");
+        setMode("login");
       }
     } catch (err: any) {
-      setMessage(`❌ ${err?.message ?? "Something went wrong"}`);
+      setMessage(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main style={{ padding: 24, maxWidth: 420 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 700 }}>OMI LOGIN v2</h1>
-      <p style={{ marginTop: 6, marginBottom: 18 }}>Online Medical Info</p>
+    <main style={{ maxWidth: 400, margin: "40px auto" }}>
+      <h1>OMI LOGIN v2</h1>
+      <p>Online Medical Info</p>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+      <div style={{ marginBottom: 10 }}>
         <button
-          type="button"
           onClick={() => setMode("login")}
-          disabled={loading}
-          style={{
-            padding: "8px 12px",
-            border: "1px solid #ddd",
-            background: mode === "login" ? "#f3f3f3" : "white",
-            cursor: "pointer",
-          }}
+          disabled={mode === "login"}
+          style={{ marginRight: 6 }}
         >
           Login
         </button>
-
         <button
-          type="button"
           onClick={() => setMode("signup")}
-          disabled={loading}
-          style={{
-            padding: "8px 12px",
-            border: "1px solid #ddd",
-            background: mode === "signup" ? "#f3f3f3" : "white",
-            cursor: "pointer",
-          }}
+          disabled={mode === "signup"}
         >
           Sign up
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 10 }}>
-        <label style={{ display: "grid", gap: 6 }}>
-          Email
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Email</label>
           <input
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            type="email"
-            autoComplete="email"
-            disabled={loading}
-            style={{ padding: 10, border: "1px solid #ddd" }}
+            style={{ width: "100%", marginBottom: 8 }}
           />
-        </label>
+        </div>
 
-        <label style={{ display: "grid", gap: 6 }}>
-          Password
+        <div>
+          <label>Password</label>
           <input
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            autoComplete={mode === "signup" ? "new-password" : "current-password"}
-            disabled={loading}
-            style={{ padding: 10, border: "1px solid #ddd" }}
+            style={{ width: "100%", marginBottom: 12 }}
           />
-        </label>
+        </div>
 
         <button
           type="submit"
           disabled={loading}
           style={{
-            marginTop: 6,
+            width: "100%",
             padding: 10,
-            border: "1px solid #ddd",
             background: "#111",
-            color: "white",
+            color: "#fff",
             cursor: "pointer",
           }}
         >
-          {loading ? "Please wait..." : mode === "signup" ? "Create account" : "Log in"}
+          {loading
+            ? "Please wait..."
+            : mode === "login"
+            ? "Log in"
+            : "Sign up"}
         </button>
-
-        {message && <p style={{ marginTop: 8, lineHeight: 1.4 }}>{message}</p>}
       </form>
+
+      {message && (
+        <p style={{ marginTop: 12 }}>
+          {message}
+        </p>
+      )}
+
+      <p style={{ marginTop: 12, fontSize: 12 }}>
+        If you do NOT see “OMI LOGIN v2”, you are viewing a different /login page
+        (cached route or wrong deployment).
+      </p>
     </main>
   );
 }
