@@ -3,20 +3,15 @@
 import React from "react";
 
 type Profile = {
-  first_name: string | null;
-  last_name: string | null;
-
-  id_number: string | null;
+  full_name: string | null;
+  date_of_birth: string | null;
   blood_type: string | null;
-
   allergies: string | null;
-  medical_history: string | null;
-
-  medical_aid_number: string | null;
-  medical_aid_company: string | null;
-
-  nok_name: string | null;
-  nok_phone: string | null;
+  conditions: string | null;
+  medications: string | null;
+  emergency_contact_name: string | null;
+  emergency_contact_phone: string | null;
+  notes: string | null;
 };
 
 type Props = {
@@ -24,12 +19,10 @@ type Props = {
 };
 
 export default function PublicPageClient({ profile }: Props) {
-  const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ") || "—";
-
-  const medicalAid =
-    [profile.medical_aid_company, profile.medical_aid_number].filter(Boolean).join(" • ") || "—";
-
-  const nextOfKin = [profile.nok_name, profile.nok_phone].filter(Boolean).join(" • ") || "—";
+  const nextOfKin =
+    [profile.emergency_contact_name, profile.emergency_contact_phone]
+      .filter(Boolean)
+      .join(" • ") || "—";
 
   return (
     <main style={{ maxWidth: 720, margin: "0 auto", padding: 24, fontFamily: "system-ui" }}>
@@ -37,13 +30,14 @@ export default function PublicPageClient({ profile }: Props) {
       <p style={{ marginTop: 0, color: "#666" }}>Read-only emergency profile.</p>
 
       <div style={{ border: "1px solid #eee", borderRadius: 12, padding: 16 }}>
-        <Row label="Name" value={fullName} />
-        <Row label="ID number" value={profile.id_number || "—"} />
+        <Row label="Name" value={profile.full_name || "—"} />
+        <Row label="Date of birth" value={profile.date_of_birth || "—"} />
         <Row label="Blood type" value={profile.blood_type || "—"} />
         <Row label="Allergies" value={profile.allergies || "—"} />
-        <Row label="Medical history" value={profile.medical_history || "—"} />
-        <Row label="Medical aid" value={medicalAid} />
+        <Row label="Conditions" value={profile.conditions || "—"} />
+        <Row label="Medications" value={profile.medications || "—"} />
         <Row label="Next of kin" value={nextOfKin} />
+        <Row label="Notes" value={profile.notes || "—"} />
 
         <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
           <button
@@ -68,7 +62,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ display: "flex", gap: 12, padding: "10px 0", borderBottom: "1px solid #f3f3f3" }}>
       <div style={{ width: 170, color: "#666" }}>{label}</div>
-      <div style={{ fontWeight: 600 }}>{value}</div>
+      <div style={{ fontWeight: 600, whiteSpace: "pre-wrap" }}>{value}</div>
     </div>
   );
 }
