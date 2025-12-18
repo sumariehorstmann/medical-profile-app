@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 export default function LoginPage() {
-  const supabase = createSupabaseBrowser();
   const router = useRouter();
+  const supabase = useMemo(() => createSupabaseBrowser(), []);
 
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
@@ -14,6 +14,25 @@ export default function LoginPage() {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
+  // ✅ If already logged in, skip login page
+  useEffect(() => {
+    let alive = true;
+
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!alive) return;
+
+      if (data.session) {
+        router.replace("/profile");
+        router.refresh();
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [router, supabase]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,9 +53,7 @@ export default function LoginPage() {
 
         if (error) throw error;
 
-        setMessage(
-          "✅ Signup successful. Check your email if confirmation is required."
-        );
+        setMessage("✅ Signup successful. Check your email if confirmation is required.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -47,8 +64,12 @@ export default function LoginPage() {
 
         setMessage("✅ Logged in successfully. Redirecting…");
 
-        // ✅ CORRECT redirect for Next.js App Router
+        // ✅ Prefer app-router navigation
         router.replace("/profile");
+        router.refresh();
+
+        // ✅ Fallback full reload if router navigation is blocked/cached
+        setTimeout(() => window.location.assign("/profile"), 300);
       }
     } catch (err: any) {
       setMessage(`❌ ${err?.message ?? "Something went wrong"}`);
@@ -111,9 +132,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
-            autoComplete={
-              mode === "signup" ? "new-password" : "current-password"
-            }
+            autoComplete={mode === "signup" ? "new-password" : "current-password"}
             disabled={loading}
             style={{ padding: 10, border: "1px solid #ddd" }}
           />
@@ -131,16 +150,10 @@ export default function LoginPage() {
             cursor: "pointer",
           }}
         >
-          {loading
-            ? "Please wait..."
-            : mode === "signup"
-            ? "Create account"
-            : "Log in"}
+          {loading ? "Please wait..." : mode === "signup" ? "Create account" : "Log in"}
         </button>
 
-        {message && (
-          <p style={{ marginTop: 8, lineHeight: 1.4 }}>{message}</p>
-        )}
+        {message && <p style={{ marginTop: 8, lineHeight: 1.4 }}>{message}</p>}
       </form>
     </main>
   );
