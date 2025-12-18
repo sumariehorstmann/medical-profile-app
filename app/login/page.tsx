@@ -35,7 +35,11 @@ export default function LoginPage() {
         if (error) throw error;
 
         setMessage("✅ Logged in successfully. Redirecting…");
-        window.location.assign("/profile");
+
+const { data: userData } = await supabase.auth.getUser();
+console.log("LOGIN SUCCESS user:", userData?.user);
+console.log("About to redirect to /profile");
+window.location.href = "/profile";
       }
     } catch (err: any) {
       setMessage(`❌ ${err?.message ?? "Something went wrong"}`);
