@@ -56,24 +56,26 @@ export default function ProfilePage() {
   const emergencyLink =
     profile?.public_id ? `${baseUrl}/e/${profile.public_id}` : null;
 
-  // 🔐 AUTH + PROFILE LOAD (VERCEL SAFE)
+  // 🔐 AUTH + PROFILE LOAD (more reliable in production)
   useEffect(() => {
     let mounted = true;
 
     async function load() {
       setLoading(true);
+      setMessage(null);
 
-      const { data: sessionData, error: sessionError } =
-        await supabase.auth.getSession();
+      // ✅ Use getUser() instead of getSession() to avoid "null session" race on deploy
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
 
-      const session = sessionData?.session;
+      const user = userData?.user;
 
-      if (sessionError || !session) {
+      if (userError || !user) {
         router.replace("/login");
         return;
       }
 
-      const uid = session.user.id;
+      const uid = user.id;
       if (!mounted) return;
 
       setUserId(uid);
@@ -186,15 +188,51 @@ export default function ProfilePage() {
       )}
 
       <div style={{ display: "grid", gap: 10 }}>
-        <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full name" />
-        <input type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
-        <input value={bloodType} onChange={(e) => setBloodType(e.target.value)} placeholder="Blood type" />
-        <textarea value={allergies} onChange={(e) => setAllergies(e.target.value)} placeholder="Allergies" />
-        <textarea value={conditions} onChange={(e) => setConditions(e.target.value)} placeholder="Conditions" />
-        <textarea value={medications} onChange={(e) => setMedications(e.target.value)} placeholder="Medications" />
-        <input value={emergencyContactName} onChange={(e) => setEmergencyContactName(e.target.value)} placeholder="Emergency contact name" />
-        <input value={emergencyContactPhone} onChange={(e) => setEmergencyContactPhone(e.target.value)} placeholder="Emergency contact phone" />
-        <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notes" />
+        <input
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          placeholder="Full name"
+        />
+        <input
+          type="date"
+          value={dateOfBirth}
+          onChange={(e) => setDateOfBirth(e.target.value)}
+        />
+        <input
+          value={bloodType}
+          onChange={(e) => setBloodType(e.target.value)}
+          placeholder="Blood type"
+        />
+        <textarea
+          value={allergies}
+          onChange={(e) => setAllergies(e.target.value)}
+          placeholder="Allergies"
+        />
+        <textarea
+          value={conditions}
+          onChange={(e) => setConditions(e.target.value)}
+          placeholder="Conditions"
+        />
+        <textarea
+          value={medications}
+          onChange={(e) => setMedications(e.target.value)}
+          placeholder="Medications"
+        />
+        <input
+          value={emergencyContactName}
+          onChange={(e) => setEmergencyContactName(e.target.value)}
+          placeholder="Emergency contact name"
+        />
+        <input
+          value={emergencyContactPhone}
+          onChange={(e) => setEmergencyContactPhone(e.target.value)}
+          placeholder="Emergency contact phone"
+        />
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Notes"
+        />
       </div>
 
       <button onClick={saveProfile} disabled={saving} style={{ marginTop: 16 }}>
