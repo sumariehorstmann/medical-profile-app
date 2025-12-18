@@ -5,18 +5,17 @@ import { notFound } from "next/navigation";
 export default async function Page({
   params,
 }: {
-  params: Promise<{ publicId: string }>;
+  params: { publicId: string };
 }) {
-  const { publicId } = await params;
+  const { publicId } = params;
 
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("medical_profiles")
     .select(
-  "first_name,last_name,id_number,medical_aid_number,medical_aid_company,allergies,medical_history,blood_type,nok_name,nok_phone"
-)
-
+      "first_name,last_name,id_number,medical_aid_number,medical_aid_company,allergies,medical_history,blood_type,nok_name,nok_phone"
+    )
     .eq("public_id", publicId)
     .single();
 
