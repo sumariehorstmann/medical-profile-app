@@ -1,155 +1,222 @@
 "use client";
 
-import { useState } from "react";
-import { createSupabaseBrowser } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { QRCodeSVG } from "qrcode.react";
+import { getSupabaseBrowser } from "@/lib/supabase/client";
 
-export default function LoginPage() {
-  const supabase = createSupabaseBrowser();
+type Profile = {
+  first_name: string | null;
+  last_name: string | null;
+  date_of_birth: string | null;
+  blood_type: string | null;
+  allergies: string | null;
+  medical_history: string | null;
+  medications: string | null;
+  nok_name: string | null;
+  nok_phone: string | null;
+  notes: string | null;
+  public_id: string | null;
+};
 
-  const [mode, setMode] = useState<"login" | "signup">("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function ProfilePage() {
+  const router = useRouter();
+  const supabase = getSupabaseBrowser();
 
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<Profile>({
+    first_name: "",
+    last_name: "",
+    date_of_birth: "",
+    blood_type: "",
+    allergies: "",
+    medical_history: "",
+    medications: "",
+    nok_name: "",
+    nok_phone: "",
+    notes: "",
+    public_id: "",
+  });
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setMessage(null);
+  /* -------------------------------
+     LOAD PROFILE
+  -------------------------------- */
+  useEffect(() => {
+    async function loadProfile() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanPassword = password;
-
-    if (!cleanEmail || !cleanPassword) {
-      setMessage("Please enter an email and password.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email: cleanEmail,
-          password: cleanPassword,
-        });
-
-        if (error) throw error;
-
-        // If email confirmations are ON, user may not be logged in yet.
-        // Still send them to profile; your profile page can show a "not logged in" state if needed.
-        window.location.href = "/profile";
+      if (!user) {
+        router.push("/login");
         return;
       }
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email: cleanEmail,
-        password: cleanPassword,
-      });
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Profile load error:", error);
+      }
 
-      // HARD redirect avoids router/session timing issues on Vercel
-      window.location.href = "/profile";
-    } catch (err: any) {
-      setMessage(err?.message ?? "Something went wrong. Please try again.");
+      if (data) {
+        setProfile(data);
+      }
+
       setLoading(false);
+    }
+
+    loadProfile();
+  }, [router, supabase]);
+
+  /* -------------------------------
+     SAVE PROFILE
+  -------------------------------- */
+  async function saveProfile() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        first_name: profile.first_name,
+        last_name: profile.last_name,
+        date_of_birth: profile.date_of_birth,
+        blood_type: profile.blood_type,
+        allergies: profile.allergies,
+        medical_history: profile.medical_history,
+        medications: profile.medications,
+        nok_name: profile.nok_name,
+        nok_phone: profile.nok_phone,
+        notes: profile.notes,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", user.id);
+
+    if (error) {
+      alert("Error saving profile");
+      console.error(error);
+    } else {
+      alert("Profile saved");
     }
   }
 
+  /* -------------------------------
+     LOGOUT
+  -------------------------------- */
+  async function logout() {
+    await supabase.auth.signOut();
+    router.push("/login");
+  }
+
+  if (loading) {
+    return <p>Loading profile…</p>;
+  }
+
+  const publicUrl = profile.public_id
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/e/${profile.public_id}`
+    : null;
+
   return (
-    <div style={{ maxWidth: 520, padding: 24 }}>
-      <h1 style={{ fontSize: 42, fontWeight: 800, marginBottom: 6 }}>
-        OMI LOGIN v2
-      </h1>
-      <div style={{ marginBottom: 18 }}>Online Medical Info</div>
+    <main style={{ maxWidth: 600, margin: "0 auto" }}>
+      <h1>My Medical Profile</h1>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-        <button
-          type="button"
-          onClick={() => setMode("login")}
-          style={{
-            padding: "6px 10px",
-            border: "1px solid #ddd",
-            background: mode === "login" ? "#eee" : "#fff",
-            cursor: "pointer",
-          }}
-        >
-          Login
-        </button>
+      <button onClick={logout}>Logout</button>
 
-        <button
-          type="button"
-          onClick={() => setMode("signup")}
-          style={{
-            padding: "6px 10px",
-            border: "1px solid #ddd",
-            background: mode === "signup" ? "#eee" : "#fff",
-            cursor: "pointer",
-          }}
-        >
-          Sign up
-        </button>
-      </div>
+      {publicUrl && (
+        <>
+          <QRCodeSVG value={publicUrl} size={160} />
+          <p>{publicUrl}</p>
+        </>
+      )}
 
-      <form onSubmit={handleSubmit}>
-        <label style={{ display: "block", marginBottom: 6 }}>Email</label>
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="email"
-          autoComplete="email"
-          placeholder="you@example.com"
-          style={{
-            width: "100%",
-            padding: 10,
-            border: "1px solid #ddd",
-            marginBottom: 14,
-          }}
-        />
+      <input
+        placeholder="First name"
+        value={profile.first_name ?? ""}
+        onChange={(e) =>
+          setProfile({ ...profile, first_name: e.target.value })
+        }
+      />
 
-        <label style={{ display: "block", marginBottom: 6 }}>Password</label>
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          autoComplete={mode === "signup" ? "new-password" : "current-password"}
-          placeholder="••••••••"
-          style={{
-            width: "100%",
-            padding: 10,
-            border: "1px solid #ddd",
-            marginBottom: 14,
-          }}
-        />
+      <input
+        placeholder="Last name"
+        value={profile.last_name ?? ""}
+        onChange={(e) =>
+          setProfile({ ...profile, last_name: e.target.value })
+        }
+      />
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: "100%",
-            marginTop: 6,
-            padding: 12,
-            border: "1px solid #000",
-            background: "#111",
-            color: "white",
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
-        >
-          {loading ? "Please wait..." : mode === "signup" ? "Create account" : "Log in"}
-        </button>
-      </form>
+      <input
+        type="date"
+        value={profile.date_of_birth ?? ""}
+        onChange={(e) =>
+          setProfile({ ...profile, date_of_birth: e.target.value })
+        }
+      />
 
-      {message ? (
-        <div style={{ marginTop: 14, padding: 10, border: "1px solid #ddd" }}>
-          {message}
-        </div>
-      ) : null}
+      <input
+        placeholder="Blood type"
+        value={profile.blood_type ?? ""}
+        onChange={(e) =>
+          setProfile({ ...profile, blood_type: e.target.value })
+        }
+      />
 
-      <div style={{ marginTop: 14, fontSize: 12, color: "#666" }}>
-        If you do NOT see “OMI LOGIN v2”, you are viewing a different /login page
-        (wrong server or cached route).
-      </div>
-    </div>
+      <textarea
+        placeholder="Allergies"
+        value={profile.allergies ?? ""}
+        onChange={(e) =>
+          setProfile({ ...profile, allergies: e.target.value })
+        }
+      />
+
+      <textarea
+        placeholder="Medical history"
+        value={profile.medical_history ?? ""}
+        onChange={(e) =>
+          setProfile({ ...profile, medical_history: e.target.value })
+        }
+      />
+
+      <textarea
+        placeholder="Medications"
+        value={profile.medications ?? ""}
+        onChange={(e) =>
+          setProfile({ ...profile, medications: e.target.value })
+        }
+      />
+
+      <input
+        placeholder="Emergency contact name"
+        value={profile.nok_name ?? ""}
+        onChange={(e) =>
+          setProfile({ ...profile, nok_name: e.target.value })
+        }
+      />
+
+      <input
+        placeholder="Emergency contact phone"
+        value={profile.nok_phone ?? ""}
+        onChange={(e) =>
+          setProfile({ ...profile, nok_phone: e.target.value })
+        }
+      />
+
+      <textarea
+        placeholder="Notes"
+        value={profile.notes ?? ""}
+        onChange={(e) =>
+          setProfile({ ...profile, notes: e.target.value })
+        }
+      />
+
+      <button onClick={saveProfile}>Save</button>
+    </main>
   );
 }
