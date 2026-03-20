@@ -1,28 +1,43 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 
-let browserClient: SupabaseClient | null = null;
+export function createSupabaseBrowser() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          if (typeof document === "undefined") return [];
+          return document.cookie
+            .split(";")
+            .map((c) => c.trim())
+            .filter(Boolean)
+            .map((c) => {
+              const eq = c.indexOf("=");
+              const name = eq >= 0 ? c.slice(0, eq) : c;
+              const value = eq >= 0 ? c.slice(eq + 1) : "";
+              return { name, value: decodeURIComponent(value) };
+            });
+        },
+        setAll(cookiesToSet) {
+          if (typeof document === "undefined") return;
 
-export function getSupabaseBrowser(): SupabaseClient {
-  if (browserClient) return browserClient;
+          cookiesToSet.forEach(({ name, value, options }) => {
+            let cookie = `${name}=${encodeURIComponent(value)}`;
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+            const opts = options ?? {};
+            cookie += `; Path=${opts.path ?? "/"}`;
 
-  browserClient = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-    },
-  });
+            if (opts.maxAge !== undefined) cookie += `; Max-Age=${opts.maxAge}`;
+            if (opts.expires) cookie += `; Expires=${opts.expires.toUTCString()}`;
+            if (opts.domain) cookie += `; Domain=${opts.domain}`;
+            if (opts.sameSite) cookie += `; SameSite=${opts.sameSite}`;
+            if (opts.secure) cookie += `; Secure`;
 
-  return browserClient;
-}
-
-/**
- * Backwards-compatible alias.
- * This prevents build errors if any pages still import createSupabaseBrowser.
- */
-export function createSupabaseBrowser(): SupabaseClient {
-  return getSupabaseBrowser();
+            document.cookie = cookie;
+          });
+        },
+      },
+    }
+  );
 }

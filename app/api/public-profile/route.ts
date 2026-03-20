@@ -1,125 +1,87 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase/server";
-
-function calcAge(dob: string | null | undefined) {
-  if (!dob) return null;
-  const birth = new Date(dob);
-  if (Number.isNaN(birth.getTime())) return null;
-
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-  return age;
-}
+import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
 export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const token = searchParams.get("token");
+  try {
+    const { searchParams } = new URL(req.url);
+    const publicId = searchParams.get("publicId") || searchParams.get("publicid");
 
-  if (!token) {
-    return NextResponse.json({ error: "Missing token" }, { status: 400 });
-  }
+    if (!publicId) {
+      return NextResponse.json({ profile: null, error: "Missing publicId" }, { status: 400 });
+    }
 
-  // 1) Look up QR code + linked profile
-  const { data, error } = await supabaseAdmin
-    .from("qr_codes")
-    .select(
-      `
-      public_token,
-      status,
-      profile_id,
-      profiles (
+    const supabase = createSupabaseAdmin();
+
+    const { data: profile, error: pErr } = await supabase
+      .from("profiles")
+      .select(`
         id,
-        user_id,
+        public_id,
+        is_paid,
         first_name,
         last_name,
+        gender,
         date_of_birth,
+        blood_type,
         allergies,
         conditions,
         medications,
-        gender,
-        blood_type,
-        physical_description,
         special_notes,
+        primary_language,
+        secondary_language,
         medical_aid_provider,
         medical_aid_policy_number,
-        primary_language,
+        gp_name,
+        gp_practice,
+        gp_phone,
         religion,
-        additional_notes
-      )
-    `
-    )
-    .eq("public_token", token)
-    .eq("status", "active")
-    .single();
+        additional_notes,
+        emergency1_fullname,
+        emergency1_relationship,
+        emergency1_phone,
+        emergency2_fullname,
+        emergency2_relationship,
+        emergency2_phone
+      `)
+      .eq("public_id", publicId)
+      .maybeSingle();
 
-  if (error || !data) {
-    return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    if (pErr) {
+      return NextResponse.json({ profile: null, error: pErr.message }, { status: 500 });
+    }
+
+    if (!profile) {
+      return NextResponse.json({ profile: null }, { status: 200 });
+    }
+
+    const emergency_contacts = [
+      {
+        full_name: profile.emergency1_fullname ?? null,
+        relationship: profile.emergency1_relationship ?? null,
+        phone: profile.emergency1_phone ?? null,
+        sort_order: 1,
+      },
+      {
+        full_name: profile.emergency2_fullname ?? null,
+        relationship: profile.emergency2_relationship ?? null,
+        phone: profile.emergency2_phone ?? null,
+        sort_order: 2,
+      },
+    ].filter((c) => c.full_name || c.relationship || c.phone);
+
+    return NextResponse.json(
+      {
+        profile: {
+          ...profile,
+          emergency_contacts,
+        },
+      },
+      { status: 200 }
+    );
+  } catch (err: any) {
+    return NextResponse.json(
+      { profile: null, error: err?.message ?? "Unknown error" },
+      { status: 500 }
+    );
   }
-
-  // Make TS shut up – we know the shape from our query
-  const profile = (data as any).profiles as any;
-  if (!profile) {
-    return NextResponse.json({ error: "Profile not found" }, { status: 404 });
-  }
-
-  // 2) Emergency contacts
-  const { data: contactsData } = await supabaseAdmin
-    .from("emergency_contacts")
-    .select("priority, name, phone")
-    .eq("profile_id", profile.id)
-    .order("priority", { ascending: true });
-
-  const contacts = (contactsData ?? []) as any[];
-  const contact1 = contacts.find((c) => c.priority === 1) ?? null;
-  const contact2 = contacts.find((c) => c.priority === 2) ?? null;
-
-  // 3) Subscription status (by auth user_id)
-  const { data: sub } = await supabaseAdmin
-    .from("subscriptions")
-    .select("status, current_period_end")
-    .eq("user_id", profile.user_id)
-    .single();
-
-  const isPaid =
-    sub?.status === "active" &&
-    !!sub?.current_period_end &&
-    new Date(sub.current_period_end as string) > new Date();
-
-  // 4) Public response
-
-  const response: any = {
-    first_name: profile.first_name,
-    last_name: profile.last_name,
-    age: calcAge(profile.date_of_birth),
-    emergency_contact: contact1
-      ? { name: contact1.name, phone: contact1.phone }
-      : null,
-    is_paid: isPaid,
-  };
-
-  if (isPaid) {
-    response.medical = {
-      allergies: profile.allergies,
-      conditions: profile.conditions,
-      medications: profile.medications,
-      blood_type: profile.blood_type,
-      gender: profile.gender,
-      physical_description: profile.physical_description,
-      special_notes: profile.special_notes,
-      medical_aid_provider: profile.medical_aid_provider,
-      medical_aid_policy_number: profile.medical_aid_policy_number,
-      primary_language: profile.primary_language,
-      religion: profile.religion,
-      additional_notes: profile.additional_notes,
-      emergency_contact_2: contact2
-        ? { name: contact2.name, phone: contact2.phone }
-        : null,
-    };
-  }
-
-  return NextResponse.json(response, {
-    headers: { "Cache-Control": "no-store" },
-  });
 }

@@ -1,94 +1,85 @@
+// app/login/page.tsx
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 export default function LoginPage() {
-  const supabase = createSupabaseBrowser();
   const router = useRouter();
+  const params = useSearchParams();
+  const supabase = useMemo(() => createSupabaseBrowser(), []);
 
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    const errorCode = params.get("error_code") || params.get("error");
+    const errorDesc = params.get("error_description");
+    if (errorCode || errorDesc) {
+      setMsg(`Auth callback error: ${errorCode || ""}${errorDesc ? ` — ${errorDesc}` : ""}`);
+    }
+  }, [params]);
+
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    setMessage(null);
+    setMsg(null);
+
+    if (!email || !password) {
+      setMsg("Please enter an email and password.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      if (!email || !password) {
-        setMessage("Please enter an email and password.");
-        return;
-      }
+      const redirectTo =
+        params.get("redirect") ||
+        params.get("next") ||
+        "/profile";
 
-      if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
+      if (mode === "login") {
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (error) throw error;
 
-        console.log("Signup result", { data, error });
+  const redirectTo =
+    params.get("redirect") ||
+    params.get("next") ||
+    "/profile";
 
-        if (error) throw error;
+  window.location.href = redirectTo;
+  return;
+}
 
-        setMessage(
-          "✅ Signup successful. Please check your email (if confirmation is required) and then log in."
-        );
-        setMode("login");
-        return;
-      }
-
-      // LOGIN
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+        },
       });
-
-      console.log("Login result", { data, error });
 
       if (error) throw error;
 
-      setMessage("✅ Logged in. Redirecting...");
-      console.log("Pushing to /profile");
-
-      // First try client-side navigation
-      router.push("/profile");
-
-      // Hard fallback redirect in case router.push is ignored for any reason
-      if (typeof window !== "undefined") {
-        setTimeout(() => {
-          if (window.location.pathname === "/login") {
-            console.log("Hard redirect to /profile");
-            window.location.href = "/profile";
-          }
-        }, 500);
-      }
+      setMsg("✅ Account created. Please check your email and click the confirmation link to continue.");
     } catch (err: any) {
-      console.error("Auth error:", err);
-      setMessage(err?.message || "Something went wrong. Please try again.");
+      setMsg(err?.message ?? "Something went wrong.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main
-      style={{
-        maxWidth: 420,
-        margin: "40px auto",
-        padding: 24,
-        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-      }}
-    >
-      <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 4 }}>
-        OMI LOGIN v2
-      </h1>
-      <p style={{ marginBottom: 24 }}>Online Medical Info</p>
+    <main style={{ maxWidth: 520, margin: "40px auto", padding: 20 }}>
+      <h1 style={{ marginBottom: 6 }}>RROI</h1>
+      <div style={{ opacity: 0.8, marginBottom: 16 }}>Rapid Response Online Info</div>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
         <button
@@ -96,95 +87,72 @@ export default function LoginPage() {
           onClick={() => setMode("login")}
           style={{
             flex: 1,
-            padding: "8px 0",
-            border: "1px solid #000",
+            padding: "10px 12px",
+            border: "1px solid #ccc",
             background: mode === "login" ? "#000" : "#fff",
             color: mode === "login" ? "#fff" : "#000",
             cursor: "pointer",
           }}
+          disabled={loading}
         >
           Login
         </button>
+
         <button
           type="button"
           onClick={() => setMode("signup")}
           style={{
             flex: 1,
-            padding: "8px 0",
-            border: "1px solid #000",
+            padding: "10px 12px",
+            border: "1px solid #ccc",
             background: mode === "signup" ? "#000" : "#fff",
             color: mode === "signup" ? "#fff" : "#000",
             cursor: "pointer",
           }}
+          disabled={loading}
         >
           Sign up
         </button>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <label style={{ display: "block", marginBottom: 4 }}>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{
-            width: "100%",
-            padding: 8,
-            marginBottom: 12,
-            border: "1px solid #ccc",
-          }}
-        />
+      <form onSubmit={submit}>
+        <label style={{ display: "block", marginBottom: 10 }}>
+          <div style={{ marginBottom: 6 }}>Email</div>
+          <input
+            style={{ width: "100%", padding: 10 }}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+          />
+        </label>
 
-        <label style={{ display: "block", marginBottom: 4 }}>Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            width: "100%",
-            padding: 8,
-            marginBottom: 16,
-            border: "1px solid #ccc",
-          }}
-        />
+        <label style={{ display: "block", marginBottom: 10 }}>
+          <div style={{ marginBottom: 6 }}>Password</div>
+          <input
+            style={{ width: "100%", padding: 10 }}
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete={mode === "login" ? "current-password" : "new-password"}
+          />
+        </label>
 
         <button
-          type="submit"
+          style={{ width: "100%", padding: 12, marginTop: 10, cursor: "pointer" }}
           disabled={loading}
-          style={{
-            width: "100%",
-            padding: "10px 0",
-            background: "#000",
-            color: "#fff",
-            border: "none",
-            cursor: loading ? "default" : "pointer",
-          }}
+          type="submit"
         >
-          {loading
-            ? mode === "login"
-              ? "Logging in..."
-              : "Signing up..."
-            : mode === "login"
-            ? "Log in"
-            : "Sign up"}
+          {loading ? "Working..." : mode === "login" ? "Log in" : "Create account"}
         </button>
       </form>
 
-      {message && (
-        <p
-          style={{
-            marginTop: 16,
-            color: message.startsWith("✅") ? "green" : "red",
-          }}
-        >
-          {message}
-        </p>
-      )}
+      {msg && <p style={{ marginTop: 12 }}>{msg}</p>}
 
-      <p style={{ marginTop: 24, fontSize: 12, color: "#555" }}>
-        If you do NOT see "OMI LOGIN v2", you are viewing a different /login
-        page (wrong server or cached route).
-      </p>
+      <div style={{ marginTop: 12, display: "flex", gap: 12 }}>
+        <a href="/subscribe/start">Go to Subscribe</a>
+        <a href="/">Home</a>
+      </div>
     </main>
   );
 }
