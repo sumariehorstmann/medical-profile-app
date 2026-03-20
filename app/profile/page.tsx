@@ -29,27 +29,51 @@ export default async function ProfilePage() {
     }
   );
 
-  // Get logged in user
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Not logged in → login page
   if (!user) {
     redirect("/login");
   }
 
-  // Load user's profile
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
     .eq("user_id", user.id)
     .single();
 
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("status, plan, current_period_end")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
   return (
     <main style={{ padding: 40 }}>
       <h1>Profile</h1>
       <ProfileFormClient initial={profile} />
+
+      <div
+        style={{
+          marginTop: 24,
+          padding: 16,
+          border: "1px solid #ddd",
+          borderRadius: 8,
+          maxWidth: 500,
+        }}
+      >
+        <h2 style={{ marginTop: 0 }}>Subscription Status</h2>
+        <p>
+          <strong>Status:</strong> {subscription?.status ?? "free"}
+        </p>
+        <p>
+          <strong>Plan:</strong> {subscription?.plan ?? "free"}
+        </p>
+        <p>
+          <strong>Expires:</strong> {subscription?.current_period_end ?? "-"}
+        </p>
+      </div>
     </main>
   );
 }
