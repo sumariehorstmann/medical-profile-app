@@ -71,7 +71,10 @@ export default async function ProfilePage() {
           <strong>Plan:</strong> {subscription?.plan ?? "free"}
         </p>
         <p>
-          <strong>Expires:</strong> {subscription?.current_period_end ?? "-"}
+          <strong>Expires:</strong>{" "}
+          {subscription?.current_period_end
+            ? new Date(subscription.current_period_end).toLocaleDateString()
+            : "-"}
         </p>
       </div>
     </main>
