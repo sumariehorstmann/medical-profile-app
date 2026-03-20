@@ -16,6 +16,7 @@ export async function GET(req: Request) {
       .from("profiles")
       .select(`
         id,
+        user_id,
         public_id,
         is_paid,
         first_name,
@@ -54,6 +55,29 @@ export async function GET(req: Request) {
       return NextResponse.json({ profile: null }, { status: 200 });
     }
 
+    let isPremium = false;
+
+    if (profile.user_id) {
+      const { data: subscription, error: sErr } = await supabase
+        .from("subscriptions")
+        .select("status, current_period_end")
+        .eq("user_id", profile.user_id)
+        .maybeSingle();
+
+      if (sErr) {
+        return NextResponse.json({ profile: null, error: sErr.message }, { status: 500 });
+      }
+
+      if (
+        subscription &&
+        subscription.status === "active" &&
+        subscription.current_period_end &&
+        new Date(subscription.current_period_end).getTime() > Date.now()
+      ) {
+        isPremium = true;
+      }
+    }
+
     const emergency_contacts = [
       {
         full_name: profile.emergency1_fullname ?? null,
@@ -73,6 +97,7 @@ export async function GET(req: Request) {
       {
         profile: {
           ...profile,
+          is_paid: isPremium,
           emergency_contacts,
         },
       },
