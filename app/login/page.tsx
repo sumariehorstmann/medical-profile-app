@@ -1,11 +1,10 @@
-// app/login/page.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
-export default function LoginPage() {
+function LoginPageInner() {
   const router = useRouter();
   const params = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
@@ -43,20 +42,16 @@ export default function LoginPage() {
         "/profile";
 
       if (mode === "login") {
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-  if (error) throw error;
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
-  const redirectTo =
-    params.get("redirect") ||
-    params.get("next") ||
-    "/profile";
+        if (error) throw error;
 
-  window.location.href = redirectTo;
-  return;
-}
+        window.location.href = redirectTo;
+        return;
+      }
 
       const { error } = await supabase.auth.signUp({
         email,
@@ -97,7 +92,6 @@ export default function LoginPage() {
         >
           Login
         </button>
-
         <button
           type="button"
           onClick={() => setMode("signup")}
@@ -154,5 +148,13 @@ export default function LoginPage() {
         <a href="/">Home</a>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<main style={{ maxWidth: 520, margin: "40px auto", padding: 20 }}>Loading...</main>}>
+      <LoginPageInner />
+    </Suspense>
   );
 }
