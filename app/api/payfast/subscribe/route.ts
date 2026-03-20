@@ -75,9 +75,9 @@ export async function POST(req: NextRequest) {
     const data: Record<string, string> = {
       merchant_id: merchantId,
       merchant_key: merchantKey,
-      return_url: `${baseUrl}/billing/success`,
-      cancel_url: `${baseUrl}/billing/cancel`,
-      notify_url: `${baseUrl}/api/payfast/itn`,
+      return_url: "https://medical-profile-app.vercel.app/billing/success",
+      cancel_url: "https://medical-profile-app.vercel.app/billing/cancel",
+      notify_url: "https://medical-profile-app.vercel.app/api/payfast/itn",
       name_first: buyerFirstName,
       name_last: buyerLastName,
       email_address: buyerEmail,

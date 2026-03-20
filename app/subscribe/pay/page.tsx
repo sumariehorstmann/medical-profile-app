@@ -52,9 +52,10 @@ export default function PayPage() {
           .single();
 
         if (profileError || !profileData) {
-          setError("Could not load your profile.");
-          return;
-        }
+  console.error("PROFILE ERROR", profileError, profileData);
+  setError(`Could not load your profile. ${profileError?.message || ""}`);
+  return;
+}
 
         if (!profileData.public_id) {
           setError("Your profile does not have a public_id yet.");
