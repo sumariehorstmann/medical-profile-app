@@ -45,9 +45,9 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Profile not found", { status: 404 });
     }
 
-    const startDate = new Date();
-    const endDate = new Date();
-    endDate.setFullYear(endDate.getFullYear() + 1);
+    const now = new Date();
+    const end = new Date();
+    end.setFullYear(end.getFullYear() + 1);
 
     const { error: profileUpdateError } = await supabase
       .from("profiles")
@@ -67,15 +67,15 @@ export async function POST(req: NextRequest) {
         {
           user_id: profile.user_id,
           status: "active",
-          current_period_start: startDate.toISOString(),
-          current_period_end: endDate.toISOString(),
+          current_period_start: now.toISOString(),
+          current_period_end: end.toISOString(),
           provider: "payfast",
           provider_subscription_id: paymentId,
           auto_renew: false,
           plan: "premium_annual",
           price: 299,
           price_cents: 29900,
-          updated_at: new Date().toISOString(),
+          updated_at: now.toISOString(),
         },
         {
           onConflict: "user_id",
