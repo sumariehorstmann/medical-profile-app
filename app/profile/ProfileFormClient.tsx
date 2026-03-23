@@ -53,13 +53,18 @@ type ProfileRow = {
 
 function calcAge(dob: string | null): number | null {
   if (!dob) return null;
+
   const d = new Date(dob);
   if (Number.isNaN(d.getTime())) return null;
 
   const today = new Date();
   let age = today.getFullYear() - d.getFullYear();
   const m = today.getMonth() - d.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+
+  if (m < 0 || (m === 0 && today.getDate() < d.getDate())) {
+    age--;
+  }
+
   return age >= 0 && age <= 130 ? age : null;
 }
 
@@ -73,7 +78,9 @@ function downloadQrAsPng(svgId: string, filename = "rroi-qr.png") {
 
   const serializer = new XMLSerializer();
   const svgString = serializer.serializeToString(svg);
-  const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+  const svgBlob = new Blob([svgString], {
+    type: "image/svg+xml;charset=utf-8",
+  });
   const url = URL.createObjectURL(svgBlob);
 
   const img = new Image();
@@ -100,6 +107,7 @@ function downloadQrAsPng(svgId: string, filename = "rroi-qr.png") {
     a.click();
     a.remove();
   };
+
   img.src = url;
 }
 
@@ -117,7 +125,9 @@ function Section({
       <div style={{ marginBottom: 12 }}>
         <div style={{ fontSize: 20, fontWeight: 900 }}>{title}</div>
         {subtitle ? (
-          <div style={{ marginTop: 4, color: "#444", fontSize: 13 }}>{subtitle}</div>
+          <div style={{ marginTop: 4, color: "#444", fontSize: 13 }}>
+            {subtitle}
+          </div>
         ) : null}
       </div>
       {children}
@@ -142,7 +152,9 @@ function Field({
         {label} {required ? <span style={{ color: "#b00020" }}>*</span> : null}
       </div>
       {children}
-      {hint ? <div style={{ marginTop: 6, fontSize: 12, color: "#555" }}>{hint}</div> : null}
+      {hint ? (
+        <div style={{ marginTop: 6, fontSize: 12, color: "#555" }}>{hint}</div>
+      ) : null}
     </div>
   );
 }
@@ -167,11 +179,15 @@ export default function ProfileFormClient({
   const [firstName, setFirstName] = useState(initial?.first_name ?? "");
   const [lastName, setLastName] = useState(initial?.last_name ?? "");
   const [em1Name, setEm1Name] = useState(initial?.emergency1_fullname ?? "");
-  const [em1Rel, setEm1Rel] = useState(initial?.emergency1_relationship ?? "");
+  const [em1Rel, setEm1Rel] = useState(
+    initial?.emergency1_relationship ?? ""
+  );
   const [em1Phone, setEm1Phone] = useState(initial?.emergency1_phone ?? "");
 
   const [em2Name, setEm2Name] = useState(initial?.emergency2_fullname ?? "");
-  const [em2Rel, setEm2Rel] = useState(initial?.emergency2_relationship ?? "");
+  const [em2Rel, setEm2Rel] = useState(
+    initial?.emergency2_relationship ?? ""
+  );
   const [em2Phone, setEm2Phone] = useState(initial?.emergency2_phone ?? "");
 
   const [gender, setGender] = useState(initial?.gender ?? "");
@@ -180,11 +196,19 @@ export default function ProfileFormClient({
   const [allergies, setAllergies] = useState(initial?.allergies ?? "");
   const [conditions, setConditions] = useState(initial?.conditions ?? "");
   const [medications, setMedications] = useState(initial?.medications ?? "");
-  const [specialNotes, setSpecialNotes] = useState(initial?.special_notes ?? "");
+  const [specialNotes, setSpecialNotes] = useState(
+    initial?.special_notes ?? ""
+  );
 
-  const [primaryLanguage, setPrimaryLanguage] = useState(initial?.primary_language ?? "");
-  const [secondaryLanguage, setSecondaryLanguage] = useState(initial?.secondary_language ?? "");
-  const [medicalAidProvider, setMedicalAidProvider] = useState(initial?.medical_aid_provider ?? "");
+  const [primaryLanguage, setPrimaryLanguage] = useState(
+    initial?.primary_language ?? ""
+  );
+  const [secondaryLanguage, setSecondaryLanguage] = useState(
+    initial?.secondary_language ?? ""
+  );
+  const [medicalAidProvider, setMedicalAidProvider] = useState(
+    initial?.medical_aid_provider ?? ""
+  );
   const [medicalAidPolicy, setMedicalAidPolicy] = useState(
     initial?.medical_aid_policy_number ?? ""
   );
@@ -194,26 +218,27 @@ export default function ProfileFormClient({
   const [gpPhone, setGpPhone] = useState(initial?.gp_phone ?? "");
 
   const [religion, setReligion] = useState(initial?.religion ?? "");
-
-  const [heightCm, setHeightCm] = useState<string>(
+  const [heightCm, setHeightCm] = useState(
     initial?.height_cm == null ? "" : String(initial.height_cm)
   );
-  const [weightKg, setWeightKg] = useState<string>(
+  const [weightKg, setWeightKg] = useState(
     initial?.weight_kg == null ? "" : String(initial.weight_kg)
   );
   const [eyeColor, setEyeColor] = useState(initial?.eye_color ?? "");
   const [hairColor, setHairColor] = useState(initial?.hair_color ?? "");
-  const [identifyingMarks, setIdentifyingMarks] = useState(initial?.identifying_marks ?? "");
+  const [identifyingMarks, setIdentifyingMarks] = useState(
+    initial?.identifying_marks ?? ""
+  );
   const [skinTone, setSkinTone] = useState(initial?.skin_tone ?? "");
-
-  const [additionalNotes, setAdditionalNotes] = useState(initial?.additional_notes ?? "");
+  const [additionalNotes, setAdditionalNotes] = useState(
+    initial?.additional_notes ?? ""
+  );
 
   const [consent, setConsent] = useState(false);
-
-  const age = useMemo(() => calcAge(dateOfBirth || null), [dateOfBirth]);
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
+  const age = useMemo(() => calcAge(dateOfBirth || null), [dateOfBirth]);
 
   function validateRequired(): string | null {
     if (!firstName.trim()) return "First name is required.";
@@ -235,11 +260,12 @@ export default function ProfileFormClient({
     }
 
     if (!consent) {
-      setMessage("❌ You must accept the privacy policy.");
+      setMessage("❌ Please accept the Privacy Policy before saving.");
       return;
     }
 
     setLoading(true);
+
     try {
       const payload = {
         first_name: firstName.trim(),
@@ -263,6 +289,7 @@ export default function ProfileFormClient({
 
         primary_language: primaryLanguage || null,
         secondary_language: secondaryLanguage || null,
+
         medical_aid_provider: medicalAidProvider || null,
         medical_aid_policy_number: medicalAidPolicy || null,
 
@@ -289,12 +316,15 @@ export default function ProfileFormClient({
       });
 
       const json = await res.json();
-      if (!res.ok) throw new Error(json?.error || "Failed to save profile");
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Failed to save profile");
+      }
 
       setMessage("✅ Saved.");
       router.refresh();
-    } catch (e: any) {
-      setMessage(`❌ ${e?.message || "Something went wrong"}`);
+    } catch (error: any) {
+      setMessage(`❌ ${error?.message || "Something went wrong"}`);
     } finally {
       setLoading(false);
     }
@@ -303,6 +333,7 @@ export default function ProfileFormClient({
   async function handleLogout() {
     setMessage(null);
     setLoading(true);
+
     try {
       await supabase.auth.signOut();
       router.push("/login");
@@ -353,7 +384,11 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Emergency Contact 1 — Phone" required hint="Use digits only (no spaces).">
+        <Field
+          label="Emergency Contact 1 — Phone"
+          required
+          hint="Use digits only (no spaces)."
+        >
           <input
             style={inputStyle}
             value={em1Phone}
@@ -362,7 +397,9 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
+        <div
+          style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}
+        >
           <div>
             <div style={{ fontWeight: 800, marginBottom: 8 }}>Your QR code</div>
             <div
@@ -403,6 +440,7 @@ export default function ProfileFormClient({
             placeholder="Optional"
           />
         </Field>
+
         <Field label="Emergency Contact 2 — Relationship">
           <input
             style={inputStyle}
@@ -411,6 +449,7 @@ export default function ProfileFormClient({
             placeholder="Optional"
           />
         </Field>
+
         <Field label="Emergency Contact 2 — Phone">
           <input
             style={inputStyle}
@@ -421,7 +460,11 @@ export default function ProfileFormClient({
         </Field>
 
         <Field label="Gender">
-          <select style={inputStyle} value={gender} onChange={(e) => setGender(e.target.value)}>
+          <select
+            style={inputStyle}
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          >
             <option value="">(not set)</option>
             <option value="Female">Female</option>
             <option value="Male">Male</option>
@@ -449,7 +492,11 @@ export default function ProfileFormClient({
         </Field>
 
         <Field label="Blood type">
-          <select style={inputStyle} value={bloodType} onChange={(e) => setBloodType(e.target.value)}>
+          <select
+            style={inputStyle}
+            value={bloodType}
+            onChange={(e) => setBloodType(e.target.value)}
+          >
             <option value="">(not set)</option>
             <option value="O-">O-</option>
             <option value="O+">O+</option>
@@ -625,7 +672,11 @@ export default function ProfileFormClient({
         </Field>
 
         <Field label="Skin tone dropdown">
-          <select style={inputStyle} value={skinTone} onChange={(e) => setSkinTone(e.target.value)}>
+          <select
+            style={inputStyle}
+            value={skinTone}
+            onChange={(e) => setSkinTone(e.target.value)}
+          >
             <option value="">(not set)</option>
             <option value="Very fair">Very fair</option>
             <option value="Fair">Fair</option>
@@ -651,39 +702,51 @@ export default function ProfileFormClient({
       </Section>
 
       <div style={{ marginTop: 20, marginBottom: 16 }}>
-        <label style={{ display: "flex", alignItems: "center", gap: 8, lineHeight: 1.5 }}>
+        <label
+          style={{
+            display: "flex",
+            gap: 10,
+            alignItems: "flex-start",
+            marginTop: 12,
+          }}
+        >
           <input
             type="checkbox"
             checked={consent}
             onChange={(e) => setConsent(e.target.checked)}
+            style={{ marginTop: 4 }}
           />
-          <div style={{ marginTop: 20, marginBottom: 16 }}>
-  <label style={{ display: "flex", alignItems: "flex-start", gap: 8, lineHeight: 1.5 }}>
-    <input
-      type="checkbox"
-      checked={consent}
-      onChange={(e) => setConsent(e.target.checked)}
-      style={{ marginTop: 4 }}
-    />
-    <span>
-      I consent to the processing of my personal information in accordance with the{" "}
-      <a href="/privacy" target="_blank" rel="noopener noreferrer">
-        Privacy Policy
-      </a>.
-    </span>
-  </label>
 
-  {!consent && (
-    <div style={{ marginTop: 8, fontSize: 13, color: "#666" }}>
-      You must read and accept the Privacy Policy before saving your profile.
-    </div>
-  )}
-</div>
+          <span>
+            I consent to the processing of my personal information in accordance with the{" "}
+            <a
+              href="/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "underline", fontWeight: 600 }}
+            >
+              Privacy Policy
+            </a>.
+          </span>
         </label>
+
+        {!consent && (
+          <div style={{ marginTop: 8, fontSize: 13, color: "#666" }}>
+            You must read and accept the Privacy Policy before saving your profile.
+          </div>
+        )}
       </div>
 
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <button type="submit" style={btnStyle} disabled={loading || !consent}>
+        <button
+          type="submit"
+          style={{
+            ...btnStyle,
+            opacity: !consent ? 0.5 : 1,
+            cursor: !consent ? "not-allowed" : "pointer",
+          }}
+          disabled={loading || !consent}
+        >
           {loading ? "Saving..." : "Save"}
         </button>
 
@@ -698,12 +761,19 @@ export default function ProfileFormClient({
           </button>
         )}
 
-        <button type="button" style={btnStyleSecondary} onClick={handleLogout} disabled={loading}>
+        <button
+          type="button"
+          style={btnStyleSecondary}
+          onClick={handleLogout}
+          disabled={loading}
+        >
           Log out
         </button>
       </div>
 
-      {message ? <div style={{ marginTop: 12, fontWeight: 700 }}>{message}</div> : null}
+      {message ? (
+        <div style={{ marginTop: 12, fontWeight: 700 }}>{message}</div>
+      ) : null}
     </form>
   );
 }
