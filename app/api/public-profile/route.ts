@@ -55,10 +55,11 @@ export async function GET(req: Request) {
       return NextResponse.json({ profile: null }, { status: 200 });
     }
 
+    let subscription: { status: string | null; current_period_end: string | null } | null = null;
     let isPremium = false;
 
     if (profile.user_id) {
-      const { data: subscription, error: sErr } = await supabase
+      const { data: subData, error: sErr } = await supabase
         .from("subscriptions")
         .select("status, current_period_end")
         .eq("user_id", profile.user_id)
@@ -67,6 +68,8 @@ export async function GET(req: Request) {
       if (sErr) {
         return NextResponse.json({ profile: null, error: sErr.message }, { status: 500 });
       }
+
+      subscription = subData ?? null;
 
       if (
         subscription &&
@@ -98,6 +101,7 @@ export async function GET(req: Request) {
         profile: {
           ...profile,
           is_paid: isPremium,
+          subscription,
           emergency_contacts,
         },
       },

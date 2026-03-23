@@ -17,7 +17,12 @@ type PublicProfile = {
 
   is_paid: boolean;
 
-  // Full fields (optional so TypeScript never complains)
+  subscription?: {
+    status: string | null;
+    current_period_end: string | null;
+  } | null;
+
+  // Full fields
   gender?: string | null;
   date_of_birth?: string | null;
   blood_type?: string | null;
@@ -43,7 +48,6 @@ type PublicProfile = {
 };
 
 async function getPublicProfile(publicId: string): Promise<PublicProfile | null> {
-  // Works in dev + prod
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
   const url = `${base}/api/public-profile?publicId=${encodeURIComponent(publicId)}`;
 
@@ -68,7 +72,6 @@ function Field({ label, value }: { label: string; value: string | null | undefin
 export default async function PublicEmergencyPage({
   params,
 }: {
-  // Next 15/16: params is a Promise in server components
   params: Promise<{ publicId: string }>;
 }) {
   const { publicId } = await params;
@@ -86,7 +89,14 @@ export default async function PublicEmergencyPage({
     );
   }
 
-  const tier = profile.is_paid ? "full" : "basic";
+  const now = Date.now();
+
+  const isActive =
+    profile.is_paid &&
+    profile.subscription?.current_period_end &&
+    new Date(profile.subscription.current_period_end).getTime() > now;
+
+  const tier = isActive ? "full" : "basic";
   const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ");
 
   const contacts = Array.isArray(profile.emergency_contacts) ? profile.emergency_contacts : [];
@@ -122,7 +132,7 @@ export default async function PublicEmergencyPage({
         <Field label="Relationship" value={c1?.relationship ?? null} />
         <Field label="Phone" value={c1?.phone ?? null} />
 
-        {profile.is_paid ? (
+        {isActive ? (
           <>
             <div style={{ padding: "14px 0 6px", borderTop: "1px solid #eee" }}>
               <div style={{ fontSize: 20, fontWeight: 800 }}>Medical Details</div>
@@ -143,7 +153,10 @@ export default async function PublicEmergencyPage({
             <Field label="Primary language" value={profile.primary_language ?? null} />
             <Field label="Secondary language" value={profile.secondary_language ?? null} />
             <Field label="Medical aid provider" value={profile.medical_aid_provider ?? null} />
-            <Field label="Medical aid policy number" value={profile.medical_aid_policy_number ?? null} />
+            <Field
+              label="Medical aid policy number"
+              value={profile.medical_aid_policy_number ?? null}
+            />
             <Field label="GP name" value={profile.gp_name ?? null} />
             <Field label="GP practice" value={profile.gp_practice ?? null} />
             <Field label="GP phone" value={profile.gp_phone ?? null} />
