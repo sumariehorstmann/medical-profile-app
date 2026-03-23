@@ -769,8 +769,43 @@ export default function ProfileFormClient({
         >
           Log out
         </button>
-      </div>
+      </div> 
+<button
+  type="button"
+  style={btnStyleSecondary}
+  onClick={async () => {
+    const ok = window.confirm(
+      "Are you sure you want to permanently delete your profile and subscription data?"
+    );
+    if (!ok) return;
 
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch("/api/delete-account", {
+        method: "POST",
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Failed to delete account");
+      }
+
+      await supabase.auth.signOut();
+      router.push("/");
+      router.refresh();
+    } catch (e: any) {
+      setMessage(`❌ ${e?.message || "Something went wrong"}`);
+    } finally {
+      setLoading(false);
+    }
+  }}
+  disabled={loading}
+>
+  Delete account
+</button>
       {message ? (
         <div style={{ marginTop: 12, fontWeight: 700 }}>{message}</div>
       ) : null}
