@@ -24,7 +24,7 @@ type ProfileRow = {
   date_of_birth: string | null;
   blood_type: string | null;
   allergies: string | null;
-  conditions: string | null; // use this as "Chronic illnesses + other conditions"
+  conditions: string | null;
   medications: string | null;
   special_notes: string | null;
 
@@ -86,11 +86,8 @@ function downloadQrAsPng(svgId: string, filename = "rroi-qr.png") {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // white background
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, size, size);
-
-    // draw QR
     ctx.drawImage(img, 0, 0, size, size);
 
     URL.revokeObjectURL(url);
@@ -160,7 +157,6 @@ export default function ProfileFormClient({
   const router = useRouter();
   const supabase = createSupabaseBrowser();
 
-  // if initial is null, we still render empty form safely
   const publicId = initial?.public_id ?? "";
   const publicPath = publicId ? `/e/${publicId}` : "";
   const publicUrl =
@@ -168,14 +164,12 @@ export default function ProfileFormClient({
       ? `${window.location.origin}${publicPath}`
       : publicPath;
 
-  // SECTION 1 (Required)
   const [firstName, setFirstName] = useState(initial?.first_name ?? "");
   const [lastName, setLastName] = useState(initial?.last_name ?? "");
   const [em1Name, setEm1Name] = useState(initial?.emergency1_fullname ?? "");
   const [em1Rel, setEm1Rel] = useState(initial?.emergency1_relationship ?? "");
   const [em1Phone, setEm1Phone] = useState(initial?.emergency1_phone ?? "");
 
-  // SECTION 2 (Optional)
   const [em2Name, setEm2Name] = useState(initial?.emergency2_fullname ?? "");
   const [em2Rel, setEm2Rel] = useState(initial?.emergency2_relationship ?? "");
   const [em2Phone, setEm2Phone] = useState(initial?.emergency2_phone ?? "");
@@ -188,7 +182,6 @@ export default function ProfileFormClient({
   const [medications, setMedications] = useState(initial?.medications ?? "");
   const [specialNotes, setSpecialNotes] = useState(initial?.special_notes ?? "");
 
-  // SECTION 3 (Optional)
   const [primaryLanguage, setPrimaryLanguage] = useState(initial?.primary_language ?? "");
   const [secondaryLanguage, setSecondaryLanguage] = useState(initial?.secondary_language ?? "");
   const [medicalAidProvider, setMedicalAidProvider] = useState(initial?.medical_aid_provider ?? "");
@@ -202,7 +195,6 @@ export default function ProfileFormClient({
 
   const [religion, setReligion] = useState(initial?.religion ?? "");
 
-  // SECTION 4 (Identification)
   const [heightCm, setHeightCm] = useState<string>(
     initial?.height_cm == null ? "" : String(initial.height_cm)
   );
@@ -215,6 +207,8 @@ export default function ProfileFormClient({
   const [skinTone, setSkinTone] = useState(initial?.skin_tone ?? "");
 
   const [additionalNotes, setAdditionalNotes] = useState(initial?.additional_notes ?? "");
+
+  const [consent, setConsent] = useState(false);
 
   const age = useMemo(() => calcAge(dateOfBirth || null), [dateOfBirth]);
 
@@ -237,6 +231,11 @@ export default function ProfileFormClient({
     const err = validateRequired();
     if (err) {
       setMessage(`❌ ${err}`);
+      return;
+    }
+
+    if (!consent) {
+      setMessage("❌ You must accept the privacy policy.");
       return;
     }
 
@@ -366,7 +365,14 @@ export default function ProfileFormClient({
         <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
           <div>
             <div style={{ fontWeight: 800, marginBottom: 8 }}>Your QR code</div>
-            <div style={{ background: "#fff", border: "1px solid #eee", padding: 12, borderRadius: 12 }}>
+            <div
+              style={{
+                background: "#fff",
+                border: "1px solid #eee",
+                padding: 12,
+                borderRadius: 12,
+              }}
+            >
               <QRCodeSVG id={qrSvgId} value={publicUrl || " "} size={180} />
             </div>
           </div>
@@ -434,7 +440,12 @@ export default function ProfileFormClient({
         </Field>
 
         <Field label="Age (auto)">
-          <input style={inputStyle} value={age == null ? "" : String(age)} readOnly placeholder="Auto-calculated" />
+          <input
+            style={inputStyle}
+            value={age == null ? "" : String(age)}
+            readOnly
+            placeholder="Auto-calculated"
+          />
         </Field>
 
         <Field label="Blood type">
@@ -529,7 +540,12 @@ export default function ProfileFormClient({
         <div style={{ fontWeight: 900, margin: "10px 0 12px" }}>GP</div>
 
         <Field label="GP name">
-          <input style={inputStyle} value={gpName} onChange={(e) => setGpName(e.target.value)} placeholder="Optional" />
+          <input
+            style={inputStyle}
+            value={gpName}
+            onChange={(e) => setGpName(e.target.value)}
+            placeholder="Optional"
+          />
         </Field>
 
         <Field label="GP practice">
@@ -634,26 +650,38 @@ export default function ProfileFormClient({
         </Field>
       </Section>
 
+      <div style={{ marginTop: 20, marginBottom: 16 }}>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, lineHeight: 1.5 }}>
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+          />
+          I consent to the processing of my personal information in accordance with the Privacy
+          Policy.
+        </label>
+      </div>
+
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-  <button type="submit" style={btnStyle} disabled={loading}>
-    {loading ? "Saving..." : "Save"}
-  </button>
+        <button type="submit" style={btnStyle} disabled={loading || !consent}>
+          {loading ? "Saving..." : "Save"}
+        </button>
 
-  {showUpgrade && (
-    <button
-      type="button"
-      style={btnStyleSecondary}
-      onClick={() => router.push("/subscribe/shipping")}
-      disabled={loading}
-    >
-      Upgrade to Premium
-    </button>
-  )}
+        {showUpgrade && (
+          <button
+            type="button"
+            style={btnStyleSecondary}
+            onClick={() => router.push("/subscribe/shipping")}
+            disabled={loading}
+          >
+            Upgrade to Premium
+          </button>
+        )}
 
-  <button type="button" style={btnStyleSecondary} onClick={handleLogout} disabled={loading}>
-    Log out
-  </button>
-</div>
+        <button type="button" style={btnStyleSecondary} onClick={handleLogout} disabled={loading}>
+          Log out
+        </button>
+      </div>
 
       {message ? <div style={{ marginTop: 12, fontWeight: 700 }}>{message}</div> : null}
     </form>
