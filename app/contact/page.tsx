@@ -34,19 +34,36 @@ export default function ContactPage() {
           </p>
 
           <div style={styles.box}>
+            {/* Email */}
             <div style={styles.row}>
               <span style={styles.label}>Email</span>
-              <span style={styles.value}>support@rroi.co.za</span>
+              <a
+                href="mailto:rapidresponseonlineinfo@gmail.com"
+                style={styles.linkValue}
+              >
+                rapidresponseonlineinfo@gmail.com
+              </a>
             </div>
 
+            {/* WhatsApp */}
             <div style={styles.row}>
               <span style={styles.label}>WhatsApp</span>
-              <span style={styles.value}>+27 XX XXX XXXX</span>
+              <a
+                href="https://wa.me/27687120315"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.linkValue}
+              >
+                +27 68 712 0315
+              </a>
             </div>
 
+            {/* Response time */}
             <div style={styles.row}>
               <span style={styles.label}>Response time</span>
-              <span style={styles.value}>Typically within 1–3 business days</span>
+              <span style={styles.value}>
+                Typically within 1–3 business days
+              </span>
             </div>
           </div>
 
@@ -161,6 +178,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
   value: {
     fontWeight: 800,
+  },
+  linkValue: {
+    fontWeight: 800,
+    color: "#157A55",
+    textDecoration: "none",
   },
   small: {
     marginTop: 10,
