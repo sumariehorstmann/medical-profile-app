@@ -737,7 +737,7 @@ export default function ProfileFormClient({
         )}
       </div>
 
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
         <button
           type="submit"
           style={{
@@ -769,43 +769,49 @@ export default function ProfileFormClient({
         >
           Log out
         </button>
-      </div> 
-<button
-  type="button"
-  style={btnStyleSecondary}
-  onClick={async () => {
-    const ok = window.confirm(
-      "Are you sure you want to permanently delete your profile and subscription data?"
-    );
-    if (!ok) return;
 
-    setLoading(true);
-    setMessage(null);
+        <button
+          type="button"
+          style={btnStyleSecondary}
+          onClick={async () => {
+            const confirmText = window.prompt(
+              "Type DELETE to permanently delete your profile and subscription data."
+            );
 
-    try {
-      const res = await fetch("/api/delete-account", {
-        method: "POST",
-      });
+            if (confirmText !== "DELETE") {
+              setMessage("❌ Account deletion cancelled.");
+              return;
+            }
 
-      const json = await res.json();
+            setLoading(true);
+            setMessage(null);
 
-      if (!res.ok) {
-        throw new Error(json?.error || "Failed to delete account");
-      }
+            try {
+              const res = await fetch("/api/delete-account", {
+                method: "POST",
+              });
 
-      await supabase.auth.signOut();
-      router.push("/");
-      router.refresh();
-    } catch (e: any) {
-      setMessage(`❌ ${e?.message || "Something went wrong"}`);
-    } finally {
-      setLoading(false);
-    }
-  }}
-  disabled={loading}
->
-  Delete account
-</button>
+              const json = await res.json();
+
+              if (!res.ok) {
+                throw new Error(json?.error || "Failed to delete account");
+              }
+
+              await supabase.auth.signOut();
+              router.push("/");
+              router.refresh();
+            } catch (e: any) {
+              setMessage(`❌ ${e?.message || "Something went wrong"}`);
+            } finally {
+              setLoading(false);
+            }
+          }}
+          disabled={loading}
+        >
+          Delete account
+        </button>
+      </div>
+
       {message ? (
         <div style={{ marginTop: 12, fontWeight: 700 }}>{message}</div>
       ) : null}
