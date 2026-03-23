@@ -52,7 +52,16 @@ export default async function ProfilePage() {
   return (
     <main style={{ padding: 40 }}>
       <h1>Profile</h1>
-      <ProfileFormClient initial={profile} />
+      <ProfileFormClient
+  initial={profile}
+  showUpgrade={
+    !(
+      subscription?.status === "active" &&
+      subscription?.current_period_end &&
+      new Date(subscription.current_period_end).getTime() > Date.now()
+    )
+  }
+/>
 
       <div
         style={{

@@ -150,7 +150,13 @@ function Field({
   );
 }
 
-export default function ProfileFormClient({ initial }: { initial: ProfileRow | null }) {
+export default function ProfileFormClient({
+  initial,
+  showUpgrade = true,
+}: {
+  initial: ProfileRow | null;
+  showUpgrade?: boolean;
+}) {
   const router = useRouter();
   const supabase = createSupabaseBrowser();
 
@@ -633,14 +639,16 @@ export default function ProfileFormClient({ initial }: { initial: ProfileRow | n
     {loading ? "Saving..." : "Save"}
   </button>
 
-  <button
-    type="button"
-    style={btnStyleSecondary}
-    onClick={() => router.push("/subscribe/shipping")}
-    disabled={loading}
-  >
-    Upgrade to Premium
-  </button>
+  {showUpgrade && (
+    <button
+      type="button"
+      style={btnStyleSecondary}
+      onClick={() => router.push("/subscribe/shipping")}
+      disabled={loading}
+    >
+      Upgrade to Premium
+    </button>
+  )}
 
   <button type="button" style={btnStyleSecondary} onClick={handleLogout} disabled={loading}>
     Log out
