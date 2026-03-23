@@ -106,7 +106,7 @@ export default function SubscribeStartPage() {
             fontWeight: 800,
           }}
         >
-          R699 per year
+          R299 per year
         </p>
 
         <p style={{ textAlign: "center", marginBottom: 24 }}>

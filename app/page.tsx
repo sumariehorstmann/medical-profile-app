@@ -87,7 +87,7 @@ export default function HomePage() {
 
         <div style={styles.card}>
           <h2 style={styles.h2}>Subscription</h2>
-          <div style={styles.price}>R699 per year</div>
+          <div style={styles.price}>R299 per year</div>
           <ul style={styles.ul}>
             <li>Secure online emergency profile</li>
             <li>Three physical QR items included</li>

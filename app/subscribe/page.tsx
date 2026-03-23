@@ -12,7 +12,7 @@ export default function SubscribePage() {
         </div>
 
         <div style={styles.priceBlock}>
-          <div style={styles.price}>R699 per year</div>
+          <div style={styles.price}>R299 per year</div>
           <ul style={styles.ul}>
             <li>Secure online emergency profile</li>
             <li>Three physical QR items included</li>
