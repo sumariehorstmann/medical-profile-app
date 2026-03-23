@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
@@ -8,23 +9,49 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+// 🔒 PayFast signature verification
+function verifySignature(data: Record<string, string>, passphrase: string) {
+  const pfData = { ...data };
+  delete pfData.signature;
+
+  const sortedKeys = Object.keys(pfData).sort();
+
+  const payload = sortedKeys
+    .map((key) => `${key}=${encodeURIComponent(pfData[key])}`)
+    .join("&");
+
+  const stringToHash = passphrase ? `${payload}&passphrase=${passphrase}` : payload;
+
+  const generatedSignature = crypto
+    .createHash("md5")
+    .update(stringToHash)
+    .digest("hex");
+
+  return generatedSignature === data.signature;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
 
-    const paymentStatus = String(formData.get("payment_status") || "");
-    const paymentId = String(formData.get("m_payment_id") || "");
-    const publicId = String(formData.get("custom_str1") || "");
-    const buyerEmail = String(formData.get("custom_str2") || "");
-    const amountGross = String(formData.get("amount_gross") || "");
-
-    console.log("PAYFAST ITN RECEIVED", {
-      paymentStatus,
-      paymentId,
-      publicId,
-      buyerEmail,
-      amountGross,
+    const data: Record<string, string> = {};
+    formData.forEach((value, key) => {
+      data[key] = String(value);
     });
+
+    const paymentStatus = data.payment_status;
+    const paymentId = data.m_payment_id;
+    const publicId = data.custom_str1;
+
+    console.log("ITN RECEIVED:", data);
+
+    // 🔒 VERIFY SIGNATURE
+    const isValid = verifySignature(data, process.env.PAYFAST_PASSPHRASE || "");
+
+    if (!isValid) {
+      console.error("INVALID SIGNATURE");
+      return new NextResponse("Invalid signature", { status: 400 });
+    }
 
     if (paymentStatus !== "COMPLETE") {
       return new NextResponse("Payment not complete", { status: 200 });
@@ -36,30 +63,17 @@ export async function POST(req: NextRequest) {
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id, user_id, public_id")
+      .select("id, user_id")
       .eq("public_id", publicId)
       .single();
 
     if (profileError || !profile) {
-      console.error("PROFILE LOOKUP ERROR", profileError);
       return new NextResponse("Profile not found", { status: 404 });
     }
 
-    const now = new Date();
-    const end = new Date();
-    end.setFullYear(end.getFullYear() + 1);
-
-    const { error: profileUpdateError } = await supabase
-      .from("profiles")
-      .update({
-        is_paid: true,
-      })
-      .eq("id", profile.id);
-
-    if (profileUpdateError) {
-      console.error("PROFILE UPDATE ERROR", profileUpdateError);
-      return new NextResponse("Failed to update profile", { status: 500 });
-    }
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setFullYear(endDate.getFullYear() + 1);
 
     const { error: subscriptionError } = await supabase
       .from("subscriptions")
@@ -67,29 +81,26 @@ export async function POST(req: NextRequest) {
         {
           user_id: profile.user_id,
           status: "active",
-          current_period_start: now.toISOString(),
-          current_period_end: end.toISOString(),
+          current_period_start: startDate.toISOString(),
+          current_period_end: endDate.toISOString(),
           provider: "payfast",
           provider_subscription_id: paymentId,
           auto_renew: false,
           plan: "premium_annual",
           price: 299,
           price_cents: 29900,
-          updated_at: now.toISOString(),
+          updated_at: new Date().toISOString(),
         },
-        {
-          onConflict: "user_id",
-        }
+        { onConflict: "user_id" }
       );
 
     if (subscriptionError) {
-      console.error("SUBSCRIPTION UPSERT ERROR", subscriptionError);
       return new NextResponse("Failed to update subscription", { status: 500 });
     }
 
     return new NextResponse("OK", { status: 200 });
   } catch (error: any) {
-    console.error("PAYFAST ITN ERROR", error);
+    console.error("ITN ERROR:", error);
     return new NextResponse("Server error", { status: 500 });
   }
 }
