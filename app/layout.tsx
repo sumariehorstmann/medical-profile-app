@@ -30,3 +30,7 @@ export default function RootLayout({
     </html>
   );
 }
+<footer style={{ textAlign: "center", marginTop: 40, fontSize: 12, color: "#666" }}>
+  <a href="/privacy">Privacy Policy</a> ·{" "}
+  <a href="/terms">Terms & Conditions</a>
+</footer>
