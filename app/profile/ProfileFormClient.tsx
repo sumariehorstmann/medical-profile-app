@@ -797,9 +797,13 @@ export default function ProfileFormClient({
                 throw new Error(json?.error || "Failed to delete account");
               }
 
+              setMessage("✅ Account deleted successfully. Redirecting...");
+
               await supabase.auth.signOut();
-              router.push("/");
-              router.refresh();
+
+              setTimeout(() => {
+                router.push("/");
+              }, 2000);
             } catch (e: any) {
               setMessage(`❌ ${e?.message || "Something went wrong"}`);
             } finally {
