@@ -657,8 +657,28 @@ export default function ProfileFormClient({
             checked={consent}
             onChange={(e) => setConsent(e.target.checked)}
           />
-          I consent to the processing of my personal information in accordance with the Privacy
-          Policy.
+          <div style={{ marginTop: 20, marginBottom: 16 }}>
+  <label style={{ display: "flex", alignItems: "flex-start", gap: 8, lineHeight: 1.5 }}>
+    <input
+      type="checkbox"
+      checked={consent}
+      onChange={(e) => setConsent(e.target.checked)}
+      style={{ marginTop: 4 }}
+    />
+    <span>
+      I consent to the processing of my personal information in accordance with the{" "}
+      <a href="/privacy" target="_blank" rel="noopener noreferrer">
+        Privacy Policy
+      </a>.
+    </span>
+  </label>
+
+  {!consent && (
+    <div style={{ marginTop: 8, fontSize: 13, color: "#666" }}>
+      You must read and accept the Privacy Policy before saving your profile.
+    </div>
+  )}
+</div>
         </label>
       </div>
 
