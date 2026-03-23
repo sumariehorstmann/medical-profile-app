@@ -49,7 +49,7 @@ export default function ContactPage() {
             <div style={styles.row}>
               <span style={styles.label}>WhatsApp</span>
               <a
-                href="https://wa.me/27687120315"
+                href="https://wa.me/27687120315?text=Hi%20RROI,%20I%20need%20help%20with%20my%20account."
                 target="_blank"
                 rel="noopener noreferrer"
                 style={styles.linkValue}
