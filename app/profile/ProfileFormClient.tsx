@@ -179,15 +179,11 @@ export default function ProfileFormClient({
   const [firstName, setFirstName] = useState(initial?.first_name ?? "");
   const [lastName, setLastName] = useState(initial?.last_name ?? "");
   const [em1Name, setEm1Name] = useState(initial?.emergency1_fullname ?? "");
-  const [em1Rel, setEm1Rel] = useState(
-    initial?.emergency1_relationship ?? ""
-  );
+  const [em1Rel, setEm1Rel] = useState(initial?.emergency1_relationship ?? "");
   const [em1Phone, setEm1Phone] = useState(initial?.emergency1_phone ?? "");
 
   const [em2Name, setEm2Name] = useState(initial?.emergency2_fullname ?? "");
-  const [em2Rel, setEm2Rel] = useState(
-    initial?.emergency2_relationship ?? ""
-  );
+  const [em2Rel, setEm2Rel] = useState(initial?.emergency2_relationship ?? "");
   const [em2Phone, setEm2Phone] = useState(initial?.emergency2_phone ?? "");
 
   const [gender, setGender] = useState(initial?.gender ?? "");
@@ -196,9 +192,7 @@ export default function ProfileFormClient({
   const [allergies, setAllergies] = useState(initial?.allergies ?? "");
   const [conditions, setConditions] = useState(initial?.conditions ?? "");
   const [medications, setMedications] = useState(initial?.medications ?? "");
-  const [specialNotes, setSpecialNotes] = useState(
-    initial?.special_notes ?? ""
-  );
+  const [specialNotes, setSpecialNotes] = useState(initial?.special_notes ?? "");
 
   const [primaryLanguage, setPrimaryLanguage] = useState(
     initial?.primary_language ?? ""
@@ -347,7 +341,29 @@ export default function ProfileFormClient({
 
   return (
     <form onSubmit={handleSave}>
-      <Section title="Section 1 (Free public) — Required">
+      <div
+        style={{
+          marginBottom: 18,
+          padding: 14,
+          border: "1px solid #eee",
+          borderRadius: 12,
+          background: "#f8fafc",
+          fontSize: 14,
+          lineHeight: 1.6,
+        }}
+      >
+        <strong>How RROI works:</strong>
+        <ul style={{ margin: "8px 0 0", paddingLeft: 18 }}>
+          <li>Section 1 is visible when your QR is scanned on the Free plan</li>
+          <li>You can still complete and save your full profile on the Free plan</li>
+          <li>Premium unlocks full public profile visibility when your QR is scanned</li>
+        </ul>
+      </div>
+
+      <Section
+        title="Section 1 — Public (Free Tier)"
+        subtitle="These details are visible when your QR code is scanned on the Free plan."
+      >
         <Field label="First name" required>
           <input
             style={inputStyle}
@@ -415,7 +431,7 @@ export default function ProfileFormClient({
           </div>
 
           <div style={{ minWidth: 280 }}>
-            <div style={{ fontSize: 14, marginBottom: 10 }}>
+            <div style={{ fontSize: 14, marginBottom: 10, lineHeight: 1.5 }}>
               <b>Public link:</b> {publicPath || "(saving your profile will generate this)"}
             </div>
 
@@ -431,7 +447,10 @@ export default function ProfileFormClient({
         </div>
       </Section>
 
-      <Section title="Section 2 (Paid public) — Optional">
+      <Section
+        title="Section 2 — Premium (Visible when upgraded)"
+        subtitle="These details can be completed on any plan, but they are only publicly visible when Premium is active."
+      >
         <Field label="Emergency Contact 2 — Name + surname">
           <input
             style={inputStyle}
@@ -671,7 +690,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Skin tone dropdown">
+        <Field label="Skin tone">
           <select
             style={inputStyle}
             value={skinTone}
@@ -737,6 +756,36 @@ export default function ProfileFormClient({
         )}
       </div>
 
+      {showUpgrade ? (
+        <div
+          style={{
+            marginBottom: 12,
+            padding: 10,
+            borderRadius: 10,
+            background: "#fff3cd",
+            border: "1px solid #ffeeba",
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          You are on the Free plan. Only Section 1 is visible when your QR is scanned.
+        </div>
+      ) : (
+        <div
+          style={{
+            marginBottom: 12,
+            padding: 10,
+            borderRadius: 10,
+            background: "#e6f4ea",
+            border: "1px solid #c3e6cb",
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          Premium is active. Your full profile is visible when your QR is scanned.
+        </div>
+      )}
+
       <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
         <button
           type="submit"
@@ -747,17 +796,17 @@ export default function ProfileFormClient({
           }}
           disabled={loading || !consent}
         >
-          {loading ? "Saving..." : "Save"}
+          {loading ? "Saving..." : "Save profile"}
         </button>
 
         {showUpgrade && (
           <button
             type="button"
             style={btnStyleSecondary}
-            onClick={() => router.push("/subscribe/shipping")}
+            onClick={() => router.push("/subscribe")}
             disabled={loading}
           >
-            Upgrade to Premium
+            Unlock Full Profile (Premium)
           </button>
         )}
 

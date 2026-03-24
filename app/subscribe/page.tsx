@@ -7,41 +7,58 @@ export default function SubscribePage() {
       <div style={styles.card}>
         <div style={styles.brand}>
           <Image src="/logo.png" alt="RROI logo" width={64} height={64} priority />
-          <h1 style={styles.h1}>RROI Subscription</h1>
+          <h1 style={styles.h1}>RROI Premium Upgrade</h1>
           <p style={styles.tagline}>Rapid Response Online Information</p>
         </div>
 
-        <div style={styles.priceBlock}>
-          <div style={styles.price}>R299 per year</div>
-          <ul style={styles.ul}>
-            <li>Secure online emergency profile</li>
-            <li>Three physical QR items included</li>
-            <li>Nationwide delivery</li>
-            <li>Annual auto-renewal</li>
-            <li>Cancel anytime</li>
-          </ul>
+        <p style={styles.intro}>
+          Your account and full profile can be created and saved for free. Premium only changes what
+          is visible when your QR code is scanned.
+        </p>
+
+        <div style={styles.compareBox}>
+          <div style={styles.section}>
+            <div style={styles.sectionTitle}>Free tier</div>
+            <ul style={styles.ul}>
+              <li>Create your account for free</li>
+              <li>Complete and save your full profile</li>
+              <li>QR public view shows Section 1 only</li>
+            </ul>
+          </div>
+
+          <div style={styles.section}>
+            <div style={styles.sectionTitle}>Premium tier</div>
+            <div style={styles.price}>R299 per year</div>
+            <ul style={styles.ul}>
+              <li>Full medical profile visible when QR is scanned</li>
+              <li>Three physical QR items included</li>
+              <li>Nationwide delivery</li>
+            </ul>
+          </div>
         </div>
 
         <div style={styles.notice}>
           <strong>Important notice</strong>
           <p style={styles.noticeText}>
-            RROI does not provide medical advice, diagnosis, or emergency services.
-            RROI is not a replacement for professional medical care or emergency
-            response services.
+            RROI does not provide medical advice, diagnosis, or emergency services. RROI is not a
+            replacement for professional medical care or emergency response services.
           </p>
           <p style={styles.noticeText}>
             In an emergency, always contact local emergency services.
           </p>
         </div>
 
-        {/* PRIMARY ACTION */}
         <Link href="/subscribe/shipping" style={styles.primaryBtn}>
-          Continue
+          Upgrade to Premium
         </Link>
 
         <p style={styles.helper}>
-          You will create an account before proceeding to payment.
+          You should already have an account before continuing to payment.
         </p>
+
+        <Link href="/profile" style={styles.secondaryBtn}>
+          Back to profile
+        </Link>
 
         <Link href="/" style={styles.backLink}>
           ← Back to home
@@ -66,7 +83,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   card: {
     width: "100%",
-    maxWidth: 460,
+    maxWidth: 520,
     border: "1px solid #E5E7EB",
     borderRadius: 16,
     padding: 22,
@@ -74,7 +91,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   brand: {
     textAlign: "center",
-    marginBottom: 18,
+    marginBottom: 14,
   },
   h1: {
     fontSize: 24,
@@ -87,14 +104,31 @@ const styles: Record<string, React.CSSProperties> = {
     opacity: 0.9,
     margin: 0,
   },
-  priceBlock: {
-    marginBottom: 16,
+  intro: {
+    margin: "0 0 16px",
+    textAlign: "center",
+    lineHeight: 1.5,
+    opacity: 0.92,
+  },
+  compareBox: {
+    display: "grid",
+    gap: 14,
+  },
+  section: {
+    border: "1px solid #E5E7EB",
+    borderRadius: 12,
+    padding: 14,
+    background: "#FFFFFF",
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 900,
+    marginBottom: 8,
   },
   price: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 900,
     marginBottom: 10,
-    textAlign: "center",
   },
   ul: {
     paddingLeft: 18,
@@ -132,6 +166,20 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 13,
     opacity: 0.85,
     textAlign: "center",
+  },
+  secondaryBtn: {
+    marginTop: 12,
+    width: "100%",
+    padding: "12px 14px",
+    borderRadius: 14,
+    border: `1px solid ${BRAND_GREEN}`,
+    color: BRAND_GREEN,
+    fontWeight: 900,
+    fontSize: 15,
+    textAlign: "center",
+    textDecoration: "none",
+    display: "inline-block",
+    background: "#FFFFFF",
   },
   backLink: {
     marginTop: 16,

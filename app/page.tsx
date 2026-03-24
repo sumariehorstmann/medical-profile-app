@@ -1,11 +1,9 @@
-// app/page.tsx
 import Image from "next/image";
 import Link from "next/link";
 
 export default function HomePage() {
   return (
     <main style={styles.page}>
-      {/* Header */}
       <header style={styles.header}>
         <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
           <Image src="/logo.png" alt="RROI" width={34} height={34} priority />
@@ -16,7 +14,6 @@ export default function HomePage() {
         </Link>
       </header>
 
-      {/* Center brand block */}
       <section style={styles.hero}>
         <div style={styles.brand}>
           <Image src="/logo.png" alt="RROI logo" width={160} height={160} priority />
@@ -25,35 +22,35 @@ export default function HomePage() {
           <h1 style={styles.h1}>Emergency information, accessible when it matters</h1>
 
           <p style={styles.sub}>
-            Store essential emergency information online and make it accessible via a QR code in
-            urgent situations.
+            Create your emergency profile for free and make it accessible via a QR code in urgent
+            situations.
           </p>
 
-          <Link href="/subscribe" style={styles.primaryBtn}>
-            Subscribe now
+          <Link href="/login" style={styles.primaryBtn}>
+            Sign up
           </Link>
 
           <div style={styles.already}>
-            <span style={styles.alreadyText}>Already subscribed?</span>{" "}
+            <span style={styles.alreadyText}>Already have an account?</span>{" "}
             <Link href="/login" style={styles.alreadyLink}>
               Log in
             </Link>
           </div>
 
           <div style={styles.reassure}>
-            Annual subscription • Physical QR items included • Cancel anytime
+            Free profile setup • Section 1 visible on free tier • Upgrade later for full public
+            profile visibility
           </div>
         </div>
       </section>
 
-      {/* Content blocks */}
       <section style={styles.blocks}>
         <div style={styles.card}>
           <h2 style={styles.h2}>What is RROI?</h2>
           <p style={styles.p}>
             RROI is an online emergency information profile designed to help make critical personal
             details accessible when you may not be able to communicate them yourself. Information is
-            accessed by scanning your unique QR code, which links to your secure public profile.
+            accessed by scanning your unique QR code, which links to your public emergency profile.
           </p>
         </div>
 
@@ -63,52 +60,72 @@ export default function HomePage() {
           <div style={styles.step}>
             <div style={styles.stepNum}>1</div>
             <div>
-              <div style={styles.stepTitle}>Create your profile</div>
-              <div style={styles.stepText}>Add your emergency contact details and other relevant information after subscribing.</div>
+              <div style={styles.stepTitle}>Sign up for free</div>
+              <div style={styles.stepText}>
+                Create your account and complete your full emergency profile at no cost.
+              </div>
             </div>
           </div>
 
           <div style={styles.step}>
             <div style={styles.stepNum}>2</div>
             <div>
-              <div style={styles.stepTitle}>Receive your QR items</div>
-              <div style={styles.stepText}>Your subscription includes three RROI-branded QR items delivered to you.</div>
+              <div style={styles.stepTitle}>Free tier shows Section 1 only</div>
+              <div style={styles.stepText}>
+                When your QR code is scanned on the free tier, only your Section 1 public emergency
+                details are visible.
+              </div>
             </div>
           </div>
 
           <div style={styles.step}>
             <div style={styles.stepNum}>3</div>
             <div>
-              <div style={styles.stepTitle}>Scan when needed</div>
-              <div style={styles.stepText}>In an emergency, the QR code can be scanned to view your public profile.</div>
+              <div style={styles.stepTitle}>Upgrade when you want full visibility</div>
+              <div style={styles.stepText}>
+                Upgrade to Premium only when you want your full medical profile to be visible when
+                the QR code is scanned.
+              </div>
             </div>
           </div>
         </div>
 
         <div style={styles.card}>
-          <h2 style={styles.h2}>Subscription</h2>
-          <div style={styles.price}>R299 per year</div>
-          <ul style={styles.ul}>
-            <li>Secure online emergency profile</li>
-            <li>Three physical QR items included</li>
-            <li>Nationwide delivery</li>
-            <li>Annual auto-renewal</li>
-            <li>Cancel anytime</li>
-          </ul>
+          <h2 style={styles.h2}>Free vs Premium</h2>
 
-          <Link href="/subscribe" style={styles.primaryBtn}>
-            Subscribe now
+          <div style={styles.compareBlock}>
+            <div style={styles.compareTitle}>Free</div>
+            <ul style={styles.ul}>
+              <li>Create an account for free</li>
+              <li>Complete and save your full profile</li>
+              <li>Public QR view shows Section 1 only</li>
+              <li>Upgrade later at any time</li>
+            </ul>
+          </div>
+
+          <div style={styles.compareBlock}>
+            <div style={styles.compareTitle}>Premium</div>
+            <div style={styles.price}>R299 per year</div>
+            <ul style={styles.ul}>
+              <li>Full medical profile visible when QR is scanned</li>
+              <li>Secure online emergency profile</li>
+              <li>Three physical QR items included</li>
+              <li>Nationwide delivery</li>
+            </ul>
+          </div>
+
+          <Link href="/login" style={styles.primaryBtn}>
+            Sign up free
           </Link>
         </div>
 
         <div style={styles.card}>
           <h2 style={styles.h2}>Affiliates</h2>
           <p style={styles.p}>
-            RROI affiliates must have an active subscription. If you would like to promote RROI and
-            earn commission on successful referrals, you can apply to become an affiliate.
+            If you would like to promote RROI and earn commission on successful referrals, you can
+            apply to become an affiliate.
           </p>
-          <Link href="/affiliate"
- style={styles.secondaryBtn}>
+          <Link href="/affiliate" style={styles.secondaryBtn}>
             Apply to become an affiliate
           </Link>
         </div>
@@ -126,7 +143,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer style={styles.footer}>
         <Link href="/contact" style={styles.footerLink}>
           Contact
@@ -228,6 +244,7 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: 10,
     fontSize: 13,
     opacity: 0.85,
+    lineHeight: 1.5,
   },
   blocks: {
     padding: "10px 16px 24px",
@@ -268,6 +285,16 @@ const styles: Record<string, React.CSSProperties> = {
   },
   stepTitle: { fontWeight: 800, marginBottom: 2 },
   stepText: { opacity: 0.9, lineHeight: 1.45 },
+  compareBlock: {
+    borderTop: "1px solid #EEF2F7",
+    paddingTop: 12,
+    marginTop: 12,
+  },
+  compareTitle: {
+    fontSize: 16,
+    fontWeight: 800,
+    marginBottom: 6,
+  },
   price: {
     fontSize: 22,
     fontWeight: 900,

@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 function payfastProcessUrl() {
   return process.env.PAYFAST_ENV === "sandbox"
@@ -19,7 +16,10 @@ function encodeValue(value: string) {
   return encodeURIComponent(value.trim()).replace(/%20/g, "+");
 }
 
-function buildSignatureString(data: Record<string, string>, passphrase?: string) {
+function buildSignatureString(
+  data: Record<string, string>,
+  passphrase?: string
+) {
   const pairs: string[] = [];
 
   for (const key in data) {
@@ -56,9 +56,46 @@ export async function POST(req: NextRequest) {
 
     if (!merchantId || !merchantKey) {
       return NextResponse.json(
-        { error: "Missing PAYFAST_MERCHANT_ID or PAYFAST_MERCHANT_KEY in environment variables" },
+        { error: "Missing PayFast merchant credentials." },
         { status: 500 }
       );
+    }
+
+    const cookieStore = await cookies();
+
+    const supabaseAuth = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) =>
+                cookieStore.set(name, value, options)
+              );
+            } catch {
+              // ignore in route context
+            }
+          },
+        },
+      }
+    );
+
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseAuth.auth.getUser();
+
+    if (userError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json().catch(() => ({}));
@@ -70,7 +107,28 @@ export async function POST(req: NextRequest) {
 
     if (!publicId || !buyerEmail) {
       return NextResponse.json(
-        { error: "Missing publicId or buyerEmail" },
+        { error: "Missing publicId or buyerEmail." },
+        { status: 400 }
+      );
+    }
+
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .select("user_id, public_id, is_paid")
+      .eq("public_id", publicId)
+      .eq("user_id", user.id)
+      .single();
+
+    if (profileError || !profile) {
+      return NextResponse.json(
+        { error: "Profile not found for this user." },
+        { status: 404 }
+      );
+    }
+
+    if (profile.is_paid) {
+      return NextResponse.json(
+        { error: "This profile is already on Premium." },
         { status: 400 }
       );
     }
@@ -78,34 +136,21 @@ export async function POST(req: NextRequest) {
     const amount = "299.00";
     const paymentId = `rroi_${publicId}_${Date.now()}`;
 
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("user_id, public_id")
-      .eq("public_id", publicId)
-      .single();
-
-    if (profileError || !profile) {
-      return NextResponse.json(
-        { error: "Profile not found" },
-        { status: 404 }
-      );
-    }
-
-    const { error: paymentInsertError } = await supabase
+    const { error: paymentInsertError } = await supabaseAdmin
       .from("payments")
       .insert({
         user_id: profile.user_id,
         public_id: profile.public_id,
         provider: "payfast",
         provider_payment_id: paymentId,
-        amount: 299.00,
+        amount: 299,
         status: "pending",
       });
 
     if (paymentInsertError) {
       console.error("PAYMENT INSERT ERROR:", paymentInsertError);
       return NextResponse.json(
-        { error: "Failed to create payment record" },
+        { error: "Failed to create payment record." },
         { status: 500 }
       );
     }
@@ -134,7 +179,7 @@ export async function POST(req: NextRequest) {
       fields: data,
     });
   } catch (error: any) {
-    console.error("PAYFAST INIT ERROR:", error);
+    console.error("PAYFAST SUBSCRIBE ERROR:", error);
     return NextResponse.json(
       { error: error?.message || "Server error" },
       { status: 500 }
