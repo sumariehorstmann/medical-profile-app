@@ -9,67 +9,83 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-function verifySignature(data: Record<string, string>, passphrase: string) {
-  try {
-    const pfData = { ...data };
-    delete pfData.signature;
+function encodePayFastValue(value: string) {
+  return encodeURIComponent(value.trim()).replace(/%20/g, "+");
+}
 
-    const sortedKeys = Object.keys(pfData).sort();
+function buildSignatureString(
+  data: Record<string, string>,
+  passphrase?: string
+) {
+  const pairs: string[] = [];
 
-    const payload = sortedKeys
-      .map((key) => `${key}=${encodeURIComponent(pfData[key] ?? "")}`)
-      .join("&");
+  for (const key in data) {
+    const value = data[key];
 
-    const stringToHash = passphrase
-      ? `${payload}&passphrase=${encodeURIComponent(passphrase)}`
-      : payload;
-
-    const generatedSignature = crypto
-      .createHash("md5")
-      .update(stringToHash)
-      .digest("hex");
-
-    return generatedSignature === data.signature;
-  } catch (err) {
-    console.error("SIGNATURE ERROR:", err);
-    return false;
+    if (
+      key !== "signature" &&
+      value !== undefined &&
+      value !== null &&
+      String(value).trim() !== ""
+    ) {
+      pairs.push(`${key}=${encodePayFastValue(String(value))}`);
+    }
   }
+
+  if (passphrase && passphrase.trim() !== "") {
+    pairs.push(`passphrase=${encodePayFastValue(passphrase)}`);
+  }
+
+  return pairs.join("&");
+}
+
+function buildSignature(
+  data: Record<string, string>,
+  passphrase?: string
+) {
+  const signatureString = buildSignatureString(data, passphrase);
+  return crypto.createHash("md5").update(signatureString).digest("hex");
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
+    const rawBody = await req.text();
+    const params = new URLSearchParams(rawBody);
 
     const data: Record<string, string> = {};
-    formData.forEach((value, key) => {
-      data[key] = String(value);
+    params.forEach((value, key) => {
+      data[key] = value;
     });
 
     console.log("ITN HIT");
+    console.log("RAW ITN BODY:", rawBody);
     console.log("ITN DATA:", data);
 
-    const paymentStatus = data.payment_status;
-    const paymentId = data.m_payment_id;
-    const publicId = data.custom_str1;
-    const amountGross = data.amount_gross;
+    const paymentStatus = data.payment_status ?? "";
+    const paymentId = data.m_payment_id ?? "";
+    const publicId = data.custom_str1 ?? "";
+    const amountGross = data.amount_gross ?? "";
+    const receivedSignature = (data.signature ?? "").toLowerCase();
+    const passphrase = process.env.PAYFAST_PASSPHRASE ?? "";
 
-    const isValidSignature = verifySignature(
-      data,
-      process.env.PAYFAST_PASSPHRASE || ""
-    );
+    const signatureString = buildSignatureString(data, passphrase);
+    const calculatedSignature = buildSignature(data, passphrase).toLowerCase();
 
-    console.log("SIGNATURE VALID:", isValidSignature);
+    console.log("PAYFAST PASSPHRASE EXISTS:", !!passphrase);
     console.log("PAYMENT STATUS:", paymentStatus);
     console.log("PAYMENT ID:", paymentId);
     console.log("PUBLIC ID:", publicId);
     console.log("AMOUNT GROSS:", amountGross);
+    console.log("RECEIVED SIGNATURE:", receivedSignature);
+    console.log("CALCULATED SIGNATURE:", calculatedSignature);
+    console.log("SIGNATURE STRING:", signatureString);
 
     if (!paymentId || !publicId) {
       console.error("MISSING PAYMENT ID OR PUBLIC ID");
       return new NextResponse("OK", { status: 200 });
     }
 
-    if (!isValidSignature) {
+    if (receivedSignature !== calculatedSignature) {
       console.error("INVALID SIGNATURE");
       return new NextResponse("OK", { status: 200 });
     }
@@ -79,7 +95,7 @@ export async function POST(req: NextRequest) {
       return new NextResponse("OK", { status: 200 });
     }
 
-    if (amountGross !== "299.00") {
+    if (Number(amountGross) !== 299) {
       console.error("INVALID AMOUNT:", amountGross);
       return new NextResponse("OK", { status: 200 });
     }
