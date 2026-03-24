@@ -190,6 +190,9 @@ export async function POST(req: NextRequest) {
 
     data.signature = buildSignature(data, passphrase);
 
+    console.log("PAYFAST BASE URL:", baseUrl);
+    console.log("PAYFAST NOTIFY URL:", `${baseUrl}/api/payfast/itn`);
+
     return NextResponse.json({
       processUrl: payfastProcessUrl(),
       fields: data,
