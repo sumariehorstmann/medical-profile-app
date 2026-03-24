@@ -37,7 +37,7 @@ function verifySignature(data: Record<string, string>, passphrase: string) {
 }
 
 export async function POST(req: NextRequest) {
-  console.log("ITN VERSION 24 MAR TEST A");
+  console.log("ITN VERSION 24 MAR FINAL");
   console.log("ITN HIT");
 
   try {
@@ -67,6 +67,19 @@ export async function POST(req: NextRequest) {
     console.log("AMOUNT:", amountGross);
 
     if (paymentStatus === "COMPLETE" && publicId) {
+      const { error: paymentUpdateError } = await supabase
+        .from("payments")
+        .update({
+          status: "paid",
+          paid_at: new Date().toISOString(),
+          raw_payload: data,
+        })
+        .eq("provider_payment_id", paymentId);
+
+      if (paymentUpdateError) {
+        console.error("PAYMENT UPDATE ERROR:", paymentUpdateError);
+      }
+
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("id, user_id, is_paid")
