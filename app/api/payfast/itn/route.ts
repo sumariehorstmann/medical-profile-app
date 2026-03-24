@@ -121,11 +121,15 @@ export async function POST(req: NextRequest) {
       return new NextResponse("OK", { status: 200 });
     }
 
+    const now = new Date();
+    const endDate = new Date(now);
+    endDate.setFullYear(endDate.getFullYear() + 1);
+
     const { error: paymentUpdateError } = await supabase
       .from("payments")
       .update({
         status: "paid",
-        paid_at: new Date().toISOString(),
+        paid_at: now.toISOString(),
         raw_payload: data,
       })
       .eq("id", paymentRow.id);
@@ -134,10 +138,6 @@ export async function POST(req: NextRequest) {
       console.error("PAYMENT UPDATE ERROR:", paymentUpdateError);
       return new NextResponse("OK", { status: 200 });
     }
-
-    const startDate = new Date();
-    const endDate = new Date();
-    endDate.setFullYear(endDate.getFullYear() + 1);
 
     const { error: profileUpdateError } = await supabase
       .from("profiles")
@@ -157,7 +157,7 @@ export async function POST(req: NextRequest) {
         {
           user_id: profile.user_id,
           status: "active",
-          current_period_start: startDate.toISOString(),
+          current_period_start: now.toISOString(),
           current_period_end: endDate.toISOString(),
           provider: "payfast",
           provider_subscription_id: paymentId,
@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
           plan: "premium_annual",
           price: 299,
           price_cents: 29900,
-          updated_at: new Date().toISOString(),
+          updated_at: now.toISOString(),
         },
         { onConflict: "user_id" }
       );
