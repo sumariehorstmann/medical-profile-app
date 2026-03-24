@@ -1,39 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function payfastProcessUrl() {
+  return process.env.PAYFAST_ENV === "sandbox"
+    ? "https://sandbox.payfast.co.za/eng/process"
+    : "https://www.payfast.co.za/eng/process";
+}
 
-function encodePayFastValue(value: string) {
+function encode(value: string) {
   return encodeURIComponent(value.trim()).replace(/%20/g, "+");
 }
 
-function buildPayFastSignature(
+function buildSignature(
   data: Record<string, string>,
   passphrase?: string
 ) {
   const pairs: string[] = [];
 
   for (const key in data) {
-    const value = data[key];
-
-    if (
-      key !== "signature" &&
-      value !== undefined &&
-      value !== null &&
-      String(value).trim() !== ""
-    ) {
-      pairs.push(`${key}=${encodePayFastValue(String(value))}`);
+    if (key !== "signature" && data[key]) {
+      pairs.push(`${key}=${encode(data[key])}`);
     }
   }
 
-  if (passphrase && passphrase.trim() !== "") {
-    pairs.push(`passphrase=${encodePayFastValue(passphrase)}`);
+  if (passphrase) {
+    pairs.push(`passphrase=${encode(passphrase)}`);
   }
 
   return crypto.createHash("md5").update(pairs.join("&")).digest("hex");
@@ -41,151 +37,141 @@ function buildPayFastSignature(
 
 export async function POST(req: NextRequest) {
   try {
-    const rawBody = await req.text();
-    const params = new URLSearchParams(rawBody);
+    const cookieStore = await cookies();
 
-    const data: Record<string, string> = {};
-    params.forEach((value, key) => {
-      data[key] = value;
-    });
+    const supabaseAuth = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll() {
+            // no-op in this route
+          },
+        },
+      }
+    );
 
-    console.log("ITN HIT");
-    console.log("ITN DATA:", data);
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
-    const paymentStatus = data.payment_status ?? "";
-    const paymentId = data.m_payment_id ?? "";
-    const publicId = data.custom_str1 ?? "";
-    const amountGross = data.amount_gross ?? "";
-    const receivedSignature = (data.signature ?? "").toLowerCase();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseAuth.auth.getUser();
 
-    const calculatedSignature = buildPayFastSignature(
-      data,
-      process.env.PAYFAST_PASSPHRASE ?? ""
-    ).toLowerCase();
-
-    console.log("PAYMENT STATUS:", paymentStatus);
-    console.log("PAYMENT ID:", paymentId);
-    console.log("PUBLIC ID:", publicId);
-    console.log("AMOUNT GROSS:", amountGross);
-    console.log("RECEIVED SIGNATURE:", receivedSignature);
-    console.log("CALCULATED SIGNATURE:", calculatedSignature);
-
-    if (!paymentId || !publicId) {
-      console.error("MISSING PAYMENT ID OR PUBLIC ID");
-      return new NextResponse("OK", { status: 200 });
+    if (userError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (receivedSignature !== calculatedSignature) {
-      console.error("INVALID SIGNATURE");
-      return new NextResponse("OK", { status: 200 });
+    const body = await req.json();
+
+    const publicId = String(body?.publicId ?? "").trim();
+    const email = String(body?.buyerEmail ?? "").trim();
+    const firstName = String(body?.firstName ?? "").trim();
+    const lastName = String(body?.lastName ?? "").trim();
+
+    if (!publicId || !email) {
+      return NextResponse.json({ error: "Missing data" }, { status: 400 });
     }
 
-    if (paymentStatus !== "COMPLETE") {
-      console.log("ITN IGNORED - NOT COMPLETE");
-      return new NextResponse("OK", { status: 200 });
-    }
-
-    if (Number(amountGross) !== 299) {
-      console.error("INVALID AMOUNT:", amountGross);
-      return new NextResponse("OK", { status: 200 });
-    }
-
-    const { data: paymentRow, error: paymentLookupError } = await supabase
-      .from("payments")
-      .select("id, user_id, public_id, status")
-      .eq("provider_payment_id", paymentId)
-      .maybeSingle();
-
-    if (paymentLookupError) {
-      console.error("PAYMENT LOOKUP ERROR:", paymentLookupError);
-      return new NextResponse("OK", { status: 200 });
-    }
-
-    if (!paymentRow) {
-      console.error("PAYMENT ROW NOT FOUND FOR:", paymentId);
-      return new NextResponse("OK", { status: 200 });
-    }
-
-    if (paymentRow.status === "paid") {
-      console.log("PAYMENT ALREADY PROCESSED:", paymentId);
-      return new NextResponse("OK", { status: 200 });
-    }
-
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile, error: profileError } = await supabaseAdmin
       .from("profiles")
-      .select("id, user_id, public_id, is_paid")
+      .select("user_id, public_id")
       .eq("public_id", publicId)
+      .eq("user_id", user.id)
       .single();
 
     if (profileError || !profile) {
-      console.error("PROFILE LOOKUP ERROR:", profileError);
-      return new NextResponse("OK", { status: 200 });
-    }
-
-    if (profile.user_id !== paymentRow.user_id) {
-      console.error("PAYMENT USER / PROFILE USER MISMATCH");
-      return new NextResponse("OK", { status: 200 });
-    }
-
-    const now = new Date();
-    const endDate = new Date(now);
-    endDate.setFullYear(endDate.getFullYear() + 1);
-
-    const { error: paymentUpdateError } = await supabase
-      .from("payments")
-      .update({
-        status: "paid",
-        paid_at: now.toISOString(),
-        raw_payload: data,
-      })
-      .eq("id", paymentRow.id);
-
-    if (paymentUpdateError) {
-      console.error("PAYMENT UPDATE ERROR:", paymentUpdateError);
-      return new NextResponse("OK", { status: 200 });
-    }
-
-    const { error: profileUpdateError } = await supabase
-      .from("profiles")
-      .update({
-        is_paid: true,
-      })
-      .eq("id", profile.id);
-
-    if (profileUpdateError) {
-      console.error("PROFILE UPDATE ERROR:", profileUpdateError);
-      return new NextResponse("OK", { status: 200 });
-    }
-
-    const { error: subscriptionError } = await supabase
-      .from("subscriptions")
-      .upsert(
-        {
-          user_id: profile.user_id,
-          status: "active",
-          current_period_start: now.toISOString(),
-          current_period_end: endDate.toISOString(),
-          provider: "payfast",
-          provider_subscription_id: paymentId,
-          auto_renew: false,
-          plan: "premium_annual",
-          price: 299,
-          price_cents: 29900,
-          updated_at: now.toISOString(),
-        },
-        { onConflict: "user_id" }
+      return NextResponse.json(
+        { error: "Profile not found" },
+        { status: 404 }
       );
-
-    if (subscriptionError) {
-      console.error("SUBSCRIPTION UPSERT ERROR:", subscriptionError);
-      return new NextResponse("OK", { status: 200 });
     }
 
-    console.log("ITN PROCESSED SUCCESSFULLY FOR USER:", profile.user_id);
+    const { data: existingSub, error: existingSubError } = await supabaseAdmin
+      .from("subscriptions")
+      .select("user_id, status, current_period_end")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .gt("current_period_end", new Date().toISOString())
+      .maybeSingle();
 
-    return new NextResponse("OK", { status: 200 });
+    if (existingSubError) {
+      console.error("SUBSCRIPTION CHECK ERROR:", existingSubError);
+      return NextResponse.json(
+        { error: "Failed to check existing subscription." },
+        { status: 500 }
+      );
+    }
+
+    if (existingSub) {
+      return NextResponse.json(
+        { error: "This profile is already on Premium." },
+        { status: 400 }
+      );
+    }
+
+    const paymentId = `rroi_${publicId}_${Date.now()}`;
+
+    const { error: paymentError } = await supabaseAdmin
+      .from("payments")
+      .insert({
+        user_id: profile.user_id,
+        public_id: profile.public_id,
+        provider: "payfast",
+        provider_payment_id: paymentId,
+        amount: 299,
+        status: "pending",
+      });
+
+    if (paymentError) {
+      console.error("PAYMENT INSERT ERROR:", paymentError);
+      return NextResponse.json(
+        { error: "Payment insert failed" },
+        { status: 500 }
+      );
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
+
+    const data: Record<string, string> = {
+      merchant_id: process.env.PAYFAST_MERCHANT_ID!,
+      merchant_key: process.env.PAYFAST_MERCHANT_KEY!,
+      return_url: `${baseUrl}/billing/success`,
+      cancel_url: `${baseUrl}/billing/cancel`,
+      notify_url: `${baseUrl}/api/payfast/itn`,
+      name_first: firstName,
+      name_last: lastName,
+      email_address: email,
+      m_payment_id: paymentId,
+      amount: "299.00",
+      item_name: "RROI Premium",
+      custom_str1: publicId,
+      custom_str2: email,
+    };
+
+    data.signature = buildSignature(
+      data,
+      process.env.PAYFAST_PASSPHRASE
+    );
+
+    console.log("PAYFAST BASE URL:", baseUrl);
+    console.log("PAYFAST NOTIFY URL:", `${baseUrl}/api/payfast/itn`);
+
+    return NextResponse.json({
+      processUrl: payfastProcessUrl(),
+      fields: data,
+    });
   } catch (err) {
-    console.error("ITN FATAL ERROR:", err);
-    return new NextResponse("OK", { status: 200 });
+    console.error("SUBSCRIBE ERROR:", err);
+    return NextResponse.json(
+      { error: "Server error" },
+      { status: 500 }
+    );
   }
 }
