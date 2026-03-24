@@ -1,206 +1,101 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
-function payfastProcessUrl() {
-  return process.env.PAYFAST_ENV === "sandbox"
-    ? "https://sandbox.payfast.co.za/eng/process"
-    : "https://www.payfast.co.za/eng/process";
-}
-
-function encodeValue(value: string) {
+function encode(value: string) {
   return encodeURIComponent(value.trim()).replace(/%20/g, "+");
 }
 
-function buildSignatureString(
+function generateSignature(
   data: Record<string, string>,
   passphrase?: string
 ) {
-  const pairs: string[] = [];
+  const pfData: string[] = [];
 
   for (const key in data) {
-    const value = data[key];
-
-    if (
-      key !== "signature" &&
-      value !== undefined &&
-      value !== null &&
-      String(value).trim() !== ""
-    ) {
-      pairs.push(`${key}=${encodeValue(String(value))}`);
+    if (key !== "signature" && data[key] !== "") {
+      pfData.push(`${key}=${encode(data[key])}`);
     }
   }
 
-  if (passphrase && passphrase.trim() !== "") {
-    pairs.push(`passphrase=${encodeValue(passphrase)}`);
+  if (passphrase) {
+    pfData.push(`passphrase=${encode(passphrase)}`);
   }
 
-  return pairs.join("&");
-}
+  const string = pfData.join("&");
 
-function buildSignature(data: Record<string, string>, passphrase?: string) {
-  const signatureString = buildSignatureString(data, passphrase);
-  return crypto.createHash("md5").update(signatureString).digest("hex");
+  return crypto.createHash("md5").update(string).digest("hex");
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const merchantId = process.env.PAYFAST_MERCHANT_ID;
-    const merchantKey = process.env.PAYFAST_MERCHANT_KEY;
-    const passphrase = process.env.PAYFAST_PASSPHRASE ?? "";
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+    const text = await req.text(); // IMPORTANT: raw body
+    const params = new URLSearchParams(text);
 
-    if (!merchantId || !merchantKey) {
-      return NextResponse.json(
-        { error: "Missing PayFast merchant credentials." },
-        { status: 500 }
-      );
+    const data: Record<string, string> = {};
+    params.forEach((value, key) => {
+      data[key] = value;
+    });
+
+    console.log("ITN DATA:", data);
+
+    const receivedSignature = data.signature;
+    const passphrase = process.env.PAYFAST_PASSPHRASE ?? "";
+
+    const calculatedSignature = generateSignature(data, passphrase);
+
+    if (receivedSignature !== calculatedSignature) {
+      console.error("INVALID SIGNATURE");
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
-    const cookieStore = await cookies();
+    // ✅ VALID PAYMENT
+    if (data.payment_status !== "COMPLETE") {
+      return NextResponse.json({ ok: true });
+    }
 
-    const supabaseAuth = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll(cookiesToSet) {
-            try {
-              cookiesToSet.forEach(({ name, value, options }) =>
-                cookieStore.set(name, value, options)
-              );
-            } catch {
-              // ignore in route context
-            }
-          },
-        },
-      }
-    );
-
-    const supabaseAdmin = createClient(
+    const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabaseAuth.auth.getUser();
+    const paymentId = data.m_payment_id;
+    const publicId = data.custom_str1;
+    const email = data.custom_str2;
 
-    if (userError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const body = await req.json().catch(() => ({}));
-
-    const publicId = String(body?.publicId ?? "").trim();
-    const buyerEmail = String(body?.buyerEmail ?? "").trim();
-    const buyerFirstName = String(body?.firstName ?? "").trim();
-    const buyerLastName = String(body?.lastName ?? "").trim();
-
-    if (!publicId || !buyerEmail) {
-      return NextResponse.json(
-        { error: "Missing publicId or buyerEmail." },
-        { status: 400 }
-      );
-    }
-
-    const { data: profile, error: profileError } = await supabaseAdmin
-      .from("profiles")
-      .select("user_id, public_id, is_paid")
-      .eq("public_id", publicId)
-      .eq("user_id", user.id)
-      .single();
-
-    if (profileError || !profile) {
-      return NextResponse.json(
-        { error: "Profile not found for this user." },
-        { status: 404 }
-      );
-    }
-
-    const { data: existingSub, error: existingSubError } = await supabaseAdmin
-      .from("subscriptions")
-      .select("user_id, status, current_period_end")
-      .eq("user_id", user.id)
-      .eq("status", "active")
-      .gt("current_period_end", new Date().toISOString())
-      .maybeSingle();
-
-    if (existingSubError) {
-      console.error("SUBSCRIPTION CHECK ERROR:", existingSubError);
-      return NextResponse.json(
-        { error: "Failed to check existing subscription." },
-        { status: 500 }
-      );
-    }
-
-    if (existingSub) {
-      return NextResponse.json(
-        { error: "Active subscription already exists." },
-        { status: 400 }
-      );
-    }
-
-    const amount = "299.00";
-    const paymentId = `rroi_${publicId}_${Date.now()}`;
-
-    const { error: paymentInsertError } = await supabaseAdmin
+    // update payment
+    await supabase
       .from("payments")
-      .insert({
-        user_id: profile.user_id,
-        public_id: profile.public_id,
-        provider: "payfast",
-        provider_payment_id: paymentId,
-        amount: 299,
-        status: "pending",
-      });
+      .update({ status: "complete" })
+      .eq("provider_payment_id", paymentId);
 
-    if (paymentInsertError) {
-      console.error("PAYMENT INSERT ERROR:", paymentInsertError);
-      return NextResponse.json(
-        { error: "Failed to create payment record." },
-        { status: 500 }
-      );
-    }
-
-    const data: Record<string, string> = {
-      merchant_id: merchantId,
-      merchant_key: merchantKey,
-      return_url: `${baseUrl}/billing/success`,
-      cancel_url: `${baseUrl}/billing/cancel`,
-      notify_url: `${baseUrl}/api/payfast/itn`,
-      name_first: buyerFirstName,
-      name_last: buyerLastName,
-      email_address: buyerEmail,
-      m_payment_id: paymentId,
-      amount,
-      item_name: "RROI Premium Annual Plan",
-      item_description: `Annual premium access for ${publicId}`,
-      custom_str1: publicId,
-      custom_str2: buyerEmail,
-    };
-
-    data.signature = buildSignature(data, passphrase);
-
-    console.log("PAYFAST BASE URL:", baseUrl);
-    console.log("PAYFAST NOTIFY URL:", `${baseUrl}/api/payfast/itn`);
-
-    return NextResponse.json({
-      processUrl: payfastProcessUrl(),
-      fields: data,
+    // create subscription
+    await supabase.from("subscriptions").insert({
+      user_id: null, // optional if you don’t track here
+      public_id: publicId,
+      status: "active",
+      provider: "payfast",
+      provider_payment_id: paymentId,
+      current_period_end: new Date(
+        Date.now() + 365 * 24 * 60 * 60 * 1000
+      ).toISOString(),
     });
-  } catch (error: any) {
-    console.error("PAYFAST SUBSCRIBE ERROR:", error);
+
+    // mark profile paid
+    await supabase
+      .from("profiles")
+      .update({ is_paid: true })
+      .eq("public_id", publicId);
+
+    console.log("SUBSCRIPTION CREATED");
+
+    return NextResponse.json({ ok: true });
+  } catch (err: any) {
+    console.error("ITN ERROR:", err);
     return NextResponse.json(
-      { error: error?.message || "Server error" },
+      { error: err.message || "Server error" },
       { status: 500 }
     );
   }
