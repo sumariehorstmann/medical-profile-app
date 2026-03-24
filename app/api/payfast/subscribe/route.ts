@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
 
     const { data: existingSub, error: existingSubError } = await supabaseAdmin
       .from("subscriptions")
-      .select("id, status, current_period_end")
+      .select("user_id, status, current_period_end")
       .eq("user_id", user.id)
       .eq("status", "active")
       .gt("current_period_end", new Date().toISOString())
