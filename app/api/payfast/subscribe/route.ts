@@ -126,9 +126,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (profile.is_paid) {
+    const { data: existingSub, error: existingSubError } = await supabaseAdmin
+      .from("subscriptions")
+      .select("id, status, current_period_end")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .gt("current_period_end", new Date().toISOString())
+      .maybeSingle();
+
+    if (existingSubError) {
+      console.error("SUBSCRIPTION CHECK ERROR:", existingSubError);
       return NextResponse.json(
-        { error: "This profile is already on Premium." },
+        { error: "Failed to check existing subscription." },
+        { status: 500 }
+      );
+    }
+
+    if (existingSub) {
+      return NextResponse.json(
+        { error: "Active subscription already exists." },
         { status: 400 }
       );
     }
