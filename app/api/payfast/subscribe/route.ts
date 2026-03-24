@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 function payfastProcessUrl() {
   return process.env.PAYFAST_ENV === "sandbox"
@@ -50,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     if (!merchantId || !merchantKey) {
       return NextResponse.json(
-        { error: "Missing PAYFAST_MERCHANT_ID or PAYFAST_MERCHANT_KEY in .env.local" },
+        { error: "Missing PAYFAST_MERCHANT_ID or PAYFAST_MERCHANT_KEY in environment variables" },
         { status: 500 }
       );
     }
@@ -72,12 +78,44 @@ export async function POST(req: NextRequest) {
     const amount = "299.00";
     const paymentId = `rroi_${publicId}_${Date.now()}`;
 
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("user_id, public_id")
+      .eq("public_id", publicId)
+      .single();
+
+    if (profileError || !profile) {
+      return NextResponse.json(
+        { error: "Profile not found" },
+        { status: 404 }
+      );
+    }
+
+    const { error: paymentInsertError } = await supabase
+      .from("payments")
+      .insert({
+        user_id: profile.user_id,
+        public_id: profile.public_id,
+        provider: "payfast",
+        provider_payment_id: paymentId,
+        amount: 299.00,
+        status: "pending",
+      });
+
+    if (paymentInsertError) {
+      console.error("PAYMENT INSERT ERROR:", paymentInsertError);
+      return NextResponse.json(
+        { error: "Failed to create payment record" },
+        { status: 500 }
+      );
+    }
+
     const data: Record<string, string> = {
       merchant_id: merchantId,
       merchant_key: merchantKey,
-      return_url: "https://medical-profile-app.vercel.app/billing/success",
-      cancel_url: "https://medical-profile-app.vercel.app/billing/cancel",
-      notify_url: "https://medical-profile-app.vercel.app/api/payfast/itn",
+      return_url: `${baseUrl}/billing/success`,
+      cancel_url: `${baseUrl}/billing/cancel`,
+      notify_url: `${baseUrl}/api/payfast/itn`,
       name_first: buyerFirstName,
       name_last: buyerLastName,
       email_address: buyerEmail,
@@ -96,6 +134,7 @@ export async function POST(req: NextRequest) {
       fields: data,
     });
   } catch (error: any) {
+    console.error("PAYFAST INIT ERROR:", error);
     return NextResponse.json(
       { error: error?.message || "Server error" },
       { status: 500 }
