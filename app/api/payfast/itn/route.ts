@@ -17,9 +17,10 @@ function buildSignatureString(
   data: Record<string, string>,
   passphrase?: string
 ) {
+  const sortedKeys = Object.keys(data).sort();
   const pairs: string[] = [];
 
-  for (const key in data) {
+  for (const key of sortedKeys) {
     const value = data[key];
 
     if (
@@ -95,7 +96,7 @@ export async function POST(req: NextRequest) {
       return new NextResponse("OK", { status: 200 });
     }
 
-    if (Number(amountGross) !== 299) {
+    if (parseFloat(amountGross).toFixed(2) !== "299.00") {
       console.error("INVALID AMOUNT:", amountGross);
       return new NextResponse("OK", { status: 200 });
     }
