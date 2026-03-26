@@ -13,39 +13,20 @@ function encodePayFastValue(value: string) {
   return encodeURIComponent(value.trim()).replace(/%20/g, "+");
 }
 
-function buildSignatureString(
-  data: Record<string, string>,
-  passphrase?: string
-) {
-  const sortedKeys = Object.keys(data).sort();
-  const pairs: string[] = [];
-
-  for (const key of sortedKeys) {
-    const value = data[key];
-
-    if (
-      key !== "signature" &&
-      value !== undefined &&
-      value !== null &&
-      String(value).trim() !== ""
-    ) {
-      pairs.push(`${key}=${encodePayFastValue(String(value))}`);
-    }
-  }
+function buildSignatureFromRawBody(rawBody: string, passphrase?: string) {
+  const parts = rawBody
+    .split("&")
+    .filter((part) => !part.startsWith("signature="));
 
   if (passphrase && passphrase.trim() !== "") {
-    pairs.push(`passphrase=${encodePayFastValue(passphrase)}`);
+    parts.push(`passphrase=${encodePayFastValue(passphrase)}`);
   }
 
-  return pairs.join("&");
+  return parts.join("&");
 }
 
-function buildSignature(
-  data: Record<string, string>,
-  passphrase?: string
-) {
-  const signatureString = buildSignatureString(data, passphrase);
-  return crypto.createHash("md5").update(signatureString).digest("hex");
+function md5(input: string) {
+  return crypto.createHash("md5").update(input).digest("hex");
 }
 
 export async function POST(req: NextRequest) {
@@ -69,8 +50,8 @@ export async function POST(req: NextRequest) {
     const receivedSignature = (data.signature ?? "").toLowerCase();
     const passphrase = process.env.PAYFAST_PASSPHRASE ?? "";
 
-    const signatureString = buildSignatureString(data, passphrase);
-    const calculatedSignature = buildSignature(data, passphrase).toLowerCase();
+    const signatureString = buildSignatureFromRawBody(rawBody, passphrase);
+    const calculatedSignature = md5(signatureString).toLowerCase();
 
     console.log("PAYFAST PASSPHRASE EXISTS:", !!passphrase);
     console.log("PAYMENT STATUS:", paymentStatus);
