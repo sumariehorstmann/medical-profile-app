@@ -6,6 +6,10 @@ import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
+const BASE_PRICE = 349;
+const DISCOUNT_AMOUNT = 50;
+const FINAL_AMOUNT = BASE_PRICE - DISCOUNT_AMOUNT; // 299
+
 function payfastProcessUrl() {
   return process.env.PAYFAST_ENV === "sandbox"
     ? "https://sandbox.payfast.co.za/eng/process"
@@ -23,12 +27,19 @@ function buildSignature(
   const pairs: string[] = [];
 
   for (const key in data) {
-    if (key !== "signature" && data[key]) {
-      pairs.push(`${key}=${encode(data[key])}`);
+    const value = data[key];
+
+    if (
+      key !== "signature" &&
+      value !== undefined &&
+      value !== null &&
+      String(value).trim() !== ""
+    ) {
+      pairs.push(`${key}=${encode(String(value))}`);
     }
   }
 
-  if (passphrase) {
+  if (passphrase && passphrase.trim() !== "") {
     pairs.push(`passphrase=${encode(passphrase)}`);
   }
 
@@ -68,12 +79,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
 
     const publicId = String(body?.publicId ?? "").trim();
     const email = String(body?.buyerEmail ?? "").trim();
     const firstName = String(body?.firstName ?? "").trim();
     const lastName = String(body?.lastName ?? "").trim();
+    const affiliateCode = String(body?.affiliateCode ?? "").trim().toUpperCase();
 
     if (!publicId || !email) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
@@ -125,7 +137,7 @@ export async function POST(req: NextRequest) {
         public_id: profile.public_id,
         provider: "payfast",
         provider_payment_id: paymentId,
-        amount: 299,
+        amount: FINAL_AMOUNT, // actual charged amount
         status: "pending",
       });
 
@@ -149,19 +161,20 @@ export async function POST(req: NextRequest) {
       name_last: lastName,
       email_address: email,
       m_payment_id: paymentId,
-      amount: "299.00",
+      amount: FINAL_AMOUNT.toFixed(2), // 299.00
       item_name: "RROI Premium",
+      item_description: `RROI Premium setup. Base price R${BASE_PRICE}, discount R${DISCOUNT_AMOUNT}.`,
       custom_str1: publicId,
       custom_str2: email,
+      custom_str3: affiliateCode || "",
     };
 
-    data.signature = buildSignature(
-      data,
-      process.env.PAYFAST_PASSPHRASE
-    );
+    data.signature = buildSignature(data, process.env.PAYFAST_PASSPHRASE);
 
     console.log("PAYFAST BASE URL:", baseUrl);
     console.log("PAYFAST NOTIFY URL:", `${baseUrl}/api/payfast/itn`);
+    console.log("PAYFAST FINAL AMOUNT:", FINAL_AMOUNT.toFixed(2));
+    console.log("PAYFAST AFFILIATE CODE:", affiliateCode || "(none)");
 
     return NextResponse.json({
       processUrl: payfastProcessUrl(),
