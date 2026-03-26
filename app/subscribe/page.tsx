@@ -28,7 +28,7 @@ export default function SubscribePage() {
 
           <div style={styles.section}>
             <div style={styles.sectionTitle}>Premium tier</div>
-            <div style={styles.price}>R299 per year</div>
+            <div style={styles.price}>R349 per year</div>
             <ul style={styles.ul}>
               <li>Full medical profile visible when QR is scanned</li>
               <li>Three physical QR items included</li>
