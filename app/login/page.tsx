@@ -1,11 +1,10 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 function LoginPageInner() {
-  const router = useRouter();
   const params = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
 
@@ -16,11 +15,25 @@ function LoginPageInner() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
+  // ✅ ALWAYS prioritise next param
+  const redirectTo = useMemo(() => {
+    return (
+      params.get("next") || 
+      params.get("redirect") || 
+      "/profile"
+    );
+  }, [params]);
+
   useEffect(() => {
     const errorCode = params.get("error_code") || params.get("error");
-    const errorDesc = params.get("error_description");
+    const errorDesc = params.get("error_description") || params.get("message");
+
     if (errorCode || errorDesc) {
-      setMsg(`Auth callback error: ${errorCode || ""}${errorDesc ? ` — ${errorDesc}` : ""}`);
+      setMsg(
+        `Auth error: ${errorCode || ""}${
+          errorDesc ? ` — ${errorDesc}` : ""
+        }`
+      );
     }
   }, [params]);
 
@@ -36,11 +49,6 @@ function LoginPageInner() {
     setLoading(true);
 
     try {
-      const redirectTo =
-        params.get("redirect") ||
-        params.get("next") ||
-        "/profile";
-
       if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -49,21 +57,27 @@ function LoginPageInner() {
 
         if (error) throw error;
 
+        // ✅ redirect AFTER login
         window.location.href = redirectTo;
         return;
       }
 
+      // SIGN UP
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
+            redirectTo
+          )}`,
         },
       });
 
       if (error) throw error;
 
-      setMsg("✅ Account created. Please check your email and click the confirmation link to continue.");
+      setMsg(
+        "Account created. Check your email and confirm to continue."
+      );
     } catch (err: any) {
       setMsg(err?.message ?? "Something went wrong.");
     } finally {
@@ -72,80 +86,84 @@ function LoginPageInner() {
   }
 
   return (
-    <main style={{ maxWidth: 520, margin: "40px auto", padding: 20 }}>
-      <h1 style={{ marginBottom: 6 }}>RROI</h1>
-      <div style={{ opacity: 0.8, marginBottom: 16 }}>Rapid Response Online Info</div>
+    <main style={styles.page}>
+      <div style={styles.card}>
+        <h1 style={styles.h1}>RROI</h1>
+        <div style={styles.tagline}>
+          Rapid Response Online Information
+        </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-        <button
-          type="button"
-          onClick={() => setMode("login")}
-          style={{
-            flex: 1,
-            padding: "10px 12px",
-            border: "1px solid #ccc",
-            background: mode === "login" ? "#000" : "#fff",
-            color: mode === "login" ? "#fff" : "#000",
-            cursor: "pointer",
-          }}
-          disabled={loading}
-        >
-          Login
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("signup")}
-          style={{
-            flex: 1,
-            padding: "10px 12px",
-            border: "1px solid #ccc",
-            background: mode === "signup" ? "#000" : "#fff",
-            color: mode === "signup" ? "#fff" : "#000",
-            cursor: "pointer",
-          }}
-          disabled={loading}
-        >
-          Sign up
-        </button>
-      </div>
+        <p style={styles.intro}>
+          Create your account for free. Premium unlocks full public profile access via QR.
+        </p>
 
-      <form onSubmit={submit}>
-        <label style={{ display: "block", marginBottom: 10 }}>
-          <div style={{ marginBottom: 6 }}>Email</div>
-          <input
-            style={{ width: "100%", padding: 10 }}
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-          />
-        </label>
+        <div style={styles.toggleRow}>
+          <button
+            type="button"
+            onClick={() => setMode("login")}
+            style={{
+              ...styles.toggleBtn,
+              ...(mode === "login" ? styles.toggleBtnActive : {}),
+            }}
+            disabled={loading}
+          >
+            Log in
+          </button>
 
-        <label style={{ display: "block", marginBottom: 10 }}>
-          <div style={{ marginBottom: 6 }}>Password</div>
-          <input
-            style={{ width: "100%", padding: 10 }}
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete={mode === "login" ? "current-password" : "new-password"}
-          />
-        </label>
+          <button
+            type="button"
+            onClick={() => setMode("signup")}
+            style={{
+              ...styles.toggleBtn,
+              ...(mode === "signup" ? styles.toggleBtnActive : {}),
+            }}
+            disabled={loading}
+          >
+            Sign up
+          </button>
+        </div>
 
-        <button
-          style={{ width: "100%", padding: 12, marginTop: 10, cursor: "pointer" }}
-          disabled={loading}
-          type="submit"
-        >
-          {loading ? "Working..." : mode === "login" ? "Log in" : "Create account"}
-        </button>
-      </form>
+        <form onSubmit={submit}>
+          <label style={styles.label}>
+            <div style={styles.labelText}>Email</div>
+            <input
+              style={styles.input}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+            />
+          </label>
 
-      {msg && <p style={{ marginTop: 12 }}>{msg}</p>}
+          <label style={styles.label}>
+            <div style={styles.labelText}>Password</div>
+            <input
+              style={styles.input}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete={
+                mode === "login" ? "current-password" : "new-password"
+              }
+            />
+          </label>
 
-      <div style={{ marginTop: 12, display: "flex", gap: 12 }}>
-        <a href="/subscribe/start">Go to Subscribe</a>
-        <a href="/">Home</a>
+          <button style={styles.submitBtn} disabled={loading} type="submit">
+            {loading
+              ? "Working..."
+              : mode === "login"
+              ? "Log in"
+              : "Sign up"}
+          </button>
+        </form>
+
+        {msg && <p style={styles.message}>{msg}</p>}
+
+        <div style={styles.footerLinks}>
+          <a href="/" style={styles.link}>Home</a>
+          <a href="/terms" style={styles.link}>Terms</a>
+          <a href="/privacy" style={styles.link}>Privacy Policy</a>
+        </div>
       </div>
     </main>
   );
@@ -153,8 +171,107 @@ function LoginPageInner() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<main style={{ maxWidth: 520, margin: "40px auto", padding: 20 }}>Loading...</main>}>
+    <Suspense
+      fallback={
+        <main style={{ maxWidth: 520, margin: "40px auto", padding: 20 }}>
+          Loading...
+        </main>
+      }
+    >
       <LoginPageInner />
     </Suspense>
   );
 }
+
+const styles: Record<string, React.CSSProperties> = {
+  page: {
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+    background: "#f5f5f5",
+  },
+  card: {
+    width: "100%",
+    maxWidth: 520,
+    background: "#fff",
+    borderRadius: 16,
+    padding: 28,
+    boxShadow: "0 12px 40px rgba(0,0,0,0.06)",
+  },
+  h1: {
+    marginBottom: 6,
+    textAlign: "center",
+    fontSize: 32,
+    fontWeight: 800,
+  },
+  tagline: {
+    textAlign: "center",
+    opacity: 0.8,
+    marginBottom: 14,
+  },
+  intro: {
+    textAlign: "center",
+    marginBottom: 20,
+    lineHeight: 1.5,
+  },
+  toggleRow: {
+    display: "flex",
+    gap: 8,
+    marginBottom: 16,
+  },
+  toggleBtn: {
+    flex: 1,
+    padding: "10px 12px",
+    border: "1px solid #ccc",
+    background: "#fff",
+    cursor: "pointer",
+    borderRadius: 10,
+    fontWeight: 700,
+  },
+  toggleBtnActive: {
+    background: "#000",
+    color: "#fff",
+  },
+  label: {
+    display: "block",
+    marginBottom: 10,
+  },
+  labelText: {
+    marginBottom: 6,
+    fontWeight: 600,
+  },
+  input: {
+    width: "100%",
+    padding: 10,
+    border: "1px solid #ccc",
+    borderRadius: 10,
+  },
+  submitBtn: {
+    width: "100%",
+    padding: 12,
+    marginTop: 10,
+    cursor: "pointer",
+    borderRadius: 999,
+    border: "none",
+    background: "#157A55",
+    color: "#fff",
+    fontWeight: 700,
+    fontSize: 15,
+  },
+  message: {
+    marginTop: 12,
+    lineHeight: 1.5,
+  },
+  footerLinks: {
+    marginTop: 16,
+    display: "flex",
+    gap: 12,
+    justifyContent: "center",
+    flexWrap: "wrap",
+  },
+  link: {
+    textDecoration: "underline",
+  },
+};
