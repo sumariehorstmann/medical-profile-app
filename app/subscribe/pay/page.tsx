@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
@@ -15,7 +15,7 @@ const BASE_PRICE = 349;
 const DISCOUNT_AMOUNT = 50;
 const FINAL_PRICE = BASE_PRICE - DISCOUNT_AMOUNT;
 
-export default function PayPage() {
+function PayPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
@@ -70,7 +70,6 @@ export default function PayPage() {
 
         setProfile(profileData);
 
-        // ✅ AUTO APPLY REFERRAL CODE
         let storedRef = "";
 
         try {
@@ -124,7 +123,7 @@ export default function PayPage() {
           buyerEmail: userEmail,
           firstName: profile.first_name || "",
           lastName: profile.last_name || "",
-          affiliateCode: cleanCode, // ✅ IMPORTANT
+          affiliateCode: cleanCode,
         }),
       });
 
@@ -180,10 +179,19 @@ export default function PayPage() {
       ) : (
         <div className="rounded border p-6 shadow-sm">
           <div className="space-y-2 mb-6 text-sm">
-            <p><strong>Email:</strong> {userEmail || "-"}</p>
-            <p><strong>Name:</strong> {[profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "-"}</p>
-            <p><strong>Plan:</strong> RROI Premium</p>
-            <p><strong>Base Price:</strong> R{BASE_PRICE} / year</p>
+            <p>
+              <strong>Email:</strong> {userEmail || "-"}
+            </p>
+            <p>
+              <strong>Name:</strong>{" "}
+              {[profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "-"}
+            </p>
+            <p>
+              <strong>Plan:</strong> RROI Premium
+            </p>
+            <p>
+              <strong>Base Price:</strong> R{BASE_PRICE} / year
+            </p>
           </div>
 
           <div className="mb-6 rounded border border-gray-200 p-4">
@@ -229,5 +237,20 @@ export default function PayPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function PayPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="max-w-xl mx-auto px-4 py-10">
+          <h1 className="text-2xl font-semibold mb-4">RROI Premium</h1>
+          <p>Loading...</p>
+        </main>
+      }
+    >
+      <PayPageInner />
+    </Suspense>
   );
 }
