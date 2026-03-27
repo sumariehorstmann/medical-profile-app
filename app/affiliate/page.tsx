@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export default function AffiliateHomePage() {
+export default function AffiliatePage() {
   return (
     <main style={styles.page}>
       <div style={styles.card}>
@@ -11,59 +11,56 @@ export default function AffiliateHomePage() {
           <p style={styles.tagline}>Rapid Response Online Information (RROI)</p>
         </div>
 
-        <div style={styles.notice}>
-          <strong>Important</strong>
+        <section style={styles.notice}>
           <p style={styles.noticeText}>
-            The RROI affiliate program is available only to users with an active subscription.
-            RROI is an information platform and does not provide medical advice or emergency services.
-            In an emergency, contact local emergency services.
+            The RROI affiliate program is available only to users with an active Premium
+            subscription.
           </p>
-        </div>
+          <p style={styles.noticeText}>
+            To apply, you must first log in or sign up, then upgrade to Premium if needed.
+            Once you have an active Premium subscription, you can apply to become an
+            affiliate from your profile page.
+          </p>
+        </section>
 
         <section style={styles.section}>
           <h2 style={styles.h2}>What it is</h2>
           <p style={styles.p}>
-            Approved affiliates receive a unique referral code and share link. When someone subscribes
-            using that code, they receive a discount and the affiliate earns commission on successful
-            paid subscriptions, subject to the affiliate terms.
+            Approved affiliates receive a unique referral code. When someone subscribes
+            using that code, they receive a discount and the affiliate earns commission on
+            successful paid Premium signups, subject to the affiliate terms.
           </p>
         </section>
 
         <section style={styles.section}>
           <h2 style={styles.h2}>How it works</h2>
           <ol style={styles.ol}>
-            <li>Apply to become an affiliate.</li>
-            <li>We review your application.</li>
-            <li>If approved, you receive your referral code and share link.</li>
-            <li>You can track referrals and earnings in your affiliate dashboard.</li>
-            <li>Payouts are made quarterly via EFT, subject to minimum payout thresholds.</li>
+            <li>Log in or sign up for an RROI account.</li>
+            <li>Upgrade to Premium if your profile is still on the free tier.</li>
+            <li>Go to your profile page.</li>
+            <li>Click “Apply to Become an Affiliate” from your Premium profile.</li>
+            <li>Complete the application form and submit your details.</li>
           </ol>
         </section>
 
         <section style={styles.section}>
-          <h2 style={styles.h2}>Key rules (summary)</h2>
+          <h2 style={styles.h2}>Key rules</h2>
           <ul style={styles.ul}>
-            <li>Affiliates must keep an active RROI subscription.</li>
+            <li>You must have an active Premium subscription to apply.</li>
             <li>No self-referrals.</li>
-            <li>Commission applies to first-year subscriptions only (no renewal commission).</li>
-            <li>Commission becomes eligible after a short verification period (to handle refunds/chargebacks).</li>
-            <li>RROI may suspend or terminate affiliate access for misuse or misleading promotion.</li>
+            <li>Commission applies to first-year Premium signups only.</li>
+            <li>No commission is paid on renewals.</li>
+            <li>RROI may suspend affiliate access for misuse or misleading promotion.</li>
           </ul>
         </section>
 
-        <Link href="/affiliate/apply" style={styles.primaryBtn}>
-          Apply now
-        </Link>
+        <div style={styles.ctaWrap}>
+          <Link href="/login" style={styles.primaryBtn}>
+            Log in or Sign up
+          </Link>
 
-        <div style={styles.links}>
-          <Link href="/" style={styles.linkMuted}>
+          <Link href="/" style={styles.backLink}>
             ← Back to home
-          </Link>
-          <Link href="/terms" style={styles.link}>
-            Terms
-          </Link>
-          <Link href="/privacy" style={styles.link}>
-            Privacy
           </Link>
         </div>
       </div>
@@ -109,65 +106,57 @@ const styles: Record<string, React.CSSProperties> = {
   notice: {
     border: "1px solid #E5E7EB",
     borderRadius: 12,
-    padding: 12,
+    padding: 16,
     background: "#F8FAFC",
-    marginBottom: 18,
+    marginBottom: 20,
   },
   noticeText: {
-    margin: "6px 0 0",
-    lineHeight: 1.5,
-    opacity: 0.9,
+    margin: "0 0 10px",
+    lineHeight: 1.6,
+    opacity: 0.95,
   },
   section: {
-    marginBottom: 18,
+    marginBottom: 20,
   },
   h2: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 800,
-    marginBottom: 6,
+    marginBottom: 8,
   },
   p: {
-    margin: "0 0 8px",
-    lineHeight: 1.6,
+    margin: 0,
+    lineHeight: 1.65,
+    opacity: 0.95,
+  },
+  ol: {
+    margin: "6px 0 0 22px",
+    lineHeight: 1.8,
     opacity: 0.95,
   },
   ul: {
     margin: "6px 0 0 18px",
-    lineHeight: 1.7,
+    lineHeight: 1.8,
     opacity: 0.95,
   },
-  ol: {
-    margin: "6px 0 0 18px",
-    lineHeight: 1.7,
-    opacity: 0.95,
+  ctaWrap: {
+    marginTop: 28,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 14,
   },
   primaryBtn: {
-    marginTop: 8,
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "12px 16px",
-    borderRadius: 14,
+    display: "inline-block",
+    minWidth: 260,
+    textAlign: "center",
+    padding: "12px 18px",
+    borderRadius: 12,
     background: BRAND_GREEN,
     color: "#FFFFFF",
-    fontWeight: 900,
     textDecoration: "none",
-    width: "100%",
-    maxWidth: 360,
-  },
-  links: {
-    display: "flex",
-    gap: 14,
-    flexWrap: "wrap",
-    marginTop: 18,
-    alignItems: "center",
-  },
-  link: {
-    textDecoration: "none",
-    color: BRAND_GREEN,
     fontWeight: 800,
   },
-  linkMuted: {
+  backLink: {
     textDecoration: "none",
     color: "#0F172A",
     opacity: 0.85,
