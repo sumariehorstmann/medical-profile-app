@@ -6,26 +6,33 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
-type SubStatus = "inactive" | "active" | "past_due" | "cancelled";
+type AffiliateRow = {
+  affiliate_code: string;
+  total_earned: number | null;
+  total_paid: number | null;
+  status: string;
+} | null;
 
 export default function AffiliateApplyPage() {
   const supabase = useMemo(() => createSupabaseBrowser(), []);
   const router = useRouter();
 
-  const [subStatus, setSubStatus] = useState<SubStatus | null>(null);
   const [checking, setChecking] = useState(true);
+  const [message, setMessage] = useState<string | null>(null);
+  const [existingAffiliate, setExistingAffiliate] = useState<AffiliateRow>(null);
 
   const [fullName, setFullName] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [promoteWhere, setPromoteWhere] = useState("Instagram");
-  const [audience, setAudience] = useState("");
+  const [phone, setPhone] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [accountHolder, setAccountHolder] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [accountType, setAccountType] = useState("Savings");
+  const [branchCode, setBranchCode] = useState("");
   const [agree, setAgree] = useState(false);
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(false);
+  const [createdCode, setCreatedCode] = useState<string | null>(null);
 
-  // 1) On page load: ensure user is logged in + fetch subscription status
   useEffect(() => {
     let cancelled = false;
 
@@ -39,81 +46,111 @@ export default function AffiliateApplyPage() {
 
         const user = authData.user;
         if (!user) {
-          router.push("/login");
+          router.replace("/login");
           return;
         }
 
-        const { data: subRow, error: subErr } = await supabase
+        const { data: subscription, error: subErr } = await supabase
           .from("subscriptions")
-          .select("status")
+          .select("status, current_period_end")
           .eq("user_id", user.id)
           .maybeSingle();
 
         if (subErr) throw subErr;
 
-        // If no row yet, treat as inactive
-        const status = (subRow?.status as SubStatus | undefined) ?? "inactive";
-        if (!cancelled) setSubStatus(status);
+        const isPremium =
+          !!subscription &&
+          subscription.status === "active" &&
+          (!subscription.current_period_end ||
+            new Date(subscription.current_period_end) > new Date());
+
+        if (!isPremium) {
+          router.replace("/subscribe");
+          return;
+        }
+
+        const { data: affiliate, error: affiliateErr } = await supabase
+          .from("affiliates")
+          .select("affiliate_code, total_earned, total_paid, status")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (affiliateErr) throw affiliateErr;
+
+        if (!cancelled && affiliate) {
+          setExistingAffiliate(affiliate);
+          setCreatedCode(affiliate.affiliate_code);
+        }
       } catch (err: any) {
-        if (!cancelled) setMessage(err?.message || "Failed to check subscription status.");
+        if (!cancelled) {
+          setMessage(err?.message || "Failed to load affiliate status.");
+        }
       } finally {
         if (!cancelled) setChecking(false);
       }
     }
 
     run();
+
     return () => {
       cancelled = true;
     };
   }, [router, supabase]);
 
-  const isEligible = subStatus === "active";
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
-
-    if (!isEligible) {
-      setMessage("An active subscription is required to apply.");
-      return;
-    }
 
     if (!agree) {
       setMessage("Please accept the affiliate terms to continue.");
       return;
     }
 
+    if (
+      !fullName.trim() ||
+      !phone.trim() ||
+      !bankName.trim() ||
+      !accountHolder.trim() ||
+      !accountNumber.trim() ||
+      !accountType.trim() ||
+      !branchCode.trim()
+    ) {
+      setMessage("Please complete all required fields.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const { data: authData, error: authErr } = await supabase.auth.getUser();
-      if (authErr) throw authErr;
-
-      const user = authData.user;
-      if (!user) {
-        router.push("/login");
-        return;
-      }
-
-      const { error: insertErr } = await supabase.from("affiliate_applications").insert({
-        user_id: user.id,
-        full_name: fullName.trim(),
-        mobile: mobile.trim(),
-        promote_where: promoteWhere,
-        audience: audience.trim() ? audience.trim() : null,
+      const res = await fetch("/api/affiliate/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: fullName.trim(),
+          phone: phone.trim(),
+          bankName: bankName.trim(),
+          accountHolder: accountHolder.trim(),
+          accountNumber: accountNumber.trim(),
+          accountType: accountType.trim(),
+          branchCode: branchCode.trim(),
+        }),
       });
 
-      if (insertErr) {
-        const msg = insertErr.message?.toLowerCase() ?? "";
-        if (msg.includes("duplicate") || msg.includes("unique")) {
-          setMessage("You have already submitted an affiliate application.");
-          setSubmitted(true);
-          return;
-        }
-        throw insertErr;
+      const json = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Failed to create affiliate account.");
       }
 
-      setSubmitted(true);
+      setCreatedCode(json.affiliateCode || null);
+      setExistingAffiliate({
+        affiliate_code: json.affiliateCode,
+        total_earned: 0,
+        total_paid: 0,
+        status: "active",
+      });
     } catch (err: any) {
       setMessage(err?.message || "Something went wrong. Please try again.");
     } finally {
@@ -121,59 +158,67 @@ export default function AffiliateApplyPage() {
     }
   }
 
+  const showSuccess = !!existingAffiliate;
+
   return (
     <main style={styles.page}>
       <div style={styles.card}>
         <div style={styles.brand}>
           <Image src="/logo.png" alt="RROI logo" width={96} height={96} priority />
-          <h1 style={styles.h1}>Apply to Become an Affiliate</h1>
+          <h1 style={styles.h1}>Become an Affiliate</h1>
           <p style={styles.tagline}>Rapid Response Online Information (RROI)</p>
         </div>
 
-        {/* Subscription gate */}
         <div style={styles.notice}>
-          <strong>Requirements</strong>
+          <strong>Premium benefit</strong>
           <p style={styles.noticeText}>
-            Affiliates must have an active RROI subscription. Applications are reviewed manually.
-            RROI does not guarantee approval.
+            Affiliate access is available to active Premium users only.
           </p>
-
-          {checking ? (
-            <p style={{ marginTop: 10, opacity: 0.9, fontWeight: 700 }}>Checking your subscription…</p>
-          ) : isEligible ? (
-            <p style={{ marginTop: 10, color: "#065F46", fontWeight: 800 }}>
-              Subscription status: Active ✅
-            </p>
-          ) : (
-            <div style={{ marginTop: 10 }}>
-              <p style={{ margin: 0, color: "#9A3412", fontWeight: 800 }}>
-                Subscription status: Not active
-              </p>
-              <p style={{ margin: "6px 0 0", opacity: 0.9 }}>
-                You need an active subscription to apply.
-              </p>
-              <Link href="/subscribe" style={styles.secondaryBtn}>
-                Subscribe
-              </Link>
-            </div>
-          )}
+          <p style={styles.noticeText}>
+            Earn <strong>10% commission on the base price</strong> when someone joins Premium
+            using your code.
+          </p>
         </div>
 
-        {submitted ? (
+        {checking ? (
+          <div style={styles.loadingBox}>Checking your account…</div>
+        ) : showSuccess ? (
           <div style={styles.success}>
-            <h2 style={styles.h2}>Application received</h2>
-            <p style={styles.p}>
-              Thanks — your application has been saved. We’ll review it and contact you using your
-              account email.
-            </p>
+            <h2 style={styles.h2}>Affiliate account active</h2>
+            <p style={styles.p}>Your affiliate account has been created successfully.</p>
 
-            {message && (
-              <p style={{ marginTop: 10, color: "#B91C1C", fontWeight: 700 }}>{message}</p>
-            )}
+            <div style={styles.codeBox}>
+              <div style={styles.codeLabel}>Your Affiliate Code</div>
+              <div style={styles.codeValue}>{createdCode}</div>
+            </div>
+
+            <div style={styles.summaryGrid}>
+              <div style={styles.summaryCard}>
+                <div style={styles.summaryTitle}>Status</div>
+                <div style={styles.summaryValue}>{existingAffiliate?.status || "active"}</div>
+              </div>
+              <div style={styles.summaryCard}>
+                <div style={styles.summaryTitle}>Total Earned</div>
+                <div style={styles.summaryValue}>
+                  R{Number(existingAffiliate?.total_earned ?? 0).toFixed(2)}
+                </div>
+              </div>
+              <div style={styles.summaryCard}>
+                <div style={styles.summaryTitle}>Total Paid</div>
+                <div style={styles.summaryValue}>
+                  R{Number(existingAffiliate?.total_paid ?? 0).toFixed(2)}
+                </div>
+              </div>
+            </div>
+
+            {message && <p style={styles.errorText}>{message}</p>}
 
             <div style={styles.links}>
+              <Link href="/profile" style={styles.primaryLinkBtn}>
+                Go to Profile
+              </Link>
               <Link href="/affiliate" style={styles.link}>
-                ← Back to Affiliate Program
+                Affiliate page
               </Link>
               <Link href="/" style={styles.linkMuted}>
                 Home
@@ -189,42 +234,70 @@ export default function AffiliateApplyPage() {
               style={styles.input}
               placeholder="Full name and surname"
               required
-              disabled={loading || checking || !isEligible}
+              disabled={loading}
             />
 
-            <label style={styles.label}>Mobile number</label>
+            <label style={styles.label}>Phone number</label>
             <input
-              value={mobile}
-              onChange={(e) => setMobile(e.target.value)}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               style={styles.input}
-              placeholder="+27..."
+              placeholder="e.g. 0821234567"
               required
-              disabled={loading || checking || !isEligible}
+              disabled={loading}
             />
 
-            <label style={styles.label}>Where will you promote RROI?</label>
-            <select
-              value={promoteWhere}
-              onChange={(e) => setPromoteWhere(e.target.value)}
+            <label style={styles.label}>Bank name</label>
+            <input
+              value={bankName}
+              onChange={(e) => setBankName(e.target.value)}
               style={styles.input}
-              disabled={loading || checking || !isEligible}
+              placeholder="e.g. Capitec"
+              required
+              disabled={loading}
+            />
+
+            <label style={styles.label}>Account holder</label>
+            <input
+              value={accountHolder}
+              onChange={(e) => setAccountHolder(e.target.value)}
+              style={styles.input}
+              placeholder="Name on the bank account"
+              required
+              disabled={loading}
+            />
+
+            <label style={styles.label}>Account number</label>
+            <input
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+              style={styles.input}
+              placeholder="Bank account number"
+              required
+              disabled={loading}
+            />
+
+            <label style={styles.label}>Account type</label>
+            <select
+              value={accountType}
+              onChange={(e) => setAccountType(e.target.value)}
+              style={styles.input}
+              disabled={loading}
             >
-              <option>Instagram</option>
-              <option>TikTok</option>
-              <option>Facebook</option>
-              <option>WhatsApp</option>
-              <option>Website</option>
-              <option>In-person business</option>
-              <option>Other</option>
+              <option>Savings</option>
+              <option>Cheque</option>
+              <option>Business</option>
+              <option>Transmission</option>
             </select>
 
-            <label style={styles.label}>Audience / customer type (optional)</label>
-            <textarea
-              value={audience}
-              onChange={(e) => setAudience(e.target.value)}
-              style={styles.textarea}
-              placeholder="Example: families, elderly care, sports clubs, schools, security companies..."
-              disabled={loading || checking || !isEligible}
+            <label style={styles.label}>Branch code</label>
+            <input
+              value={branchCode}
+              onChange={(e) => setBranchCode(e.target.value)}
+              style={styles.input}
+              placeholder="Branch code"
+              required
+              disabled={loading}
             />
 
             <label style={styles.checkboxRow}>
@@ -232,39 +305,34 @@ export default function AffiliateApplyPage() {
                 type="checkbox"
                 checked={agree}
                 onChange={(e) => setAgree(e.target.checked)}
-                disabled={loading || checking || !isEligible}
+                disabled={loading}
               />
               <span style={styles.checkboxText}>
                 I agree to the{" "}
                 <Link href="/affiliate/terms" style={styles.inlineLink}>
                   affiliate terms
                 </Link>{" "}
-                and confirm I will not make misleading claims about RROI.
+                and confirm my banking details are correct.
               </span>
             </label>
 
-            <button
-              type="submit"
-              style={styles.primaryBtn}
-              disabled={!agree || loading || checking || !isEligible}
-            >
-              {loading ? "Submitting..." : "Submit application"}
+            <button type="submit" style={styles.primaryBtn} disabled={loading || !agree}>
+              {loading ? "Creating affiliate account..." : "Create affiliate account"}
             </button>
 
-            {message && (
-              <p style={{ marginTop: 12, color: "#B91C1C", fontWeight: 700 }}>{message}</p>
-            )}
+            {message && <p style={styles.errorText}>{message}</p>}
 
             <p style={styles.small}>
-              Banking details are requested only after approval and before first payout.
+              Your affiliate code will be created instantly after successful signup and will also
+              appear on your profile page.
             </p>
 
             <div style={styles.links}>
-              <Link href="/affiliate" style={styles.linkMuted}>
-                ← Back
+              <Link href="/profile" style={styles.linkMuted}>
+                ← Back to Profile
               </Link>
-              <Link href="/terms" style={styles.link}>
-                Terms
+              <Link href="/affiliate" style={styles.link}>
+                Affiliate page
               </Link>
               <Link href="/privacy" style={styles.link}>
                 Privacy
@@ -324,6 +392,13 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.5,
     opacity: 0.9,
   },
+  loadingBox: {
+    border: "1px solid #E5E7EB",
+    borderRadius: 12,
+    padding: 16,
+    background: "#FFFFFF",
+    fontWeight: 800,
+  },
   success: {
     border: "1px solid #E5E7EB",
     borderRadius: 12,
@@ -331,7 +406,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#FFFFFF",
   },
   h2: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 900,
     margin: "0 0 8px",
   },
@@ -339,6 +414,48 @@ const styles: Record<string, React.CSSProperties> = {
     margin: "0 0 8px",
     lineHeight: 1.6,
     opacity: 0.95,
+  },
+  codeBox: {
+    marginTop: 14,
+    marginBottom: 16,
+    border: `1px solid ${BRAND_GREEN}`,
+    borderRadius: 14,
+    padding: 16,
+    background: "#F0FDF4",
+  },
+  codeLabel: {
+    fontSize: 13,
+    fontWeight: 800,
+    marginBottom: 6,
+    opacity: 0.85,
+  },
+  codeValue: {
+    fontSize: 28,
+    fontWeight: 900,
+    color: BRAND_GREEN,
+    letterSpacing: 1,
+  },
+  summaryGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+    gap: 12,
+    marginTop: 10,
+  },
+  summaryCard: {
+    border: "1px solid #E5E7EB",
+    borderRadius: 12,
+    padding: 12,
+    background: "#FFFFFF",
+  },
+  summaryTitle: {
+    fontSize: 12,
+    fontWeight: 800,
+    opacity: 0.75,
+    marginBottom: 6,
+  },
+  summaryValue: {
+    fontSize: 18,
+    fontWeight: 900,
   },
   label: {
     display: "block",
@@ -354,17 +471,6 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 12,
     outline: "none",
     background: "#FFFFFF",
-  },
-  textarea: {
-    width: "100%",
-    minHeight: 90,
-    padding: 10,
-    marginBottom: 12,
-    border: "1px solid #CBD5E1",
-    borderRadius: 12,
-    outline: "none",
-    background: "#FFFFFF",
-    resize: "vertical",
   },
   checkboxRow: {
     display: "flex",
@@ -393,24 +499,28 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     cursor: "pointer",
   },
-  secondaryBtn: {
-    marginTop: 10,
+  primaryLinkBtn: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     padding: "10px 14px",
     borderRadius: 12,
-    border: `1px solid ${BRAND_GREEN}`,
-    color: BRAND_GREEN,
+    border: "none",
+    background: BRAND_GREEN,
+    color: "#FFFFFF",
     fontWeight: 900,
     textDecoration: "none",
-    background: "#FFFFFF",
   },
   small: {
     marginTop: 10,
     fontSize: 13,
     opacity: 0.85,
     lineHeight: 1.5,
+  },
+  errorText: {
+    marginTop: 12,
+    color: "#B91C1C",
+    fontWeight: 700,
   },
   links: {
     display: "flex",
