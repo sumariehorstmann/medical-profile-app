@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
-export default function ShippingPage() {
+function ShippingPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
@@ -55,15 +55,12 @@ export default function ShippingPage() {
 
     setLoading(true);
 
-    // store shipping
     sessionStorage.setItem("rroi_shipping", JSON.stringify(form));
 
-    // store referral
     if (ref) {
       sessionStorage.setItem("rroi_ref", ref);
     }
 
-    // carry ref to payment page
     const nextUrl = ref
       ? `/subscribe/pay?ref=${encodeURIComponent(ref)}`
       : "/subscribe/pay";
@@ -86,7 +83,8 @@ export default function ShippingPage() {
       <div style={styles.card}>
         <h1 style={styles.h1}>Premium delivery details</h1>
         <p style={styles.sub}>
-          This step is only for users upgrading to Premium. Your account and profile remain free.
+          This step is only for users upgrading to Premium. Your account and
+          profile remain free.
         </p>
 
         {ref ? (
@@ -105,14 +103,47 @@ export default function ShippingPage() {
         </div>
 
         <form onSubmit={handleContinue}>
-          <Field label="Name" value={form.name} onChange={(v) => updateField("name", v)} />
-          <Field label="Surname" value={form.surname} onChange={(v) => updateField("surname", v)} />
-          <Field label="Email" type="email" value={form.email} onChange={(v) => updateField("email", v)} />
-          <Field label="Cellphone Number" value={form.cellphone} onChange={(v) => updateField("cellphone", v)} />
-          <Field label="Street Address" value={form.streetAddress} onChange={(v) => updateField("streetAddress", v)} />
-          <Field label="City / Town" value={form.cityTown} onChange={(v) => updateField("cityTown", v)} />
-          <Field label="Postal Code" value={form.postalCode} onChange={(v) => updateField("postalCode", v)} />
-          <Field label="Province" value={form.province} onChange={(v) => updateField("province", v)} />
+          <Field
+            label="Name"
+            value={form.name}
+            onChange={(v) => updateField("name", v)}
+          />
+          <Field
+            label="Surname"
+            value={form.surname}
+            onChange={(v) => updateField("surname", v)}
+          />
+          <Field
+            label="Email"
+            type="email"
+            value={form.email}
+            onChange={(v) => updateField("email", v)}
+          />
+          <Field
+            label="Cellphone Number"
+            value={form.cellphone}
+            onChange={(v) => updateField("cellphone", v)}
+          />
+          <Field
+            label="Street Address"
+            value={form.streetAddress}
+            onChange={(v) => updateField("streetAddress", v)}
+          />
+          <Field
+            label="City / Town"
+            value={form.cityTown}
+            onChange={(v) => updateField("cityTown", v)}
+          />
+          <Field
+            label="Postal Code"
+            value={form.postalCode}
+            onChange={(v) => updateField("postalCode", v)}
+          />
+          <Field
+            label="Province"
+            value={form.province}
+            onChange={(v) => updateField("province", v)}
+          />
           <Field
             label="Unit / Complex / Building"
             value={form.unitComplexBuilding}
@@ -125,11 +156,31 @@ export default function ShippingPage() {
           </button>
         </form>
 
-        <button type="button" onClick={() => router.push("/profile")} style={styles.secondaryBtn}>
+        <button
+          type="button"
+          onClick={() => router.push("/profile")}
+          style={styles.secondaryBtn}
+        >
           Back to profile
         </button>
       </div>
     </main>
+  );
+}
+
+export default function ShippingPage() {
+  return (
+    <Suspense
+      fallback={
+        <main style={styles.page}>
+          <div style={styles.card}>
+            <h1 style={styles.h1}>Loading...</h1>
+          </div>
+        </main>
+      }
+    >
+      <ShippingPageInner />
+    </Suspense>
   );
 }
 
