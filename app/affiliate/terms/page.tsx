@@ -14,97 +14,88 @@ export default function AffiliateTermsPage() {
         <section style={styles.section}>
           <h2 style={styles.h2}>1. Overview</h2>
           <p style={styles.p}>
-            These Affiliate Terms apply to all participants in the RROI Affiliate Program.
-            By applying to become an affiliate, or by participating as an approved affiliate,
-            you agree to these terms in addition to RROI’s Terms of Service and Privacy Policy.
+            These Affiliate Terms apply to participants in the RROI Affiliate Program.
+            By taking part in the program, you agree to these terms in addition to
+            RROI’s Terms and Privacy Policy.
           </p>
         </section>
 
         <section style={styles.section}>
-          <h2 style={styles.h2}>2. Eligibility</h2>
-          <ul style={styles.ul}>
-            <li>Affiliates must have an active, paid RROI subscription.</li>
-            <li>Applications are reviewed manually. Approval is not guaranteed.</li>
-            <li>RROI may request additional information for verification before approval or payout.</li>
-          </ul>
-        </section>
-
-        <section style={styles.section}>
-          <h2 style={styles.h2}>3. Referral Codes & Links</h2>
-          <ul style={styles.ul}>
-            <li>Approved affiliates receive a unique referral code and share link.</li>
-            <li>Referral codes must not be altered, sold, or misrepresented.</li>
-            <li>RROI may deactivate a code if misuse or abuse is suspected.</li>
-          </ul>
-        </section>
-
-        <section style={styles.section}>
-          <h2 style={styles.h2}>4. Discounts & Commission</h2>
-          <ul style={styles.ul}>
-            <li>Discount and commission rates are determined by RROI and may change over time.</li>
-            <li>Commission is calculated on the amount actually paid by the customer (after discounts).</li>
-            <li>Commission applies to first-year subscriptions only (no commission on renewals).</li>
-            <li>No self-referrals: you cannot earn commission on your own subscription or renewals.</li>
-          </ul>
-        </section>
-
-        <section style={styles.section}>
-          <h2 style={styles.h2}>5. Verification Period & Reversals</h2>
-          <ul style={styles.ul}>
-            <li>Commission is marked as pending for a verification period (typically 14 days).</li>
-            <li>If a subscription is refunded, reversed, charged back, or cancelled during the verification period, commission may be reversed.</li>
-            <li>RROI’s records are final for referral attribution and commission calculations.</li>
-          </ul>
-        </section>
-
-        <section style={styles.section}>
-          <h2 style={styles.h2}>6. Payouts</h2>
-          <ul style={styles.ul}>
-            <li>Payouts are made quarterly via EFT, subject to verification and minimum payout thresholds.</li>
-            <li>Banking details will be requested after approval and before the first payout.</li>
-            <li>If an affiliate does not have an active subscription at payout time, payouts may be paused until the subscription is active again.</li>
-          </ul>
+          <h2 style={styles.h2}>2. Who Can Apply</h2>
           <p style={styles.p}>
-            RROI does not guarantee any level of earnings. Earnings depend on successful, paid subscriptions
-            and ongoing compliance with these terms.
+            To apply to become an RROI affiliate, you must be logged in as an active
+            Premium subscriber.
+          </p>
+          <p style={styles.p}>
+            If you already have a Premium subscription, please log in and then go to
+            your profile page to apply.
+          </p>
+          <p style={styles.p}>
+            If you have a free profile, please log in and upgrade to Premium first.
+          </p>
+          <p style={styles.p}>
+            If you do not yet have a profile, please sign up, log in, upgrade to
+            Premium, and then apply to become an affiliate from your profile.
           </p>
         </section>
 
         <section style={styles.section}>
-          <h2 style={styles.h2}>7. Marketing Rules</h2>
+          <h2 style={styles.h2}>3. Affiliate Code</h2>
+          <p style={styles.p}>
+            Once your affiliate account is created successfully, you will receive a
+            unique affiliate code that will also appear on your profile page.
+          </p>
+        </section>
+
+        <section style={styles.section}>
+          <h2 style={styles.h2}>4. Discount and Commission</h2>
           <ul style={styles.ul}>
-            <li>Affiliates must not make misleading claims, including medical or emergency outcome claims.</li>
-            <li>Affiliates must not imply that RROI provides medical advice, diagnosis, treatment, or emergency response services.</li>
-            <li>Affiliates must comply with applicable laws, advertising standards, and platform policies.</li>
-            <li>Spam, harassment, or deceptive marketing is prohibited.</li>
+            <li>Customers using a valid affiliate code receive R50 off the Premium signup price.</li>
+            <li>Affiliates earn 10% commission on the base price of R349.</li>
+            <li>Commission applies to the first successful Premium signup only.</li>
+            <li>No commission is paid on annual renewals.</li>
+            <li>Self-referrals are not allowed.</li>
           </ul>
         </section>
 
         <section style={styles.section}>
-          <h2 style={styles.h2}>8. Suspension & Termination</h2>
-          <p style={styles.p}>
-            RROI may suspend or terminate affiliate access at any time for suspected misuse, fraud, policy violations,
-            or conduct that may harm RROI’s reputation. Repeated violations may result in permanent removal.
-          </p>
+          <h2 style={styles.h2}>5. Payouts</h2>
+          <ul style={styles.ul}>
+            <li>Payouts are made manually via EFT.</li>
+            <li>Affiliates must provide correct banking details when applying.</li>
+            <li>RROI may verify referral records before payout.</li>
+          </ul>
         </section>
 
         <section style={styles.section}>
-          <h2 style={styles.h2}>9. Changes</h2>
+          <h2 style={styles.h2}>6. Marketing Rules</h2>
+          <ul style={styles.ul}>
+            <li>Affiliates must not make misleading or false claims.</li>
+            <li>Affiliates must not imply that RROI provides medical treatment or emergency services.</li>
+            <li>Spam, deception, and abuse of the affiliate program are prohibited.</li>
+          </ul>
+        </section>
+
+        <section style={styles.section}>
+          <h2 style={styles.h2}>7. Changes</h2>
           <p style={styles.p}>
-            RROI may update these Affiliate Terms from time to time. Continued participation in the affiliate program
-            constitutes acceptance of updated terms.
+            RROI may update these Affiliate Terms from time to time. Continued use of
+            the affiliate program means you accept those changes.
           </p>
         </section>
 
-        <div style={styles.links}>
-          <Link href="/affiliate/apply" style={styles.link}>
-            ← Back to application
+        <div style={styles.ctaWrap}>
+          <p style={styles.ctaText}>
+            To apply as an affiliate, you must be logged in as an active Premium
+            subscriber.
+          </p>
+
+          <Link href="/login" style={styles.primaryBtn}>
+            Log in or Sign up to become an affiliate
           </Link>
-          <Link href="/affiliate" style={styles.linkMuted}>
-            Affiliate program
-          </Link>
+
           <Link href="/" style={styles.linkMuted}>
-            Home
+            ← Back to Home
           </Link>
         </div>
       </div>
@@ -165,16 +156,27 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.7,
     opacity: 0.95,
   },
-  links: {
+  ctaWrap: {
+    marginTop: 28,
     display: "flex",
-    gap: 14,
-    flexWrap: "wrap",
-    marginTop: 16,
+    flexDirection: "column",
     alignItems: "center",
+    gap: 12,
+    textAlign: "center",
   },
-  link: {
+  ctaText: {
+    maxWidth: 520,
+    lineHeight: 1.6,
+    opacity: 0.9,
+    margin: 0,
+  },
+  primaryBtn: {
+    display: "inline-block",
+    padding: "12px 18px",
+    borderRadius: 10,
+    background: BRAND_GREEN,
+    color: "#fff",
     textDecoration: "none",
-    color: BRAND_GREEN,
     fontWeight: 800,
   },
   linkMuted: {

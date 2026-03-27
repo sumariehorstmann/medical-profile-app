@@ -8,7 +8,6 @@ export const dynamic = "force-dynamic";
 
 const BASE_PRICE = 349;
 const DISCOUNT_AMOUNT = 50;
-const FINAL_AMOUNT = BASE_PRICE - DISCOUNT_AMOUNT; // 299
 
 function payfastProcessUrl() {
   return process.env.PAYFAST_ENV === "sandbox"
@@ -85,7 +84,9 @@ export async function POST(req: NextRequest) {
     const email = String(body?.buyerEmail ?? "").trim();
     const firstName = String(body?.firstName ?? "").trim();
     const lastName = String(body?.lastName ?? "").trim();
-    const affiliateCode = String(body?.affiliateCode ?? "").trim().toUpperCase();
+    const affiliateCode = String(body?.affiliateCode ?? "")
+      .trim()
+      .toUpperCase();
 
     if (!publicId || !email) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
@@ -128,6 +129,34 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    let finalAmount = BASE_PRICE;
+
+    if (affiliateCode) {
+      const { data: affiliate, error: affiliateError } = await supabaseAdmin
+        .from("affiliates")
+        .select("id, affiliate_code, status")
+        .eq("affiliate_code", affiliateCode)
+        .eq("status", "active")
+        .maybeSingle();
+
+      if (affiliateError) {
+        console.error("AFFILIATE LOOKUP ERROR:", affiliateError);
+        return NextResponse.json(
+          { error: "Failed to validate affiliate code." },
+          { status: 500 }
+        );
+      }
+
+      if (!affiliate) {
+        return NextResponse.json(
+          { error: "Invalid affiliate code." },
+          { status: 400 }
+        );
+      }
+
+      finalAmount = BASE_PRICE - DISCOUNT_AMOUNT;
+    }
+
     const paymentId = `rroi_${publicId}_${Date.now()}`;
 
     const { error: paymentError } = await supabaseAdmin
@@ -137,7 +166,7 @@ export async function POST(req: NextRequest) {
         public_id: profile.public_id,
         provider: "payfast",
         provider_payment_id: paymentId,
-        amount: FINAL_AMOUNT, // actual charged amount
+        amount: finalAmount,
         status: "pending",
       });
 
@@ -161,9 +190,11 @@ export async function POST(req: NextRequest) {
       name_last: lastName,
       email_address: email,
       m_payment_id: paymentId,
-      amount: FINAL_AMOUNT.toFixed(2), // 299.00
+      amount: finalAmount.toFixed(2),
       item_name: "RROI Premium",
-      item_description: `RROI Premium setup. Base price R${BASE_PRICE}, discount R${DISCOUNT_AMOUNT}.`,
+      item_description: affiliateCode
+        ? `RROI Premium setup. Base price R${BASE_PRICE}, affiliate discount R${DISCOUNT_AMOUNT}.`
+        : `RROI Premium setup. Base price R${BASE_PRICE}.`,
       custom_str1: publicId,
       custom_str2: email,
       custom_str3: affiliateCode || "",
@@ -173,7 +204,7 @@ export async function POST(req: NextRequest) {
 
     console.log("PAYFAST BASE URL:", baseUrl);
     console.log("PAYFAST NOTIFY URL:", `${baseUrl}/api/payfast/itn`);
-    console.log("PAYFAST FINAL AMOUNT:", FINAL_AMOUNT.toFixed(2));
+    console.log("PAYFAST FINAL AMOUNT:", finalAmount.toFixed(2));
     console.log("PAYFAST AFFILIATE CODE:", affiliateCode || "(none)");
 
     return NextResponse.json({
