@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 type Profile = {
@@ -11,15 +11,23 @@ type Profile = {
   last_name: string | null;
 };
 
+const BASE_PRICE = 349;
+const DISCOUNT_AMOUNT = 50;
+const FINAL_PRICE = BASE_PRICE - DISCOUNT_AMOUNT;
+
 export default function PayPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
+
+  const urlRef = (searchParams.get("ref") || "").trim().toUpperCase();
 
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [userEmail, setUserEmail] = useState("");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState("");
+  const [affiliateCode, setAffiliateCode] = useState("");
 
   useEffect(() => {
     let mounted = true;
@@ -31,10 +39,9 @@ export default function PayPage() {
 
         const {
           data: { session },
-          error: sessionError,
         } = await supabase.auth.getSession();
 
-        if (sessionError || !session?.user) {
+        if (!session?.user) {
           window.location.href = "/login?redirect=/subscribe/pay";
           return;
         }
@@ -52,24 +59,33 @@ export default function PayPage() {
           .single();
 
         if (profileError || !profileData) {
-  console.error("PROFILE ERROR", profileError, profileData);
-  setError(`Could not load your profile. ${profileError?.message || ""}`);
-  return;
-}
+          setError("Could not load your profile.");
+          return;
+        }
 
         if (!profileData.public_id) {
-          setError("Your profile does not have a public_id yet.");
+          setError("Your profile is not fully set up yet.");
           return;
         }
 
         setProfile(profileData);
-      } catch (err) {
-        console.error(err);
+
+        // ✅ AUTO APPLY REFERRAL CODE
+        let storedRef = "";
+
+        try {
+          storedRef = sessionStorage.getItem("rroi_ref") || "";
+        } catch {}
+
+        const finalRef = urlRef || storedRef;
+
+        if (finalRef) {
+          setAffiliateCode(finalRef.toUpperCase());
+        }
+      } catch {
         setError("Something went wrong loading your payment page.");
       } finally {
-        if (mounted) {
-          setPageLoading(false);
-        }
+        if (mounted) setPageLoading(false);
       }
     }
 
@@ -78,15 +94,24 @@ export default function PayPage() {
     return () => {
       mounted = false;
     };
-  }, [supabase]);
+  }, [supabase, urlRef]);
 
   async function handlePayNow() {
-    try {
-      if (!profile) {
-        alert("Profile not loaded.");
-        return;
-      }
+    if (!profile) return;
 
+    const cleanCode = affiliateCode.trim().toUpperCase();
+    const hasAffiliateCode = cleanCode.length > 0;
+    const displayPrice = hasAffiliateCode ? FINAL_PRICE : BASE_PRICE;
+
+    const confirmUpgrade = confirm(
+      hasAffiliateCode
+        ? `Upgrade to Premium. Base R${BASE_PRICE}, discount R${DISCOUNT_AMOUNT}, final R${displayPrice}. Continue?`
+        : `Upgrade to Premium (R${BASE_PRICE}/year). Continue?`
+    );
+
+    if (!confirmUpgrade) return;
+
+    try {
       setLoading(true);
 
       const res = await fetch("/api/payfast/subscribe", {
@@ -99,6 +124,7 @@ export default function PayPage() {
           buyerEmail: userEmail,
           firstName: profile.first_name || "",
           lastName: profile.last_name || "",
+          affiliateCode: cleanCode, // ✅ IMPORTANT
         }),
       });
 
@@ -123,8 +149,7 @@ export default function PayPage() {
 
       document.body.appendChild(form);
       form.submit();
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert("Something went wrong starting payment.");
     } finally {
       setLoading(false);
@@ -135,16 +160,17 @@ export default function PayPage() {
     return (
       <main className="max-w-xl mx-auto px-4 py-10">
         <h1 className="text-2xl font-semibold mb-4">RROI Premium</h1>
-        <p>Loading payment page...</p>
+        <p>Loading...</p>
       </main>
     );
   }
 
   return (
     <main className="max-w-xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-semibold mb-2">Upgrade to RROI Premium</h1>
+      <h1 className="text-2xl font-semibold mb-2">Confirm Premium Upgrade</h1>
+
       <p className="mb-6 text-sm text-gray-600">
-        Complete your payment securely with PayFast.
+        You are upgrading your account. Only public profile visibility is upgraded.
       </p>
 
       {error ? (
@@ -154,21 +180,33 @@ export default function PayPage() {
       ) : (
         <div className="rounded border p-6 shadow-sm">
           <div className="space-y-2 mb-6 text-sm">
-            <p>
-              <strong>Email:</strong> {userEmail || "-"}
+            <p><strong>Email:</strong> {userEmail || "-"}</p>
+            <p><strong>Name:</strong> {[profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "-"}</p>
+            <p><strong>Plan:</strong> RROI Premium</p>
+            <p><strong>Base Price:</strong> R{BASE_PRICE} / year</p>
+          </div>
+
+          <div className="mb-6 rounded border border-gray-200 p-4">
+            <label className="block text-sm font-medium mb-2">
+              Affiliate Code
+            </label>
+            <input
+              type="text"
+              value={affiliateCode}
+              onChange={(e) => setAffiliateCode(e.target.value.toUpperCase())}
+              placeholder="Enter affiliate code"
+              className="w-full rounded border px-3 py-2"
+              disabled={loading}
+            />
+            <p className="mt-2 text-sm text-gray-600">
+              Valid code gives <strong>R50 off</strong>.
             </p>
+          </div>
+
+          <div className="mb-6 rounded border border-gray-200 p-4 text-sm">
             <p>
-              <strong>Public ID:</strong> {profile?.public_id || "-"}
-            </p>
-            <p>
-              <strong>Name:</strong>{" "}
-              {[profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "-"}
-            </p>
-            <p>
-              <strong>Plan:</strong> RROI Premium Subscription
-            </p>
-            <p>
-              <strong>Price:</strong> R299.00
+              <strong>Price Today:</strong>{" "}
+              {affiliateCode.trim() ? `R${FINAL_PRICE}` : `R${BASE_PRICE}`}
             </p>
           </div>
 
@@ -178,7 +216,15 @@ export default function PayPage() {
             disabled={loading || !profile}
             className="w-full rounded bg-black px-4 py-3 text-white disabled:opacity-60"
           >
-            {loading ? "Redirecting..." : "Pay Now"}
+            {loading ? "Redirecting..." : "Proceed to Payment"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => router.push("/profile")}
+            className="w-full mt-3 rounded border px-4 py-3"
+          >
+            Back to Profile
           </button>
         </div>
       )}

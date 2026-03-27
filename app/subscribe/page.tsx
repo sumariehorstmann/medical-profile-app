@@ -1,7 +1,22 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export default function SubscribePage() {
+type SubscribePageProps = {
+  searchParams?: Promise<{
+    ref?: string;
+  }>;
+};
+
+export default async function SubscribePage({
+  searchParams,
+}: SubscribePageProps) {
+  const params = searchParams ? await searchParams : {};
+  const ref = typeof params?.ref === "string" ? params.ref.trim().toUpperCase() : "";
+
+  const upgradeHref = ref
+    ? `/subscribe/shipping?ref=${encodeURIComponent(ref)}`
+    : "/subscribe/shipping";
+
   return (
     <main style={styles.page}>
       <div style={styles.card}>
@@ -16,6 +31,16 @@ export default function SubscribePage() {
           is visible when your QR code is scanned.
         </p>
 
+        {ref ? (
+          <div style={styles.refBox}>
+            <div style={styles.refTitle}>Affiliate Code Applied</div>
+            <div style={styles.refCode}>{ref}</div>
+            <p style={styles.refText}>
+              Your affiliate discount will be carried through to the payment step.
+            </p>
+          </div>
+        ) : null}
+
         <div style={styles.compareBox}>
           <div style={styles.section}>
             <div style={styles.sectionTitle}>Free tier</div>
@@ -28,11 +53,12 @@ export default function SubscribePage() {
 
           <div style={styles.section}>
             <div style={styles.sectionTitle}>Premium tier</div>
-            <div style={styles.price}>R349 per year</div>
+            <div style={styles.price}>R349 first year</div>
             <ul style={styles.ul}>
               <li>Full medical profile visible when QR is scanned</li>
               <li>Three physical QR items included</li>
               <li>Nationwide delivery</li>
+              <li>Annual renewal thereafter</li>
             </ul>
           </div>
         </div>
@@ -48,7 +74,7 @@ export default function SubscribePage() {
           </p>
         </div>
 
-        <Link href="/subscribe/shipping" style={styles.primaryBtn}>
+        <Link href={upgradeHref} style={styles.primaryBtn}>
           Upgrade to Premium
         </Link>
 
@@ -109,6 +135,33 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: "center",
     lineHeight: 1.5,
     opacity: 0.92,
+  },
+  refBox: {
+    marginBottom: 16,
+    border: "1px solid #BBF7D0",
+    borderRadius: 12,
+    padding: 14,
+    background: "#F0FDF4",
+    textAlign: "center",
+  },
+  refTitle: {
+    fontSize: 13,
+    fontWeight: 800,
+    color: "#166534",
+    marginBottom: 6,
+  },
+  refCode: {
+    fontSize: 24,
+    fontWeight: 900,
+    color: "#166534",
+    marginBottom: 6,
+    letterSpacing: 0.5,
+  },
+  refText: {
+    margin: 0,
+    fontSize: 13,
+    lineHeight: 1.5,
+    color: "#166534",
   },
   compareBox: {
     display: "grid",

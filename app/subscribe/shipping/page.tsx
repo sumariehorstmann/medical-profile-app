@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 export default function ShippingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
+
+  const ref = (searchParams.get("ref") || "").trim().toUpperCase();
 
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -52,8 +55,20 @@ export default function ShippingPage() {
 
     setLoading(true);
 
+    // store shipping
     sessionStorage.setItem("rroi_shipping", JSON.stringify(form));
-    router.push("/subscribe/pay");
+
+    // store referral
+    if (ref) {
+      sessionStorage.setItem("rroi_ref", ref);
+    }
+
+    // carry ref to payment page
+    const nextUrl = ref
+      ? `/subscribe/pay?ref=${encodeURIComponent(ref)}`
+      : "/subscribe/pay";
+
+    router.push(nextUrl);
   }
 
   if (checkingAuth) {
@@ -74,6 +89,12 @@ export default function ShippingPage() {
           This step is only for users upgrading to Premium. Your account and profile remain free.
         </p>
 
+        {ref ? (
+          <div style={styles.refBox}>
+            <strong>Affiliate Code Applied:</strong> {ref}
+          </div>
+        ) : null}
+
         <div style={styles.infoBox}>
           <strong>Premium includes:</strong>
           <ul style={styles.ul}>
@@ -84,47 +105,14 @@ export default function ShippingPage() {
         </div>
 
         <form onSubmit={handleContinue}>
-          <Field
-            label="Name"
-            value={form.name}
-            onChange={(v) => updateField("name", v)}
-          />
-          <Field
-            label="Surname"
-            value={form.surname}
-            onChange={(v) => updateField("surname", v)}
-          />
-          <Field
-            label="Email"
-            type="email"
-            value={form.email}
-            onChange={(v) => updateField("email", v)}
-          />
-          <Field
-            label="Cellphone Number"
-            value={form.cellphone}
-            onChange={(v) => updateField("cellphone", v)}
-          />
-          <Field
-            label="Street Address"
-            value={form.streetAddress}
-            onChange={(v) => updateField("streetAddress", v)}
-          />
-          <Field
-            label="City / Town"
-            value={form.cityTown}
-            onChange={(v) => updateField("cityTown", v)}
-          />
-          <Field
-            label="Postal Code"
-            value={form.postalCode}
-            onChange={(v) => updateField("postalCode", v)}
-          />
-          <Field
-            label="Province"
-            value={form.province}
-            onChange={(v) => updateField("province", v)}
-          />
+          <Field label="Name" value={form.name} onChange={(v) => updateField("name", v)} />
+          <Field label="Surname" value={form.surname} onChange={(v) => updateField("surname", v)} />
+          <Field label="Email" type="email" value={form.email} onChange={(v) => updateField("email", v)} />
+          <Field label="Cellphone Number" value={form.cellphone} onChange={(v) => updateField("cellphone", v)} />
+          <Field label="Street Address" value={form.streetAddress} onChange={(v) => updateField("streetAddress", v)} />
+          <Field label="City / Town" value={form.cityTown} onChange={(v) => updateField("cityTown", v)} />
+          <Field label="Postal Code" value={form.postalCode} onChange={(v) => updateField("postalCode", v)} />
+          <Field label="Province" value={form.province} onChange={(v) => updateField("province", v)} />
           <Field
             label="Unit / Complex / Building"
             value={form.unitComplexBuilding}
@@ -137,11 +125,7 @@ export default function ShippingPage() {
           </button>
         </form>
 
-        <button
-          type="button"
-          onClick={() => router.push("/profile")}
-          style={styles.secondaryBtn}
-        >
+        <button type="button" onClick={() => router.push("/profile")} style={styles.secondaryBtn}>
           Back to profile
         </button>
       </div>
@@ -202,6 +186,15 @@ const styles: Record<string, React.CSSProperties> = {
     opacity: 0.85,
     marginBottom: 18,
     lineHeight: 1.5,
+  },
+  refBox: {
+    marginBottom: 16,
+    padding: 12,
+    borderRadius: 10,
+    background: "#F0FDF4",
+    border: "1px solid #BBF7D0",
+    color: "#166534",
+    fontWeight: 700,
   },
   infoBox: {
     background: "#f8fafc",
