@@ -61,6 +61,8 @@ export default async function ProfilePage() {
     !!subscription?.current_period_end &&
     new Date(subscription.current_period_end).getTime() > Date.now();
 
+  const isAffiliate = !!affiliate;
+
   return (
     <main style={styles.page}>
       <div style={styles.container}>
@@ -117,7 +119,7 @@ export default async function ProfilePage() {
         <div style={styles.card}>
           <h2 style={styles.h2}>Affiliate</h2>
 
-          {affiliate ? (
+          {isAffiliate ? (
             <>
               <p>
                 <strong>Status:</strong> {affiliate.status}
@@ -136,6 +138,12 @@ export default async function ProfilePage() {
                 <strong>Total Paid:</strong> R
                 {Number(affiliate.total_paid ?? 0).toFixed(2)}
               </p>
+
+              <div style={styles.buttonRow}>
+                <Link href="/affiliate/dashboard" style={styles.primaryBtn}>
+                  Go to Affiliate Dashboard
+                </Link>
+              </div>
             </>
           ) : isPremium ? (
             <>
@@ -144,9 +152,11 @@ export default async function ProfilePage() {
                 affiliate.
               </p>
 
-              <Link href="/affiliate/apply" style={styles.primaryBtn}>
-                Apply to Become an Affiliate
-              </Link>
+              <div style={styles.buttonRow}>
+                <Link href="/affiliate/apply" style={styles.primaryBtn}>
+                  Apply to Become an Affiliate
+                </Link>
+              </div>
             </>
           ) : (
             <>
@@ -154,9 +164,11 @@ export default async function ProfilePage() {
                 Only active Premium users can become affiliates.
               </p>
 
-              <Link href="/subscribe" style={styles.secondaryBtn}>
-                Upgrade to Premium
-              </Link>
+              <div style={styles.buttonRow}>
+                <Link href="/subscribe" style={styles.secondaryBtn}>
+                  Upgrade to Premium
+                </Link>
+              </div>
             </>
           )}
         </div>
@@ -255,5 +267,11 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 14,
     color: "#666",
     lineHeight: 1.5,
+  },
+  buttonRow: {
+    display: "flex",
+    gap: 12,
+    flexWrap: "wrap",
+    marginTop: 6,
   },
 };
