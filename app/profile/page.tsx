@@ -1,5 +1,6 @@
 // app/profile/page.tsx
 
+import DownloadQRWallpaper from "@/components/DownloadQRWallpaper";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@supabase/ssr";
@@ -89,6 +90,15 @@ export default async function ProfilePage() {
         )}
 
         <ProfileFormClient initial={profile} showUpgrade={!isPremium} />
+
+{profile?.public_id && (
+  <div style={{ marginTop: 20 }}>
+    <DownloadQRWallpaper
+      publicId={profile.public_id}
+      firstName={profile.first_name}
+    />
+  </div>
+)}
 
         <div style={styles.card}>
           <h2 style={styles.h2}>Subscription Status</h2>
