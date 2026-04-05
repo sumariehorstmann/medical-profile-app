@@ -6,28 +6,52 @@ export default function HomePage() {
     <main style={styles.page}>
       <header style={styles.header}>
         <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
-          <Image src="/logo.png" alt="RROI" width={34} height={34} priority />
+          <Image
+            src="/logo.png"
+            alt="RROI logo"
+            width={40}
+            height={40}
+            style={{ objectFit: "contain" }}
+            priority
+          />
+          <span style={styles.headerBrandText}>RROI</span>
         </Link>
 
-        <Link href="/login" style={styles.loginLink}>
-          Log in
-        </Link>
+        <div style={styles.headerActions}>
+          <Link href="/login" style={styles.loginLink}>
+            Log in
+          </Link>
+
+          <Link href="/login" style={styles.signupLink}>
+            Sign up
+          </Link>
+        </div>
       </header>
 
       <section style={styles.hero}>
         <div style={styles.brand}>
-          <Image src="/logo.png" alt="RROI logo" width={160} height={160} priority />
+          <Image
+            src="/logo.png"
+            alt="RROI logo"
+            width={160}
+            height={160}
+            style={{ objectFit: "contain" }}
+            priority
+          />
+
           <div style={styles.tagline}>Rapid Response Online Information</div>
 
-          <h1 style={styles.h1}>Emergency information, accessible when it matters</h1>
+          <h1 style={styles.h1}>
+            Your emergency information, instantly accessible when it matters most
+          </h1>
 
           <p style={styles.sub}>
-            Create your emergency profile for free and make it accessible via a QR code in urgent
-            situations.
+            Create your emergency profile for free and make critical information
+            accessible via a QR code in emergencies.
           </p>
 
           <Link href="/login" style={styles.primaryBtn}>
-            Sign up
+            Sign up free
           </Link>
 
           <div style={styles.already}>
@@ -38,8 +62,12 @@ export default function HomePage() {
           </div>
 
           <div style={styles.reassure}>
-            Free profile setup • Section 1 visible on free tier • Upgrade later for full public
-            profile visibility
+            Secure • Private • You control your information
+          </div>
+
+          <div style={styles.helperLine}>
+            Free profile setup • Section 1 visible on free tier • Upgrade later
+            for full public profile visibility
           </div>
         </div>
       </section>
@@ -48,9 +76,10 @@ export default function HomePage() {
         <div style={styles.card}>
           <h2 style={styles.h2}>What is RROI?</h2>
           <p style={styles.p}>
-            RROI is an online emergency information profile designed to help make critical personal
-            details accessible when you may not be able to communicate them yourself. Information is
-            accessed by scanning your unique QR code, which links to your public emergency profile.
+            RROI is an online emergency information profile designed to make
+            critical personal details accessible when you are unable to
+            communicate them yourself. Information is accessed by scanning your
+            unique QR code, which links to your public emergency profile.
           </p>
         </div>
 
@@ -62,7 +91,8 @@ export default function HomePage() {
             <div>
               <div style={styles.stepTitle}>Sign up for free</div>
               <div style={styles.stepText}>
-                Create your account and complete your full emergency profile at no cost.
+                Create your account and complete your full emergency profile at
+                no cost.
               </div>
             </div>
           </div>
@@ -72,8 +102,8 @@ export default function HomePage() {
             <div>
               <div style={styles.stepTitle}>Free tier shows Section 1 only</div>
               <div style={styles.stepText}>
-                When your QR code is scanned on the free tier, only your Section 1 public emergency
-                details are visible.
+                When your QR code is scanned on the free tier, only your Section
+                1 public emergency details are visible.
               </div>
             </div>
           </div>
@@ -81,13 +111,27 @@ export default function HomePage() {
           <div style={styles.step}>
             <div style={styles.stepNum}>3</div>
             <div>
-              <div style={styles.stepTitle}>Upgrade when you want full visibility</div>
+              <div style={styles.stepTitle}>
+                Upgrade when you want full visibility
+              </div>
               <div style={styles.stepText}>
-                Upgrade to Premium only when you want your full medical profile to be visible when
-                the QR code is scanned.
+                Upgrade to Premium when you want your full medical profile to be
+                visible when your QR code is scanned.
               </div>
             </div>
           </div>
+        </div>
+
+        <div style={styles.card}>
+          <h2 style={styles.h2}>What you receive</h2>
+          <ul style={styles.ul}>
+            <li>A personal QR code linked to your emergency profile</li>
+            <li>A downloadable QR code lock screen for your phone</li>
+            <li>A secure online profile you can update at any time</li>
+            <li>
+              Three physical QR items with free nationwide delivery on Premium
+            </li>
+          </ul>
         </div>
 
         <div style={styles.card}>
@@ -98,19 +142,26 @@ export default function HomePage() {
             <ul style={styles.ul}>
               <li>Create an account for free</li>
               <li>Complete and save your full profile</li>
-              <li>Public QR view shows Section 1 only</li>
+              <li>Public QR code view shows Section 1 only</li>
+              <li>Downloadable QR code lock screen for your phone</li>
               <li>Upgrade later at any time</li>
             </ul>
           </div>
 
           <div style={styles.compareBlock}>
             <div style={styles.compareTitle}>Premium</div>
-            <div style={styles.price}>R299 per year</div>
+            <div style={styles.price}>R349 once-off</div>
+            <div style={styles.priceSub}>
+              Includes your first year subscription
+            </div>
+            <div style={styles.priceSubStrong}>R99 per year thereafter</div>
+
             <ul style={styles.ul}>
-              <li>Full medical profile visible when QR is scanned</li>
-              <li>Secure online emergency profile</li>
+              <li>Full medical profile visible when your QR code is scanned</li>
+              <li>Downloadable QR code lock screen for your phone</li>
               <li>Three physical QR items included</li>
-              <li>Nationwide delivery</li>
+              <li>Free nationwide delivery included</li>
+              <li>Secure online emergency profile</li>
             </ul>
           </div>
 
@@ -122,10 +173,10 @@ export default function HomePage() {
         <div style={styles.card}>
           <h2 style={styles.h2}>Affiliates</h2>
           <p style={styles.p}>
-            If you would like to promote RROI and earn commission on successful referrals, you can
-            apply to become an affiliate.
+            Earn commission by sharing RROI. Get 10% on every successful Premium
+            signup using your referral code.
           </p>
-          <Link href="/affiliate" style={styles.secondaryBtn}>
+          <Link href="/affiliate/terms" style={styles.secondaryBtn}>
             Apply to become an affiliate
           </Link>
         </div>
@@ -133,12 +184,18 @@ export default function HomePage() {
         <div style={styles.notice}>
           <strong>Important notice</strong>
           <p style={styles.noticeP}>
-            RROI does not provide medical advice, diagnosis, or emergency services. RROI is not a
-            replacement for professional medical care or emergency response services. In an
-            emergency, always contact local emergency services.
+            RROI does not provide medical advice, diagnosis, or emergency
+            services. RROI is not a replacement for professional medical care or
+            emergency response services. In an emergency, always contact local
+            emergency services.
           </p>
           <p style={styles.noticeP}>
-            Information is provided by the user and may not be complete or up to date.
+            RROI is an information-sharing tool only and does not guarantee
+            emergency response or medical outcomes.
+          </p>
+          <p style={styles.noticeP}>
+            Information is provided by the user and may not always be complete
+            or up to date.
           </p>
         </div>
       </section>
@@ -158,21 +215,27 @@ export default function HomePage() {
   );
 }
 
+const BRAND_GREEN = "#157A55";
+const TEXT = "#0F172A";
+const BORDER = "#E5E7EB";
+const MUTED = "#475569";
+
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
     background: "#FFFFFF",
-    color: "#0F172A",
+    color: TEXT,
   },
   header: {
-    height: 64,
+    height: 68,
     padding: "0 16px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    borderBottom: "1px solid #E5E7EB",
+    borderBottom: `1px solid ${BORDER}`,
+    background: "#FFFFFF",
   },
   headerLogo: {
     display: "flex",
@@ -180,74 +243,105 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 10,
     textDecoration: "none",
   },
+  headerBrandText: {
+    color: TEXT,
+    fontWeight: 900,
+    fontSize: 16,
+    letterSpacing: 0.2,
+  },
+  headerActions: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+  },
   loginLink: {
     textDecoration: "none",
-    fontWeight: 700,
-    color: "#157A55",
+    fontWeight: 800,
+    color: BRAND_GREEN,
     padding: "8px 10px",
     borderRadius: 12,
   },
+  signupLink: {
+    textDecoration: "none",
+    fontWeight: 900,
+    color: "#FFFFFF",
+    background: BRAND_GREEN,
+    padding: "8px 14px",
+    borderRadius: 10,
+  },
   hero: {
-    padding: "28px 16px 16px",
+    padding: "34px 16px 18px",
     display: "flex",
     justifyContent: "center",
   },
   brand: {
     width: "100%",
-    maxWidth: 560,
+    maxWidth: 620,
     textAlign: "center",
   },
   tagline: {
-    marginTop: 10,
-    fontSize: 14,
+    marginTop: 12,
+    fontSize: 15,
     fontWeight: 800,
     letterSpacing: 0.2,
-    opacity: 0.9,
+    opacity: 0.95,
   },
   h1: {
-    marginTop: 14,
-    marginBottom: 10,
+    marginTop: 16,
+    marginBottom: 14,
     fontSize: 28,
     lineHeight: 1.15,
+    fontWeight: 900,
   },
   sub: {
     margin: "0 0 14px",
-    fontSize: 16,
+    fontSize: 18,
     lineHeight: 1.5,
-    opacity: 0.9,
+    color: "#334155",
   },
   primaryBtn: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    maxWidth: 320,
-    padding: "12px 16px",
+    maxWidth: 340,
+    padding: "14px 18px",
     borderRadius: 14,
-    background: "#157A55",
+    background: BRAND_GREEN,
     color: "#FFFFFF",
     textDecoration: "none",
-    fontWeight: 800,
-    margin: "8px auto 0",
+    fontWeight: 900,
+    fontSize: 16,
+    margin: "10px auto 0",
+    boxShadow: "0 6px 16px rgba(21, 122, 85, 0.16)",
   },
   already: {
-    marginTop: 10,
-    fontSize: 14,
+    marginTop: 12,
+    fontSize: 15,
   },
-  alreadyText: { opacity: 0.85 },
+  alreadyText: {
+    color: MUTED,
+  },
   alreadyLink: {
-    color: "#157A55",
+    color: BRAND_GREEN,
     fontWeight: 800,
     textDecoration: "none",
   },
   reassure: {
+    marginTop: 14,
+    fontSize: 14,
+    fontWeight: 700,
+    color: MUTED,
+    lineHeight: 1.5,
+  },
+  helperLine: {
     marginTop: 10,
     fontSize: 13,
-    opacity: 0.85,
+    color: MUTED,
     lineHeight: 1.5,
   },
   blocks: {
-    padding: "10px 16px 24px",
+    padding: "10px 16px 28px",
     display: "flex",
     flexDirection: "column",
     gap: 14,
@@ -255,91 +349,124 @@ const styles: Record<string, React.CSSProperties> = {
   },
   card: {
     width: "100%",
-    maxWidth: 560,
-    border: "1px solid #E5E7EB",
+    maxWidth: 620,
+    border: `1px solid ${BORDER}`,
     borderRadius: 16,
-    padding: 16,
+    padding: 18,
     background: "#FFFFFF",
   },
-  h2: { margin: "0 0 8px", fontSize: 18 },
-  p: { margin: 0, lineHeight: 1.55, opacity: 0.92 },
+  h2: {
+    margin: "0 0 10px",
+    fontSize: 18,
+    fontWeight: 900,
+  },
+  p: {
+    margin: 0,
+    lineHeight: 1.6,
+    color: "#334155",
+  },
   step: {
     display: "flex",
-    gap: 10,
+    gap: 12,
     alignItems: "flex-start",
-    padding: "10px 0",
+    padding: "12px 0",
     borderTop: "1px solid #EEF2F7",
   },
   stepNum: {
-    width: 26,
-    height: 26,
+    width: 28,
+    height: 28,
     borderRadius: 999,
-    background: "#157A55",
+    background: BRAND_GREEN,
     color: "#FFFFFF",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontWeight: 800,
+    fontWeight: 900,
     flex: "0 0 auto",
     marginTop: 2,
   },
-  stepTitle: { fontWeight: 800, marginBottom: 2 },
-  stepText: { opacity: 0.9, lineHeight: 1.45 },
+  stepTitle: {
+    fontWeight: 900,
+    marginBottom: 3,
+    fontSize: 16,
+  },
+  stepText: {
+    color: "#334155",
+    lineHeight: 1.5,
+  },
   compareBlock: {
     borderTop: "1px solid #EEF2F7",
-    paddingTop: 12,
-    marginTop: 12,
+    paddingTop: 14,
+    marginTop: 14,
   },
   compareTitle: {
-    fontSize: 16,
-    fontWeight: 800,
+    fontSize: 18,
+    fontWeight: 900,
     marginBottom: 6,
   },
   price: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: 900,
-    margin: "6px 0 10px",
+    margin: "6px 0 4px",
+  },
+  priceSub: {
+    fontSize: 14,
+    color: MUTED,
+    marginBottom: 4,
+  },
+  priceSubStrong: {
+    fontSize: 15,
+    fontWeight: 800,
+    color: TEXT,
+    marginBottom: 12,
   },
   ul: {
     margin: "0 0 14px",
     paddingLeft: 18,
-    lineHeight: 1.6,
-    opacity: 0.92,
+    lineHeight: 1.75,
+    color: "#334155",
   },
   secondaryBtn: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "10px 14px",
+    padding: "11px 16px",
     borderRadius: 14,
-    border: "1px solid #157A55",
-    color: "#157A55",
+    border: `1px solid ${BRAND_GREEN}`,
+    color: BRAND_GREEN,
     textDecoration: "none",
-    fontWeight: 800,
+    fontWeight: 900,
     marginTop: 12,
+    background: "#FFFFFF",
   },
   notice: {
     width: "100%",
-    maxWidth: 560,
-    border: "1px solid #E5E7EB",
+    maxWidth: 620,
+    border: `1px solid ${BORDER}`,
     borderRadius: 16,
-    padding: 16,
+    padding: 18,
     background: "#F8FAFC",
   },
-  noticeP: { margin: "8px 0 0", lineHeight: 1.55, opacity: 0.9, fontSize: 14 },
+  noticeP: {
+    margin: "8px 0 0",
+    lineHeight: 1.6,
+    color: "#334155",
+    fontSize: 14,
+  },
   footer: {
     marginTop: "auto",
-    borderTop: "1px solid #E5E7EB",
-    padding: "16px",
+    borderTop: `1px solid ${BORDER}`,
+    padding: "18px 16px",
     display: "flex",
     gap: 14,
     justifyContent: "center",
     flexWrap: "wrap",
+    background: "#FFFFFF",
   },
   footerLink: {
     textDecoration: "none",
-    color: "#0F172A",
-    fontWeight: 700,
-    opacity: 0.85,
+    color: TEXT,
+    fontWeight: 800,
+    opacity: 0.9,
   },
 };
