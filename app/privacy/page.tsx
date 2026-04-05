@@ -1,6 +1,11 @@
+import PageHeader from "@/components/PageHeader";
+import Link from "next/link";
+
 export default function PrivacyPage() {
   return (
     <main style={{ maxWidth: 800, margin: "40px auto", padding: 20 }}>
+      <PageHeader />
+
       <h1>Privacy Policy</h1>
 
       <p><strong>Last updated:</strong> {new Date().toLocaleDateString()}</p>
@@ -54,6 +59,23 @@ export default function PrivacyPage() {
       <p>
         Email: rapidresponseonlineinfo@gmail.com
       </p>
+
+      {/* Back to Home Button */}
+      <div style={{ marginTop: 40, display: "flex", justifyContent: "center" }}>
+        <Link
+          href="/"
+          style={{
+            textDecoration: "none",
+            fontWeight: 900,
+            color: "#FFFFFF",
+            background: "#157A55",
+            padding: "12px 18px",
+            borderRadius: 12,
+          }}
+        >
+          ← Back to Home
+        </Link>
+      </div>
     </main>
   );
 }

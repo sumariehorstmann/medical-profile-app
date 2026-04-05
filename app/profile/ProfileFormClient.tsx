@@ -122,16 +122,39 @@ function Section({
 }) {
   return (
     <section style={cardStyle}>
-      <div style={{ marginBottom: 12 }}>
-        <div style={{ fontSize: 20, fontWeight: 900 }}>{title}</div>
-        {subtitle ? (
-          <div style={{ marginTop: 4, color: "#444", fontSize: 13 }}>
-            {subtitle}
-          </div>
-        ) : null}
+      <div style={{ marginBottom: 14 }}>
+        <div style={sectionTitleStyle}>{title}</div>
+        {subtitle ? <div style={sectionSubtitleStyle}>{subtitle}</div> : null}
       </div>
       {children}
     </section>
+  );
+}
+
+function LockedSection({
+  locked,
+  children,
+}: {
+  locked: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div style={{ position: "relative" }}>
+      {locked ? (
+        <div style={lockedOverlayStyle}>
+          <div style={lockedOverlayInnerStyle}>
+            <div style={{ fontSize: 18, marginBottom: 6 }}>🔒 Premium Required</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#475569", lineHeight: 1.5 }}>
+              These details can be completed after upgrading to Premium.
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <div style={{ pointerEvents: locked ? "none" : "auto", opacity: locked ? 0.55 : 1 }}>
+        {children}
+      </div>
+    </div>
   );
 }
 
@@ -148,13 +171,11 @@ function Field({
 }) {
   return (
     <div style={{ marginBottom: 14 }}>
-      <div style={{ fontWeight: 700, marginBottom: 6 }}>
+      <div style={fieldLabelStyle}>
         {label} {required ? <span style={{ color: "#b00020" }}>*</span> : null}
       </div>
       {children}
-      {hint ? (
-        <div style={{ marginTop: 6, fontSize: 12, color: "#555" }}>{hint}</div>
-      ) : null}
+      {hint ? <div style={fieldHintStyle}>{hint}</div> : null}
     </div>
   );
 }
@@ -233,13 +254,26 @@ export default function ProfileFormClient({
   const [message, setMessage] = useState<string | null>(null);
 
   const age = useMemo(() => calcAge(dateOfBirth || null), [dateOfBirth]);
+  const isLocked = showUpgrade;
 
   function validateRequired(): string | null {
     if (!firstName.trim()) return "First name is required.";
     if (!lastName.trim()) return "Last name is required.";
     if (!em1Name.trim()) return "Emergency Contact 1 name + surname is required.";
     if (!em1Rel.trim()) return "Emergency Contact 1 relationship is required.";
-    if (!normalizePhone(em1Phone)) return "Emergency Contact 1 phone is required.";
+
+    if (!/^\d{10,15}$/.test(normalizePhone(em1Phone))) {
+      return "Emergency Contact 1 phone must contain 10 to 15 digits only.";
+    }
+
+    if (em2Phone.trim() && !/^\d{10,15}$/.test(normalizePhone(em2Phone))) {
+      return "Emergency Contact 2 phone must contain 10 to 15 digits only.";
+    }
+
+    if (gpPhone.trim() && !/^\d{10,15}$/.test(normalizePhone(gpPhone))) {
+      return "GP phone must contain 10 to 15 digits only.";
+    }
+
     return null;
   }
 
@@ -315,7 +349,7 @@ export default function ProfileFormClient({
         throw new Error(json?.error || "Failed to save profile");
       }
 
-      setMessage("✅ Saved.");
+      setMessage("✅ Profile saved successfully.");
       router.refresh();
     } catch (error: any) {
       setMessage(`❌ ${error?.message || "Something went wrong"}`);
@@ -341,28 +375,9 @@ export default function ProfileFormClient({
 
   return (
     <form onSubmit={handleSave}>
-      <div
-        style={{
-          marginBottom: 18,
-          padding: 14,
-          border: "1px solid #eee",
-          borderRadius: 12,
-          background: "#f8fafc",
-          fontSize: 14,
-          lineHeight: 1.6,
-        }}
-      >
-        <strong>How RROI works:</strong>
-        <ul style={{ margin: "8px 0 0", paddingLeft: 18 }}>
-          <li>Section 1 is visible when your QR is scanned on the Free plan</li>
-          <li>You can still complete and save your full profile on the Free plan</li>
-          <li>Premium unlocks full public profile visibility when your QR is scanned</li>
-        </ul>
-      </div>
-
       <Section
-        title="Section 1 — Public (Free Tier)"
-        subtitle="These details are visible when your QR code is scanned on the Free plan."
+        title="Public Free Tier"
+        subtitle="Section 1. These details are visible when your QR code is scanned on the Free plan."
       >
         <Field label="First name" required>
           <input
@@ -410,314 +425,338 @@ export default function ProfileFormClient({
             value={em1Phone}
             onChange={(e) => setEm1Phone(e.target.value)}
             placeholder="e.g. 0821234567"
+            inputMode="numeric"
           />
         </Field>
 
-        <div
-          style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}
-        >
-          <div>
-            <div style={{ fontWeight: 800, marginBottom: 8 }}>Your QR code</div>
-            <div
-              style={{
-                background: "#fff",
-                border: "1px solid #eee",
-                padding: 12,
-                borderRadius: 12,
-              }}
-            >
+        <div style={{ marginTop: 18 }}>
+          <div style={qrHeadingStyle}>Your QR code</div>
+
+          <div style={qrRowStyle}>
+            <div style={qrCardStyle}>
               <QRCodeSVG id={qrSvgId} value={publicUrl || " "} size={180} />
             </div>
-          </div>
 
-          <div style={{ minWidth: 280 }}>
-            <div style={{ fontSize: 14, marginBottom: 10, lineHeight: 1.5 }}>
-              <b>Public link:</b> {publicPath || "(saving your profile will generate this)"}
+            <div style={{ minWidth: 280, flex: 1 }}>
+              <div style={{ fontSize: 14, marginBottom: 10, lineHeight: 1.5 }}>
+                <b>Public link:</b>
+                <div style={publicLinkStyle}>
+                  {publicUrl || "(saving your profile will generate this)"}
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  style={primaryBtnStyle}
+                  onClick={() => downloadQrAsPng(qrSvgId, "rroi-qr.png")}
+                  disabled={!publicUrl}
+                >
+                  Download QR (PNG)
+                </button>
+
+                <button
+                  type="button"
+                  style={secondaryBtnStyle}
+                  onClick={() => {
+                    if (publicUrl) {
+                      navigator.clipboard.writeText(publicUrl);
+                      setMessage("✅ Link copied.");
+                    }
+                  }}
+                  disabled={!publicUrl}
+                >
+                  Copy Link
+                </button>
+              </div>
             </div>
-
-            <button
-              type="button"
-              style={btnStyle}
-              onClick={() => downloadQrAsPng(qrSvgId, "rroi-qr.png")}
-              disabled={!publicUrl}
-            >
-              Download QR (PNG)
-            </button>
           </div>
         </div>
       </Section>
 
       <Section
-        title="Section 2 — Premium (Visible when upgraded)"
-        subtitle="These details can be completed on any plan, but they are only publicly visible when Premium is active."
+        title="Premium — Visible when upgraded"
+        subtitle="Section 2. These details can be completed on any plan, but they are only publicly visible when Premium is active."
       >
-        <Field label="Emergency Contact 2 — Name + surname">
-          <input
-            style={inputStyle}
-            value={em2Name}
-            onChange={(e) => setEm2Name(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
+        <LockedSection locked={isLocked}>
+          <Field label="Emergency Contact 2 — Name + surname">
+            <input
+              style={inputStyle}
+              value={em2Name}
+              onChange={(e) => setEm2Name(e.target.value)}
+              placeholder="Optional"
+            />
+          </Field>
 
-        <Field label="Emergency Contact 2 — Relationship">
-          <input
-            style={inputStyle}
-            value={em2Rel}
-            onChange={(e) => setEm2Rel(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
+          <Field label="Emergency Contact 2 — Relationship">
+            <input
+              style={inputStyle}
+              value={em2Rel}
+              onChange={(e) => setEm2Rel(e.target.value)}
+              placeholder="Optional"
+            />
+          </Field>
 
-        <Field label="Emergency Contact 2 — Phone">
-          <input
-            style={inputStyle}
-            value={em2Phone}
-            onChange={(e) => setEm2Phone(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-
-        <Field label="Gender">
-          <select
-            style={inputStyle}
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-          >
-            <option value="">(not set)</option>
-            <option value="Female">Female</option>
-            <option value="Male">Male</option>
-            <option value="Other">Other</option>
-            <option value="Prefer not to say">Prefer not to say</option>
-          </select>
-        </Field>
-
-        <Field label="Date of birth">
-          <input
-            style={inputStyle}
-            type="date"
-            value={dateOfBirth}
-            onChange={(e) => setDateOfBirth(e.target.value)}
-          />
-        </Field>
-
-        <Field label="Age (auto)">
-          <input
-            style={inputStyle}
-            value={age == null ? "" : String(age)}
-            readOnly
-            placeholder="Auto-calculated"
-          />
-        </Field>
-
-        <Field label="Blood type">
-          <select
-            style={inputStyle}
-            value={bloodType}
-            onChange={(e) => setBloodType(e.target.value)}
-          >
-            <option value="">(not set)</option>
-            <option value="O-">O-</option>
-            <option value="O+">O+</option>
-            <option value="A-">A-</option>
-            <option value="A+">A+</option>
-            <option value="B-">B-</option>
-            <option value="B+">B+</option>
-            <option value="AB-">AB-</option>
-            <option value="AB+">AB+</option>
-            <option value="Unknown">Unknown</option>
-          </select>
-        </Field>
-
-        <Field label="Allergies">
-          <input
-            style={inputStyle}
-            value={allergies}
-            onChange={(e) => setAllergies(e.target.value)}
-            placeholder="e.g. Penicillin / Bee stings"
-          />
-        </Field>
-
-        <Field label="Chronic illnesses + other conditions">
-          <input
-            style={inputStyle}
-            value={conditions}
-            onChange={(e) => setConditions(e.target.value)}
-            placeholder="e.g. Asthma / Diabetes / Epilepsy"
-          />
-        </Field>
-
-        <Field label="Medications">
-          <input
-            style={inputStyle}
-            value={medications}
-            onChange={(e) => setMedications(e.target.value)}
-            placeholder="e.g. Insulin / Inhaler"
-          />
-        </Field>
-
-        <Field label="Important notes">
-          <textarea
-            style={{ ...inputStyle, minHeight: 90 }}
-            value={specialNotes}
-            onChange={(e) => setSpecialNotes(e.target.value)}
-            placeholder="Anything an emergency responder must know."
-          />
-        </Field>
+          <Field label="Emergency Contact 2 — Phone">
+            <input
+              style={inputStyle}
+              value={em2Phone}
+              onChange={(e) => setEm2Phone(e.target.value)}
+              placeholder="Optional"
+              inputMode="numeric"
+            />
+          </Field>
+        </LockedSection>
       </Section>
 
-      <Section title="Section 3 — Optional">
-        <Field label="Primary language">
-          <input
-            style={inputStyle}
-            value={primaryLanguage}
-            onChange={(e) => setPrimaryLanguage(e.target.value)}
-            placeholder="e.g. Afrikaans"
-          />
-        </Field>
+      <Section title="Section 3">
+        <LockedSection locked={isLocked}>
+          <Field label="Gender">
+            <select
+              style={inputStyle}
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option value="">(not set)</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+              <option value="Prefer not to say">Prefer not to say</option>
+            </select>
+          </Field>
 
-        <Field label="Secondary language (optional)">
-          <input
-            style={inputStyle}
-            value={secondaryLanguage}
-            onChange={(e) => setSecondaryLanguage(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
+          <Field label="Date of birth">
+            <input
+              style={inputStyle}
+              type="date"
+              value={dateOfBirth}
+              onChange={(e) => setDateOfBirth(e.target.value)}
+            />
+          </Field>
 
-        <Field label="Medical aid provider">
-          <input
-            style={inputStyle}
-            value={medicalAidProvider}
-            onChange={(e) => setMedicalAidProvider(e.target.value)}
-            placeholder="e.g. Discovery"
-          />
-        </Field>
+          <Field label="Age (auto)">
+            <input
+              style={inputStyle}
+              value={age == null ? "" : String(age)}
+              readOnly
+              placeholder="Auto-calculated"
+            />
+          </Field>
 
-        <Field label="Medical aid policy number">
-          <input
-            style={inputStyle}
-            value={medicalAidPolicy}
-            onChange={(e) => setMedicalAidPolicy(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
+          <Field label="Blood type">
+            <select
+              style={inputStyle}
+              value={bloodType}
+              onChange={(e) => setBloodType(e.target.value)}
+            >
+              <option value="">(not set)</option>
+              <option value="O-">O-</option>
+              <option value="O+">O+</option>
+              <option value="A-">A-</option>
+              <option value="A+">A+</option>
+              <option value="B-">B-</option>
+              <option value="B+">B+</option>
+              <option value="AB-">AB-</option>
+              <option value="AB+">AB+</option>
+              <option value="Unknown">Unknown</option>
+            </select>
+          </Field>
 
-        <div style={{ fontWeight: 900, margin: "10px 0 12px" }}>GP</div>
+          <Field label="Allergies">
+            <input
+              style={inputStyle}
+              value={allergies}
+              onChange={(e) => setAllergies(e.target.value)}
+              placeholder="e.g. Penicillin / Bee stings"
+            />
+          </Field>
 
-        <Field label="GP name">
-          <input
-            style={inputStyle}
-            value={gpName}
-            onChange={(e) => setGpName(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
+          <Field label="Chronic illnesses">
+            <input
+              style={inputStyle}
+              value={conditions}
+              onChange={(e) => setConditions(e.target.value)}
+              placeholder="e.g. Asthma / Diabetes / Epilepsy"
+            />
+          </Field>
 
-        <Field label="GP practice">
-          <input
-            style={inputStyle}
-            value={gpPractice}
-            onChange={(e) => setGpPractice(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
+          <Field label="Medications">
+            <input
+              style={inputStyle}
+              value={medications}
+              onChange={(e) => setMedications(e.target.value)}
+              placeholder="e.g. Insulin / Inhaler"
+            />
+          </Field>
 
-        <Field label="GP phone">
-          <input
-            style={inputStyle}
-            value={gpPhone}
-            onChange={(e) => setGpPhone(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-
-        <Field label="Religion (optional)">
-          <input
-            style={inputStyle}
-            value={religion}
-            onChange={(e) => setReligion(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
+          <Field label="Important notes">
+            <textarea
+              style={{ ...inputStyle, minHeight: 100 }}
+              value={specialNotes}
+              onChange={(e) => setSpecialNotes(e.target.value)}
+              placeholder="Anything an emergency responder must know."
+            />
+          </Field>
+        </LockedSection>
       </Section>
 
-      <Section title="Section 4 (Identification) — Optional">
-        <Field label="Height (cm)">
-          <input
-            style={inputStyle}
-            value={heightCm}
-            onChange={(e) => setHeightCm(e.target.value)}
-            placeholder="e.g. 170"
-            inputMode="numeric"
-          />
-        </Field>
+      <Section title="Section 4">
+        <LockedSection locked={isLocked}>
+          <Field label="Primary language">
+            <input
+              style={inputStyle}
+              value={primaryLanguage}
+              onChange={(e) => setPrimaryLanguage(e.target.value)}
+              placeholder="e.g. Afrikaans"
+            />
+          </Field>
 
-        <Field label="Weight (kg)">
-          <input
-            style={inputStyle}
-            value={weightKg}
-            onChange={(e) => setWeightKg(e.target.value)}
-            placeholder="e.g. 70"
-            inputMode="numeric"
-          />
-        </Field>
+          <Field label="Secondary language (optional)">
+            <input
+              style={inputStyle}
+              value={secondaryLanguage}
+              onChange={(e) => setSecondaryLanguage(e.target.value)}
+              placeholder="Optional"
+            />
+          </Field>
 
-        <Field label="Eye color">
-          <input
-            style={inputStyle}
-            value={eyeColor}
-            onChange={(e) => setEyeColor(e.target.value)}
-            placeholder="e.g. Brown"
-          />
-        </Field>
+          <Field label="Medical aid provider">
+            <input
+              style={inputStyle}
+              value={medicalAidProvider}
+              onChange={(e) => setMedicalAidProvider(e.target.value)}
+              placeholder="e.g. Discovery"
+            />
+          </Field>
 
-        <Field label="Hair color">
-          <input
-            style={inputStyle}
-            value={hairColor}
-            onChange={(e) => setHairColor(e.target.value)}
-            placeholder="e.g. Blonde"
-          />
-        </Field>
+          <Field label="Medical aid policy number">
+            <input
+              style={inputStyle}
+              value={medicalAidPolicy}
+              onChange={(e) => setMedicalAidPolicy(e.target.value)}
+              placeholder="Optional"
+            />
+          </Field>
 
-        <Field label="Identifying marks (tattoos/scars/birthmarks)">
-          <textarea
-            style={{ ...inputStyle, minHeight: 80 }}
-            value={identifyingMarks}
-            onChange={(e) => setIdentifyingMarks(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
+          <Field label="GP name">
+            <input
+              style={inputStyle}
+              value={gpName}
+              onChange={(e) => setGpName(e.target.value)}
+              placeholder="Optional"
+            />
+          </Field>
 
-        <Field label="Skin tone">
-          <select
-            style={inputStyle}
-            value={skinTone}
-            onChange={(e) => setSkinTone(e.target.value)}
-          >
-            <option value="">(not set)</option>
-            <option value="Very fair">Very fair</option>
-            <option value="Fair">Fair</option>
-            <option value="Light">Light</option>
-            <option value="Medium">Medium</option>
-            <option value="Tan">Tan</option>
-            <option value="Brown">Brown</option>
-            <option value="Dark brown">Dark brown</option>
-            <option value="Very dark">Very dark</option>
-          </select>
-        </Field>
+          <Field label="GP practice">
+            <input
+              style={inputStyle}
+              value={gpPractice}
+              onChange={(e) => setGpPractice(e.target.value)}
+              placeholder="Optional"
+            />
+          </Field>
+
+          <Field label="GP phone">
+            <input
+              style={inputStyle}
+              value={gpPhone}
+              onChange={(e) => setGpPhone(e.target.value)}
+              placeholder="Optional"
+              inputMode="numeric"
+            />
+          </Field>
+
+          <Field label="Religion (optional)">
+            <input
+              style={inputStyle}
+              value={religion}
+              onChange={(e) => setReligion(e.target.value)}
+              placeholder="Optional"
+            />
+          </Field>
+        </LockedSection>
       </Section>
 
-      <Section title="Additional notes — Optional">
-        <Field label="Additional notes">
-          <textarea
-            style={{ ...inputStyle, minHeight: 120 }}
-            value={additionalNotes}
-            onChange={(e) => setAdditionalNotes(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
+      <Section title="Section 5">
+        <LockedSection locked={isLocked}>
+          <Field label="Height (cm)">
+            <input
+              style={inputStyle}
+              value={heightCm}
+              onChange={(e) => setHeightCm(e.target.value)}
+              placeholder="e.g. 170"
+              inputMode="numeric"
+            />
+          </Field>
+
+          <Field label="Weight (kg)">
+            <input
+              style={inputStyle}
+              value={weightKg}
+              onChange={(e) => setWeightKg(e.target.value)}
+              placeholder="e.g. 70"
+              inputMode="numeric"
+            />
+          </Field>
+
+          <Field label="Eye color">
+            <input
+              style={inputStyle}
+              value={eyeColor}
+              onChange={(e) => setEyeColor(e.target.value)}
+              placeholder="e.g. Brown"
+            />
+          </Field>
+
+          <Field label="Hair color">
+            <input
+              style={inputStyle}
+              value={hairColor}
+              onChange={(e) => setHairColor(e.target.value)}
+              placeholder="e.g. Blonde"
+            />
+          </Field>
+
+          <Field label="Identifying marks (tattoos/scars/birthmarks)">
+            <textarea
+              style={{ ...inputStyle, minHeight: 90 }}
+              value={identifyingMarks}
+              onChange={(e) => setIdentifyingMarks(e.target.value)}
+              placeholder="Optional"
+            />
+          </Field>
+
+          <Field label="Skin tone">
+            <select
+              style={inputStyle}
+              value={skinTone}
+              onChange={(e) => setSkinTone(e.target.value)}
+            >
+              <option value="">(not set)</option>
+              <option value="Very fair">Very fair</option>
+              <option value="Fair">Fair</option>
+              <option value="Light">Light</option>
+              <option value="Medium">Medium</option>
+              <option value="Tan">Tan</option>
+              <option value="Brown">Brown</option>
+              <option value="Dark brown">Dark brown</option>
+              <option value="Very dark">Very dark</option>
+            </select>
+          </Field>
+        </LockedSection>
+      </Section>
+
+      <Section title="Section 6">
+        <LockedSection locked={isLocked}>
+          <Field label="Additional notes">
+            <textarea
+              style={{ ...inputStyle, minHeight: 120 }}
+              value={additionalNotes}
+              onChange={(e) => setAdditionalNotes(e.target.value)}
+              placeholder="Optional"
+            />
+          </Field>
+        </LockedSection>
       </Section>
 
       <div style={{ marginTop: 20, marginBottom: 16 }}>
@@ -737,7 +776,8 @@ export default function ProfileFormClient({
           />
 
           <span>
-            I consent to the processing of my personal information in accordance with the{" "}
+            I consent to the processing of my personal information in accordance
+            with the{" "}
             <a
               href="/privacy"
               target="_blank"
@@ -745,52 +785,33 @@ export default function ProfileFormClient({
               style={{ textDecoration: "underline", fontWeight: 600 }}
             >
               Privacy Policy
-            </a>.
+            </a>
+            .
           </span>
         </label>
 
-        {!consent && (
+        {!consent ? (
           <div style={{ marginTop: 8, fontSize: 13, color: "#666" }}>
             You must read and accept the Privacy Policy before saving your profile.
           </div>
-        )}
+        ) : null}
       </div>
 
       {showUpgrade ? (
-        <div
-          style={{
-            marginBottom: 12,
-            padding: 10,
-            borderRadius: 10,
-            background: "#fff3cd",
-            border: "1px solid #ffeeba",
-            fontSize: 13,
-            fontWeight: 600,
-          }}
-        >
+        <div style={freePlanBannerStyle}>
           You are on the Free plan. Only Section 1 is visible when your QR is scanned.
         </div>
       ) : (
-        <div
-          style={{
-            marginBottom: 12,
-            padding: 10,
-            borderRadius: 10,
-            background: "#e6f4ea",
-            border: "1px solid #c3e6cb",
-            fontSize: 13,
-            fontWeight: 600,
-          }}
-        >
+        <div style={premiumPlanBannerStyle}>
           Premium is active. Your full profile is visible when your QR is scanned.
         </div>
       )}
 
-      <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+      <div style={actionRowStyle}>
         <button
           type="submit"
           style={{
-            ...btnStyle,
+            ...primaryBtnStyle,
             opacity: !consent ? 0.5 : 1,
             cursor: !consent ? "not-allowed" : "pointer",
           }}
@@ -799,20 +820,20 @@ export default function ProfileFormClient({
           {loading ? "Saving..." : "Save profile"}
         </button>
 
-        {showUpgrade && (
+        {showUpgrade ? (
           <button
             type="button"
-            style={btnStyleSecondary}
+            style={secondaryBtnStyle}
             onClick={() => router.push("/subscribe")}
             disabled={loading}
           >
             Unlock Full Profile (Premium)
           </button>
-        )}
+        ) : null}
 
         <button
           type="button"
-          style={btnStyleSecondary}
+          style={secondaryBtnStyle}
           onClick={handleLogout}
           disabled={loading}
         >
@@ -821,7 +842,7 @@ export default function ProfileFormClient({
 
         <button
           type="button"
-          style={btnStyleSecondary}
+          style={secondaryBtnStyle}
           onClick={async () => {
             const confirmText = window.prompt(
               "Type DELETE to permanently delete your profile and subscription data."
@@ -865,45 +886,159 @@ export default function ProfileFormClient({
         </button>
       </div>
 
-      {message ? (
-        <div style={{ marginTop: 12, fontWeight: 700 }}>{message}</div>
-      ) : null}
+      {message ? <div style={messageStyle}>{message}</div> : null}
     </form>
   );
 }
 
 const cardStyle: React.CSSProperties = {
-  border: "1px solid #eee",
+  border: "1px solid #E5E7EB",
   borderRadius: 16,
   padding: 18,
   marginBottom: 18,
-  background: "#fff",
+  background: "#FFFFFF",
+};
+
+const sectionTitleStyle: React.CSSProperties = {
+  fontSize: 20,
+  fontWeight: 900,
+  color: "#0F172A",
+};
+
+const sectionSubtitleStyle: React.CSSProperties = {
+  marginTop: 4,
+  color: "#475569",
+  fontSize: 13,
+  lineHeight: 1.5,
+};
+
+const fieldLabelStyle: React.CSSProperties = {
+  fontWeight: 700,
+  marginBottom: 6,
+  color: "#0F172A",
+};
+
+const fieldHintStyle: React.CSSProperties = {
+  marginTop: 6,
+  fontSize: 12,
+  color: "#555",
+};
+
+const lockedOverlayStyle: React.CSSProperties = {
+  position: "absolute",
+  inset: 0,
+  background: "rgba(255,255,255,0.65)",
+  backdropFilter: "blur(2px)",
+  borderRadius: 16,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 2,
+  padding: 20,
+};
+
+const lockedOverlayInnerStyle: React.CSSProperties = {
+  background: "#FFFFFF",
+  border: "1px solid #E5E7EB",
+  borderRadius: 14,
+  padding: "16px 18px",
+  maxWidth: 320,
+  textAlign: "center",
+  color: "#0F172A",
+  boxShadow: "0 10px 30px rgba(15, 23, 42, 0.08)",
 };
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  padding: 10,
-  border: "1px solid #ddd",
-  borderRadius: 10,
-  fontSize: 14,
+  padding: "12px 14px",
+  border: "1px solid #D1D5DB",
+  borderRadius: 12,
+  fontSize: 15,
+  color: "#0F172A",
+  background: "#FFFFFF",
 };
 
-const btnStyle: React.CSSProperties = {
-  padding: "10px 14px",
+const qrHeadingStyle: React.CSSProperties = {
+  fontWeight: 800,
+  marginBottom: 10,
+  color: "#0F172A",
+};
+
+const qrRowStyle: React.CSSProperties = {
+  display: "flex",
+  gap: 18,
+  alignItems: "center",
+  flexWrap: "wrap",
+};
+
+const qrCardStyle: React.CSSProperties = {
+  background: "#FFFFFF",
+  border: "1px solid #E5E7EB",
+  padding: 12,
+  borderRadius: 12,
+};
+
+const publicLinkStyle: React.CSSProperties = {
+  marginTop: 6,
+  padding: 8,
+  borderRadius: 8,
+  background: "#F1F5F9",
+  fontSize: 13,
+  wordBreak: "break-all",
+  color: "#0F172A",
+};
+
+const primaryBtnStyle: React.CSSProperties = {
+  padding: "12px 16px",
   borderRadius: 10,
-  border: "1px solid #000",
-  background: "#000",
-  color: "#fff",
+  border: "1px solid #157A55",
+  background: "#157A55",
+  color: "#FFFFFF",
   fontWeight: 800,
   cursor: "pointer",
 };
 
-const btnStyleSecondary: React.CSSProperties = {
-  padding: "10px 14px",
+const secondaryBtnStyle: React.CSSProperties = {
+  padding: "12px 16px",
   borderRadius: 10,
-  border: "1px solid #ddd",
-  background: "#fff",
-  color: "#000",
+  border: "1px solid #D1D5DB",
+  background: "#FFFFFF",
+  color: "#0F172A",
   fontWeight: 800,
   cursor: "pointer",
+};
+
+const freePlanBannerStyle: React.CSSProperties = {
+  marginBottom: 12,
+  padding: 12,
+  borderRadius: 10,
+  background: "#FFF3CD",
+  border: "1px solid #FFE69C",
+  fontSize: 13,
+  fontWeight: 700,
+  color: "#7C5A00",
+};
+
+const premiumPlanBannerStyle: React.CSSProperties = {
+  marginBottom: 12,
+  padding: 12,
+  borderRadius: 10,
+  background: "#E8F7EE",
+  border: "1px solid #B7E4C7",
+  fontSize: 13,
+  fontWeight: 700,
+  color: "#166534",
+};
+
+const actionRowStyle: React.CSSProperties = {
+  display: "flex",
+  gap: 12,
+  alignItems: "center",
+  flexWrap: "wrap",
+};
+
+const messageStyle: React.CSSProperties = {
+  marginTop: 14,
+  fontWeight: 700,
+  color: "#0F172A",
 };

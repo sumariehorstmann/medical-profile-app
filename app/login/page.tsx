@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
+import PageHeader from "@/components/PageHeader";
 
 type Mode = "login" | "signup";
 type MessageType = "success" | "error" | "info";
@@ -168,20 +168,7 @@ function LoginPageInner() {
   return (
     <main style={styles.page}>
       <div style={styles.card}>
-        <div style={styles.logoWrap}>
-          <Image
-            src="/logo.png"
-            alt="RROI logo"
-            width={84}
-            height={84}
-            style={{ objectFit: "contain" }}
-            priority
-            unoptimized
-          />
-        </div>
-
-        <h1 style={styles.h1}>RROI</h1>
-        <div style={styles.tagline}>Rapid Response Online Information</div>
+        <PageHeader />
 
         <p style={styles.intro}>
           Create your account for free. Upgrade to Premium when you want your
@@ -267,9 +254,7 @@ function LoginPageInner() {
             </div>
           ) : (
             <>
-              <div style={styles.passwordNote}>
-                Use at least 8 characters.
-              </div>
+              <div style={styles.passwordNote}>Use at least 8 characters.</div>
 
               <label htmlFor="confirmPassword" style={styles.label}>
                 <div style={styles.labelText}>Confirm password</div>
@@ -337,19 +322,48 @@ function LoginPageInner() {
           </div>
         ) : null}
 
-        <div style={styles.footerLinks}>
-          <Link href="/" style={styles.link}>
-            Home
-          </Link>
-          <Link href="/terms" style={styles.link}>
-            Terms &amp; Conditions
-          </Link>
-          <Link href="/privacy" style={styles.link}>
-            Privacy Policy
-          </Link>
-          <Link href="/contact" style={styles.link}>
-            Contact
-          </Link>
+        <div style={styles.cardLinks}>
+          {mode === "login" ? (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("signup");
+                  clearMessage();
+                }}
+                style={styles.textButton}
+                disabled={loading}
+              >
+                Create account
+              </button>
+
+              <span style={styles.dot}>•</span>
+
+              <Link href="/" style={styles.secondaryLink}>
+                Home
+              </Link>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("login");
+                  clearMessage();
+                }}
+                style={styles.textButton}
+                disabled={loading}
+              >
+                Back to login
+              </button>
+
+              <span style={styles.dot}>•</span>
+
+              <Link href="/" style={styles.secondaryLink}>
+                Home
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </main>
@@ -389,28 +403,9 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: 560,
     background: "#FFFFFF",
     borderRadius: 18,
-    padding: 30,
+    padding: 20,
     border: "1px solid #E5E7EB",
     boxShadow: "0 14px 42px rgba(15, 23, 42, 0.08)",
-  },
-  logoWrap: {
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-  h1: {
-    margin: "0 0 6px",
-    textAlign: "center",
-    fontSize: 34,
-    fontWeight: 900,
-    color: TEXT,
-  },
-  tagline: {
-    textAlign: "center",
-    color: MUTED,
-    marginBottom: 14,
-    fontSize: 15,
-    fontWeight: 700,
   },
   intro: {
     textAlign: "center",
@@ -538,18 +533,32 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid #BFDBFE",
     color: "#1D4ED8",
   },
-  footerLinks: {
+  cardLinks: {
     marginTop: 18,
     display: "flex",
-    gap: 14,
+    gap: 10,
     justifyContent: "center",
+    alignItems: "center",
     flexWrap: "wrap",
   },
-  link: {
-    textDecoration: "none",
+  textButton: {
+    background: "transparent",
+    border: "none",
+    padding: 0,
+    cursor: "pointer",
     color: TEXT,
-    fontWeight: 700,
-    opacity: 0.88,
+    fontWeight: 800,
     fontSize: 14,
+  },
+  secondaryLink: {
+    textDecoration: "none",
+    color: MUTED,
+    fontWeight: 700,
+    fontSize: 14,
+  },
+  dot: {
+    color: "#94A3B8",
+    fontSize: 14,
+    lineHeight: 1,
   },
 };

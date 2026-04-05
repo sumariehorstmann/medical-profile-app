@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
+import PageHeader from "@/components/PageHeader";
 
 type AffiliateRow = {
   id: string;
@@ -110,6 +110,7 @@ export default function AffiliateDashboardPage() {
     return (
       <main style={styles.page}>
         <div style={styles.card}>
+          <PageHeader />
           <p style={styles.loading}>Loading affiliate dashboard...</p>
         </div>
       </main>
@@ -130,15 +131,18 @@ export default function AffiliateDashboardPage() {
   return (
     <main style={styles.page}>
       <div style={styles.card}>
-        <div style={styles.brand}>
-          <Image src="/logo.png" alt="RROI logo" width={82} height={82} priority />
-          <h1 style={styles.h1}>Affiliate Dashboard</h1>
-          <p style={styles.tagline}>Rapid Response Online Information (RROI)</p>
-        </div>
+        <PageHeader />
+
+        <h1 style={styles.h1}>Affiliate Dashboard</h1>
+
+        <p style={styles.intro}>
+          Manage your affiliate code, referral link, earnings, and recent
+          referral activity from one place.
+        </p>
 
         {message ? <div style={styles.notice}>{message}</div> : null}
 
-        <div style={styles.section}>
+        <section style={styles.section}>
           <h2 style={styles.h2}>Affiliate Details</h2>
 
           <div style={styles.grid}>
@@ -172,9 +176,9 @@ export default function AffiliateDashboardPage() {
               <div style={styles.statValue}>{referrals.length}</div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div style={styles.section}>
+        <section style={styles.section}>
           <h2 style={styles.h2}>Share Your Code</h2>
 
           <div style={styles.shareBox}>
@@ -203,9 +207,9 @@ export default function AffiliateDashboardPage() {
               Copy Referral Link
             </button>
           </div>
-        </div>
+        </section>
 
-        <div style={styles.section}>
+        <section style={styles.section}>
           <h2 style={styles.h2}>Recent Referrals</h2>
 
           {referrals.length === 0 ? (
@@ -246,12 +250,13 @@ export default function AffiliateDashboardPage() {
               </table>
             </div>
           )}
-        </div>
+        </section>
 
         <div style={styles.links}>
           <Link href="/profile" style={styles.link}>
             Profile
           </Link>
+          <span style={styles.dot}>•</span>
           <Link href="/" style={styles.linkMuted}>
             Home
           </Link>
@@ -262,15 +267,17 @@ export default function AffiliateDashboardPage() {
 }
 
 const BRAND_GREEN = "#157A55";
+const TEXT = "#0F172A";
+const MUTED = "#475569";
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
-    background: "#FFFFFF",
+    background: "#F8FAFC",
     padding: 16,
     display: "flex",
     justifyContent: "center",
-    color: "#0F172A",
+    color: TEXT,
     fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
   },
   card: {
@@ -280,25 +287,27 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 16,
     padding: 24,
     background: "#FFFFFF",
-  },
-  brand: {
-    textAlign: "center",
-    marginBottom: 20,
+    boxShadow: "0 14px 42px rgba(15, 23, 42, 0.08)",
   },
   h1: {
-    fontSize: 30,
+    fontSize: 34,
     fontWeight: 900,
-    margin: "10px 0 4px",
+    margin: "0 0 10px",
+    textAlign: "center",
+    color: TEXT,
   },
-  tagline: {
-    margin: 0,
-    fontSize: 14,
-    fontWeight: 700,
-    opacity: 0.85,
+  intro: {
+    margin: "0 0 20px",
+    fontSize: 15,
+    lineHeight: 1.6,
+    color: MUTED,
+    textAlign: "center",
   },
   loading: {
     margin: 0,
     fontWeight: 700,
+    textAlign: "center",
+    color: TEXT,
   },
   notice: {
     marginBottom: 18,
@@ -316,6 +325,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 22,
     fontWeight: 800,
     marginBottom: 12,
+    color: TEXT,
   },
   grid: {
     display: "grid",
@@ -338,6 +348,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 22,
     fontWeight: 900,
     wordBreak: "break-word",
+    color: TEXT,
   },
   shareBox: {
     border: "1px solid #E5E7EB",
@@ -350,6 +361,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 800,
     marginBottom: 6,
     opacity: 0.8,
+    color: TEXT,
   },
   shareValue: {
     fontSize: 28,
@@ -357,6 +369,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: BRAND_GREEN,
     marginBottom: 12,
     letterSpacing: 1,
+    wordBreak: "break-word",
   },
   linkBox: {
     padding: 12,
@@ -366,6 +379,7 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 12,
     overflowWrap: "anywhere",
     lineHeight: 1.5,
+    color: TEXT,
   },
   primaryBtn: {
     display: "inline-block",
@@ -382,13 +396,14 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 12,
     padding: 16,
     background: "#F8FAFC",
-    color: "#475569",
+    color: MUTED,
     fontWeight: 700,
   },
   tableWrap: {
     overflowX: "auto",
     border: "1px solid #E5E7EB",
     borderRadius: 12,
+    background: "#FFFFFF",
   },
   table: {
     width: "100%",
@@ -402,18 +417,22 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#F8FAFC",
     fontSize: 13,
     fontWeight: 800,
+    color: TEXT,
   },
   td: {
     padding: 12,
     borderBottom: "1px solid #E5E7EB",
     fontSize: 14,
     verticalAlign: "top",
+    color: TEXT,
   },
   links: {
     marginTop: 24,
     display: "flex",
-    gap: 14,
+    gap: 10,
     flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
   },
   link: {
     textDecoration: "none",
@@ -422,8 +441,13 @@ const styles: Record<string, React.CSSProperties> = {
   },
   linkMuted: {
     textDecoration: "none",
-    color: "#0F172A",
+    color: TEXT,
     opacity: 0.85,
     fontWeight: 800,
+  },
+  dot: {
+    color: "#94A3B8",
+    fontSize: 14,
+    lineHeight: 1,
   },
 };

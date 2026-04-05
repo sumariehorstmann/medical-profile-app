@@ -1,45 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
+import PageHeader from "@/components/PageHeader";
 
 export default function HomePage() {
   return (
     <main style={styles.page}>
-      <header style={styles.header}>
-        <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
-          <Image
-            src="/logo.png"
-            alt="RROI logo"
-            width={40}
-            height={40}
-            style={{ objectFit: "contain" }}
-            priority
-          />
-          <span style={styles.headerBrandText}>RROI</span>
-        </Link>
-
-        <div style={styles.headerActions}>
-          <Link href="/login" style={styles.loginLink}>
-            Log in
-          </Link>
-
-          <Link href="/login" style={styles.signupLink}>
-            Sign up
-          </Link>
-        </div>
-      </header>
-
       <section style={styles.hero}>
         <div style={styles.brand}>
-          <Image
-            src="/logo.png"
-            alt="RROI logo"
-            width={160}
-            height={160}
-            style={{ objectFit: "contain" }}
-            priority
-          />
-
-          <div style={styles.tagline}>Rapid Response Online Information</div>
+          <PageHeader />
 
           <h1 style={styles.h1}>
             Your emergency information, instantly accessible when it matters most
@@ -199,18 +166,6 @@ export default function HomePage() {
           </p>
         </div>
       </section>
-
-      <footer style={styles.footer}>
-        <Link href="/contact" style={styles.footerLink}>
-          Contact
-        </Link>
-        <Link href="/terms" style={styles.footerLink}>
-          Terms &amp; Conditions
-        </Link>
-        <Link href="/privacy" style={styles.footerLink}>
-          Privacy Policy
-        </Link>
-      </footer>
     </main>
   );
 }
@@ -228,47 +183,6 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#FFFFFF",
     color: TEXT,
   },
-  header: {
-    height: 68,
-    padding: "0 16px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderBottom: `1px solid ${BORDER}`,
-    background: "#FFFFFF",
-  },
-  headerLogo: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    textDecoration: "none",
-  },
-  headerBrandText: {
-    color: TEXT,
-    fontWeight: 900,
-    fontSize: 16,
-    letterSpacing: 0.2,
-  },
-  headerActions: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-  },
-  loginLink: {
-    textDecoration: "none",
-    fontWeight: 800,
-    color: BRAND_GREEN,
-    padding: "8px 10px",
-    borderRadius: 12,
-  },
-  signupLink: {
-    textDecoration: "none",
-    fontWeight: 900,
-    color: "#FFFFFF",
-    background: BRAND_GREEN,
-    padding: "8px 14px",
-    borderRadius: 10,
-  },
   hero: {
     padding: "34px 16px 18px",
     display: "flex",
@@ -278,13 +192,6 @@ const styles: Record<string, React.CSSProperties> = {
     width: "100%",
     maxWidth: 620,
     textAlign: "center",
-  },
-  tagline: {
-    marginTop: 12,
-    fontSize: 15,
-    fontWeight: 800,
-    letterSpacing: 0.2,
-    opacity: 0.95,
   },
   h1: {
     marginTop: 16,
@@ -452,21 +359,5 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.6,
     color: "#334155",
     fontSize: 14,
-  },
-  footer: {
-    marginTop: "auto",
-    borderTop: `1px solid ${BORDER}`,
-    padding: "18px 16px",
-    display: "flex",
-    gap: 14,
-    justifyContent: "center",
-    flexWrap: "wrap",
-    background: "#FFFFFF",
-  },
-  footerLink: {
-    textDecoration: "none",
-    color: TEXT,
-    fontWeight: 800,
-    opacity: 0.9,
   },
 };

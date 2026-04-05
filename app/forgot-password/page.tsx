@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
+import PageHeader from "@/components/PageHeader";
 
 type MessageType = "success" | "error" | "info";
 
@@ -51,9 +51,7 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        password,
-      });
+      const { error } = await supabase.auth.updateUser({ password });
 
       if (error) {
         setMessageType("error");
@@ -82,20 +80,9 @@ export default function ResetPasswordPage() {
   return (
     <main style={styles.page}>
       <div style={styles.card}>
-        <div style={styles.logoWrap}>
-          <Image
-            src="/logo.png"
-            alt="RROI logo"
-            width={84}
-            height={84}
-            style={{ objectFit: "contain" }}
-            priority
-            unoptimized
-          />
-        </div>
+        <PageHeader />
 
         <h1 style={styles.h1}>Set a new password</h1>
-        <div style={styles.tagline}>Rapid Response Online Information</div>
 
         <p style={styles.intro}>
           Enter your new password below to complete your password reset.
@@ -154,21 +141,15 @@ export default function ResetPasswordPage() {
           </div>
         ) : null}
 
-        <div style={styles.footerLinks}>
-          <Link href="/login" style={styles.link}>
+        <div style={styles.cardLinks}>
+          <Link href="/login" style={styles.primaryLink}>
             Back to login
           </Link>
-          <Link href="/" style={styles.link}>
+
+          <span style={styles.dot}>•</span>
+
+          <Link href="/" style={styles.secondaryLink}>
             Home
-          </Link>
-          <Link href="/terms" style={styles.link}>
-            Terms &amp; Conditions
-          </Link>
-          <Link href="/privacy" style={styles.link}>
-            Privacy Policy
-          </Link>
-          <Link href="/contact" style={styles.link}>
-            Contact
           </Link>
         </div>
       </div>
@@ -199,24 +180,12 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid #E5E7EB",
     boxShadow: "0 14px 42px rgba(15, 23, 42, 0.08)",
   },
-  logoWrap: {
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
   h1: {
-    margin: "0 0 6px",
+    margin: "0 0 10px",
     textAlign: "center",
     fontSize: 34,
     fontWeight: 900,
     color: TEXT,
-  },
-  tagline: {
-    textAlign: "center",
-    color: MUTED,
-    marginBottom: 14,
-    fontSize: 15,
-    fontWeight: 700,
   },
   intro: {
     textAlign: "center",
@@ -286,18 +255,29 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid #BFDBFE",
     color: "#1D4ED8",
   },
-  footerLinks: {
+  cardLinks: {
     marginTop: 18,
     display: "flex",
-    gap: 14,
+    gap: 10,
     justifyContent: "center",
+    alignItems: "center",
     flexWrap: "wrap",
   },
-  link: {
+  primaryLink: {
     textDecoration: "none",
     color: TEXT,
-    fontWeight: 700,
-    opacity: 0.88,
+    fontWeight: 800,
     fontSize: 14,
+  },
+  secondaryLink: {
+    textDecoration: "none",
+    color: MUTED,
+    fontWeight: 700,
+    fontSize: 14,
+  },
+  dot: {
+    color: "#94A3B8",
+    fontSize: 14,
+    lineHeight: 1,
   },
 };
