@@ -193,12 +193,14 @@ export async function POST(req: NextRequest) {
       } else if (affiliate.user_id === profile.user_id) {
         console.log("SELF REFERRAL BLOCKED");
       } else {
-        const { data: existingReferralByPayment, error: existingPaymentReferralError } =
-          await supabase
-            .from("affiliate_referrals")
-            .select("id")
-            .eq("payment_id", paymentId)
-            .maybeSingle();
+        const {
+          data: existingReferralByPayment,
+          error: existingPaymentReferralError,
+        } = await supabase
+          .from("affiliate_referrals")
+          .select("id")
+          .eq("payment_id", paymentId)
+          .maybeSingle();
 
         if (existingPaymentReferralError) {
           console.error(
@@ -208,12 +210,14 @@ export async function POST(req: NextRequest) {
         } else if (existingReferralByPayment) {
           console.log("REFERRAL ALREADY EXISTS FOR THIS PAYMENT");
         } else {
-          const { data: existingReferralByUser, error: existingUserReferralError } =
-            await supabase
-              .from("affiliate_referrals")
-              .select("id")
-              .eq("user_id", profile.user_id)
-              .maybeSingle();
+          const {
+            data: existingReferralByUser,
+            error: existingUserReferralError,
+          } = await supabase
+            .from("affiliate_referrals")
+            .select("id")
+            .eq("user_id", profile.user_id)
+            .maybeSingle();
 
           if (existingUserReferralError) {
             console.error(
@@ -249,7 +253,10 @@ export async function POST(req: NextRequest) {
                 .eq("id", affiliate.id);
 
               if (affiliateUpdateError) {
-                console.error("AFFILIATE TOTAL UPDATE ERROR:", affiliateUpdateError);
+                console.error(
+                  "AFFILIATE TOTAL UPDATE ERROR:",
+                  affiliateUpdateError
+                );
               } else {
                 console.log("AFFILIATE COMMISSION RECORDED:", commission);
               }
@@ -257,6 +264,66 @@ export async function POST(req: NextRequest) {
           }
         }
       }
+    }
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+    if (!siteUrl) {
+      console.error("NEXT_PUBLIC_SITE_URL IS NOT SET");
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    const qrUrl = `${siteUrl}/e/${publicId}`;
+
+    try {
+      const { data: existingOrder, error: existingOrderLookupError } =
+        await supabase
+          .from("orders")
+          .select("id")
+          .eq("payment_id", paymentId)
+          .maybeSingle();
+
+      if (existingOrderLookupError) {
+        console.error("ORDER LOOKUP ERROR:", existingOrderLookupError);
+      } else if (existingOrder) {
+        console.log("ORDER ALREADY EXISTS");
+      } else {
+        const { data: profileDetails, error: profileDetailsError } =
+          await supabase
+            .from("profiles")
+            .select("first_name, last_name")
+            .eq("public_id", publicId)
+            .maybeSingle();
+
+        if (profileDetailsError) {
+          console.error("PROFILE DETAILS LOOKUP ERROR:", profileDetailsError);
+        }
+
+        const customerName = profileDetails
+          ? `${profileDetails.first_name || ""} ${profileDetails.last_name || ""}`.trim()
+          : "";
+
+        const { error: orderInsertError } = await supabase.from("orders").insert({
+          user_id: profile.user_id,
+          public_id: publicId,
+          payment_id: paymentId,
+          customer_name: customerName,
+          email: "",
+          shipping_name: "",
+          shipping_phone: "",
+          shipping_address: "",
+          qr_url: qrUrl,
+          status: "pending",
+        });
+
+        if (orderInsertError) {
+          console.error("ORDER INSERT ERROR:", orderInsertError);
+        } else {
+          console.log("ORDER CREATED SUCCESSFULLY");
+        }
+      }
+    } catch (orderErr) {
+      console.error("ORDER CREATION ERROR:", orderErr);
     }
 
     console.log("ITN PROCESSED SUCCESSFULLY");
