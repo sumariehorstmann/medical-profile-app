@@ -299,8 +299,37 @@ export async function POST(req: NextRequest) {
           console.error("PROFILE DETAILS LOOKUP ERROR:", profileDetailsError);
         }
 
+        const { data: shippingDetails, error: shippingDetailsError } =
+          await supabase
+            .from("shipping_details")
+            .select(
+              "name, surname, email, cellphone, street_address, city_town, postal_code, province, unit_complex_building"
+            )
+            .eq("user_id", profile.user_id)
+            .maybeSingle();
+
+        if (shippingDetailsError) {
+          console.error("SHIPPING DETAILS LOOKUP ERROR:", shippingDetailsError);
+        }
+
         const customerName = profileDetails
           ? `${profileDetails.first_name || ""} ${profileDetails.last_name || ""}`.trim()
+          : "";
+
+        const shippingName = shippingDetails
+          ? `${shippingDetails.name || ""} ${shippingDetails.surname || ""}`.trim()
+          : "";
+
+        const shippingAddress = shippingDetails
+          ? [
+              shippingDetails.unit_complex_building,
+              shippingDetails.street_address,
+              shippingDetails.city_town,
+              shippingDetails.province,
+              shippingDetails.postal_code,
+            ]
+              .filter(Boolean)
+              .join(", ")
           : "";
 
         const { error: orderInsertError } = await supabase.from("orders").insert({
@@ -308,10 +337,10 @@ export async function POST(req: NextRequest) {
           public_id: publicId,
           payment_id: paymentId,
           customer_name: customerName,
-          email: "",
-          shipping_name: "",
-          shipping_phone: "",
-          shipping_address: "",
+          email: shippingDetails?.email ?? "",
+          shipping_name: shippingName,
+          shipping_phone: shippingDetails?.cellphone ?? "",
+          shipping_address: shippingAddress,
           qr_url: qrUrl,
           status: "pending",
         });
