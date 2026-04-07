@@ -1,5 +1,6 @@
 "use client";
 
+import DownloadQRWallpaper from "@/components/DownloadQRWallpaper";
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
@@ -144,14 +145,26 @@ function LockedSection({
         <div style={lockedOverlayStyle}>
           <div style={lockedOverlayInnerStyle}>
             <div style={{ fontSize: 18, marginBottom: 6 }}>🔒 Premium Required</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#475569", lineHeight: 1.5 }}>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: "#475569",
+                lineHeight: 1.5,
+              }}
+            >
               These details can be completed after upgrading to Premium.
             </div>
           </div>
         </div>
       ) : null}
 
-      <div style={{ pointerEvents: locked ? "none" : "auto", opacity: locked ? 0.55 : 1 }}>
+      <div
+        style={{
+          pointerEvents: locked ? "none" : "auto",
+          opacity: locked ? 0.55 : 1,
+        }}
+      >
         {children}
       </div>
     </div>
@@ -469,6 +482,15 @@ export default function ProfileFormClient({
                   Copy Link
                 </button>
               </div>
+
+              {publicId && (
+                <div style={{ marginTop: 12 }}>
+                  <DownloadQRWallpaper
+                    publicId={publicId}
+                    firstName={firstName}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

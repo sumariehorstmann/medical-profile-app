@@ -35,7 +35,6 @@ export default function DownloadQRWallpaper({
 
   return (
     <>
-      {/* Hidden render for export */}
       <div
         style={{
           position: "fixed",
@@ -48,8 +47,7 @@ export default function DownloadQRWallpaper({
         </div>
       </div>
 
-      {/* Button */}
-      <button onClick={handleDownload} style={styles.button}>
+      <button type="button" onClick={handleDownload} style={styles.button}>
         Download Phone Lock Screen (QR)
       </button>
     </>
@@ -66,6 +64,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 800,
     border: "none",
     cursor: "pointer",
-    width: "100%",
+    width: "auto",
+    display: "inline-block",
   },
 };
