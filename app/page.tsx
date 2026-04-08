@@ -96,7 +96,7 @@ export default function HomePage() {
             <li>A downloadable QR code lock screen for your phone</li>
             <li>A secure online profile you can update at any time</li>
             <li>
-              Three physical QR items with free nationwide delivery on Premium
+              Two physical QR items with free nationwide delivery on Premium
             </li>
           </ul>
         </div>
