@@ -422,15 +422,7 @@ export default function ProfileFormClient({
               </div>
 
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  style={primaryBtnStyle}
-                  onClick={() => downloadQrAsPng(qrSvgId, "rroi-qr.png")}
-                  disabled={!publicUrl}
-                >
-                  Download QR (PNG)
-                </button>
-
+                
                 <button
                   type="button"
                   style={secondaryBtnStyle}
