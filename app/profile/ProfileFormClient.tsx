@@ -116,9 +116,11 @@ function Section({
   title,
   subtitle,
   children,
+  info,
 }: {
   title: string;
   subtitle?: string;
+  info?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -126,48 +128,10 @@ function Section({
       <div style={{ marginBottom: 14 }}>
         <div style={sectionTitleStyle}>{title}</div>
         {subtitle ? <div style={sectionSubtitleStyle}>{subtitle}</div> : null}
+        {info ? <div style={sectionInfoStyle}>{info}</div> : null}
       </div>
       {children}
     </section>
-  );
-}
-
-function LockedSection({
-  locked,
-  children,
-}: {
-  locked: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <div style={{ position: "relative" }}>
-      {locked ? (
-        <div style={lockedOverlayStyle}>
-          <div style={lockedOverlayInnerStyle}>
-            <div style={{ fontSize: 18, marginBottom: 6 }}>🔒 Premium Required</div>
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                color: "#475569",
-                lineHeight: 1.5,
-              }}
-            >
-              These details can be completed after upgrading to Premium.
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      <div
-        style={{
-          pointerEvents: locked ? "none" : "auto",
-          opacity: locked ? 0.55 : 1,
-        }}
-      >
-        {children}
-      </div>
-    </div>
   );
 }
 
@@ -267,7 +231,6 @@ export default function ProfileFormClient({
   const [message, setMessage] = useState<string | null>(null);
 
   const age = useMemo(() => calcAge(dateOfBirth || null), [dateOfBirth]);
-  const isLocked = showUpgrade;
 
   function validateRequired(): string | null {
     if (!firstName.trim()) return "First name is required.";
@@ -499,286 +462,309 @@ export default function ProfileFormClient({
       <Section
         title="Premium — Visible when upgraded"
         subtitle="Section 2. These details can be completed on any plan, but they are only publicly visible when Premium is active."
+        info={
+          showUpgrade
+            ? "Visible on Premium. You can complete these details now and they will become publicly visible after upgrading."
+            : undefined
+        }
       >
-        <LockedSection locked={isLocked}>
-          <Field label="Emergency Contact 2 — Name + surname">
-            <input
-              style={inputStyle}
-              value={em2Name}
-              onChange={(e) => setEm2Name(e.target.value)}
-              placeholder="Optional"
-            />
-          </Field>
+        <Field label="Emergency Contact 2 — Name + surname">
+          <input
+            style={inputStyle}
+            value={em2Name}
+            onChange={(e) => setEm2Name(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
 
-          <Field label="Emergency Contact 2 — Relationship">
-            <input
-              style={inputStyle}
-              value={em2Rel}
-              onChange={(e) => setEm2Rel(e.target.value)}
-              placeholder="Optional"
-            />
-          </Field>
+        <Field label="Emergency Contact 2 — Relationship">
+          <input
+            style={inputStyle}
+            value={em2Rel}
+            onChange={(e) => setEm2Rel(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
 
-          <Field label="Emergency Contact 2 — Phone">
-            <input
-              style={inputStyle}
-              value={em2Phone}
-              onChange={(e) => setEm2Phone(e.target.value)}
-              placeholder="Optional"
-              inputMode="numeric"
-            />
-          </Field>
-        </LockedSection>
+        <Field label="Emergency Contact 2 — Phone">
+          <input
+            style={inputStyle}
+            value={em2Phone}
+            onChange={(e) => setEm2Phone(e.target.value)}
+            placeholder="Optional"
+            inputMode="numeric"
+          />
+        </Field>
       </Section>
 
-      <Section title="Section 3">
-        <LockedSection locked={isLocked}>
-          <Field label="Gender">
-            <select
-              style={inputStyle}
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
-            >
-              <option value="">(not set)</option>
-              <option value="Female">Female</option>
-              <option value="Male">Male</option>
-              <option value="Other">Other</option>
-              <option value="Prefer not to say">Prefer not to say</option>
-            </select>
-          </Field>
+      <Section
+        title="Section 3"
+        info={
+          showUpgrade
+            ? "Visible on Premium. You can complete these details now and they will become publicly visible after upgrading."
+            : undefined
+        }
+      >
+        <Field label="Gender">
+          <select
+            style={inputStyle}
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          >
+            <option value="">(not set)</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Other">Other</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </Field>
 
-          <Field label="Date of birth">
-            <input
-              style={inputStyle}
-              type="date"
-              value={dateOfBirth}
-              onChange={(e) => setDateOfBirth(e.target.value)}
-            />
-          </Field>
+        <Field label="Date of birth">
+          <input
+            style={inputStyle}
+            type="date"
+            value={dateOfBirth}
+            onChange={(e) => setDateOfBirth(e.target.value)}
+          />
+        </Field>
 
-          <Field label="Age (auto)">
-            <input
-              style={inputStyle}
-              value={age == null ? "" : String(age)}
-              readOnly
-              placeholder="Auto-calculated"
-            />
-          </Field>
+        <Field label="Age (auto)">
+          <input
+            style={inputStyle}
+            value={age == null ? "" : String(age)}
+            readOnly
+            placeholder="Auto-calculated"
+          />
+        </Field>
 
-          <Field label="Blood type">
-            <select
-              style={inputStyle}
-              value={bloodType}
-              onChange={(e) => setBloodType(e.target.value)}
-            >
-              <option value="">(not set)</option>
-              <option value="O-">O-</option>
-              <option value="O+">O+</option>
-              <option value="A-">A-</option>
-              <option value="A+">A+</option>
-              <option value="B-">B-</option>
-              <option value="B+">B+</option>
-              <option value="AB-">AB-</option>
-              <option value="AB+">AB+</option>
-              <option value="Unknown">Unknown</option>
-            </select>
-          </Field>
+        <Field label="Blood type">
+          <select
+            style={inputStyle}
+            value={bloodType}
+            onChange={(e) => setBloodType(e.target.value)}
+          >
+            <option value="">(not set)</option>
+            <option value="O-">O-</option>
+            <option value="O+">O+</option>
+            <option value="A-">A-</option>
+            <option value="A+">A+</option>
+            <option value="B-">B-</option>
+            <option value="B+">B+</option>
+            <option value="AB-">AB-</option>
+            <option value="AB+">AB+</option>
+            <option value="Unknown">Unknown</option>
+          </select>
+        </Field>
 
-          <Field label="Allergies">
-            <input
-              style={inputStyle}
-              value={allergies}
-              onChange={(e) => setAllergies(e.target.value)}
-              placeholder="e.g. Penicillin / Bee stings"
-            />
-          </Field>
+        <Field label="Allergies">
+          <input
+            style={inputStyle}
+            value={allergies}
+            onChange={(e) => setAllergies(e.target.value)}
+            placeholder="e.g. Penicillin / Bee stings"
+          />
+        </Field>
 
-          <Field label="Chronic illnesses">
-            <input
-              style={inputStyle}
-              value={conditions}
-              onChange={(e) => setConditions(e.target.value)}
-              placeholder="e.g. Asthma / Diabetes / Epilepsy"
-            />
-          </Field>
+        <Field label="Chronic illnesses">
+          <input
+            style={inputStyle}
+            value={conditions}
+            onChange={(e) => setConditions(e.target.value)}
+            placeholder="e.g. Asthma / Diabetes / Epilepsy"
+          />
+        </Field>
 
-          <Field label="Medications">
-            <input
-              style={inputStyle}
-              value={medications}
-              onChange={(e) => setMedications(e.target.value)}
-              placeholder="e.g. Insulin / Inhaler"
-            />
-          </Field>
+        <Field label="Medications">
+          <input
+            style={inputStyle}
+            value={medications}
+            onChange={(e) => setMedications(e.target.value)}
+            placeholder="e.g. Insulin / Inhaler"
+          />
+        </Field>
 
-          <Field label="Important notes">
-            <textarea
-              style={{ ...inputStyle, minHeight: 100 }}
-              value={specialNotes}
-              onChange={(e) => setSpecialNotes(e.target.value)}
-              placeholder="Anything an emergency responder must know."
-            />
-          </Field>
-        </LockedSection>
+        <Field label="Important notes">
+          <textarea
+            style={{ ...inputStyle, minHeight: 100 }}
+            value={specialNotes}
+            onChange={(e) => setSpecialNotes(e.target.value)}
+            placeholder="Anything an emergency responder must know."
+          />
+        </Field>
       </Section>
 
-      <Section title="Section 4">
-        <LockedSection locked={isLocked}>
-          <Field label="Primary language">
-            <input
-              style={inputStyle}
-              value={primaryLanguage}
-              onChange={(e) => setPrimaryLanguage(e.target.value)}
-              placeholder="e.g. Afrikaans"
-            />
-          </Field>
+      <Section
+        title="Section 4"
+        info={
+          showUpgrade
+            ? "Visible on Premium. You can complete these details now and they will become publicly visible after upgrading."
+            : undefined
+        }
+      >
+        <Field label="Primary language">
+          <input
+            style={inputStyle}
+            value={primaryLanguage}
+            onChange={(e) => setPrimaryLanguage(e.target.value)}
+            placeholder="e.g. Afrikaans"
+          />
+        </Field>
 
-          <Field label="Secondary language (optional)">
-            <input
-              style={inputStyle}
-              value={secondaryLanguage}
-              onChange={(e) => setSecondaryLanguage(e.target.value)}
-              placeholder="Optional"
-            />
-          </Field>
+        <Field label="Secondary language (optional)">
+          <input
+            style={inputStyle}
+            value={secondaryLanguage}
+            onChange={(e) => setSecondaryLanguage(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
 
-          <Field label="Medical aid provider">
-            <input
-              style={inputStyle}
-              value={medicalAidProvider}
-              onChange={(e) => setMedicalAidProvider(e.target.value)}
-              placeholder="e.g. Discovery"
-            />
-          </Field>
+        <Field label="Medical aid provider">
+          <input
+            style={inputStyle}
+            value={medicalAidProvider}
+            onChange={(e) => setMedicalAidProvider(e.target.value)}
+            placeholder="e.g. Discovery"
+          />
+        </Field>
 
-          <Field label="Medical aid policy number">
-            <input
-              style={inputStyle}
-              value={medicalAidPolicy}
-              onChange={(e) => setMedicalAidPolicy(e.target.value)}
-              placeholder="Optional"
-            />
-          </Field>
+        <Field label="Medical aid policy number">
+          <input
+            style={inputStyle}
+            value={medicalAidPolicy}
+            onChange={(e) => setMedicalAidPolicy(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
 
-          <Field label="GP name">
-            <input
-              style={inputStyle}
-              value={gpName}
-              onChange={(e) => setGpName(e.target.value)}
-              placeholder="Optional"
-            />
-          </Field>
+        <Field label="GP name">
+          <input
+            style={inputStyle}
+            value={gpName}
+            onChange={(e) => setGpName(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
 
-          <Field label="GP practice">
-            <input
-              style={inputStyle}
-              value={gpPractice}
-              onChange={(e) => setGpPractice(e.target.value)}
-              placeholder="Optional"
-            />
-          </Field>
+        <Field label="GP practice">
+          <input
+            style={inputStyle}
+            value={gpPractice}
+            onChange={(e) => setGpPractice(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
 
-          <Field label="GP phone">
-            <input
-              style={inputStyle}
-              value={gpPhone}
-              onChange={(e) => setGpPhone(e.target.value)}
-              placeholder="Optional"
-              inputMode="numeric"
-            />
-          </Field>
+        <Field label="GP phone">
+          <input
+            style={inputStyle}
+            value={gpPhone}
+            onChange={(e) => setGpPhone(e.target.value)}
+            placeholder="Optional"
+            inputMode="numeric"
+          />
+        </Field>
 
-          <Field label="Religion (optional)">
-            <input
-              style={inputStyle}
-              value={religion}
-              onChange={(e) => setReligion(e.target.value)}
-              placeholder="Optional"
-            />
-          </Field>
-        </LockedSection>
+        <Field label="Religion (optional)">
+          <input
+            style={inputStyle}
+            value={religion}
+            onChange={(e) => setReligion(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
       </Section>
 
-      <Section title="Section 5">
-        <LockedSection locked={isLocked}>
-          <Field label="Height (cm)">
-            <input
-              style={inputStyle}
-              value={heightCm}
-              onChange={(e) => setHeightCm(e.target.value)}
-              placeholder="e.g. 170"
-              inputMode="numeric"
-            />
-          </Field>
+      <Section
+        title="Section 5"
+        info={
+          showUpgrade
+            ? "Visible on Premium. You can complete these details now and they will become publicly visible after upgrading."
+            : undefined
+        }
+      >
+        <Field label="Height (cm)">
+          <input
+            style={inputStyle}
+            value={heightCm}
+            onChange={(e) => setHeightCm(e.target.value)}
+            placeholder="e.g. 170"
+            inputMode="numeric"
+          />
+        </Field>
 
-          <Field label="Weight (kg)">
-            <input
-              style={inputStyle}
-              value={weightKg}
-              onChange={(e) => setWeightKg(e.target.value)}
-              placeholder="e.g. 70"
-              inputMode="numeric"
-            />
-          </Field>
+        <Field label="Weight (kg)">
+          <input
+            style={inputStyle}
+            value={weightKg}
+            onChange={(e) => setWeightKg(e.target.value)}
+            placeholder="e.g. 70"
+            inputMode="numeric"
+          />
+        </Field>
 
-          <Field label="Eye color">
-            <input
-              style={inputStyle}
-              value={eyeColor}
-              onChange={(e) => setEyeColor(e.target.value)}
-              placeholder="e.g. Brown"
-            />
-          </Field>
+        <Field label="Eye color">
+          <input
+            style={inputStyle}
+            value={eyeColor}
+            onChange={(e) => setEyeColor(e.target.value)}
+            placeholder="e.g. Brown"
+          />
+        </Field>
 
-          <Field label="Hair color">
-            <input
-              style={inputStyle}
-              value={hairColor}
-              onChange={(e) => setHairColor(e.target.value)}
-              placeholder="e.g. Blonde"
-            />
-          </Field>
+        <Field label="Hair color">
+          <input
+            style={inputStyle}
+            value={hairColor}
+            onChange={(e) => setHairColor(e.target.value)}
+            placeholder="e.g. Blonde"
+          />
+        </Field>
 
-          <Field label="Identifying marks (tattoos/scars/birthmarks)">
-            <textarea
-              style={{ ...inputStyle, minHeight: 90 }}
-              value={identifyingMarks}
-              onChange={(e) => setIdentifyingMarks(e.target.value)}
-              placeholder="Optional"
-            />
-          </Field>
+        <Field label="Identifying marks (tattoos/scars/birthmarks)">
+          <textarea
+            style={{ ...inputStyle, minHeight: 90 }}
+            value={identifyingMarks}
+            onChange={(e) => setIdentifyingMarks(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
 
-          <Field label="Skin tone">
-            <select
-              style={inputStyle}
-              value={skinTone}
-              onChange={(e) => setSkinTone(e.target.value)}
-            >
-              <option value="">(not set)</option>
-              <option value="Very fair">Very fair</option>
-              <option value="Fair">Fair</option>
-              <option value="Light">Light</option>
-              <option value="Medium">Medium</option>
-              <option value="Tan">Tan</option>
-              <option value="Brown">Brown</option>
-              <option value="Dark brown">Dark brown</option>
-              <option value="Very dark">Very dark</option>
-            </select>
-          </Field>
-        </LockedSection>
+        <Field label="Skin tone">
+          <select
+            style={inputStyle}
+            value={skinTone}
+            onChange={(e) => setSkinTone(e.target.value)}
+          >
+            <option value="">(not set)</option>
+            <option value="Very fair">Very fair</option>
+            <option value="Fair">Fair</option>
+            <option value="Light">Light</option>
+            <option value="Medium">Medium</option>
+            <option value="Tan">Tan</option>
+            <option value="Brown">Brown</option>
+            <option value="Dark brown">Dark brown</option>
+            <option value="Very dark">Very dark</option>
+          </select>
+        </Field>
       </Section>
 
-      <Section title="Section 6">
-        <LockedSection locked={isLocked}>
-          <Field label="Additional notes">
-            <textarea
-              style={{ ...inputStyle, minHeight: 120 }}
-              value={additionalNotes}
-              onChange={(e) => setAdditionalNotes(e.target.value)}
-              placeholder="Optional"
-            />
-          </Field>
-        </LockedSection>
+      <Section
+        title="Section 6"
+        info={
+          showUpgrade
+            ? "Visible on Premium. You can complete these details now and they will become publicly visible after upgrading."
+            : undefined
+        }
+      >
+        <Field label="Additional notes">
+          <textarea
+            style={{ ...inputStyle, minHeight: 120 }}
+            value={additionalNotes}
+            onChange={(e) => setAdditionalNotes(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
       </Section>
 
       <div style={{ marginTop: 20, marginBottom: 16 }}>
@@ -934,6 +920,18 @@ const sectionSubtitleStyle: React.CSSProperties = {
   lineHeight: 1.5,
 };
 
+const sectionInfoStyle: React.CSSProperties = {
+  marginTop: 10,
+  padding: "10px 12px",
+  borderRadius: 10,
+  background: "#F8FAFC",
+  border: "1px solid #E2E8F0",
+  color: "#334155",
+  fontSize: 13,
+  lineHeight: 1.6,
+  fontWeight: 600,
+};
+
 const fieldLabelStyle: React.CSSProperties = {
   fontWeight: 700,
   marginBottom: 6,
@@ -944,30 +942,6 @@ const fieldHintStyle: React.CSSProperties = {
   marginTop: 6,
   fontSize: 12,
   color: "#555",
-};
-
-const lockedOverlayStyle: React.CSSProperties = {
-  position: "absolute",
-  inset: 0,
-  background: "rgba(255,255,255,0.65)",
-  backdropFilter: "blur(2px)",
-  borderRadius: 16,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  zIndex: 2,
-  padding: 20,
-};
-
-const lockedOverlayInnerStyle: React.CSSProperties = {
-  background: "#FFFFFF",
-  border: "1px solid #E5E7EB",
-  borderRadius: 14,
-  padding: "16px 18px",
-  maxWidth: 320,
-  textAlign: "center",
-  color: "#0F172A",
-  boxShadow: "0 10px 30px rgba(15, 23, 42, 0.08)",
 };
 
 const inputStyle: React.CSSProperties = {
