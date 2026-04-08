@@ -33,8 +33,8 @@ export default function HomePage() {
           </div>
 
           <div style={styles.helperLine}>
-            Free profile setup • Section 1 visible on free tier • Upgrade later
-            for full public profile visibility
+            Free profile setup • Complete and save your full profile on free •
+            Upgrade later for full public profile visibility
           </div>
         </div>
       </section>
@@ -67,16 +67,29 @@ export default function HomePage() {
           <div style={styles.step}>
             <div style={styles.stepNum}>2</div>
             <div>
-              <div style={styles.stepTitle}>Free tier shows Section 1 only</div>
+              <div style={styles.stepTitle}>Complete and save everything</div>
               <div style={styles.stepText}>
-                When your QR code is scanned on the free tier, only your Section
-                1 public emergency details are visible.
+                On the free plan, you can complete and save your full profile at
+                any time.
               </div>
             </div>
           </div>
 
           <div style={styles.step}>
             <div style={styles.stepNum}>3</div>
+            <div>
+              <div style={styles.stepTitle}>
+                Free public QR view shows Section 1 only
+              </div>
+              <div style={styles.stepText}>
+                When your QR code is scanned on the free plan, only your Section
+                1 public emergency details are visible.
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.step}>
+            <div style={styles.stepNum}>4</div>
             <div>
               <div style={styles.stepTitle}>
                 Upgrade when you want full visibility
@@ -96,7 +109,8 @@ export default function HomePage() {
             <li>A downloadable QR code lock screen for your phone</li>
             <li>A secure online profile you can update at any time</li>
             <li>
-              Two physical QR items with free nationwide delivery on Premium
+              Two physical QR code products with free nationwide delivery on
+              Premium
             </li>
           </ul>
         </div>
@@ -109,7 +123,7 @@ export default function HomePage() {
             <ul style={styles.ul}>
               <li>Create an account for free</li>
               <li>Complete and save your full profile</li>
-              <li>Public QR code view shows Section 1 only</li>
+              <li>Only Section 1 is visible when your QR code is scanned</li>
               <li>Downloadable QR code lock screen for your phone</li>
               <li>Upgrade later at any time</li>
             </ul>
@@ -126,7 +140,7 @@ export default function HomePage() {
             <ul style={styles.ul}>
               <li>Full medical profile visible when your QR code is scanned</li>
               <li>Downloadable QR code lock screen for your phone</li>
-              <li>Three physical QR items included</li>
+              <li>Includes 2 physical QR code products</li>
               <li>Free nationwide delivery included</li>
               <li>Secure online emergency profile</li>
             </ul>

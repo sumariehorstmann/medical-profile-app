@@ -72,8 +72,11 @@ export default async function ProfilePage() {
           <h2 style={styles.h2}>How RROI works</h2>
           <ul style={styles.list}>
             <li>Section 1 is visible when your QR is scanned on the Free plan</li>
-            <li>You can still complete and save your full profile on the Free plan</li>
-            <li>Premium unlocks full public profile visibility when your QR is scanned</li>
+            <li>You can complete and save your full profile on the Free plan</li>
+            <li>
+              Premium unlocks full public profile visibility when your QR is
+              scanned
+            </li>
           </ul>
         </div>
 
@@ -81,7 +84,9 @@ export default async function ProfilePage() {
           <div style={styles.upgradeBanner}>
             <div style={styles.upgradeBannerTitle}>Upgrade to Premium</div>
             <p style={styles.upgradeBannerText}>
-              Unlock your full medical profile visibility and access affiliate features.
+              Your full profile can be completed and saved now. Upgrade when you
+              want your full medical profile to be visible when your QR code is
+              scanned.
             </p>
             <Link href="/subscribe" style={styles.upgradeBtn}>
               Upgrade to Premium
@@ -91,34 +96,42 @@ export default async function ProfilePage() {
 
         <ProfileFormClient initial={profile} showUpgrade={!isPremium} />
 
-{profile?.public_id && (
-  <div style={{ marginTop: 20 }}>
-    <DownloadQRWallpaper
-      publicId={profile.public_id}
-      firstName={profile.first_name}
-    />
-  </div>
-)}
+        {profile?.public_id && (
+          <div style={styles.downloadBlock}>
+            <DownloadQRWallpaper
+              publicId={profile.public_id}
+              firstName={profile.first_name}
+            />
+          </div>
+        )}
 
         <div style={styles.card}>
           <h2 style={styles.h2}>Subscription Status</h2>
 
-          <p><strong>Status:</strong> {subscription?.status ?? "free"}</p>
-          <p><strong>Plan:</strong> {subscription?.plan ?? "free"}</p>
+          <p>
+            <strong>Status:</strong> {subscription?.status ?? "free"}
+          </p>
+          <p>
+            <strong>Plan:</strong> {subscription?.plan ?? "free"}
+          </p>
           <p>
             <strong>Expires:</strong>{" "}
             {subscription?.current_period_end
-              ? new Date(subscription.current_period_end).toLocaleDateString("en-ZA", {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric",
-                })
+              ? new Date(subscription.current_period_end).toLocaleDateString(
+                  "en-ZA",
+                  {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  }
+                )
               : "-"}
           </p>
 
           {!isPremium && (
             <p style={styles.mutedText}>
-              Upgrade to Premium to unlock full profile visibility and affiliate access.
+              On the Free plan, only Section 1 is publicly visible when your QR
+              code is scanned.
             </p>
           )}
         </div>
@@ -128,11 +141,23 @@ export default async function ProfilePage() {
 
           {isAffiliate ? (
             <>
-              <p><strong>Status:</strong> {affiliate.status}</p>
-              <p><strong>Your Code:</strong> {affiliate.affiliate_code}</p>
-              <p><strong>Commission:</strong> 10% of base price</p>
-              <p><strong>Total Earned:</strong> R{Number(affiliate.total_earned ?? 0).toFixed(2)}</p>
-              <p><strong>Total Paid:</strong> R{Number(affiliate.total_paid ?? 0).toFixed(2)}</p>
+              <p>
+                <strong>Status:</strong> {affiliate.status}
+              </p>
+              <p>
+                <strong>Your Code:</strong> {affiliate.affiliate_code}
+              </p>
+              <p>
+                <strong>Commission:</strong> 10% of base price
+              </p>
+              <p>
+                <strong>Total Earned:</strong> R
+                {Number(affiliate.total_earned ?? 0).toFixed(2)}
+              </p>
+              <p>
+                <strong>Total Paid:</strong> R
+                {Number(affiliate.total_paid ?? 0).toFixed(2)}
+              </p>
 
               <div style={styles.buttonRow}>
                 <Link href="/affiliate/dashboard" style={styles.primaryBtn}>
@@ -143,7 +168,8 @@ export default async function ProfilePage() {
           ) : isPremium ? (
             <>
               <p style={styles.mutedText}>
-                As an active Premium subscriber, you can apply to become an affiliate.
+                As an active Premium subscriber, you can apply to become an
+                affiliate.
               </p>
 
               <div style={styles.buttonRow}>
@@ -176,7 +202,7 @@ const BRAND_GREEN = "#157A55";
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
-    background: "#f8fafc",
+    background: "#F8FAFC",
     padding: 24,
   },
   container: {
@@ -190,7 +216,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#0F172A",
   },
   h2: {
-    marginBottom: 12,
+    margin: "0 0 12px",
     fontSize: 22,
     fontWeight: 800,
     color: "#0F172A",
@@ -200,19 +226,19 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 18,
     border: "1px solid #E5E7EB",
     borderRadius: 12,
-    background: "#fff",
+    background: "#FFFFFF",
   },
   cardWide: {
     marginBottom: 24,
     padding: 20,
     borderRadius: 12,
     border: "1px solid #E5E7EB",
-    background: "#fff",
+    background: "#FFFFFF",
   },
   list: {
     margin: 0,
     paddingLeft: 18,
-    lineHeight: 1.6,
+    lineHeight: 1.7,
     color: "#374151",
   },
   upgradeBanner: {
@@ -232,38 +258,54 @@ const styles: Record<string, React.CSSProperties> = {
     margin: "0 0 14px",
     color: "#166534",
     fontSize: 15,
+    lineHeight: 1.6,
   },
   upgradeBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     padding: "12px 16px",
     borderRadius: 10,
     background: BRAND_GREEN,
-    color: "#fff",
+    color: "#FFFFFF",
     textDecoration: "none",
     fontWeight: 800,
   },
+  downloadBlock: {
+    marginTop: 20,
+  },
   primaryBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     padding: "10px 14px",
     borderRadius: 10,
     background: BRAND_GREEN,
-    color: "#fff",
+    color: "#FFFFFF",
     textDecoration: "none",
     fontWeight: 700,
   },
   secondaryBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     padding: "10px 14px",
     borderRadius: 10,
     border: "1px solid #157A55",
     color: BRAND_GREEN,
     textDecoration: "none",
     fontWeight: 700,
+    background: "#FFFFFF",
   },
   mutedText: {
     marginTop: 10,
-    color: "#666",
+    color: "#475569",
+    lineHeight: 1.6,
   },
   buttonRow: {
     display: "flex",
     gap: 10,
-    marginTop: 10,
+    marginTop: 12,
+    flexWrap: "wrap",
   },
 };
