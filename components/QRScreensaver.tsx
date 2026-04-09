@@ -16,34 +16,37 @@ export default function QRScreensaver({
       <div style={styles.safeTop} />
 
       <div style={styles.headerWrap}>
-        <img src="/logo.png" alt="RROI logo" style={styles.logo} />
-
-        <div style={styles.brandBlock}>
-          <div style={styles.brandMain}>Rapid Response</div>
-          <div style={styles.brandSub}>Online Information</div>
-        </div>
+        <img
+          src="/logo-full-v2.png"
+          alt="RROI logo"
+          style={styles.logo}
+        />
       </div>
 
-      <div style={styles.qrSection}>
-        <div style={styles.qrCard}>
-          <QRCodeSVG
-            value={qrValue || " "}
-            size={760}
-            bgColor="#FFFFFF"
-            fgColor="#000000"
-            level="H"
-            includeMargin={true}
-          />
+      <div style={styles.cardWrap}>
+        <div style={styles.mainCard}>
+          <div style={styles.qrWrap}>
+            <QRCodeSVG
+              value={qrValue || " "}
+              size={760}
+              bgColor="#FFFFFF"
+              fgColor="#000000"
+              level="H"
+              includeMargin={true}
+            />
+          </div>
+
+          <div style={styles.textBlock}>
+            <div style={styles.scanText}>SCAN IN AN EMERGENCY</div>
+            <div style={styles.profileText}>Medical Profile</div>
+
+            {firstName ? <div style={styles.nameText}>{firstName}</div> : null}
+
+            <div style={styles.divider} />
+
+            <div style={styles.helperText}>Secure emergency information</div>
+          </div>
         </div>
-      </div>
-
-      <div style={styles.textBlock}>
-        <div style={styles.scanText}>Scan in an Emergency</div>
-        <div style={styles.profileText}>Medical Profile</div>
-
-        {firstName ? <div style={styles.nameText}>{firstName}</div> : null}
-
-        <div style={styles.helperText}>Secure emergency information</div>
       </div>
 
       <div style={styles.safeBottom} />
@@ -62,78 +65,62 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "space-between",
     boxSizing: "border-box",
-    padding: "90px 110px 120px",
+    padding: "70px 110px 100px",
     fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
     overflow: "hidden",
   },
 
   safeTop: {
-    height: 20,
+    height: 10,
     flexShrink: 0,
   },
 
   headerWrap: {
     width: "100%",
     display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
     justifyContent: "center",
-    gap: 22,
+    alignItems: "center",
     marginTop: 10,
+    marginBottom: 34,
   },
 
   logo: {
-    width: 300,
-    height: 300,
+    width: 740,
+    height: "auto",
     objectFit: "contain",
     display: "block",
   },
 
-  brandBlock: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 6,
-  },
-
-  brandMain: {
-    fontSize: 74,
-    fontWeight: 900,
-    lineHeight: 1,
-    textAlign: "center",
-    color: "#157A55",
-    letterSpacing: 0.2,
-  },
-
-  brandSub: {
-    fontSize: 58,
-    fontWeight: 800,
-    lineHeight: 1.05,
-    textAlign: "center",
-    color: "#157A55",
-    letterSpacing: 0.2,
-  },
-
-  qrSection: {
+  cardWrap: {
     width: "100%",
     flex: 1,
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "center",
-    padding: "40px 0 20px",
     minHeight: 0,
   },
 
-  qrCard: {
-    width: 930,
-    height: 930,
-    borderRadius: 46,
+  mainCard: {
+    width: 980,
     background: "#FFFFFF",
-    border: "2px solid #E2E8F0",
+    borderRadius: 52,
+    border: "2px solid #E5E7EB",
+    boxShadow: "0 28px 80px rgba(15, 23, 42, 0.10)",
+    padding: "34px 34px 42px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+
+  qrWrap: {
+    width: 820,
+    height: 820,
+    borderRadius: 28,
+    border: "1px solid #E5E7EB",
+    background: "#FFFFFF",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: "0 24px 70px rgba(15, 23, 42, 0.08)",
   },
 
   textBlock: {
@@ -141,49 +128,56 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
-    marginTop: 10,
+    marginTop: 34,
   },
 
   scanText: {
-    fontSize: 84,
+    fontSize: 72,
     fontWeight: 900,
     lineHeight: 1,
     textAlign: "center",
     color: "#0F172A",
-    letterSpacing: -0.5,
+    letterSpacing: -0.8,
   },
 
   profileText: {
-    fontSize: 60,
-    fontWeight: 700,
+    marginTop: 18,
+    fontSize: 58,
+    fontWeight: 500,
     lineHeight: 1.05,
     textAlign: "center",
     color: "#475569",
+    letterSpacing: 0.2,
   },
 
   nameText: {
-    marginTop: 10,
-    fontSize: 48,
+    marginTop: 24,
+    fontSize: 50,
     fontWeight: 800,
     lineHeight: 1.05,
     textAlign: "center",
     color: "#157A55",
   },
 
+  divider: {
+    width: "82%",
+    height: 1,
+    background: "#E5E7EB",
+    marginTop: 34,
+    marginBottom: 24,
+  },
+
   helperText: {
-    marginTop: 8,
-    fontSize: 30,
-    fontWeight: 600,
+    fontSize: 32,
+    fontWeight: 500,
     lineHeight: 1.2,
     textAlign: "center",
-    color: "#64748B",
-    letterSpacing: 0.2,
+    color: "#475569",
+    letterSpacing: 0.15,
   },
 
   safeBottom: {
-    height: 24,
+    height: 16,
     flexShrink: 0,
   },
 };
