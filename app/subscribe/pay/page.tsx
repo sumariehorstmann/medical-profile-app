@@ -13,7 +13,7 @@ type Profile = {
 
 const BASE_PRICE = 429;
 const DISCOUNT_AMOUNT = 30;
-const FINAL_PRICE = BASE_PRICE - DISCOUNT_AMOUNT;
+const AFFILIATE_PRICE = 399;
 
 function PayPageInner() {
   const router = useRouter();
@@ -28,6 +28,7 @@ function PayPageInner() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState("");
   const [affiliateCode, setAffiliateCode] = useState("");
+  const [affiliateMessage, setAffiliateMessage] = useState("");
 
   useEffect(() => {
     let mounted = true;
@@ -80,6 +81,7 @@ function PayPageInner() {
 
         if (finalRef) {
           setAffiliateCode(finalRef.toUpperCase());
+          setAffiliateMessage("Affiliate code detected. Your R30 discount will be applied if the code is valid.");
         }
       } catch {
         setError("Something went wrong loading your payment page.");
@@ -100,12 +102,12 @@ function PayPageInner() {
 
     const cleanCode = affiliateCode.trim().toUpperCase();
     const hasAffiliateCode = cleanCode.length > 0;
-    const displayPrice = hasAffiliateCode ? FINAL_PRICE : BASE_PRICE;
+    const priceToday = hasAffiliateCode ? AFFILIATE_PRICE : BASE_PRICE;
 
-    const confirmUpgrade = confirm(
+    const confirmUpgrade = window.confirm(
       hasAffiliateCode
-        ? `Upgrade to Premium. Base R${BASE_PRICE}, discount R${DISCOUNT_AMOUNT}, final R${displayPrice}. Continue?`
-        : `Upgrade to Premium (R${BASE_PRICE}/year). Continue?`
+        ? `Upgrade to Premium. Base price R${BASE_PRICE}, affiliate discount R${DISCOUNT_AMOUNT}, price today R${AFFILIATE_PRICE}. Continue?`
+        : `Upgrade to Premium. Price today R${BASE_PRICE}. Continue?`
     );
 
     if (!confirmUpgrade) return;
@@ -164,12 +166,15 @@ function PayPageInner() {
     );
   }
 
+  const hasAffiliateCode = affiliateCode.trim().length > 0;
+  const priceToday = hasAffiliateCode ? AFFILIATE_PRICE : BASE_PRICE;
+
   return (
     <main className="max-w-xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-semibold mb-2">Confirm Premium Upgrade</h1>
 
       <p className="mb-6 text-sm text-gray-600">
-        You are upgrading your account. Only public profile visibility is upgraded.
+        You are upgrading your account. Your Premium Kit includes your first year subscription, 2 physical QR code products, and delivery.
       </p>
 
       {error ? (
@@ -187,10 +192,10 @@ function PayPageInner() {
               {[profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "-"}
             </p>
             <p>
-              <strong>Plan:</strong> RROI Premium
+              <strong>Plan:</strong> RROI Premium Kit
             </p>
             <p>
-              <strong>Base Price:</strong> R{BASE_PRICE} / year
+              <strong>Base Price:</strong> R{BASE_PRICE}
             </p>
           </div>
 
@@ -201,21 +206,41 @@ function PayPageInner() {
             <input
               type="text"
               value={affiliateCode}
-              onChange={(e) => setAffiliateCode(e.target.value.toUpperCase())}
+              onChange={(e) => {
+                setAffiliateCode(e.target.value.toUpperCase());
+                setAffiliateMessage("");
+              }}
               placeholder="Enter affiliate code"
               className="w-full rounded border px-3 py-2"
               disabled={loading}
             />
             <p className="mt-2 text-sm text-gray-600">
-              Valid code gives <strong>R30 off</strong>.
+              Enter a valid affiliate code to get <strong>R30 off</strong>.
             </p>
+            {affiliateMessage ? (
+              <p className="mt-2 text-sm text-green-700">{affiliateMessage}</p>
+            ) : null}
           </div>
 
-          <div className="mb-6 rounded border border-gray-200 p-4 text-sm">
+          <div className="mb-6 rounded border border-gray-200 p-4 text-sm space-y-2">
             <p>
-              <strong>Price Today:</strong>{" "}
-              {affiliateCode.trim() ? `R${FINAL_PRICE}` : `R${BASE_PRICE}`}
+              <strong>Base Price:</strong> R{BASE_PRICE}
             </p>
+
+            {hasAffiliateCode ? (
+              <>
+                <p>
+                  <strong>Affiliate Discount:</strong> -R{DISCOUNT_AMOUNT}
+                </p>
+                <p>
+                  <strong>Price Today:</strong> R{priceToday}
+                </p>
+              </>
+            ) : (
+              <p>
+                <strong>Price Today:</strong> R{priceToday}
+              </p>
+            )}
           </div>
 
           <button
@@ -224,7 +249,7 @@ function PayPageInner() {
             disabled={loading || !profile}
             className="w-full rounded bg-black px-4 py-3 text-white disabled:opacity-60"
           >
-            {loading ? "Redirecting..." : "Proceed to Payment"}
+            {loading ? "Redirecting..." : `Proceed to Payment - R${priceToday}`}
           </button>
 
           <button
