@@ -38,8 +38,11 @@ export default function DownloadQRWallpaper({
     }
   };
 
-  const qrUrl =
-    typeof window !== "undefined" ? `${window.location.origin}/e/${publicId}` : "";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "") ||
+    "https://www.rroi.co.za";
+
+  const qrUrl = publicId ? `${baseUrl}/e/${publicId}` : "";
 
   return (
     <>
