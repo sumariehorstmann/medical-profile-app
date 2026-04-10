@@ -6,23 +6,19 @@ import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
-const BASE_PRICE = 349;
-const DISCOUNT_AMOUNT = 50;
+// 🔒 LOCKED PRICING
+const BASE_PRICE = 429;
+const AFFILIATE_PRICE = 399;
 
 function payfastProcessUrl() {
-  return process.env.PAYFAST_ENV === "sandbox"
-    ? "https://sandbox.payfast.co.za/eng/process"
-    : "https://www.payfast.co.za/eng/process";
+  return process.env.PAYFAST_URL!;
 }
 
 function encode(value: string) {
   return encodeURIComponent(value.trim()).replace(/%20/g, "+");
 }
 
-function buildSignature(
-  data: Record<string, string>,
-  passphrase?: string
-) {
+function buildSignature(data: Record<string, string>, passphrase?: string) {
   const pairs: string[] = [];
 
   for (const key in data) {
@@ -57,9 +53,7 @@ export async function POST(req: NextRequest) {
           getAll() {
             return cookieStore.getAll();
           },
-          setAll() {
-            // no-op in this route
-          },
+          setAll() {},
         },
       }
     );
@@ -92,6 +86,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
     }
 
+    // ✅ Validate env
+    const requiredEnv = [
+      "PAYFAST_MERCHANT_ID",
+      "PAYFAST_MERCHANT_KEY",
+      "PAYFAST_URL",
+      "NEXT_PUBLIC_BASE_URL",
+    ];
+
+    for (const key of requiredEnv) {
+      if (!process.env[key]) {
+        return NextResponse.json(
+          { error: `Missing ${key}` },
+          { status: 500 }
+        );
+      }
+    }
+
+    // ✅ Validate profile ownership
     const { data: profile, error: profileError } = await supabaseAdmin
       .from("profiles")
       .select("user_id, public_id")
@@ -100,52 +112,35 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (profileError || !profile) {
-      return NextResponse.json(
-        { error: "Profile not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    const { data: existingSub, error: existingSubError } = await supabaseAdmin
+    // ✅ Prevent duplicate active subscription
+    const { data: existingSub } = await supabaseAdmin
       .from("subscriptions")
-      .select("user_id, status, current_period_end")
+      .select("user_id")
       .eq("user_id", user.id)
       .eq("status", "active")
       .gt("current_period_end", new Date().toISOString())
       .maybeSingle();
 
-    if (existingSubError) {
-      console.error("SUBSCRIPTION CHECK ERROR:", existingSubError);
-      return NextResponse.json(
-        { error: "Failed to check existing subscription." },
-        { status: 500 }
-      );
-    }
-
     if (existingSub) {
       return NextResponse.json(
-        { error: "This profile is already on Premium." },
+        { error: "Already on Premium." },
         { status: 400 }
       );
     }
 
+    // 🔥 PRICE LOGIC (CLEAN)
     let finalAmount = BASE_PRICE;
 
     if (affiliateCode) {
-      const { data: affiliate, error: affiliateError } = await supabaseAdmin
+      const { data: affiliate } = await supabaseAdmin
         .from("affiliates")
-        .select("id, affiliate_code, status")
+        .select("id")
         .eq("affiliate_code", affiliateCode)
         .eq("status", "active")
         .maybeSingle();
-
-      if (affiliateError) {
-        console.error("AFFILIATE LOOKUP ERROR:", affiliateError);
-        return NextResponse.json(
-          { error: "Failed to validate affiliate code." },
-          { status: 500 }
-        );
-      }
 
       if (!affiliate) {
         return NextResponse.json(
@@ -154,47 +149,39 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      finalAmount = BASE_PRICE - DISCOUNT_AMOUNT;
+      finalAmount = AFFILIATE_PRICE;
     }
 
+    // ✅ Payment record
     const paymentId = `rroi_${publicId}_${Date.now()}`;
 
-    const { error: paymentError } = await supabaseAdmin
-      .from("payments")
-      .insert({
-        user_id: profile.user_id,
-        public_id: profile.public_id,
-        provider: "payfast",
-        provider_payment_id: paymentId,
-        amount: finalAmount,
-        status: "pending",
-      });
+    await supabaseAdmin.from("payments").insert({
+      user_id: profile.user_id,
+      public_id: profile.public_id,
+      provider: "payfast",
+      provider_payment_id: paymentId,
+      amount: finalAmount,
+      status: "pending",
+    });
 
-    if (paymentError) {
-      console.error("PAYMENT INSERT ERROR:", paymentError);
-      return NextResponse.json(
-        { error: "Payment insert failed" },
-        { status: 500 }
-      );
-    }
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!.trim();
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
-
+    // ✅ PayFast payload
     const data: Record<string, string> = {
       merchant_id: process.env.PAYFAST_MERCHANT_ID!,
       merchant_key: process.env.PAYFAST_MERCHANT_KEY!,
       return_url: `${baseUrl}/billing/success`,
       cancel_url: `${baseUrl}/billing/cancel`,
       notify_url: `${baseUrl}/api/payfast/itn`,
-      name_first: firstName,
+      name_first: firstName || "RROI",
       name_last: lastName,
       email_address: email,
       m_payment_id: paymentId,
       amount: finalAmount.toFixed(2),
-      item_name: "RROI Premium",
+      item_name: "RROI Premium Kit",
       item_description: affiliateCode
-        ? `RROI Premium setup. Base price R${BASE_PRICE}, affiliate discount R${DISCOUNT_AMOUNT}.`
-        : `RROI Premium setup. Base price R${BASE_PRICE}.`,
+        ? "RROI Premium Kit (Affiliate Pricing Applied)"
+        : "RROI Premium Kit",
       custom_str1: publicId,
       custom_str2: email,
       custom_str3: affiliateCode || "",
@@ -202,20 +189,12 @@ export async function POST(req: NextRequest) {
 
     data.signature = buildSignature(data, process.env.PAYFAST_PASSPHRASE);
 
-    console.log("PAYFAST BASE URL:", baseUrl);
-    console.log("PAYFAST NOTIFY URL:", `${baseUrl}/api/payfast/itn`);
-    console.log("PAYFAST FINAL AMOUNT:", finalAmount.toFixed(2));
-    console.log("PAYFAST AFFILIATE CODE:", affiliateCode || "(none)");
-
     return NextResponse.json({
       processUrl: payfastProcessUrl(),
       fields: data,
     });
   } catch (err) {
     console.error("SUBSCRIBE ERROR:", err);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

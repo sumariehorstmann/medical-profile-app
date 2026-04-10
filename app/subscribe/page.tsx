@@ -53,7 +53,7 @@ export default async function SubscribePage({
 
           <div style={styles.section}>
             <div style={styles.sectionTitle}>Premium tier</div>
-            <div style={styles.price}>R349 first year</div>
+            <div style={styles.price}>R429 first year</div>
             <ul style={styles.ul}>
               <li>Full medical profile visible when QR is scanned</li>
               <li>Three physical QR items included</li>

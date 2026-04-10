@@ -50,8 +50,8 @@ export default function AffiliateTermsPage() {
         <section style={styles.section}>
           <h2 style={styles.h2}>4. Discount and Commission</h2>
           <ul style={styles.ul}>
-            <li>Customers using a valid affiliate code receive R50 off the Premium signup price.</li>
-            <li>Affiliates earn 10% commission on the base price of R349.</li>
+            <li>Customers using a valid affiliate code receive R30 off the Premium signup price.</li>
+            <li>Affiliates earn 8% commission on the base price of R429.</li>
             <li>Commission applies to the first successful Premium signup only.</li>
             <li>No commission is paid on annual renewals.</li>
             <li>Self-referrals are not allowed.</li>

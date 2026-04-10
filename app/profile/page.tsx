@@ -148,7 +148,7 @@ export default async function ProfilePage() {
                 <strong>Your Code:</strong> {affiliate.affiliate_code}
               </p>
               <p>
-                <strong>Commission:</strong> 10% of base price
+                <strong>Commission:</strong> 8% of base price
               </p>
               <p>
                 <strong>Total Earned:</strong> R

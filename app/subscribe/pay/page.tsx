@@ -11,8 +11,8 @@ type Profile = {
   last_name: string | null;
 };
 
-const BASE_PRICE = 349;
-const DISCOUNT_AMOUNT = 50;
+const BASE_PRICE = 429;
+const DISCOUNT_AMOUNT = 30;
 const FINAL_PRICE = BASE_PRICE - DISCOUNT_AMOUNT;
 
 function PayPageInner() {

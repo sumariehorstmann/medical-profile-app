@@ -175,7 +175,7 @@ export default function AffiliateApplyPage() {
             Affiliate access is available to active Premium users only.
           </p>
           <p style={styles.noticeText}>
-            Earn <strong>10% commission on the base price</strong> when someone joins Premium
+            Earn <strong>8% commission on the base price</strong> when someone joins Premium
             using your code.
           </p>
         </div>
