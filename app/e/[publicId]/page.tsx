@@ -35,8 +35,11 @@ type PublicProfile = {
   emergency_contacts?: EmergencyContact[];
 };
 
-async function getPublicProfile(publicId: string): Promise<PublicProfile | null> {
+async function getPublicProfile(
+  publicId: string
+): Promise<PublicProfile | null> {
   const base = process.env.NEXT_PUBLIC_BASE_URL!;
+
   const res = await fetch(
     `${base}/api/public-profile?publicId=${encodeURIComponent(publicId)}`,
     { cache: "no-store" }
@@ -46,6 +49,23 @@ async function getPublicProfile(publicId: string): Promise<PublicProfile | null>
 
   const json = await res.json();
   return json.profile ?? null;
+}
+
+function Field({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | null;
+}) {
+  if (!value) return null;
+
+  return (
+    <div style={styles.field}>
+      <div style={styles.label}>{label}</div>
+      <div style={styles.value}>{value}</div>
+    </div>
+  );
 }
 
 export default async function PublicEmergencyPage({
@@ -59,9 +79,9 @@ export default async function PublicEmergencyPage({
   if (!profile) {
     return (
       <main style={styles.center}>
-        <div>
-          <h1>RROI</h1>
-          <p>Profile not found</p>
+        <div style={styles.notFoundWrap}>
+          <h1 style={styles.notFoundTitle}>RROI</h1>
+          <p style={styles.notFoundText}>Profile not found</p>
         </div>
       </main>
     );
@@ -71,15 +91,17 @@ export default async function PublicEmergencyPage({
 
   const isPremium =
     profile.is_paid &&
-    profile.subscription?.current_period_end &&
+    !!profile.subscription?.current_period_end &&
     new Date(profile.subscription.current_period_end).getTime() > now;
 
-  const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ");
-  const c1 = profile.emergency_contacts?.[0];
+  const fullName = [profile.first_name, profile.last_name]
+    .filter(Boolean)
+    .join(" ");
+
+  const c1 = profile.emergency_contacts?.[0] ?? null;
 
   return (
     <main style={styles.container}>
-      {/* HEADER */}
       <div style={styles.header}>
         <div style={styles.title}>Emergency Information</div>
         <div style={isPremium ? styles.badgePremium : styles.badgeFree}>
@@ -87,15 +109,19 @@ export default async function PublicEmergencyPage({
         </div>
       </div>
 
-      {/* NAME */}
-      <div style={styles.name}>{fullName}</div>
+      <div style={styles.name}>{fullName || "-"}</div>
 
-      {/* EMERGENCY CONTACT */}
       <div style={styles.card}>
         <div style={styles.sectionTitle}>Emergency Contact</div>
 
-        <div style={styles.contactName}>{c1?.full_name}</div>
-        <div style={styles.contactMeta}>{c1?.relationship}</div>
+        <div style={styles.contactName}>{c1?.full_name || "-"}</div>
+        <div style={styles.contactMeta}>{c1?.relationship || "-"}</div>
+
+        {c1?.phone && (
+          <a href={`tel:${c1.phone}`} style={styles.phone}>
+            {c1.phone}
+          </a>
+        )}
 
         {c1?.phone && (
           <a href={`tel:${c1.phone}`} style={styles.callButton}>
@@ -104,7 +130,6 @@ export default async function PublicEmergencyPage({
         )}
       </div>
 
-      {/* PREMIUM ONLY */}
       {isPremium && (
         <>
           <div style={styles.card}>
@@ -120,10 +145,23 @@ export default async function PublicEmergencyPage({
           <div style={styles.card}>
             <div style={styles.sectionTitle}>Additional Details</div>
 
+            <Field label="Gender" value={profile.gender} />
+            <Field label="Date of Birth" value={profile.date_of_birth} />
+            <Field label="Primary Language" value={profile.primary_language} />
+            <Field
+              label="Secondary Language"
+              value={profile.secondary_language}
+            />
             <Field label="Medical Aid" value={profile.medical_aid_provider} />
-            <Field label="Policy" value={profile.medical_aid_policy_number} />
+            <Field
+              label="Policy"
+              value={profile.medical_aid_policy_number}
+            />
             <Field label="Doctor" value={profile.gp_name} />
+            <Field label="Practice" value={profile.gp_practice} />
             <Field label="Doctor Phone" value={profile.gp_phone} />
+            <Field label="Religion" value={profile.religion} />
+            <Field label="Additional Notes" value={profile.additional_notes} />
           </div>
         </>
       )}
@@ -141,29 +179,36 @@ export default async function PublicEmergencyPage({
   );
 }
 
-function Field({ label, value }: { label: string; value?: string | null }) {
-  if (!value) return null;
-
-  return (
-    <div style={styles.field}>
-      <div style={styles.label}>{label}</div>
-      <div style={styles.value}>{value}</div>
-    </div>
-  );
-}
-
-const styles: Record<string, any> = {
+const styles: Record<string, React.CSSProperties> = {
   container: {
     maxWidth: 520,
     margin: "0 auto",
     padding: 16,
-    fontFamily: "system-ui",
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
   },
 
   center: {
     minHeight: "100vh",
     display: "grid",
     placeItems: "center",
+    padding: 24,
+  },
+
+  notFoundWrap: {
+    textAlign: "center",
+  },
+
+  notFoundTitle: {
+    fontSize: 40,
+    fontWeight: 900,
+    margin: 0,
+    color: "#0F172A",
+  },
+
+  notFoundText: {
+    marginTop: 8,
+    color: "#64748B",
+    fontSize: 16,
   },
 
   header: {
@@ -174,18 +219,21 @@ const styles: Record<string, any> = {
   title: {
     fontSize: 22,
     fontWeight: 800,
+    color: "#0F172A",
   },
 
   badgePremium: {
     marginTop: 6,
     color: "#157A55",
     fontWeight: 700,
+    fontSize: 15,
   },
 
   badgeFree: {
     marginTop: 6,
     color: "#888",
     fontWeight: 700,
+    fontSize: 15,
   },
 
   name: {
@@ -193,37 +241,51 @@ const styles: Record<string, any> = {
     fontSize: 28,
     fontWeight: 900,
     marginBottom: 16,
+    color: "#0F172A",
+    lineHeight: 1.15,
   },
 
   card: {
-    border: "1px solid #eee",
+    border: "1px solid #E5E7EB",
     borderRadius: 12,
     padding: 16,
     marginBottom: 14,
-    background: "#fff",
+    background: "#FFFFFF",
   },
 
   sectionTitle: {
     fontSize: 18,
     fontWeight: 800,
     marginBottom: 10,
+    color: "#0F172A",
   },
 
   contactName: {
     fontSize: 20,
     fontWeight: 800,
+    color: "#0F172A",
   },
 
   contactMeta: {
     color: "#666",
-    marginBottom: 10,
+    marginBottom: 8,
+    fontSize: 16,
+  },
+
+  phone: {
+    display: "block",
+    fontSize: 18,
+    fontWeight: 700,
+    margin: "6px 0 12px",
+    color: "#157A55",
+    textDecoration: "none",
   },
 
   callButton: {
     display: "block",
     textAlign: "center",
     background: "#157A55",
-    color: "#fff",
+    color: "#FFFFFF",
     padding: 12,
     borderRadius: 10,
     fontWeight: 800,
@@ -231,25 +293,30 @@ const styles: Record<string, any> = {
   },
 
   field: {
-    marginBottom: 10,
+    marginBottom: 12,
   },
 
   label: {
     fontSize: 12,
     color: "#666",
+    marginBottom: 2,
   },
 
   value: {
     fontSize: 16,
     fontWeight: 600,
+    color: "#0F172A",
+    lineHeight: 1.4,
   },
 
   warning: {
-    background: "#fff3cd",
+    background: "#FFF3CD",
+    border: "1px solid #FFE69C",
     padding: 12,
     borderRadius: 10,
     fontWeight: 600,
     marginTop: 10,
+    color: "#7C5A00",
   },
 
   footer: {
@@ -257,5 +324,6 @@ const styles: Record<string, any> = {
     fontSize: 12,
     color: "#888",
     marginTop: 18,
+    lineHeight: 1.4,
   },
 };
