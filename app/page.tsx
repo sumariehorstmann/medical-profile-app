@@ -131,11 +131,11 @@ export default function HomePage() {
 
           <div style={styles.compareBlock}>
             <div style={styles.compareTitle}>Premium</div>
-            <div style={styles.price}>R349 once-off</div>
+            <div style={styles.price}>R429 once-off</div>
             <div style={styles.priceSub}>
               Includes your first year subscription
             </div>
-            <div style={styles.priceSubStrong}>R99 per year thereafter</div>
+            <div style={styles.priceSubStrong}>R129 per year thereafter</div>
 
             <ul style={styles.ul}>
               <li>Full medical profile visible when your QR code is scanned</li>
@@ -154,7 +154,7 @@ export default function HomePage() {
         <div style={styles.card}>
           <h2 style={styles.h2}>Affiliates</h2>
           <p style={styles.p}>
-            Earn commission by sharing RROI. Get 10% on every successful Premium
+            Earn commission by sharing RROI. Get 8% on every successful Premium
             signup using your referral code.
           </p>
           <Link href="/affiliate/terms" style={styles.secondaryBtn}>
