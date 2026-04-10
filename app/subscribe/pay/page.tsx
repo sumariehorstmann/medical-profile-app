@@ -207,7 +207,7 @@ function PayPageInner() {
               disabled={loading}
             />
             <p className="mt-2 text-sm text-gray-600">
-              Valid code gives <strong>R50 off</strong>.
+              Valid code gives <strong>R30 off</strong>.
             </p>
           </div>
 
