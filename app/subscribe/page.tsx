@@ -1,247 +1,213 @@
 import Link from "next/link";
-import Image from "next/image";
+import PageHeader from "@/components/PageHeader";
 
-type SubscribePageProps = {
-  searchParams?: Promise<{
-    ref?: string;
-  }>;
-};
-
-export default async function SubscribePage({
-  searchParams,
-}: SubscribePageProps) {
-  const params = searchParams ? await searchParams : {};
-  const ref = typeof params?.ref === "string" ? params.ref.trim().toUpperCase() : "";
-
-  const upgradeHref = ref
-    ? `/subscribe/shipping?ref=${encodeURIComponent(ref)}`
-    : "/subscribe/shipping";
-
+export default function SubscribePage() {
   return (
     <main style={styles.page}>
-      <div style={styles.card}>
+      <section style={styles.hero}>
         <div style={styles.brand}>
-          <Image src="/logo.png" alt="RROI logo" width={64} height={64} priority />
+          <PageHeader />
+
           <h1 style={styles.h1}>RROI Premium Upgrade</h1>
-          <p style={styles.tagline}>Rapid Response Online Information</p>
+
+          <p style={styles.sub}>
+            Upgrade to Premium to unlock full public profile visibility when
+            your QR code is scanned.
+          </p>
+        </div>
+      </section>
+
+      <section style={styles.blocks}>
+        <div style={styles.card}>
+          <h2 style={styles.h2}>Free tier</h2>
+          <ul style={styles.ul}>
+            <li>Create your account for free</li>
+            <li>Complete and save your full profile</li>
+            <li>QR public view shows Section 1 only</li>
+            <li>Upgrade later at any time</li>
+          </ul>
         </div>
 
-        <p style={styles.intro}>
-          Your account and full profile can be created and saved for free. Premium only changes what
-          is visible when your QR code is scanned.
-        </p>
+        <div style={styles.card}>
+          <h2 style={styles.h2}>Premium tier</h2>
 
-        {ref ? (
-          <div style={styles.refBox}>
-            <div style={styles.refTitle}>Affiliate Code Applied</div>
-            <div style={styles.refCode}>{ref}</div>
-            <p style={styles.refText}>
-              Your affiliate discount will be carried through to the payment step.
-            </p>
-          </div>
-        ) : null}
-
-        <div style={styles.compareBox}>
-          <div style={styles.section}>
-            <div style={styles.sectionTitle}>Free tier</div>
-            <ul style={styles.ul}>
-              <li>Create your account for free</li>
-              <li>Complete and save your full profile</li>
-              <li>QR public view shows Section 1 only</li>
-            </ul>
+          <div style={styles.price}>R399 first year</div>
+          <div style={styles.priceSub}>Includes your Premium setup</div>
+          <div style={styles.priceSubStrong}>
+            Annual renewal thereafter of R99
           </div>
 
-          <div style={styles.section}>
-            <div style={styles.sectionTitle}>Premium tier</div>
-            <div style={styles.price}>R429 first year</div>
-            <ul style={styles.ul}>
-              <li>Full medical profile visible when QR is scanned</li>
-              <li>Three physical QR items included</li>
-              <li>Nationwide delivery</li>
-              <li>Annual renewal thereafter</li>
-            </ul>
-          </div>
+          <ul style={styles.ul}>
+            <li>Full medical profile visible when QR is scanned</li>
+            <li>Two physical QR items included</li>
+            <li>Free nationwide delivery</li>
+            <li>Secure online emergency profile</li>
+          </ul>
         </div>
 
         <div style={styles.notice}>
           <strong>Important notice</strong>
-          <p style={styles.noticeText}>
-            RROI does not provide medical advice, diagnosis, or emergency services. RROI is not a
-            replacement for professional medical care or emergency response services.
+          <p style={styles.noticeP}>
+            RROI does not provide medical advice, diagnosis, or emergency
+            services.
           </p>
-          <p style={styles.noticeText}>
-            In an emergency, always contact local emergency services.
+          <p style={styles.noticeP}>
+            RROI is not a replacement for professional medical care or emergency
+            response services. In an emergency, always contact local emergency
+            services.
           </p>
         </div>
 
-        <Link href={upgradeHref} style={styles.primaryBtn}>
-          Upgrade to Premium
-        </Link>
+        <div style={styles.actions}>
+          <Link href="/subscribe/pay" style={styles.primaryBtn}>
+            Upgrade to Premium
+          </Link>
 
-        <p style={styles.helper}>
-          You should already have an account before continuing to payment.
-        </p>
+          <Link href="/profile" style={styles.secondaryBtn}>
+            Back to profile
+          </Link>
 
-        <Link href="/profile" style={styles.secondaryBtn}>
-          Back to profile
-        </Link>
-
-        <Link href="/" style={styles.backLink}>
-          ← Back to home
-        </Link>
-      </div>
+          <Link href="/" style={styles.backHome}>
+            ← Back to home
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
 
 const BRAND_GREEN = "#157A55";
+const TEXT = "#0F172A";
+const BORDER = "#E5E7EB";
+const MUTED = "#475569";
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
+    flexDirection: "column",
     background: "#FFFFFF",
-    color: "#0F172A",
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+    color: TEXT,
+  },
+  hero: {
+    padding: "34px 16px 18px",
+    display: "flex",
+    justifyContent: "center",
+  },
+  brand: {
+    width: "100%",
+    maxWidth: 620,
+    textAlign: "center",
+  },
+  h1: {
+    marginTop: 16,
+    marginBottom: 12,
+    fontSize: 28,
+    lineHeight: 1.15,
+    fontWeight: 900,
+  },
+  sub: {
+    margin: 0,
+    fontSize: 18,
+    lineHeight: 1.5,
+    color: "#334155",
+  },
+  blocks: {
+    padding: "10px 16px 28px",
+    display: "flex",
+    flexDirection: "column",
+    gap: 14,
+    alignItems: "center",
   },
   card: {
     width: "100%",
-    maxWidth: 520,
-    border: "1px solid #E5E7EB",
+    maxWidth: 620,
+    border: `1px solid ${BORDER}`,
     borderRadius: 16,
-    padding: 22,
+    padding: 18,
     background: "#FFFFFF",
   },
-  brand: {
-    textAlign: "center",
-    marginBottom: 14,
-  },
-  h1: {
-    fontSize: 24,
+  h2: {
+    margin: "0 0 10px",
+    fontSize: 18,
     fontWeight: 900,
-    margin: "8px 0 4px",
-  },
-  tagline: {
-    fontSize: 14,
-    fontWeight: 700,
-    opacity: 0.9,
-    margin: 0,
-  },
-  intro: {
-    margin: "0 0 16px",
-    textAlign: "center",
-    lineHeight: 1.5,
-    opacity: 0.92,
-  },
-  refBox: {
-    marginBottom: 16,
-    border: "1px solid #BBF7D0",
-    borderRadius: 12,
-    padding: 14,
-    background: "#F0FDF4",
-    textAlign: "center",
-  },
-  refTitle: {
-    fontSize: 13,
-    fontWeight: 800,
-    color: "#166534",
-    marginBottom: 6,
-  },
-  refCode: {
-    fontSize: 24,
-    fontWeight: 900,
-    color: "#166534",
-    marginBottom: 6,
-    letterSpacing: 0.5,
-  },
-  refText: {
-    margin: 0,
-    fontSize: 13,
-    lineHeight: 1.5,
-    color: "#166534",
-  },
-  compareBox: {
-    display: "grid",
-    gap: 14,
-  },
-  section: {
-    border: "1px solid #E5E7EB",
-    borderRadius: 12,
-    padding: 14,
-    background: "#FFFFFF",
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 900,
-    marginBottom: 8,
   },
   price: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 900,
-    marginBottom: 10,
+    margin: "6px 0 4px",
+  },
+  priceSub: {
+    fontSize: 14,
+    color: MUTED,
+    marginBottom: 4,
+  },
+  priceSubStrong: {
+    fontSize: 15,
+    fontWeight: 800,
+    color: TEXT,
+    marginBottom: 12,
   },
   ul: {
-    paddingLeft: 18,
-    lineHeight: 1.6,
-    opacity: 0.95,
     margin: 0,
+    paddingLeft: 18,
+    lineHeight: 1.75,
+    color: "#334155",
   },
   notice: {
-    marginTop: 16,
-    border: "1px solid #E5E7EB",
-    borderRadius: 12,
-    padding: 12,
+    width: "100%",
+    maxWidth: 620,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 16,
+    padding: 18,
     background: "#F8FAFC",
-    fontSize: 13,
   },
-  noticeText: {
-    margin: "6px 0 0",
-    lineHeight: 1.5,
+  noticeP: {
+    margin: "8px 0 0",
+    lineHeight: 1.6,
+    color: "#334155",
+    fontSize: 14,
+  },
+  actions: {
+    width: "100%",
+    maxWidth: 620,
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
   },
   primaryBtn: {
-    marginTop: 18,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     width: "100%",
-    padding: "12px 14px",
+    padding: "14px 18px",
     borderRadius: 14,
     background: BRAND_GREEN,
     color: "#FFFFFF",
-    fontWeight: 900,
-    fontSize: 15,
-    textAlign: "center",
     textDecoration: "none",
-    display: "inline-block",
-  },
-  helper: {
-    marginTop: 10,
-    fontSize: 13,
-    opacity: 0.85,
-    textAlign: "center",
+    fontWeight: 900,
+    fontSize: 16,
+    boxShadow: "0 6px 16px rgba(21, 122, 85, 0.16)",
   },
   secondaryBtn: {
-    marginTop: 12,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     width: "100%",
-    padding: "12px 14px",
+    padding: "14px 18px",
     borderRadius: 14,
     border: `1px solid ${BRAND_GREEN}`,
     color: BRAND_GREEN,
-    fontWeight: 900,
-    fontSize: 15,
-    textAlign: "center",
-    textDecoration: "none",
-    display: "inline-block",
     background: "#FFFFFF",
-  },
-  backLink: {
-    marginTop: 16,
-    display: "block",
-    textAlign: "center",
     textDecoration: "none",
-    color: "#0F172A",
-    opacity: 0.85,
+    fontWeight: 900,
+    fontSize: 16,
+  },
+  backHome: {
+    textAlign: "center",
+    color: MUTED,
+    textDecoration: "none",
     fontWeight: 700,
-    fontSize: 13,
+    fontSize: 14,
   },
 };
