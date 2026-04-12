@@ -9,9 +9,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// Locked pricing
-const BASE_PRICE = 429;
-const AFFILIATE_PRICE = 399;
+const BASE_PRICE = 399;
+const AFFILIATE_PRICE = 369;
 const COMMISSION_RATE = 0.08;
 
 function encodePayFastValue(value: string) {
@@ -32,6 +31,23 @@ function buildSignatureFromRawBody(rawBody: string, passphrase?: string) {
 
 function md5(input: string) {
   return crypto.createHash("md5").update(input).digest("hex");
+}
+
+function splitFullName(fullName?: string | null) {
+  const clean = (fullName ?? "").trim();
+  if (!clean) {
+    return { name: "", surname: "" };
+  }
+
+  const parts = clean.split(/\s+/);
+  if (parts.length === 1) {
+    return { name: parts[0], surname: "" };
+  }
+
+  return {
+    name: parts.slice(0, -1).join(" "),
+    surname: parts.slice(-1).join(""),
+  };
 }
 
 export async function POST(req: NextRequest) {
@@ -106,7 +122,19 @@ export async function POST(req: NextRequest) {
 
     const { data: profile, error: profileLookupError } = await supabase
       .from("profiles")
-      .select("id, user_id, public_id")
+      .select(
+        `
+        id,
+        user_id,
+        public_id,
+        first_name,
+        last_name,
+        blood_type,
+        allergies,
+        emergency1_fullname,
+        emergency1_phone
+      `
+      )
       .eq("public_id", publicId)
       .single();
 
@@ -122,6 +150,19 @@ export async function POST(req: NextRequest) {
 
     if (profile.user_id !== paymentRow.user_id) {
       console.error("PAYMENT USER / PROFILE USER MISMATCH");
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    const { data: shippingDetails, error: shippingDetailsError } = await supabase
+      .from("shipping_details")
+      .select(
+        "name, surname, email, cellphone, street_address, city_town, postal_code, province, unit_complex_building"
+      )
+      .eq("user_id", profile.user_id)
+      .maybeSingle();
+
+    if (shippingDetailsError) {
+      console.error("SHIPPING DETAILS LOOKUP ERROR:", shippingDetailsError);
       return new NextResponse("OK", { status: 200 });
     }
 
@@ -247,6 +288,7 @@ export async function POST(req: NextRequest) {
     }
 
     const qrUrl = `${siteUrl}/e/${publicId}`;
+    const emergencySplit = splitFullName(profile.emergency1_fullname);
 
     try {
       const { data: existingOrder, error: existingOrderLookupError } =
@@ -261,33 +303,8 @@ export async function POST(req: NextRequest) {
       } else if (existingOrder) {
         console.log("ORDER ALREADY EXISTS");
       } else {
-        const { data: profileDetails, error: profileDetailsError } =
-          await supabase
-            .from("profiles")
-            .select("first_name, last_name")
-            .eq("public_id", publicId)
-            .maybeSingle();
-
-        if (profileDetailsError) {
-          console.error("PROFILE DETAILS LOOKUP ERROR:", profileDetailsError);
-        }
-
-        const { data: shippingDetails, error: shippingDetailsError } =
-          await supabase
-            .from("shipping_details")
-            .select(
-              "name, surname, email, cellphone, street_address, city_town, postal_code, province, unit_complex_building"
-            )
-            .eq("user_id", profile.user_id)
-            .maybeSingle();
-
-        if (shippingDetailsError) {
-          console.error("SHIPPING DETAILS LOOKUP ERROR:", shippingDetailsError);
-        }
-
-        const customerName = profileDetails
-          ? `${profileDetails.first_name || ""} ${profileDetails.last_name || ""}`.trim()
-          : "";
+        const customerName =
+          `${profile.first_name || ""} ${profile.last_name || ""}`.trim();
 
         const shippingName = shippingDetails
           ? `${shippingDetails.name || ""} ${shippingDetails.surname || ""}`.trim()
@@ -307,7 +324,7 @@ export async function POST(req: NextRequest) {
 
         const { error: orderInsertError } = await supabase.from("orders").insert({
           user_id: profile.user_id,
-          public_id: publicId,
+          public_id: String(profile.public_id),
           payment_id: paymentId,
           customer_name: customerName,
           email: shippingDetails?.email ?? data.email_address ?? "",
@@ -316,6 +333,15 @@ export async function POST(req: NextRequest) {
           shipping_address: shippingAddress,
           qr_url: qrUrl,
           status: "pending",
+          first_name: profile.first_name ?? "",
+          last_name: profile.last_name ?? "",
+          emergency_contact_name: emergencySplit.name,
+          emergency_contact_surname: emergencySplit.surname,
+          emergency_contact_phone: profile.emergency1_phone ?? "",
+          blood_type: profile.blood_type ?? "",
+          allergies: profile.allergies ?? "",
+          product_type: "premium_bundle",
+          layout_type: "standard_v1",
         });
 
         if (orderInsertError) {
