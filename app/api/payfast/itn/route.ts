@@ -9,7 +9,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// 🔒 LOCKED PRICING
+// Locked pricing
 const BASE_PRICE = 429;
 const AFFILIATE_PRICE = 399;
 const COMMISSION_RATE = 0.08;
@@ -57,53 +57,71 @@ export async function POST(req: NextRequest) {
 
     console.log("ITN HIT");
     console.log("PAYMENT:", paymentId);
+    console.log("PUBLIC ID:", publicId);
     console.log("AFFILIATE:", affiliateCode || "none");
     console.log("AMOUNT:", amountGross);
 
     if (!paymentId || !publicId) {
+      console.error("MISSING PAYMENT ID OR PUBLIC ID");
       return new NextResponse("OK", { status: 200 });
     }
 
-    // 🔐 Signature check
     if (receivedSignature !== calculatedSignature) {
       console.error("INVALID SIGNATURE");
       return new NextResponse("OK", { status: 200 });
     }
 
-    // ✅ Only process completed payments
     if (paymentStatus !== "COMPLETE") {
+      console.log("ITN IGNORED - PAYMENT NOT COMPLETE");
       return new NextResponse("OK", { status: 200 });
     }
 
-    // 🔥 Correct expected amount logic
-    const expectedAmount = affiliateCode
-      ? AFFILIATE_PRICE
-      : BASE_PRICE;
+    const expectedAmount = affiliateCode ? AFFILIATE_PRICE : BASE_PRICE;
 
     if (Number(amountGross.toFixed(2)) !== Number(expectedAmount.toFixed(2))) {
       console.error("INVALID AMOUNT:", amountGross, "EXPECTED:", expectedAmount);
       return new NextResponse("OK", { status: 200 });
     }
 
-    // 🔎 Get payment row
-    const { data: paymentRow } = await supabase
+    const { data: paymentRow, error: paymentLookupError } = await supabase
       .from("payments")
-      .select("id, user_id, status")
+      .select("id, user_id, public_id, status")
       .eq("provider_payment_id", paymentId)
       .maybeSingle();
 
-    if (!paymentRow || paymentRow.status === "paid") {
+    if (paymentLookupError) {
+      console.error("PAYMENT LOOKUP ERROR:", paymentLookupError);
       return new NextResponse("OK", { status: 200 });
     }
 
-    // 🔎 Get profile
-    const { data: profile } = await supabase
+    if (!paymentRow) {
+      console.error("PAYMENT ROW NOT FOUND");
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    if (paymentRow.status === "paid") {
+      console.log("PAYMENT ALREADY PROCESSED");
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    const { data: profile, error: profileLookupError } = await supabase
       .from("profiles")
-      .select("id, user_id")
+      .select("id, user_id, public_id")
       .eq("public_id", publicId)
       .single();
 
-    if (!profile || profile.user_id !== paymentRow.user_id) {
+    if (profileLookupError) {
+      console.error("PROFILE LOOKUP ERROR:", profileLookupError);
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    if (!profile) {
+      console.error("PROFILE NOT FOUND");
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    if (profile.user_id !== paymentRow.user_id) {
+      console.error("PAYMENT USER / PROFILE USER MISMATCH");
       return new NextResponse("OK", { status: 200 });
     }
 
@@ -111,8 +129,7 @@ export async function POST(req: NextRequest) {
     const endDate = new Date();
     endDate.setFullYear(endDate.getFullYear() + 1);
 
-    // ✅ Mark payment paid
-    await supabase
+    const { error: paymentUpdateError } = await supabase
       .from("payments")
       .update({
         status: "paid",
@@ -121,73 +138,194 @@ export async function POST(req: NextRequest) {
       })
       .eq("id", paymentRow.id);
 
-    // ✅ Activate profile
-    await supabase
+    if (paymentUpdateError) {
+      console.error("PAYMENT UPDATE ERROR:", paymentUpdateError);
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    const { error: profileUpdateError } = await supabase
       .from("profiles")
       .update({ is_paid: true })
       .eq("id", profile.id);
 
-    // ✅ Subscription
-    await supabase.from("subscriptions").upsert(
-      {
-        user_id: profile.user_id,
-        status: "active",
-        current_period_start: now.toISOString(),
-        current_period_end: endDate.toISOString(),
-        provider: "payfast",
-        provider_subscription_id: paymentId,
-        auto_renew: false,
-        plan: "premium_annual",
-        price: expectedAmount,
-        price_cents: expectedAmount * 100,
-        updated_at: now.toISOString(),
-      },
-      { onConflict: "user_id" }
-    );
+    if (profileUpdateError) {
+      console.error("PROFILE UPDATE ERROR:", profileUpdateError);
+      return new NextResponse("OK", { status: 200 });
+    }
 
-    // 🔥 AFFILIATE LOGIC (FIXED)
+    const { error: subscriptionUpsertError } = await supabase
+      .from("subscriptions")
+      .upsert(
+        {
+          user_id: profile.user_id,
+          status: "active",
+          current_period_start: now.toISOString(),
+          current_period_end: endDate.toISOString(),
+          provider: "payfast",
+          provider_subscription_id: paymentId,
+          auto_renew: false,
+          plan: "premium_annual",
+          price: expectedAmount,
+          price_cents: expectedAmount * 100,
+          updated_at: now.toISOString(),
+        },
+        { onConflict: "user_id" }
+      );
+
+    if (subscriptionUpsertError) {
+      console.error("SUBSCRIPTION UPSERT ERROR:", subscriptionUpsertError);
+      return new NextResponse("OK", { status: 200 });
+    }
+
     if (affiliateCode) {
-      const { data: affiliate } = await supabase
+      const { data: affiliate, error: affiliateLookupError } = await supabase
         .from("affiliates")
         .select("id, user_id, total_earned")
         .eq("affiliate_code", affiliateCode)
         .eq("status", "active")
         .maybeSingle();
 
-      if (affiliate && affiliate.user_id !== profile.user_id) {
-        // 🚫 Prevent duplicate commissions
-        const { data: existingReferral } = await supabase
-          .from("affiliate_referrals")
-          .select("id")
-          .eq("payment_id", paymentId)
-          .maybeSingle();
+      if (affiliateLookupError) {
+        console.error("AFFILIATE LOOKUP ERROR:", affiliateLookupError);
+      } else if (!affiliate) {
+        console.log("AFFILIATE CODE NOT FOUND OR NOT ACTIVE");
+      } else if (affiliate.user_id === profile.user_id) {
+        console.log("SELF REFERRAL BLOCKED");
+      } else {
+        const { data: existingReferral, error: existingReferralError } =
+          await supabase
+            .from("affiliate_referrals")
+            .select("id")
+            .eq("payment_id", paymentId)
+            .maybeSingle();
 
-        if (!existingReferral) {
+        if (existingReferralError) {
+          console.error("EXISTING REFERRAL LOOKUP ERROR:", existingReferralError);
+        } else if (!existingReferral) {
           const commission = Number(
             (AFFILIATE_PRICE * COMMISSION_RATE).toFixed(2)
           );
 
-          await supabase.from("affiliate_referrals").insert({
-            affiliate_id: affiliate.id,
-            user_id: profile.user_id,
-            payment_id: paymentId,
-            amount: AFFILIATE_PRICE,
-            commission,
-            status: "confirmed",
-          });
+          const { error: referralInsertError } = await supabase
+            .from("affiliate_referrals")
+            .insert({
+              affiliate_id: affiliate.id,
+              user_id: profile.user_id,
+              payment_id: paymentId,
+              amount: AFFILIATE_PRICE,
+              commission,
+              status: "confirmed",
+            });
 
-          await supabase
-            .from("affiliates")
-            .update({
-              total_earned: Number(
-                ((affiliate.total_earned ?? 0) + commission).toFixed(2)
-              ),
-            })
-            .eq("id", affiliate.id);
+          if (referralInsertError) {
+            console.error("REFERRAL INSERT ERROR:", referralInsertError);
+          } else {
+            const { error: affiliateUpdateError } = await supabase
+              .from("affiliates")
+              .update({
+                total_earned: Number(
+                  ((affiliate.total_earned ?? 0) + commission).toFixed(2)
+                ),
+              })
+              .eq("id", affiliate.id);
 
-          console.log("COMMISSION PAID:", commission);
+            if (affiliateUpdateError) {
+              console.error("AFFILIATE TOTAL UPDATE ERROR:", affiliateUpdateError);
+            } else {
+              console.log("COMMISSION PAID:", commission);
+            }
+          }
         }
       }
+    }
+
+    const siteUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim();
+
+    if (!siteUrl) {
+      console.error("NEXT_PUBLIC_BASE_URL IS NOT SET");
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    const qrUrl = `${siteUrl}/e/${publicId}`;
+
+    try {
+      const { data: existingOrder, error: existingOrderLookupError } =
+        await supabase
+          .from("orders")
+          .select("id")
+          .eq("payment_id", paymentId)
+          .maybeSingle();
+
+      if (existingOrderLookupError) {
+        console.error("ORDER LOOKUP ERROR:", existingOrderLookupError);
+      } else if (existingOrder) {
+        console.log("ORDER ALREADY EXISTS");
+      } else {
+        const { data: profileDetails, error: profileDetailsError } =
+          await supabase
+            .from("profiles")
+            .select("first_name, last_name")
+            .eq("public_id", publicId)
+            .maybeSingle();
+
+        if (profileDetailsError) {
+          console.error("PROFILE DETAILS LOOKUP ERROR:", profileDetailsError);
+        }
+
+        const { data: shippingDetails, error: shippingDetailsError } =
+          await supabase
+            .from("shipping_details")
+            .select(
+              "name, surname, email, cellphone, street_address, city_town, postal_code, province, unit_complex_building"
+            )
+            .eq("user_id", profile.user_id)
+            .maybeSingle();
+
+        if (shippingDetailsError) {
+          console.error("SHIPPING DETAILS LOOKUP ERROR:", shippingDetailsError);
+        }
+
+        const customerName = profileDetails
+          ? `${profileDetails.first_name || ""} ${profileDetails.last_name || ""}`.trim()
+          : "";
+
+        const shippingName = shippingDetails
+          ? `${shippingDetails.name || ""} ${shippingDetails.surname || ""}`.trim()
+          : "";
+
+        const shippingAddress = shippingDetails
+          ? [
+              shippingDetails.unit_complex_building,
+              shippingDetails.street_address,
+              shippingDetails.city_town,
+              shippingDetails.province,
+              shippingDetails.postal_code,
+            ]
+              .filter(Boolean)
+              .join(", ")
+          : "";
+
+        const { error: orderInsertError } = await supabase.from("orders").insert({
+          user_id: profile.user_id,
+          public_id: publicId,
+          payment_id: paymentId,
+          customer_name: customerName,
+          email: shippingDetails?.email ?? data.email_address ?? "",
+          shipping_name: shippingName,
+          shipping_phone: shippingDetails?.cellphone ?? "",
+          shipping_address: shippingAddress,
+          qr_url: qrUrl,
+          status: "pending",
+        });
+
+        if (orderInsertError) {
+          console.error("ORDER INSERT ERROR:", orderInsertError);
+        } else {
+          console.log("ORDER CREATED SUCCESSFULLY");
+        }
+      }
+    } catch (orderErr) {
+      console.error("ORDER CREATION ERROR:", orderErr);
     }
 
     console.log("ITN SUCCESS");

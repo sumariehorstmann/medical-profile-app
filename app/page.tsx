@@ -131,11 +131,11 @@ export default function HomePage() {
 
           <div style={styles.compareBlock}>
             <div style={styles.compareTitle}>Premium</div>
-            <div style={styles.price}>R429 once-off</div>
+            <div style={styles.price}>R399 once-off</div>
             <div style={styles.priceSub}>
               Includes your first year subscription
             </div>
-            <div style={styles.priceSubStrong}>R129 per year thereafter</div>
+            <div style={styles.priceSubStrong}>R99 per year thereafter</div>
 
             <ul style={styles.ul}>
               <li>Full medical profile visible when your QR code is scanned</li>
