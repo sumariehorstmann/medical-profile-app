@@ -335,51 +335,21 @@ export default function ProfileFormClient({
   setPhotoUploading(true);
 
   try {
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+    const formData = new FormData();
+    formData.append("file", file);
 
-    if (userError || !user) {
-      throw new Error("You must be logged in to upload a photo.");
-    }
-
-    const safeName = sanitizeFileName(file.name);
-    const filePath = `${Date.now()}-${safeName}`;
-
-    const { data: uploadData, error: uploadError } = await supabase.storage
-  .from("profile-photos")
-  .upload(filePath, file, {
-    upsert: true,
-    contentType: file.type,
-  });
-
-    if (uploadError) {
-  console.error("UPLOAD ERROR:", uploadError);
-  throw uploadError;
-}
-
-    const { data: publicData } = supabase.storage
-      .from("profile-photos")
-      .getPublicUrl(filePath);
-
-    const url = publicData.publicUrl;
-    setProfilePhotoUrl(url);
-
-    const res = await fetch("/api/profile", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        profile_photo_url: url,
-      }),
+    const res = await fetch("/api/profile-photo", {
+      method: "POST",
+      body: formData,
     });
 
     const json = await res.json();
 
     if (!res.ok) {
-      throw new Error(json?.error || "Failed to save photo URL.");
+      throw new Error(json?.error || "Failed to upload photo.");
     }
 
+    setProfilePhotoUrl(json.url);
     setPhotoMessage("Profile photo uploaded successfully.");
     setPhotoMessageType("success");
     router.refresh();
