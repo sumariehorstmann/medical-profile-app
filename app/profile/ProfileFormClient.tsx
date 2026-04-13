@@ -204,7 +204,7 @@ export default function ProfileFormClient({
   const [conditions, setConditions] = useState(initial?.conditions ?? "");
   const [medications, setMedications] = useState(initial?.medications ?? "");
   const [specialNotes, setSpecialNotes] = useState(initial?.special_notes ?? "");
-
+  const [linkCopied, setLinkCopied] = useState(false);
   const [implantedDevices, setImplantedDevices] = useState(
     initial?.implanted_devices ?? ""
   );
@@ -641,18 +641,28 @@ export default function ProfileFormClient({
 
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <button
-                  type="button"
-                  style={secondaryBtnStyle}
-                  onClick={() => {
-                    if (publicUrl) {
-                      navigator.clipboard.writeText(publicUrl);
-                      setMessage("✅ Link copied.");
-                    }
-                  }}
-                  disabled={!publicUrl}
-                >
-                  Copy Link
-                </button>
+  type="button"
+  style={{
+    ...secondaryBtnStyle,
+    background: linkCopied ? "#157A55" : "#FFFFFF",
+    color: linkCopied ? "#FFFFFF" : "#0F172A",
+    border: linkCopied ? "1px solid #157A55" : "1px solid #D1D5DB",
+  }}
+  onClick={async () => {
+    if (!publicUrl) return;
+
+    await navigator.clipboard.writeText(publicUrl);
+    setLinkCopied(true);
+    setMessage("✅ Link copied.");
+
+    setTimeout(() => {
+      setLinkCopied(false);
+    }, 2000);
+  }}
+  disabled={!publicUrl}
+>
+  {linkCopied ? "Copied!" : "Copy Link"}
+</button>
               </div>
 
               {publicId ? (
