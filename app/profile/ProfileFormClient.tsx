@@ -281,6 +281,9 @@ export default function ProfileFormClient({
 
   const age = useMemo(() => calcAge(dateOfBirth || null), [dateOfBirth]);
 
+  const [photoMessage, setPhotoMessage] = useState<string | null>(null);
+  const [photoMessageType, setPhotoMessageType] = useState<"error" | "success" | null>(null);
+
   function validateRequired(): string | null {
     if (!firstName.trim()) return "First name is required.";
     if (!lastName.trim()) return "Last name is required.";
@@ -311,106 +314,113 @@ export default function ProfileFormClient({
   }
 
   async function handlePhotoUpload(file: File) {
-    setMessage(null);
+  setPhotoMessage(null);
+  setPhotoMessageType(null);
 
-    if (!file) return;
+  if (!file) return;
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!allowedTypes.includes(file.type)) {
-      setMessage("❌ Please upload a JPG, PNG, or WEBP image.");
-      return;
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (!allowedTypes.includes(file.type)) {
+    setPhotoMessage("Please upload a JPG, PNG, or WEBP image.");
+    setPhotoMessageType("error");
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    setPhotoMessage("Image must be smaller than 5MB.");
+    setPhotoMessageType("error");
+    return;
+  }
+
+  setPhotoUploading(true);
+
+  try {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      throw new Error("You must be logged in to upload a photo.");
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      setMessage("❌ Image must be smaller than 5MB.");
-      return;
-    }
+    const safeName = sanitizeFileName(file.name);
+    const filePath = `${user.id}/${Date.now()}-${safeName}`;
 
-    setPhotoUploading(true);
-
-    try {
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-
-      if (userError || !user) {
-        throw new Error("You must be logged in to upload a photo.");
-      }
-
-      const extension = file.name.split(".").pop() || "jpg";
-      const safeName = sanitizeFileName(file.name);
-      const filePath = `${user.id}/${Date.now()}-${safeName}.${extension}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("profile-photos")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: false,
-        });
-
-      if (uploadError) {
-        throw new Error(uploadError.message);
-      }
-
-      const { data: publicData } = supabase.storage
-        .from("profile-photos")
-        .getPublicUrl(filePath);
-
-      const url = publicData.publicUrl;
-      setProfilePhotoUrl(url);
-
-      const res = await fetch("/api/profile", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          profile_photo_url: url,
-        }),
+    const { error: uploadError } = await supabase.storage
+      .from("profile-photos")
+      .upload(filePath, file, {
+        cacheControl: "3600",
+        upsert: false,
       });
 
-      const json = await res.json();
-
-      if (!res.ok) {
-        throw new Error(json?.error || "Failed to save photo URL.");
-      }
-
-      setMessage("✅ Profile photo uploaded successfully.");
-      router.refresh();
-    } catch (error: any) {
-      setMessage(`❌ ${error?.message || "Failed to upload photo."}`);
-    } finally {
-      setPhotoUploading(false);
+    if (uploadError) {
+      throw new Error(uploadError.message);
     }
+
+    const { data: publicData } = supabase.storage
+      .from("profile-photos")
+      .getPublicUrl(filePath);
+
+    const url = publicData.publicUrl;
+    setProfilePhotoUrl(url);
+
+    const res = await fetch("/api/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        profile_photo_url: url,
+      }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      throw new Error(json?.error || "Failed to save photo URL.");
+    }
+
+    setPhotoMessage("Profile photo uploaded successfully.");
+    setPhotoMessageType("success");
+    router.refresh();
+  } catch (error: any) {
+    setPhotoMessage(error?.message || "Failed to upload photo.");
+    setPhotoMessageType("error");
+  } finally {
+    setPhotoUploading(false);
   }
+}
 
   async function handleRemovePhoto() {
-    setMessage(null);
-    setPhotoUploading(true);
+  setPhotoMessage(null);
+  setPhotoMessageType(null);
+  setPhotoUploading(true);
 
-    try {
-      const res = await fetch("/api/profile", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          profile_photo_url: null,
-        }),
-      });
+  try {
+    const res = await fetch("/api/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        profile_photo_url: null,
+      }),
+    });
 
-      const json = await res.json();
+    const json = await res.json();
 
-      if (!res.ok) {
-        throw new Error(json?.error || "Failed to remove photo.");
-      }
-
-      setProfilePhotoUrl("");
-      setMessage("✅ Profile photo removed.");
-      router.refresh();
-    } catch (error: any) {
-      setMessage(`❌ ${error?.message || "Failed to remove photo."}`);
-    } finally {
-      setPhotoUploading(false);
+    if (!res.ok) {
+      throw new Error(json?.error || "Failed to remove photo.");
     }
+
+    setProfilePhotoUrl("");
+    setPhotoMessage("Profile photo removed.");
+    setPhotoMessageType("success");
+    router.refresh();
+  } catch (error: any) {
+    setPhotoMessage(error?.message || "Failed to remove photo.");
+    setPhotoMessageType("error");
+  } finally {
+    setPhotoUploading(false);
   }
+}
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -568,6 +578,19 @@ export default function ProfileFormClient({
                     disabled={photoUploading || loading}
                   />
                 </label>
+
+{photoMessage && (
+  <div
+    style={{
+      marginTop: 8,
+      fontSize: 13,
+      fontWeight: 600,
+      color: photoMessageType === "error" ? "#D32F2F" : "#157A55",
+    }}
+  >
+    {photoMessage}
+  </div>
+)}
 
                 {profilePhotoUrl ? (
                   <button
