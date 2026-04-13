@@ -347,16 +347,17 @@ export default function ProfileFormClient({
     const safeName = sanitizeFileName(file.name);
     const filePath = `${Date.now()}-${safeName}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from("profile-photos")
-      .upload(filePath, file, {
-        cacheControl: "3600",
-        upsert: false,
-      });
+    const { data: uploadData, error: uploadError } = await supabase.storage
+  .from("profile-photos")
+  .upload(filePath, file, {
+    upsert: true,
+    contentType: file.type,
+  });
 
     if (uploadError) {
-      throw new Error(uploadError.message);
-    }
+  console.error("UPLOAD ERROR:", uploadError);
+  throw uploadError;
+}
 
     const { data: publicData } = supabase.storage
       .from("profile-photos")
