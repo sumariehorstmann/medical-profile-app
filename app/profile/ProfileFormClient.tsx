@@ -362,31 +362,24 @@ export default function ProfileFormClient({
 }
 
   async function handleRemovePhoto() {
-  setPhotoMessage(null);
-  setPhotoMessageType(null);
   setPhotoUploading(true);
+  setPhotoMessage(null);
 
   try {
-    const res = await fetch("/api/profile", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        profile_photo_url: null,
-      }),
+    const res = await fetch("/api/profile-photo/delete", {
+      method: "POST",
     });
 
-    const json = await res.json();
-
     if (!res.ok) {
-      throw new Error(json?.error || "Failed to remove photo.");
+      throw new Error("Failed to remove photo");
     }
 
     setProfilePhotoUrl("");
-    setPhotoMessage("Profile photo removed.");
+    setPhotoMessage("Photo removed successfully");
     setPhotoMessageType("success");
     router.refresh();
-  } catch (error: any) {
-    setPhotoMessage(error?.message || "Failed to remove photo.");
+  } catch (err: any) {
+    setPhotoMessage(err.message);
     setPhotoMessageType("error");
   } finally {
     setPhotoUploading(false);
