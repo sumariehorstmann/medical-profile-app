@@ -13,6 +13,7 @@ type ProfileRow = {
 
   first_name: string | null;
   last_name: string | null;
+  profile_photo_url: string | null;
 
   emergency1_fullname: string | null;
   emergency1_first_name: string | null;
@@ -94,9 +95,7 @@ function joinName(first: string, last: string) {
 
 function splitLegacyName(fullName: string | null) {
   const clean = (fullName ?? "").trim();
-  if (!clean) {
-    return { first: "", last: "" };
-  }
+  if (!clean) return { first: "", last: "" };
 
   const parts = clean.split(/\s+/);
   if (parts.length === 1) {
@@ -107,6 +106,10 @@ function splitLegacyName(fullName: string | null) {
     first: parts.slice(0, -1).join(" "),
     last: parts.slice(-1)[0],
   };
+}
+
+function sanitizeFileName(name: string) {
+  return name.replace(/[^a-zA-Z0-9._-]/g, "-");
 }
 
 function Section({
@@ -176,6 +179,10 @@ export default function ProfileFormClient({
 
   const [firstName, setFirstName] = useState(initial?.first_name ?? "");
   const [lastName, setLastName] = useState(initial?.last_name ?? "");
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState(
+    initial?.profile_photo_url ?? ""
+  );
+  const [photoUploading, setPhotoUploading] = useState(false);
 
   const [em1FirstName, setEm1FirstName] = useState(
     initial?.emergency1_first_name ?? emergency1Legacy.first
@@ -303,6 +310,108 @@ export default function ProfileFormClient({
     return null;
   }
 
+  async function handlePhotoUpload(file: File) {
+    setMessage(null);
+
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+      setMessage("❌ Please upload a JPG, PNG, or WEBP image.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage("❌ Image must be smaller than 5MB.");
+      return;
+    }
+
+    setPhotoUploading(true);
+
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error("You must be logged in to upload a photo.");
+      }
+
+      const extension = file.name.split(".").pop() || "jpg";
+      const safeName = sanitizeFileName(file.name);
+      const filePath = `${user.id}/${Date.now()}-${safeName}.${extension}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("profile-photos")
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        throw new Error(uploadError.message);
+      }
+
+      const { data: publicData } = supabase.storage
+        .from("profile-photos")
+        .getPublicUrl(filePath);
+
+      const url = publicData.publicUrl;
+      setProfilePhotoUrl(url);
+
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          profile_photo_url: url,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Failed to save photo URL.");
+      }
+
+      setMessage("✅ Profile photo uploaded successfully.");
+      router.refresh();
+    } catch (error: any) {
+      setMessage(`❌ ${error?.message || "Failed to upload photo."}`);
+    } finally {
+      setPhotoUploading(false);
+    }
+  }
+
+  async function handleRemovePhoto() {
+    setMessage(null);
+    setPhotoUploading(true);
+
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          profile_photo_url: null,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Failed to remove photo.");
+      }
+
+      setProfilePhotoUrl("");
+      setMessage("✅ Profile photo removed.");
+      router.refresh();
+    } catch (error: any) {
+      setMessage(`❌ ${error?.message || "Failed to remove photo."}`);
+    } finally {
+      setPhotoUploading(false);
+    }
+  }
+
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
@@ -327,6 +436,7 @@ export default function ProfileFormClient({
       const payload = {
         first_name: firstName.trim(),
         last_name: lastName.trim(),
+        profile_photo_url: profilePhotoUrl || null,
 
         emergency1_first_name: em1FirstName.trim(),
         emergency1_last_name: em1LastName.trim(),
@@ -423,6 +533,57 @@ export default function ProfileFormClient({
         title="Free Public Tier"
         subtitle="These details are visible when your QR code is scanned on the Free plan."
       >
+        <Field
+          label="Profile photo"
+          hint="Optional. This will help identify you in an emergency and will show on both Free and Premium public profiles."
+        >
+          <div style={photoRowStyle}>
+            <div style={photoPreviewWrapStyle}>
+              {profilePhotoUrl ? (
+                <img
+                  src={profilePhotoUrl}
+                  alt="Profile"
+                  style={photoPreviewStyle}
+                />
+              ) : (
+                <div style={photoPlaceholderStyle}>No photo</div>
+              )}
+            </div>
+
+            <div style={{ flex: 1, minWidth: 240 }}>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <label style={secondaryBtnStyle}>
+                  {photoUploading ? "Uploading..." : "Upload photo"}
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        void handlePhotoUpload(file);
+                        e.currentTarget.value = "";
+                      }
+                    }}
+                    disabled={photoUploading || loading}
+                  />
+                </label>
+
+                {profilePhotoUrl ? (
+                  <button
+                    type="button"
+                    style={secondaryBtnStyle}
+                    onClick={handleRemovePhoto}
+                    disabled={photoUploading || loading}
+                  >
+                    Remove photo
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </Field>
+
         <Field label="First name" required>
           <input
             style={inputStyle}
@@ -1244,4 +1405,37 @@ const messageStyle: React.CSSProperties = {
   marginTop: 14,
   fontWeight: 700,
   color: "#0F172A",
+};
+const photoRowStyle: React.CSSProperties = {
+  display: "flex",
+  gap: 16,
+  alignItems: "center",
+  flexWrap: "wrap",
+};
+
+const photoPreviewWrapStyle: React.CSSProperties = {
+  width: 110,
+  height: 110,
+  borderRadius: "50%",
+  overflow: "hidden",
+  border: "1px solid #E5E7EB",
+  background: "#F8FAFC",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+};
+
+const photoPreviewStyle: React.CSSProperties = {
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+};
+
+const photoPlaceholderStyle: React.CSSProperties = {
+  fontSize: 13,
+  fontWeight: 700,
+  color: "#64748B",
+  textAlign: "center",
+  padding: 12,
 };
