@@ -45,8 +45,7 @@ type ProfileRow = {
   nationality: string | null;
   province: string | null;
   city: string | null;
-  id_number: string | null;
-
+  
   medical_aid_provider: string | null;
   medical_aid_policy_number: string | null;
   medical_aid_plan: string | null;
@@ -458,7 +457,7 @@ export default function ProfileFormClient({
         religion: religion || null,
 
         additional_notes: additionalNotes || null,
-        id_number: idNumber || null,
+        
       };
 
       const res = await fetch("/api/profile", {
@@ -1066,8 +1065,6 @@ export default function ProfileFormClient({
         >
           <input
             style={inputStyle}
-            value={idNumber}
-            onChange={(e) => setIdNumber(e.target.value)}
             placeholder="Optional"
           />
         </Field>
