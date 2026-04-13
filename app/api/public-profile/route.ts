@@ -24,6 +24,7 @@ export async function GET(req: Request) {
         public_id,
         first_name,
         last_name,
+        profile_photo_url,
 
         gender,
         date_of_birth,
@@ -128,11 +129,11 @@ export async function GET(req: Request) {
     const emergency_contacts = [
       {
         full_name:
-  profile.emergency1_fullname ??
-  ([profile.emergency1_first_name, profile.emergency1_last_name]
-    .filter(Boolean)
-    .join(" ")
-    .trim() || null),
+          profile.emergency1_fullname ??
+          ([profile.emergency1_first_name, profile.emergency1_last_name]
+            .filter(Boolean)
+            .join(" ")
+            .trim() || null),
         first_name: profile.emergency1_first_name ?? null,
         last_name: profile.emergency1_last_name ?? null,
         relationship: profile.emergency1_relationship ?? null,
@@ -141,11 +142,11 @@ export async function GET(req: Request) {
       },
       {
         full_name:
-  profile.emergency1_fullname ??
-  ([profile.emergency1_first_name, profile.emergency1_last_name]
-    .filter(Boolean)
-    .join(" ")
-    .trim() || null),
+          profile.emergency2_fullname ??
+          ([profile.emergency2_first_name, profile.emergency2_last_name]
+            .filter(Boolean)
+            .join(" ")
+            .trim() || null),
         first_name: profile.emergency2_first_name ?? null,
         last_name: profile.emergency2_last_name ?? null,
         relationship: profile.emergency2_relationship ?? null,
@@ -168,6 +169,7 @@ export async function GET(req: Request) {
           public_id: profile.public_id,
           first_name: profile.first_name,
           last_name: profile.last_name,
+          profile_photo_url: profile.profile_photo_url,
           is_paid: isPremium,
           subscription,
 
