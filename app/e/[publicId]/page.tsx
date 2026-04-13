@@ -13,6 +13,7 @@ type PublicProfile = {
   public_id: string;
   first_name: string | null;
   last_name: string | null;
+  profile_photo_url?: string | null;
   is_paid: boolean;
   subscription?: {
     status: string | null;
@@ -185,6 +186,16 @@ export default async function PublicEmergencyPage({
         </div>
       </div>
 
+      {profile.profile_photo_url ? (
+        <div style={styles.photoWrap}>
+          <img
+            src={profile.profile_photo_url}
+            alt={fullName ? `${fullName} profile photo` : "Profile photo"}
+            style={styles.photo}
+          />
+        </div>
+      ) : null}
+
       <div style={styles.name}>{fullName || "-"}</div>
 
       <Section title="Primary Emergency Contact">
@@ -243,11 +254,11 @@ export default async function PublicEmergencyPage({
           </Section>
 
           <Section title="Medical Cover and Doctors">
-            <Field label="Medical Aid Provider" value={profile.medical_aid_provider} />
             <Field
-              label="Medical Aid Plan"
-              value={profile.medical_aid_plan}
+              label="Medical Aid Provider"
+              value={profile.medical_aid_provider}
             />
+            <Field label="Medical Aid Plan" value={profile.medical_aid_plan} />
             <Field
               label="Medical Aid Policy Number"
               value={profile.medical_aid_policy_number}
@@ -351,6 +362,22 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#64748B",
     fontWeight: 800,
     fontSize: 15,
+  },
+
+  photoWrap: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: 14,
+  },
+
+  photo: {
+    width: 120,
+    height: 120,
+    borderRadius: "50%",
+    objectFit: "cover",
+    border: "3px solid #FFFFFF",
+    boxShadow: "0 6px 18px rgba(15, 23, 42, 0.12)",
+    background: "#FFFFFF",
   },
 
   name: {
