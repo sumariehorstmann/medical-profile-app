@@ -293,7 +293,21 @@ useEffect(() => {
       aria-label={showPassword ? "Hide password" : "Show password"}
       disabled={loading}
     >
-      {!mounted ? null : showPassword ? "👁" : "👁‍🗨"}
+      {!mounted ? null : showPassword ? (
+  // Eye OFF (hide password)
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M3 3L21 21" stroke="#0F172A" strokeWidth="2"/>
+    <path d="M10.58 10.58A3 3 0 0013.42 13.42" stroke="#0F172A" strokeWidth="2"/>
+    <path d="M9.88 5.08A10.94 10.94 0 0112 5c5 0 9 4 9 7a9.77 9.77 0 01-2.16 3.19" stroke="#0F172A" strokeWidth="2"/>
+    <path d="M6.1 6.1C4.29 7.38 3 9.11 3 12c0 3 4 7 9 7 1.61 0 3.13-.38 4.5-1.05" stroke="#0F172A" strokeWidth="2"/>
+  </svg>
+) : (
+  // Eye ON (show password)
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M1 12C2.73 7.61 6.73 5 12 5s9.27 2.61 11 7c-1.73 4.39-5.73 7-11 7S2.73 16.39 1 12z" stroke="#0F172A" strokeWidth="2"/>
+    <circle cx="12" cy="12" r="3" stroke="#0F172A" strokeWidth="2"/>
+  </svg>
+)}
     </button>
   </div>
 </label>
