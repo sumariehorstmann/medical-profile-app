@@ -71,65 +71,9 @@ const SELECT_FIELDS = `
   id,
   user_id,
   public_id,
-  created_at,
-  updated_at,
-
   first_name,
   last_name,
-  profile_photo_url,
-
-  emergency1_fullname,
-  emergency1_first_name,
-  emergency1_last_name,
-  emergency1_relationship,
-  emergency1_phone,
-
-  emergency2_fullname,
-  emergency2_first_name,
-  emergency2_last_name,
-  emergency2_relationship,
-  emergency2_phone,
-
-  gender,
-  date_of_birth,
-  blood_type,
-  allergies,
-  conditions,
-  medications,
-  special_notes,
-
-  implanted_devices,
-  mobility_notes,
-  pregnancy_status,
-  organ_donor_status,
-
-  primary_language,
-  secondary_language,
-  nationality,
-  province,
-  city,
-  id_number,
-
-  medical_aid_provider,
-  medical_aid_policy_number,
-  medical_aid_plan,
-
-  gp_name,
-  gp_practice,
-  gp_phone,
-  specialist_name,
-  specialist_phone,
-  preferred_hospital,
-
-  religion,
-  additional_notes,
-
-  height_cm,
-  weight_kg,
-  eye_color,
-  hair_color,
-  identifying_marks,
-  skin_tone
+  profile_photo_url
 `;
 
 async function getAuth() {
