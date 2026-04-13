@@ -345,7 +345,7 @@ export default function ProfileFormClient({
     }
 
     const safeName = sanitizeFileName(file.name);
-    const filePath = `${user.id}/${Date.now()}-${safeName}`;
+    const filePath = `${Date.now()}-${safeName}`;
 
     const { error: uploadError } = await supabase.storage
       .from("profile-photos")
