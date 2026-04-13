@@ -5,15 +5,22 @@ import { createSupabaseServer } from "@/lib/supabase/server";
 type ProfileRow = {
   id: string;
   user_id: string;
+  public_id: string;
+  created_at: string;
+  updated_at: string;
 
   first_name: string | null;
   last_name: string | null;
 
   emergency1_fullname: string | null;
+  emergency1_first_name: string | null;
+  emergency1_last_name: string | null;
   emergency1_relationship: string | null;
   emergency1_phone: string | null;
 
   emergency2_fullname: string | null;
+  emergency2_first_name: string | null;
+  emergency2_last_name: string | null;
   emergency2_relationship: string | null;
   emergency2_phone: string | null;
 
@@ -25,14 +32,28 @@ type ProfileRow = {
   medications: string | null;
   special_notes: string | null;
 
+  implanted_devices: string | null;
+  mobility_notes: string | null;
+  pregnancy_status: string | null;
+  organ_donor_status: string | null;
+
   primary_language: string | null;
   secondary_language: string | null;
+  nationality: string | null;
+  province: string | null;
+  city: string | null;
+  id_number: string | null;
+
   medical_aid_provider: string | null;
   medical_aid_policy_number: string | null;
+  medical_aid_plan: string | null;
 
   gp_name: string | null;
   gp_practice: string | null;
   gp_phone: string | null;
+  specialist_name: string | null;
+  specialist_phone: string | null;
+  preferred_hospital: string | null;
 
   religion: string | null;
   additional_notes: string | null;
@@ -43,23 +64,30 @@ type ProfileRow = {
   hair_color: string | null;
   identifying_marks: string | null;
   skin_tone: string | null;
-
-  public_id: string;
-  created_at: string;
-  updated_at: string;
 };
 
 const SELECT_FIELDS = `
   id,
   user_id,
+  public_id,
+  created_at,
+  updated_at,
+
   first_name,
   last_name,
+
   emergency1_fullname,
+  emergency1_first_name,
+  emergency1_last_name,
   emergency1_relationship,
   emergency1_phone,
+
   emergency2_fullname,
+  emergency2_first_name,
+  emergency2_last_name,
   emergency2_relationship,
   emergency2_phone,
+
   gender,
   date_of_birth,
   blood_type,
@@ -67,35 +95,61 @@ const SELECT_FIELDS = `
   conditions,
   medications,
   special_notes,
+
+  implanted_devices,
+  mobility_notes,
+  pregnancy_status,
+  organ_donor_status,
+
   primary_language,
   secondary_language,
+  nationality,
+  province,
+  city,
+  id_number,
+
   medical_aid_provider,
   medical_aid_policy_number,
+  medical_aid_plan,
+
   gp_name,
   gp_practice,
   gp_phone,
+  specialist_name,
+  specialist_phone,
+  preferred_hospital,
+
   religion,
   additional_notes,
+
   height_cm,
   weight_kg,
   eye_color,
   hair_color,
   identifying_marks,
-  skin_tone,
-  public_id,
-  created_at,
-  updated_at
+  skin_tone
 `;
 
 async function getAuth() {
   const supabase = await createSupabaseServer();
   const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) return { supabase, user: null };
+
+  if (error || !data.user) {
+    return { supabase, user: null };
+  }
+
   return { supabase, user: data.user };
+}
+
+function toNull(value: unknown) {
+  if (value === undefined || value === null) return null;
+  if (typeof value === "string" && value.trim() === "") return null;
+  return value;
 }
 
 export async function GET() {
   const { supabase, user } = await getAuth();
+
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -110,11 +164,15 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ profile: (data as ProfileRow) ?? null }, { status: 200 });
+  return NextResponse.json(
+    { profile: (data as ProfileRow) ?? null },
+    { status: 200 }
+  );
 }
 
 export async function PUT(req: NextRequest) {
   const { supabase, user } = await getAuth();
+
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -122,43 +180,62 @@ export async function PUT(req: NextRequest) {
   const body = await req.json();
 
   const update = {
-    first_name: body.first_name ?? null,
-    last_name: body.last_name ?? null,
+    first_name: toNull(body.first_name),
+    last_name: toNull(body.last_name),
 
-    emergency1_fullname: body.emergency1_fullname ?? null,
-    emergency1_relationship: body.emergency1_relationship ?? null,
-    emergency1_phone: body.emergency1_phone ?? null,
+    emergency1_fullname: toNull(body.emergency1_fullname),
+    emergency1_first_name: toNull(body.emergency1_first_name),
+    emergency1_last_name: toNull(body.emergency1_last_name),
+    emergency1_relationship: toNull(body.emergency1_relationship),
+    emergency1_phone: toNull(body.emergency1_phone),
 
-    emergency2_fullname: body.emergency2_fullname ?? null,
-    emergency2_relationship: body.emergency2_relationship ?? null,
-    emergency2_phone: body.emergency2_phone ?? null,
+    emergency2_fullname: toNull(body.emergency2_fullname),
+    emergency2_first_name: toNull(body.emergency2_first_name),
+    emergency2_last_name: toNull(body.emergency2_last_name),
+    emergency2_relationship: toNull(body.emergency2_relationship),
+    emergency2_phone: toNull(body.emergency2_phone),
 
-    gender: body.gender ?? null,
-    date_of_birth: body.date_of_birth ?? null,
-    blood_type: body.blood_type ?? null,
-    allergies: body.allergies ?? null,
-    conditions: body.conditions ?? null,
-    medications: body.medications ?? null,
-    special_notes: body.special_notes ?? null,
+    gender: toNull(body.gender),
+    date_of_birth: toNull(body.date_of_birth),
+    blood_type: toNull(body.blood_type),
+    allergies: toNull(body.allergies),
+    conditions: toNull(body.conditions),
+    medications: toNull(body.medications),
+    special_notes: toNull(body.special_notes),
 
-    primary_language: body.primary_language ?? null,
-    secondary_language: body.secondary_language ?? null,
-    medical_aid_provider: body.medical_aid_provider ?? null,
-    medical_aid_policy_number: body.medical_aid_policy_number ?? null,
+    implanted_devices: toNull(body.implanted_devices),
+    mobility_notes: toNull(body.mobility_notes),
+    pregnancy_status: toNull(body.pregnancy_status),
+    organ_donor_status: toNull(body.organ_donor_status),
 
-    gp_name: body.gp_name ?? null,
-    gp_practice: body.gp_practice ?? null,
-    gp_phone: body.gp_phone ?? null,
+    primary_language: toNull(body.primary_language),
+    secondary_language: toNull(body.secondary_language),
+    nationality: toNull(body.nationality),
+    province: toNull(body.province),
+    city: toNull(body.city),
+    id_number: toNull(body.id_number),
 
-    religion: body.religion ?? null,
-    additional_notes: body.additional_notes ?? null,
+    medical_aid_provider: toNull(body.medical_aid_provider),
+    medical_aid_policy_number: toNull(body.medical_aid_policy_number),
+    medical_aid_plan: toNull(body.medical_aid_plan),
+
+    gp_name: toNull(body.gp_name),
+    gp_practice: toNull(body.gp_practice),
+    gp_phone: toNull(body.gp_phone),
+
+    specialist_name: toNull(body.specialist_name),
+    specialist_phone: toNull(body.specialist_phone),
+    preferred_hospital: toNull(body.preferred_hospital),
+
+    religion: toNull(body.religion),
+    additional_notes: toNull(body.additional_notes),
 
     height_cm: body.height_cm ?? null,
     weight_kg: body.weight_kg ?? null,
-    eye_color: body.eye_color ?? null,
-    hair_color: body.hair_color ?? null,
-    identifying_marks: body.identifying_marks ?? null,
-    skin_tone: body.skin_tone ?? null,
+    eye_color: toNull(body.eye_color),
+    hair_color: toNull(body.hair_color),
+    identifying_marks: toNull(body.identifying_marks),
+    skin_tone: toNull(body.skin_tone),
   };
 
   const { data: existing, error: existingError } = await supabase
