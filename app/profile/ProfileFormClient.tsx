@@ -9,15 +9,20 @@ import { createSupabaseBrowser } from "@/lib/supabase/client";
 type ProfileRow = {
   id: string;
   user_id: string;
+  public_id: string;
 
   first_name: string | null;
   last_name: string | null;
 
   emergency1_fullname: string | null;
+  emergency1_first_name: string | null;
+  emergency1_last_name: string | null;
   emergency1_relationship: string | null;
   emergency1_phone: string | null;
 
   emergency2_fullname: string | null;
+  emergency2_first_name: string | null;
+  emergency2_last_name: string | null;
   emergency2_relationship: string | null;
   emergency2_phone: string | null;
 
@@ -29,15 +34,28 @@ type ProfileRow = {
   medications: string | null;
   special_notes: string | null;
 
+  implanted_devices: string | null;
+  mobility_notes: string | null;
+  pregnancy_status: string | null;
+  organ_donor_status: string | null;
+
   primary_language: string | null;
   secondary_language: string | null;
+  nationality: string | null;
+  province: string | null;
+  city: string | null;
+  id_number: string | null;
 
   medical_aid_provider: string | null;
   medical_aid_policy_number: string | null;
+  medical_aid_plan: string | null;
 
   gp_name: string | null;
   gp_practice: string | null;
   gp_phone: string | null;
+  specialist_name: string | null;
+  specialist_phone: string | null;
+  preferred_hospital: string | null;
 
   religion: string | null;
   additional_notes: string | null;
@@ -48,13 +66,10 @@ type ProfileRow = {
   hair_color: string | null;
   identifying_marks: string | null;
   skin_tone: string | null;
-
-  public_id: string;
 };
 
 function calcAge(dob: string | null): number | null {
   if (!dob) return null;
-
   const d = new Date(dob);
   if (Number.isNaN(d.getTime())) return null;
 
@@ -73,43 +88,25 @@ function normalizePhone(raw: string) {
   return raw.replace(/\s+/g, "").trim();
 }
 
-function downloadQrAsPng(svgId: string, filename = "rroi-qr.png") {
-  const svg = document.getElementById(svgId) as SVGSVGElement | null;
-  if (!svg) return;
+function joinName(first: string, last: string) {
+  return [first.trim(), last.trim()].filter(Boolean).join(" ").trim();
+}
 
-  const serializer = new XMLSerializer();
-  const svgString = serializer.serializeToString(svg);
-  const svgBlob = new Blob([svgString], {
-    type: "image/svg+xml;charset=utf-8",
-  });
-  const url = URL.createObjectURL(svgBlob);
+function splitLegacyName(fullName: string | null) {
+  const clean = (fullName ?? "").trim();
+  if (!clean) {
+    return { first: "", last: "" };
+  }
 
-  const img = new Image();
-  img.onload = () => {
-    const size = 1024;
-    const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size;
+  const parts = clean.split(/\s+/);
+  if (parts.length === 1) {
+    return { first: parts[0], last: "" };
+  }
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, size, size);
-    ctx.drawImage(img, 0, 0, size, size);
-
-    URL.revokeObjectURL(url);
-
-    const pngUrl = canvas.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = pngUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+  return {
+    first: parts.slice(0, -1).join(" "),
+    last: parts.slice(-1)[0],
   };
-
-  img.src = url;
 }
 
 function Section({
@@ -167,6 +164,9 @@ export default function ProfileFormClient({
   const router = useRouter();
   const supabase = createSupabaseBrowser();
 
+  const emergency1Legacy = splitLegacyName(initial?.emergency1_fullname ?? null);
+  const emergency2Legacy = splitLegacyName(initial?.emergency2_fullname ?? null);
+
   const publicId = initial?.public_id ?? "";
   const publicPath = publicId ? `/e/${publicId}` : "";
   const publicUrl =
@@ -176,11 +176,22 @@ export default function ProfileFormClient({
 
   const [firstName, setFirstName] = useState(initial?.first_name ?? "");
   const [lastName, setLastName] = useState(initial?.last_name ?? "");
-  const [em1Name, setEm1Name] = useState(initial?.emergency1_fullname ?? "");
+
+  const [em1FirstName, setEm1FirstName] = useState(
+    initial?.emergency1_first_name ?? emergency1Legacy.first
+  );
+  const [em1LastName, setEm1LastName] = useState(
+    initial?.emergency1_last_name ?? emergency1Legacy.last
+  );
   const [em1Rel, setEm1Rel] = useState(initial?.emergency1_relationship ?? "");
   const [em1Phone, setEm1Phone] = useState(initial?.emergency1_phone ?? "");
 
-  const [em2Name, setEm2Name] = useState(initial?.emergency2_fullname ?? "");
+  const [em2FirstName, setEm2FirstName] = useState(
+    initial?.emergency2_first_name ?? emergency2Legacy.first
+  );
+  const [em2LastName, setEm2LastName] = useState(
+    initial?.emergency2_last_name ?? emergency2Legacy.last
+  );
   const [em2Rel, setEm2Rel] = useState(initial?.emergency2_relationship ?? "");
   const [em2Phone, setEm2Phone] = useState(initial?.emergency2_phone ?? "");
 
@@ -192,22 +203,53 @@ export default function ProfileFormClient({
   const [medications, setMedications] = useState(initial?.medications ?? "");
   const [specialNotes, setSpecialNotes] = useState(initial?.special_notes ?? "");
 
+  const [implantedDevices, setImplantedDevices] = useState(
+    initial?.implanted_devices ?? ""
+  );
+  const [mobilityNotes, setMobilityNotes] = useState(
+    initial?.mobility_notes ?? ""
+  );
+  const [pregnancyStatus, setPregnancyStatus] = useState(
+    initial?.pregnancy_status ?? ""
+  );
+  const [organDonorStatus, setOrganDonorStatus] = useState(
+    initial?.organ_donor_status ?? ""
+  );
+
   const [primaryLanguage, setPrimaryLanguage] = useState(
     initial?.primary_language ?? ""
   );
   const [secondaryLanguage, setSecondaryLanguage] = useState(
     initial?.secondary_language ?? ""
   );
+  const [nationality, setNationality] = useState(initial?.nationality ?? "");
+  const [province, setProvince] = useState(initial?.province ?? "");
+  const [city, setCity] = useState(initial?.city ?? "");
+  const [idNumber, setIdNumber] = useState(initial?.id_number ?? "");
+
   const [medicalAidProvider, setMedicalAidProvider] = useState(
     initial?.medical_aid_provider ?? ""
   );
   const [medicalAidPolicy, setMedicalAidPolicy] = useState(
     initial?.medical_aid_policy_number ?? ""
   );
+  const [medicalAidPlan, setMedicalAidPlan] = useState(
+    initial?.medical_aid_plan ?? ""
+  );
 
   const [gpName, setGpName] = useState(initial?.gp_name ?? "");
   const [gpPractice, setGpPractice] = useState(initial?.gp_practice ?? "");
   const [gpPhone, setGpPhone] = useState(initial?.gp_phone ?? "");
+
+  const [specialistName, setSpecialistName] = useState(
+    initial?.specialist_name ?? ""
+  );
+  const [specialistPhone, setSpecialistPhone] = useState(
+    initial?.specialist_phone ?? ""
+  );
+  const [preferredHospital, setPreferredHospital] = useState(
+    initial?.preferred_hospital ?? ""
+  );
 
   const [religion, setReligion] = useState(initial?.religion ?? "");
   const [heightCm, setHeightCm] = useState(
@@ -235,7 +277,8 @@ export default function ProfileFormClient({
   function validateRequired(): string | null {
     if (!firstName.trim()) return "First name is required.";
     if (!lastName.trim()) return "Last name is required.";
-    if (!em1Name.trim()) return "Emergency Contact 1 name + surname is required.";
+    if (!em1FirstName.trim()) return "Emergency Contact 1 first name is required.";
+    if (!em1LastName.trim()) return "Emergency Contact 1 last name is required.";
     if (!em1Rel.trim()) return "Emergency Contact 1 relationship is required.";
 
     if (!/^\d{10,15}$/.test(normalizePhone(em1Phone))) {
@@ -248,6 +291,13 @@ export default function ProfileFormClient({
 
     if (gpPhone.trim() && !/^\d{10,15}$/.test(normalizePhone(gpPhone))) {
       return "GP phone must contain 10 to 15 digits only.";
+    }
+
+    if (
+      specialistPhone.trim() &&
+      !/^\d{10,15}$/.test(normalizePhone(specialistPhone))
+    ) {
+      return "Specialist phone must contain 10 to 15 digits only.";
     }
 
     return null;
@@ -271,15 +321,22 @@ export default function ProfileFormClient({
     setLoading(true);
 
     try {
+      const em1Full = joinName(em1FirstName, em1LastName);
+      const em2Full = joinName(em2FirstName, em2LastName);
+
       const payload = {
         first_name: firstName.trim(),
         last_name: lastName.trim(),
 
-        emergency1_fullname: em1Name.trim(),
+        emergency1_first_name: em1FirstName.trim(),
+        emergency1_last_name: em1LastName.trim(),
+        emergency1_fullname: em1Full || null,
         emergency1_relationship: em1Rel.trim(),
         emergency1_phone: normalizePhone(em1Phone),
 
-        emergency2_fullname: em2Name.trim() || null,
+        emergency2_first_name: em2FirstName.trim() || null,
+        emergency2_last_name: em2LastName.trim() || null,
+        emergency2_fullname: em2Full || null,
         emergency2_relationship: em2Rel.trim() || null,
         emergency2_phone: normalizePhone(em2Phone) || null,
 
@@ -291,18 +348,31 @@ export default function ProfileFormClient({
         medications: medications || null,
         special_notes: specialNotes || null,
 
+        implanted_devices: implantedDevices || null,
+        mobility_notes: mobilityNotes || null,
+        pregnancy_status: pregnancyStatus || null,
+        organ_donor_status: organDonorStatus || null,
+
         primary_language: primaryLanguage || null,
         secondary_language: secondaryLanguage || null,
+        nationality: nationality || null,
+        province: province || null,
+        city: city || null,
+        id_number: idNumber || null,
 
         medical_aid_provider: medicalAidProvider || null,
         medical_aid_policy_number: medicalAidPolicy || null,
+        medical_aid_plan: medicalAidPlan || null,
 
         gp_name: gpName || null,
         gp_practice: gpPractice || null,
         gp_phone: normalizePhone(gpPhone) || null,
 
-        religion: religion || null,
+        specialist_name: specialistName || null,
+        specialist_phone: normalizePhone(specialistPhone) || null,
+        preferred_hospital: preferredHospital || null,
 
+        religion: religion || null,
         height_cm: heightCm ? Number(heightCm) : null,
         weight_kg: weightKg ? Number(weightKg) : null,
         eye_color: eyeColor || null,
@@ -347,13 +417,11 @@ export default function ProfileFormClient({
     }
   }
 
-  const qrSvgId = "rroi-qr-svg";
-
   return (
     <form onSubmit={handleSave}>
       <Section
-        title="Public Free Tier"
-        subtitle="Section 1. These details are visible when your QR code is scanned on the Free plan."
+        title="Free Public Tier"
+        subtitle="These details are visible when your QR code is scanned on the Free plan."
       >
         <Field label="First name" required>
           <input
@@ -373,12 +441,21 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Emergency Contact 1 — Name + surname" required>
+        <Field label="Emergency Contact 1 — First name" required>
           <input
             style={inputStyle}
-            value={em1Name}
-            onChange={(e) => setEm1Name(e.target.value)}
-            placeholder="e.g. John Smith"
+            value={em1FirstName}
+            onChange={(e) => setEm1FirstName(e.target.value)}
+            placeholder="e.g. John"
+          />
+        </Field>
+
+        <Field label="Emergency Contact 1 — Last name" required>
+          <input
+            style={inputStyle}
+            value={em1LastName}
+            onChange={(e) => setEm1LastName(e.target.value)}
+            placeholder="e.g. Smith"
           />
         </Field>
 
@@ -394,7 +471,7 @@ export default function ProfileFormClient({
         <Field
           label="Emergency Contact 1 — Phone"
           required
-          hint="Use digits only (no spaces)."
+          hint="Use digits only."
         >
           <input
             style={inputStyle}
@@ -410,7 +487,7 @@ export default function ProfileFormClient({
 
           <div style={qrRowStyle}>
             <div style={qrCardStyle}>
-              <QRCodeSVG id={qrSvgId} value={publicUrl || " "} size={180} />
+              <QRCodeSVG value={publicUrl || " "} size={180} />
             </div>
 
             <div style={{ minWidth: 280, flex: 1 }}>
@@ -422,7 +499,6 @@ export default function ProfileFormClient({
               </div>
 
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                
                 <button
                   type="button"
                   style={secondaryBtnStyle}
@@ -438,62 +514,25 @@ export default function ProfileFormClient({
                 </button>
               </div>
 
-              {publicId && (
+              {publicId ? (
                 <div style={{ marginTop: 12 }}>
                   <DownloadQRWallpaper
                     publicId={publicId}
                     firstName={firstName}
                   />
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
       </Section>
 
       <Section
-        title="Premium — Visible when upgraded"
-        subtitle="Section 2. These details can be completed on any plan, but they are only publicly visible when Premium is active."
+        title="Critical Medical Information"
+        subtitle="These details are only publicly visible when Premium is active."
         info={
           showUpgrade
-            ? "Visible on Premium. You can complete these details now and they will become publicly visible after upgrading."
-            : undefined
-        }
-      >
-        <Field label="Emergency Contact 2 — Name + surname">
-          <input
-            style={inputStyle}
-            value={em2Name}
-            onChange={(e) => setEm2Name(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-
-        <Field label="Emergency Contact 2 — Relationship">
-          <input
-            style={inputStyle}
-            value={em2Rel}
-            onChange={(e) => setEm2Rel(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-
-        <Field label="Emergency Contact 2 — Phone">
-          <input
-            style={inputStyle}
-            value={em2Phone}
-            onChange={(e) => setEm2Phone(e.target.value)}
-            placeholder="Optional"
-            inputMode="numeric"
-          />
-        </Field>
-      </Section>
-
-      <Section
-        title="Section 3"
-        info={
-          showUpgrade
-            ? "Visible on Premium. You can complete these details now and they will become publicly visible after upgrading."
+            ? "Complete these details now. They will become publicly visible after upgrading."
             : undefined
         }
       >
@@ -557,7 +596,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Chronic illnesses">
+        <Field label="Conditions">
           <input
             style={inputStyle}
             value={conditions}
@@ -575,7 +614,52 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Important notes">
+        <Field label="Implanted devices">
+          <input
+            style={inputStyle}
+            value={implantedDevices}
+            onChange={(e) => setImplantedDevices(e.target.value)}
+            placeholder="e.g. Pacemaker / Insulin pump"
+          />
+        </Field>
+
+        <Field label="Mobility / disability notes">
+          <input
+            style={inputStyle}
+            value={mobilityNotes}
+            onChange={(e) => setMobilityNotes(e.target.value)}
+            placeholder="e.g. Wheelchair user / Deaf / Non-verbal"
+          />
+        </Field>
+
+        <Field label="Pregnancy status">
+          <select
+            style={inputStyle}
+            value={pregnancyStatus}
+            onChange={(e) => setPregnancyStatus(e.target.value)}
+          >
+            <option value="">(not set)</option>
+            <option value="Pregnant">Pregnant</option>
+            <option value="Not pregnant">Not pregnant</option>
+            <option value="Unknown">Unknown</option>
+            <option value="Not applicable">Not applicable</option>
+          </select>
+        </Field>
+
+        <Field label="Organ donor status">
+          <select
+            style={inputStyle}
+            value={organDonorStatus}
+            onChange={(e) => setOrganDonorStatus(e.target.value)}
+          >
+            <option value="">(not set)</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="Unknown">Unknown</option>
+          </select>
+        </Field>
+
+        <Field label="Important emergency notes">
           <textarea
             style={{ ...inputStyle, minHeight: 100 }}
             value={specialNotes}
@@ -586,31 +670,59 @@ export default function ProfileFormClient({
       </Section>
 
       <Section
-        title="Section 4"
+        title="Additional Emergency Contacts"
         info={
           showUpgrade
-            ? "Visible on Premium. You can complete these details now and they will become publicly visible after upgrading."
+            ? "These details are only publicly visible when Premium is active."
             : undefined
         }
       >
-        <Field label="Primary language">
+        <Field label="Emergency Contact 2 — First name">
           <input
             style={inputStyle}
-            value={primaryLanguage}
-            onChange={(e) => setPrimaryLanguage(e.target.value)}
-            placeholder="e.g. Afrikaans"
-          />
-        </Field>
-
-        <Field label="Secondary language (optional)">
-          <input
-            style={inputStyle}
-            value={secondaryLanguage}
-            onChange={(e) => setSecondaryLanguage(e.target.value)}
+            value={em2FirstName}
+            onChange={(e) => setEm2FirstName(e.target.value)}
             placeholder="Optional"
           />
         </Field>
 
+        <Field label="Emergency Contact 2 — Last name">
+          <input
+            style={inputStyle}
+            value={em2LastName}
+            onChange={(e) => setEm2LastName(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Emergency Contact 2 — Relationship">
+          <input
+            style={inputStyle}
+            value={em2Rel}
+            onChange={(e) => setEm2Rel(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Emergency Contact 2 — Phone">
+          <input
+            style={inputStyle}
+            value={em2Phone}
+            onChange={(e) => setEm2Phone(e.target.value)}
+            placeholder="Optional"
+            inputMode="numeric"
+          />
+        </Field>
+      </Section>
+
+      <Section
+        title="Medical Cover and Doctors"
+        info={
+          showUpgrade
+            ? "These details are only publicly visible when Premium is active."
+            : undefined
+        }
+      >
         <Field label="Medical aid provider">
           <input
             style={inputStyle}
@@ -620,7 +732,16 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Medical aid policy number">
+        <Field label="Medical aid plan">
+          <input
+            style={inputStyle}
+            value={medicalAidPlan}
+            onChange={(e) => setMedicalAidPlan(e.target.value)}
+            placeholder="e.g. Classic Saver"
+          />
+        </Field>
+
+        <Field label="Medical aid policy / member number">
           <input
             style={inputStyle}
             value={medicalAidPolicy}
@@ -657,21 +778,106 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Religion (optional)">
+        <Field label="Specialist name">
           <input
             style={inputStyle}
-            value={religion}
-            onChange={(e) => setReligion(e.target.value)}
+            value={specialistName}
+            onChange={(e) => setSpecialistName(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Specialist phone">
+          <input
+            style={inputStyle}
+            value={specialistPhone}
+            onChange={(e) => setSpecialistPhone(e.target.value)}
+            placeholder="Optional"
+            inputMode="numeric"
+          />
+        </Field>
+
+        <Field label="Preferred hospital / clinic">
+          <input
+            style={inputStyle}
+            value={preferredHospital}
+            onChange={(e) => setPreferredHospital(e.target.value)}
             placeholder="Optional"
           />
         </Field>
       </Section>
 
       <Section
-        title="Section 5"
+        title="Communication and Identity"
         info={
           showUpgrade
-            ? "Visible on Premium. You can complete these details now and they will become publicly visible after upgrading."
+            ? "These details are only publicly visible when Premium is active."
+            : undefined
+        }
+      >
+        <Field label="Primary language">
+          <input
+            style={inputStyle}
+            value={primaryLanguage}
+            onChange={(e) => setPrimaryLanguage(e.target.value)}
+            placeholder="e.g. English"
+          />
+        </Field>
+
+        <Field label="Secondary language">
+          <input
+            style={inputStyle}
+            value={secondaryLanguage}
+            onChange={(e) => setSecondaryLanguage(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Nationality">
+          <input
+            style={inputStyle}
+            value={nationality}
+            onChange={(e) => setNationality(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Province">
+          <input
+            style={inputStyle}
+            value={province}
+            onChange={(e) => setProvince(e.target.value)}
+            placeholder="e.g. Western Cape"
+          />
+        </Field>
+
+        <Field label="City / Town">
+          <input
+            style={inputStyle}
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder="e.g. Cape Town"
+          />
+        </Field>
+
+        <Field
+          label="ID / Passport number"
+          hint="Stored for account/admin use. Not shown on the public profile."
+        >
+          <input
+            style={inputStyle}
+            value={idNumber}
+            onChange={(e) => setIdNumber(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+      </Section>
+
+      <Section
+        title="Identification Details"
+        info={
+          showUpgrade
+            ? "These details are only publicly visible when Premium is active."
             : undefined
         }
       >
@@ -713,12 +919,12 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Identifying marks (tattoos/scars/birthmarks)">
+        <Field label="Identifying marks">
           <textarea
             style={{ ...inputStyle, minHeight: 90 }}
             value={identifyingMarks}
             onChange={(e) => setIdentifyingMarks(e.target.value)}
-            placeholder="Optional"
+            placeholder="e.g. Tattoos / scars / birthmarks"
           />
         </Field>
 
@@ -742,13 +948,22 @@ export default function ProfileFormClient({
       </Section>
 
       <Section
-        title="Section 6"
+        title="Additional Information"
         info={
           showUpgrade
-            ? "Visible on Premium. You can complete these details now and they will become publicly visible after upgrading."
+            ? "These details are only publicly visible when Premium is active."
             : undefined
         }
       >
+        <Field label="Religion">
+          <input
+            style={inputStyle}
+            value={religion}
+            onChange={(e) => setReligion(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
         <Field label="Additional notes">
           <textarea
             style={{ ...inputStyle, minHeight: 120 }}
@@ -774,7 +989,6 @@ export default function ProfileFormClient({
             onChange={(e) => setConsent(e.target.checked)}
             style={{ marginTop: 4 }}
           />
-
           <span>
             I consent to the processing of my personal information in accordance
             with the{" "}
@@ -799,7 +1013,8 @@ export default function ProfileFormClient({
 
       {showUpgrade ? (
         <div style={freePlanBannerStyle}>
-          You are on the Free plan. Only Section 1 is visible when your QR is scanned.
+          You are on the Free plan. Only the free-tier emergency details are visible
+          when your QR is scanned.
         </div>
       ) : (
         <div style={premiumPlanBannerStyle}>
