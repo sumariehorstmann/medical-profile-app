@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+import PublicPageClient from "./PublicPageClient";
+
 type EmergencyContact = {
   full_name: string | null;
   first_name?: string | null;
@@ -67,7 +69,9 @@ type PublicProfile = {
 async function getPublicProfile(
   publicId: string
 ): Promise<PublicProfile | null> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL!;
+  const base = process.env.NEXT_PUBLIC_BASE_URL;
+
+  if (!base) return null;
 
   const res = await fetch(
     `${base}/api/public-profile?publicId=${encodeURIComponent(publicId)}`,
@@ -78,68 +82,6 @@ async function getPublicProfile(
 
   const json = await res.json();
   return json.profile ?? null;
-}
-
-function calcAge(dob?: string | null): string | null {
-  if (!dob) return null;
-
-  const d = new Date(dob);
-  if (Number.isNaN(d.getTime())) return null;
-
-  const today = new Date();
-  let age = today.getFullYear() - d.getFullYear();
-  const m = today.getMonth() - d.getMonth();
-
-  if (m < 0 || (m === 0 && today.getDate() < d.getDate())) {
-    age--;
-  }
-
-  return age >= 0 && age <= 130 ? String(age) : null;
-}
-
-function formatDate(value?: string | null) {
-  if (!value) return null;
-
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return value;
-
-  return d.toLocaleDateString("en-ZA", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function Field({
-  label,
-  value,
-}: {
-  label: string;
-  value?: string | number | null;
-}) {
-  if (value == null || value === "") return null;
-
-  return (
-    <div style={styles.field}>
-      <div style={styles.label}>{label}</div>
-      <div style={styles.value}>{String(value)}</div>
-    </div>
-  );
-}
-
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section style={styles.card}>
-      <div style={styles.sectionTitle}>{title}</div>
-      {children}
-    </section>
-  );
 }
 
 export default async function PublicEmergencyPage({
@@ -168,317 +110,90 @@ export default async function PublicEmergencyPage({
     !!profile.subscription?.current_period_end &&
     new Date(profile.subscription.current_period_end).getTime() > now;
 
-  const fullName = [profile.first_name, profile.last_name]
-    .filter(Boolean)
-    .join(" ");
+  const emergency1 = profile.emergency_contacts?.[0] ?? null;
+  const emergency2 = profile.emergency_contacts?.[1] ?? null;
 
-  const c1 = profile.emergency_contacts?.[0] ?? null;
-  const c2 = profile.emergency_contacts?.[1] ?? null;
-  const age = calcAge(profile.date_of_birth);
-  const dobFormatted = formatDate(profile.date_of_birth);
+  const mappedProfile = {
+    profile_photo_url: profile.profile_photo_url ?? null,
 
-  return (
-    <main style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.title}>Emergency Information</div>
-        <div style={isPremium ? styles.badgePremium : styles.badgeFree}>
-          {isPremium ? "Premium Profile" : "Free Profile"}
-        </div>
-      </div>
+    first_name: profile.first_name ?? null,
+    last_name: profile.last_name ?? null,
 
-      {profile.profile_photo_url ? (
-        <div style={styles.photoWrap}>
-          <img
-            src={profile.profile_photo_url}
-            alt={fullName ? `${fullName} profile photo` : "Profile photo"}
-            style={styles.photo}
-          />
-        </div>
-      ) : null}
+    emergency1_fullname: emergency1?.full_name ?? null,
+    emergency1_first_name: emergency1?.first_name ?? null,
+    emergency1_last_name: emergency1?.last_name ?? null,
+    emergency1_relationship: emergency1?.relationship ?? null,
+    emergency1_phone: emergency1?.phone ?? null,
 
-      <div style={styles.name}>{fullName || "-"}</div>
+    emergency2_fullname: emergency2?.full_name ?? null,
+    emergency2_first_name: emergency2?.first_name ?? null,
+    emergency2_last_name: emergency2?.last_name ?? null,
+    emergency2_relationship: emergency2?.relationship ?? null,
+    emergency2_phone: emergency2?.phone ?? null,
 
-      <Section title="Primary Emergency Contact">
-        <div style={styles.contactName}>{c1?.full_name || "-"}</div>
-        <div style={styles.contactMeta}>{c1?.relationship || "-"}</div>
+    blood_type: profile.blood_type ?? null,
+    allergies: profile.allergies ?? null,
+    medications: profile.medications ?? null,
+    conditions: profile.conditions ?? null,
+    implanted_devices: profile.implanted_devices ?? null,
+    mobility_notes: profile.mobility_notes ?? null,
 
-        {c1?.phone ? (
-          <>
-            <a href={`tel:${c1.phone}`} style={styles.phone}>
-              {c1.phone}
-            </a>
+    pregnancy_status: profile.pregnancy_status ?? null,
+    organ_donor_status: profile.organ_donor_status ?? null,
+    preferred_hospital: profile.preferred_hospital ?? null,
+    medical_aid_provider: profile.medical_aid_provider ?? null,
+    medical_aid_plan: profile.medical_aid_plan ?? null,
+    medical_aid_policy_number: profile.medical_aid_policy_number ?? null,
+    gp_name: profile.gp_name ?? null,
+    gp_phone: profile.gp_phone ?? null,
+    specialist_name: profile.specialist_name ?? null,
+    specialist_phone: profile.specialist_phone ?? null,
+    special_notes: profile.special_notes ?? null,
 
-            <a href={`tel:${c1.phone}`} style={styles.callButton}>
-              📞 Call Now
-            </a>
-          </>
-        ) : (
-          <div style={styles.mutedText}>No phone number available</div>
-        )}
-      </Section>
+    date_of_birth: profile.date_of_birth ?? null,
+    gender: profile.gender ?? null,
+    height_cm: profile.height_cm ?? null,
+    weight_kg: profile.weight_kg ?? null,
+    eye_color: profile.eye_color ?? null,
+    hair_color: profile.hair_color ?? null,
+    skin_tone: profile.skin_tone ?? null,
 
-      {isPremium ? (
-        <>
-          {c2 ? (
-            <Section title="Secondary Emergency Contact">
-              <Field label="Name" value={c2.full_name} />
-              <Field label="Relationship" value={c2.relationship} />
-              <Field label="Phone" value={c2.phone} />
-            </Section>
-          ) : null}
+    primary_language: profile.primary_language ?? null,
+    secondary_language: profile.secondary_language ?? null,
+    nationality: profile.nationality ?? null,
+    province: profile.province ?? null,
+    city: profile.city ?? null,
+    religion: profile.religion ?? null,
 
-          <Section title="Critical Medical Information">
-            <Field label="Blood Type" value={profile.blood_type} />
-            <Field label="Allergies" value={profile.allergies} />
-            <Field label="Conditions" value={profile.conditions} />
-            <Field label="Medications" value={profile.medications} />
-            <Field label="Implanted Devices" value={profile.implanted_devices} />
-            <Field label="Mobility Notes" value={profile.mobility_notes} />
-            <Field label="Pregnancy Status" value={profile.pregnancy_status} />
-            <Field label="Organ Donor Status" value={profile.organ_donor_status} />
-            <Field label="Important Notes" value={profile.special_notes} />
-          </Section>
+    additional_notes: profile.additional_notes ?? null,
 
-          <Section title="Personal Details">
-            <Field label="Gender" value={profile.gender} />
-            <Field label="Date of Birth" value={dobFormatted} />
-            <Field label="Age" value={age} />
-            <Field label="Primary Language" value={profile.primary_language} />
-            <Field
-              label="Secondary Language"
-              value={profile.secondary_language}
-            />
-            <Field label="Province" value={profile.province} />
-            <Field label="City" value={profile.city} />
-            <Field label="Nationality" value={profile.nationality} />
-          </Section>
+    is_premium: isPremium,
+  };
 
-          <Section title="Medical Cover and Doctors">
-            <Field
-              label="Medical Aid Provider"
-              value={profile.medical_aid_provider}
-            />
-            <Field label="Medical Aid Plan" value={profile.medical_aid_plan} />
-            <Field
-              label="Medical Aid Policy Number"
-              value={profile.medical_aid_policy_number}
-            />
-            <Field label="GP Name" value={profile.gp_name} />
-            <Field label="GP Practice" value={profile.gp_practice} />
-            <Field label="GP Phone" value={profile.gp_phone} />
-            <Field label="Specialist Name" value={profile.specialist_name} />
-            <Field label="Specialist Phone" value={profile.specialist_phone} />
-            <Field
-              label="Preferred Hospital"
-              value={profile.preferred_hospital}
-            />
-          </Section>
-
-          <Section title="Identification Details">
-            <Field label="Height (cm)" value={profile.height_cm} />
-            <Field label="Weight (kg)" value={profile.weight_kg} />
-            <Field label="Eye Color" value={profile.eye_color} />
-            <Field label="Hair Color" value={profile.hair_color} />
-            <Field label="Skin Tone" value={profile.skin_tone} />
-            <Field
-              label="Identifying Marks"
-              value={profile.identifying_marks}
-            />
-          </Section>
-
-          <Section title="Additional Information">
-            <Field label="Religion" value={profile.religion} />
-            <Field label="Additional Notes" value={profile.additional_notes} />
-          </Section>
-        </>
-      ) : (
-        <div style={styles.warning}>
-          Limited profile. Only essential emergency information is visible on the
-          Free plan.
-        </div>
-      )}
-
-      <div style={styles.footer}>
-        In an emergency, contact local emergency services immediately.
-      </div>
-    </main>
-  );
+  return <PublicPageClient profile={mappedProfile} />;
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  container: {
-    maxWidth: 560,
-    margin: "0 auto",
-    padding: 16,
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-    background: "#F8FAFC",
-    minHeight: "100vh",
-  },
-
   center: {
     minHeight: "100vh",
     display: "grid",
     placeItems: "center",
     padding: 24,
+    background: "#F8FAFC",
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
   },
-
   notFoundWrap: {
     textAlign: "center",
   },
-
   notFoundTitle: {
     fontSize: 40,
     fontWeight: 900,
     margin: 0,
     color: "#0F172A",
   },
-
   notFoundText: {
     marginTop: 8,
     color: "#64748B",
     fontSize: 16,
-  },
-
-  header: {
-    textAlign: "center",
-    marginBottom: 12,
-  },
-
-  title: {
-    fontSize: 24,
-    fontWeight: 900,
-    color: "#0F172A",
-  },
-
-  badgePremium: {
-    marginTop: 6,
-    color: "#157A55",
-    fontWeight: 800,
-    fontSize: 15,
-  },
-
-  badgeFree: {
-    marginTop: 6,
-    color: "#64748B",
-    fontWeight: 800,
-    fontSize: 15,
-  },
-
-  photoWrap: {
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: 14,
-  },
-
-  photo: {
-    width: 120,
-    height: 120,
-    borderRadius: "50%",
-    objectFit: "cover",
-    border: "3px solid #FFFFFF",
-    boxShadow: "0 6px 18px rgba(15, 23, 42, 0.12)",
-    background: "#FFFFFF",
-  },
-
-  name: {
-    textAlign: "center",
-    fontSize: 30,
-    fontWeight: 900,
-    marginBottom: 16,
-    color: "#0F172A",
-    lineHeight: 1.15,
-  },
-
-  card: {
-    border: "1px solid #E5E7EB",
-    borderRadius: 14,
-    padding: 16,
-    marginBottom: 14,
-    background: "#FFFFFF",
-    boxShadow: "0 4px 14px rgba(15, 23, 42, 0.04)",
-  },
-
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 900,
-    marginBottom: 12,
-    color: "#0F172A",
-  },
-
-  contactName: {
-    fontSize: 22,
-    fontWeight: 900,
-    color: "#0F172A",
-  },
-
-  contactMeta: {
-    color: "#475569",
-    marginBottom: 8,
-    fontSize: 16,
-    fontWeight: 600,
-  },
-
-  phone: {
-    display: "block",
-    fontSize: 20,
-    fontWeight: 900,
-    margin: "8px 0 12px",
-    color: "#157A55",
-    textDecoration: "none",
-  },
-
-  callButton: {
-    display: "block",
-    textAlign: "center",
-    background: "#157A55",
-    color: "#FFFFFF",
-    padding: 12,
-    borderRadius: 12,
-    fontWeight: 900,
-    textDecoration: "none",
-  },
-
-  mutedText: {
-    color: "#64748B",
-    fontSize: 14,
-  },
-
-  field: {
-    marginBottom: 12,
-  },
-
-  label: {
-    fontSize: 12,
-    color: "#64748B",
-    marginBottom: 2,
-    fontWeight: 700,
-    textTransform: "uppercase",
-    letterSpacing: 0.3,
-  },
-
-  value: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: "#0F172A",
-    lineHeight: 1.45,
-  },
-
-  warning: {
-    background: "#FFF3CD",
-    border: "1px solid #FFE69C",
-    padding: 12,
-    borderRadius: 10,
-    fontWeight: 700,
-    marginTop: 10,
-    color: "#7C5A00",
-  },
-
-  footer: {
-    textAlign: "center",
-    fontSize: 12,
-    color: "#64748B",
-    marginTop: 18,
-    lineHeight: 1.4,
-    paddingBottom: 8,
   },
 };
