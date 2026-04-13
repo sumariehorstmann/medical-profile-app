@@ -59,6 +59,20 @@ export default function DownloadQRWallpaper({
         <div ref={ref}>
           <QRScreensaver qrValue={qrUrl} firstName={firstName} />
         </div>
+        <button
+  onClick={handleDownload}
+  style={{
+    marginTop: 12,
+    padding: "10px 14px",
+    borderRadius: 10,
+    border: "1px solid #ddd",
+    background: "#fff",
+    fontWeight: 600,
+    cursor: "pointer",
+  }}
+>
+  Download Phone Lock Screen
+</button>
       </div>
 
       
