@@ -1,7 +1,52 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 export default function SiteHeader() {
+  const supabase = useMemo(() => createSupabaseBrowser(), []);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadSession() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!mounted) return;
+      setIsLoggedIn(!!session);
+    }
+
+    loadSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+      setIsLoggedIn(!!session);
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  async function handleLogout() {
+    try {
+      setLoggingOut(true);
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    } finally {
+      setLoggingOut(false);
+    }
+  }
+
   return (
     <header style={styles.header}>
       <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
@@ -17,13 +62,26 @@ export default function SiteHeader() {
       </Link>
 
       <div style={styles.headerActions}>
-        <Link href="/login" style={styles.loginLink}>
-          Log in
-        </Link>
+        {isLoggedIn ? (
+          <button
+            type="button"
+            onClick={handleLogout}
+            style={styles.logoutBtn}
+            disabled={loggingOut}
+          >
+            {loggingOut ? "Logging out..." : "Log out"}
+          </button>
+        ) : (
+          <>
+            <Link href="/login" style={styles.loginLink}>
+              Log in
+            </Link>
 
-        <Link href="/login" style={styles.signupLink}>
-          Sign up
-        </Link>
+            <Link href="/login" style={styles.signupLink}>
+              Sign up
+            </Link>
+          </>
+        )}
       </div>
     </header>
   );
@@ -31,6 +89,7 @@ export default function SiteHeader() {
 
 const BRAND_GREEN = "#157A55";
 const TEXT = "#0F172A";
+const BORDER = "#E5E7EB";
 
 const styles: Record<string, React.CSSProperties> = {
   header: {
@@ -42,7 +101,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    borderBottom: "1px solid #E5E7EB",
+    borderBottom: `1px solid ${BORDER}`,
     background: "#FFFFFF",
   },
   headerLogo: {
@@ -75,5 +134,15 @@ const styles: Record<string, React.CSSProperties> = {
     background: BRAND_GREEN,
     padding: "8px 14px",
     borderRadius: 10,
+  },
+  logoutBtn: {
+    border: "none",
+    background: "transparent",
+    color: BRAND_GREEN,
+    fontWeight: 800,
+    fontSize: 14,
+    cursor: "pointer",
+    padding: "8px 10px",
+    borderRadius: 12,
   },
 };
