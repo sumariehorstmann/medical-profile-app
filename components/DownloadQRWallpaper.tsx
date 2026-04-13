@@ -61,14 +61,7 @@ export default function DownloadQRWallpaper({
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={handleDownload}
-        style={styles.button}
-        disabled={!publicId || downloading}
-      >
-        {downloading ? "Preparing download..." : "Download Phone Lock Screen"}
-      </button>
+      
     </>
   );
 }
