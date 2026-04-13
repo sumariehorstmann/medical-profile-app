@@ -347,7 +347,8 @@ const styles: Record<string, React.CSSProperties> = {
   statValue: {
     fontSize: 22,
     fontWeight: 900,
-    wordBreak: "break-word",
+    wordBreak: "normal",
+    overflowWrap: "break-word",
     color: TEXT,
   },
   shareBox: {
@@ -369,7 +370,8 @@ const styles: Record<string, React.CSSProperties> = {
     color: BRAND_GREEN,
     marginBottom: 12,
     letterSpacing: 1,
-    wordBreak: "break-word",
+    wordBreak: "normal",
+    overflowWrap: "break-word",
   },
   linkBox: {
     padding: 12,

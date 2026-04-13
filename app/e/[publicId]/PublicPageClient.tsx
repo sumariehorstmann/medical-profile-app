@@ -173,18 +173,24 @@ export default function PublicPageClient({ profile }: Props) {
 
       <Section title="Section 1 — Identity & Immediate Emergency Contact">
         <div style={photoBlockStyle}>
-          {profile.profile_photo_url ? (
-            <img
-              src={profile.profile_photo_url}
-              alt="Profile"
-              style={photoStyle}
-            />
-          ) : (
-            <div style={photoPlaceholderStyle}>No photo</div>
-          )}
-        </div>
+  {profile.profile_photo_url ? (
+    <img
+      src={profile.profile_photo_url}
+      alt="Profile"
+      style={photoStyle}
+    />
+  ) : (
+    <div style={photoPlaceholderStyle}>No photo</div>
+  )}
+</div>
 
-        <Row label="Profile Photo" value={profile.profile_photo_url ? "Available" : "—"} />
+{profile.emergency1_phone ? (
+  <a href={`tel:${profile.emergency1_phone}`} style={callButtonStyle}>
+    📞 Call Emergency Contact
+  </a>
+) : null}
+
+        
         <Row label="First Name" value={valueOrDash(firstName)} />
         <Row label="Last Name" value={valueOrDash(lastName)} />
         <Row label="Emergency Contact 1 Name & Surname" value={emergency1Name} />
@@ -329,7 +335,7 @@ const sectionTitleStyle: React.CSSProperties = {
 
 const rowStyle: React.CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "240px 1fr",
+  gridTemplateColumns: "160px 1fr",
   gap: 14,
   padding: "12px 0",
   borderBottom: "1px solid #F1F5F9",
@@ -344,7 +350,8 @@ const valueStyle: React.CSSProperties = {
   color: "#0F172A",
   fontWeight: 700,
   whiteSpace: "pre-wrap",
-  wordBreak: "break-word",
+  wordBreak: "normal",
+overflowWrap: "break-word",
 };
 
 const buttonStyle: React.CSSProperties = {
@@ -383,4 +390,15 @@ const photoPlaceholderStyle: React.CSSProperties = {
   fontSize: 13,
   fontWeight: 700,
   color: "#64748B",
+};
+const callButtonStyle: React.CSSProperties = {
+  display: "block",
+  textAlign: "center",
+  background: "#DC2626",
+  color: "#FFFFFF",
+  padding: 14,
+  borderRadius: 12,
+  fontWeight: 900,
+  textDecoration: "none",
+  marginBottom: 12,
 };
