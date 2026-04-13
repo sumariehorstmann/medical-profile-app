@@ -47,6 +47,7 @@ function LoginPageInner() {
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+
 useEffect(() => {
   setMounted(true);
 }, []);
@@ -274,36 +275,28 @@ useEffect(() => {
             />
           </label>
 
-          <label htmlFor="password" style={styles.label}>
-            <div style={styles.labelText}>Password</div>
+          <label style={styles.label}>
+  Password
+  <div style={styles.passwordWrap}>
+    <input
+      type={showPassword ? "text" : "password"}
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      style={styles.inputWithEye}
+      autoComplete="current-password"
+    />
 
-            <div style={styles.passwordWrap}>
-              <input
-                id="password"
-                name="password"
-                style={styles.passwordInput}
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete={
-                  mode === "login" ? "current-password" : "new-password"
-                }
-                disabled={loading}
-              />
-
-              <button
-  type="button"
-  onClick={() => setShowPassword((prev) => !prev)}
-  style={{ background: "none", border: "none", cursor: "pointer" }}
->
-  {!mounted ? null : showPassword ? (
-    <span>👁</span>
-  ) : (
-    <span>👁‍🗨</span>
-  )}
-</button>
-            </div>
-          </label>
+    <button
+      type="button"
+      onClick={() => setShowPassword((prev) => !prev)}
+      style={styles.eyeBtn}
+      aria-label={showPassword ? "Hide password" : "Show password"}
+      disabled={loading}
+    >
+      {!mounted ? null : showPassword ? "👁" : "👁‍🗨"}
+    </button>
+  </div>
+</label>
 
           {mode === "login" ? (
             <div style={styles.forgotWrap}>
@@ -567,30 +560,35 @@ const styles: Record<string, React.CSSProperties> = {
     outline: "none",
   },
   passwordWrap: {
-    position: "relative",
-  },
-  passwordInput: {
-    width: "100%",
-    padding: "12px 46px 12px 14px",
-    border: `1px solid ${BORDER}`,
-    borderRadius: 12,
-    fontSize: 15,
-    color: TEXT,
-    background: "#FFFFFF",
-    outline: "none",
-  },
-  eyeBtn: {
-    position: "absolute",
-    right: 10,
-    top: "50%",
-    transform: "translateY(-50%)",
-    background: "transparent",
-    border: "none",
-    cursor: "pointer",
-    fontSize: 18,
-    lineHeight: 1,
-    padding: 4,
-  },
+  position: "relative",
+  width: "100%",
+},
+
+inputWithEye: {
+  width: "100%",
+  padding: "14px 44px 14px 14px",
+  borderRadius: 14,
+  border: "1px solid #d7dce2",
+  fontSize: 16,
+  outline: "none",
+  background: "#fff",
+},
+
+eyeBtn: {
+  position: "absolute",
+  right: 12,
+  top: "50%",
+  transform: "translateY(-50%)",
+  background: "transparent",
+  border: "none",
+  cursor: "pointer",
+  padding: 0,
+  lineHeight: 1,
+  fontSize: 18,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+},
   forgotWrap: {
     marginTop: -4,
     marginBottom: 10,
