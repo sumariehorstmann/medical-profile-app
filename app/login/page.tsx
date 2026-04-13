@@ -9,6 +9,31 @@ import PageHeader from "@/components/PageHeader";
 type Mode = "login" | "signup";
 type MessageType = "success" | "error" | "info";
 
+function getPasswordStrength(password: string) {
+  if (!password) {
+    return { label: "", color: "#94A3B8" };
+  }
+
+  let score = 0;
+
+  if (password.length >= 8) score += 1;
+  if (password.length >= 12) score += 1;
+  if (/[A-Z]/.test(password)) score += 1;
+  if (/[a-z]/.test(password)) score += 1;
+  if (/\d/.test(password)) score += 1;
+  if (/[^A-Za-z0-9]/.test(password)) score += 1;
+
+  if (score <= 2) {
+    return { label: "Weak", color: "#DC2626" };
+  }
+
+  if (score <= 4) {
+    return { label: "Medium", color: "#D97706" };
+  }
+
+  return { label: "Strong", color: "#157A55" };
+}
+
 function LoginPageInner() {
   const params = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
@@ -19,6 +44,9 @@ function LoginPageInner() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<MessageType>("info");
@@ -26,6 +54,17 @@ function LoginPageInner() {
   const redirectTo = useMemo(() => {
     return params.get("next") || params.get("redirect") || "/profile";
   }, [params]);
+
+  const passwordStrength = useMemo(
+    () => getPasswordStrength(password),
+    [password]
+  );
+
+  const passwordsMatch =
+    confirmPassword.length > 0 && password === confirmPassword;
+
+  const passwordsDoNotMatch =
+    confirmPassword.length > 0 && password !== confirmPassword;
 
   useEffect(() => {
     const errorCode = params.get("error_code") || params.get("error");
@@ -232,18 +271,31 @@ function LoginPageInner() {
 
           <label htmlFor="password" style={styles.label}>
             <div style={styles.labelText}>Password</div>
-            <input
-              id="password"
-              name="password"
-              style={styles.input}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete={
-                mode === "login" ? "current-password" : "new-password"
-              }
-              disabled={loading}
-            />
+
+            <div style={styles.passwordWrap}>
+              <input
+                id="password"
+                name="password"
+                style={styles.passwordInput}
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete={
+                  mode === "login" ? "current-password" : "new-password"
+                }
+                disabled={loading}
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                style={styles.eyeBtn}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                disabled={loading}
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
+            </div>
           </label>
 
           {mode === "login" ? (
@@ -254,21 +306,65 @@ function LoginPageInner() {
             </div>
           ) : (
             <>
-              <div style={styles.passwordNote}>Use at least 8 characters.</div>
+              <div style={styles.passwordMetaRow}>
+                <div style={styles.passwordNote}>Use at least 8 characters.</div>
+
+                {password ? (
+                  <div
+                    style={{
+                      ...styles.strengthBadge,
+                      borderColor: passwordStrength.color,
+                      color: passwordStrength.color,
+                    }}
+                  >
+                    {passwordStrength.label}
+                  </div>
+                ) : null}
+              </div>
 
               <label htmlFor="confirmPassword" style={styles.label}>
                 <div style={styles.labelText}>Confirm password</div>
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  style={styles.input}
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  autoComplete="new-password"
-                  disabled={loading}
-                />
+
+                <div style={styles.passwordWrap}>
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    style={{
+                      ...styles.passwordInput,
+                      ...(passwordsDoNotMatch
+                        ? styles.inputError
+                        : passwordsMatch
+                        ? styles.inputSuccess
+                        : {}),
+                    }}
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    autoComplete="new-password"
+                    disabled={loading}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    style={styles.eyeBtn}
+                    aria-label={
+                      showConfirmPassword
+                        ? "Hide confirm password"
+                        : "Show confirm password"
+                    }
+                    disabled={loading}
+                  >
+                    {showConfirmPassword ? "🙈" : "👁️"}
+                  </button>
+                </div>
               </label>
+
+              {passwordsMatch ? (
+                <div style={styles.matchSuccess}>Passwords match.</div>
+              ) : passwordsDoNotMatch ? (
+                <div style={styles.matchError}>Passwords do not match.</div>
+              ) : null}
 
               <div style={styles.signupNote}>
                 You will need to confirm your email address before continuing.
@@ -463,23 +559,83 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#FFFFFF",
     outline: "none",
   },
+  passwordWrap: {
+    position: "relative",
+  },
+  passwordInput: {
+    width: "100%",
+    padding: "12px 46px 12px 14px",
+    border: `1px solid ${BORDER}`,
+    borderRadius: 12,
+    fontSize: 15,
+    color: TEXT,
+    background: "#FFFFFF",
+    outline: "none",
+  },
+  eyeBtn: {
+    position: "absolute",
+    right: 10,
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    fontSize: 18,
+    lineHeight: 1,
+    padding: 4,
+  },
   forgotWrap: {
     marginTop: -4,
     marginBottom: 10,
     textAlign: "right",
   },
-  passwordNote: {
+  passwordMetaRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
     marginTop: -4,
     marginBottom: 10,
+    flexWrap: "wrap",
+  },
+  passwordNote: {
     fontSize: 13,
     color: MUTED,
   },
+  strengthBadge: {
+    fontSize: 12,
+    fontWeight: 800,
+    border: "1px solid",
+    borderRadius: 999,
+    padding: "4px 10px",
+    background: "#FFFFFF",
+  },
   signupNote: {
-    marginTop: -4,
+    marginTop: 8,
     marginBottom: 10,
     fontSize: 13,
     color: MUTED,
     lineHeight: 1.5,
+  },
+  matchSuccess: {
+    marginTop: -4,
+    marginBottom: 10,
+    fontSize: 13,
+    color: "#166534",
+    fontWeight: 700,
+  },
+  matchError: {
+    marginTop: -4,
+    marginBottom: 10,
+    fontSize: 13,
+    color: "#B91C1C",
+    fontWeight: 700,
+  },
+  inputSuccess: {
+    border: "1px solid #22C55E",
+  },
+  inputError: {
+    border: "1px solid #EF4444",
   },
   checkboxRow: {
     display: "flex",
