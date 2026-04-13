@@ -45,6 +45,11 @@ function LoginPageInner() {
   const [acceptTerms, setAcceptTerms] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+useEffect(() => {
+  setMounted(true);
+}, []);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -287,14 +292,16 @@ function LoginPageInner() {
               />
 
               <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                style={styles.eyeBtn}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                disabled={loading}
-              >
-                {showPassword ? "🙈" : "👁️"}
-              </button>
+  type="button"
+  onClick={() => setShowPassword((prev) => !prev)}
+  style={{ background: "none", border: "none", cursor: "pointer" }}
+>
+  {!mounted ? null : showPassword ? (
+    <span>👁</span>
+  ) : (
+    <span>👁‍🗨</span>
+  )}
+</button>
             </div>
           </label>
 
@@ -355,7 +362,7 @@ function LoginPageInner() {
                     }
                     disabled={loading}
                   >
-                    {showConfirmPassword ? "🙈" : "👁️"}
+                    {showConfirmPassword ? "👁" : "👁‍🗨"}
                   </button>
                 </div>
               </label>
