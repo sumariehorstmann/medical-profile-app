@@ -108,10 +108,6 @@ function splitLegacyName(fullName: string | null) {
   };
 }
 
-function sanitizeFileName(name: string) {
-  return name.replace(/[^a-zA-Z0-9._-]/g, "-");
-}
-
 function Section({
   title,
   subtitle,
@@ -232,8 +228,7 @@ export default function ProfileFormClient({
   const [nationality, setNationality] = useState(initial?.nationality ?? "");
   const [province, setProvince] = useState(initial?.province ?? "");
   const [city, setCity] = useState(initial?.city ?? "");
-  const [idNumber, setIdNumber] = useState(initial?.id_number ?? "");
-
+  
   const [medicalAidProvider, setMedicalAidProvider] = useState(
     initial?.medical_aid_provider ?? ""
   );
@@ -278,11 +273,12 @@ export default function ProfileFormClient({
   const [consent, setConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [photoMessage, setPhotoMessage] = useState<string | null>(null);
+  const [photoMessageType, setPhotoMessageType] = useState<
+    "error" | "success" | null
+  >(null);
 
   const age = useMemo(() => calcAge(dateOfBirth || null), [dateOfBirth]);
-
-  const [photoMessage, setPhotoMessage] = useState<string | null>(null);
-  const [photoMessageType, setPhotoMessageType] = useState<"error" | "success" | null>(null);
 
   function validateRequired(): string | null {
     if (!firstName.trim()) return "First name is required.";
@@ -314,77 +310,78 @@ export default function ProfileFormClient({
   }
 
   async function handlePhotoUpload(file: File) {
-  setPhotoMessage(null);
-  setPhotoMessageType(null);
+    setPhotoMessage(null);
+    setPhotoMessageType(null);
 
-  if (!file) return;
+    if (!file) return;
 
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-  if (!allowedTypes.includes(file.type)) {
-    setPhotoMessage("Please upload a JPG, PNG, or WEBP image.");
-    setPhotoMessageType("error");
-    return;
-  }
-
-  if (file.size > 5 * 1024 * 1024) {
-    setPhotoMessage("Image must be smaller than 5MB.");
-    setPhotoMessageType("error");
-    return;
-  }
-
-  setPhotoUploading(true);
-
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch("/api/profile-photo", {
-      method: "POST",
-      body: formData,
-    });
-
-    const json = await res.json();
-
-    if (!res.ok) {
-      throw new Error(json?.error || "Failed to upload photo.");
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+      setPhotoMessage("Please upload a JPG, PNG, or WEBP image.");
+      setPhotoMessageType("error");
+      return;
     }
 
-    setProfilePhotoUrl(json.url);
-    setPhotoMessage("Profile photo uploaded successfully.");
-    setPhotoMessageType("success");
-    router.refresh();
-  } catch (error: any) {
-    setPhotoMessage(error?.message || "Failed to upload photo.");
-    setPhotoMessageType("error");
-  } finally {
-    setPhotoUploading(false);
+    if (file.size > 5 * 1024 * 1024) {
+      setPhotoMessage("Image must be smaller than 5MB.");
+      setPhotoMessageType("error");
+      return;
+    }
+
+    setPhotoUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/profile-photo", {
+        method: "POST",
+        body: formData,
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Failed to upload photo.");
+      }
+
+      setProfilePhotoUrl(json.url);
+      setPhotoMessage("Profile photo uploaded successfully.");
+      setPhotoMessageType("success");
+      router.refresh();
+    } catch (error: any) {
+      setPhotoMessage(error?.message || "Failed to upload photo.");
+      setPhotoMessageType("error");
+    } finally {
+      setPhotoUploading(false);
+    }
   }
-}
 
   async function handleRemovePhoto() {
-  setPhotoUploading(true);
-  setPhotoMessage(null);
+    setPhotoUploading(true);
+    setPhotoMessage(null);
+    setPhotoMessageType(null);
 
-  try {
-    const res = await fetch("/api/profile-photo/delete", {
-      method: "POST",
-    });
+    try {
+      const res = await fetch("/api/profile-photo/delete", {
+        method: "POST",
+      });
 
-    if (!res.ok) {
-      throw new Error("Failed to remove photo");
+      if (!res.ok) {
+        throw new Error("Failed to remove photo");
+      }
+
+      setProfilePhotoUrl("");
+      setPhotoMessage("Photo removed successfully.");
+      setPhotoMessageType("success");
+      router.refresh();
+    } catch (err: any) {
+      setPhotoMessage(err.message || "Failed to remove photo.");
+      setPhotoMessageType("error");
+    } finally {
+      setPhotoUploading(false);
     }
-
-    setProfilePhotoUrl("");
-    setPhotoMessage("Photo removed successfully");
-    setPhotoMessageType("success");
-    router.refresh();
-  } catch (err: any) {
-    setPhotoMessage(err.message);
-    setPhotoMessageType("error");
-  } finally {
-    setPhotoUploading(false);
   }
-}
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -424,47 +421,44 @@ export default function ProfileFormClient({
         emergency2_relationship: em2Rel.trim() || null,
         emergency2_phone: normalizePhone(em2Phone) || null,
 
-        gender: gender || null,
-        date_of_birth: dateOfBirth || null,
         blood_type: bloodType || null,
         allergies: allergies || null,
-        conditions: conditions || null,
         medications: medications || null,
-        special_notes: specialNotes || null,
-
+        conditions: conditions || null,
         implanted_devices: implantedDevices || null,
         mobility_notes: mobilityNotes || null,
+
         pregnancy_status: pregnancyStatus || null,
         organ_donor_status: organDonorStatus || null,
+        preferred_hospital: preferredHospital || null,
+        medical_aid_provider: medicalAidProvider || null,
+        medical_aid_plan: medicalAidPlan || null,
+        medical_aid_policy_number: medicalAidPolicy || null,
+        gp_name: gpName || null,
+        gp_practice: gpPractice || null,
+        gp_phone: normalizePhone(gpPhone) || null,
+        specialist_name: specialistName || null,
+        specialist_phone: normalizePhone(specialistPhone) || null,
+        special_notes: specialNotes || null,
+
+        date_of_birth: dateOfBirth || null,
+        gender: gender || null,
+        height_cm: heightCm ? Number(heightCm) : null,
+        weight_kg: weightKg ? Number(weightKg) : null,
+        eye_color: eyeColor || null,
+        hair_color: hairColor || null,
+        skin_tone: skinTone || null,
+        identifying_marks: identifyingMarks || null,
 
         primary_language: primaryLanguage || null,
         secondary_language: secondaryLanguage || null,
         nationality: nationality || null,
         province: province || null,
         city: city || null,
-        id_number: idNumber || null,
-
-        medical_aid_provider: medicalAidProvider || null,
-        medical_aid_policy_number: medicalAidPolicy || null,
-        medical_aid_plan: medicalAidPlan || null,
-
-        gp_name: gpName || null,
-        gp_practice: gpPractice || null,
-        gp_phone: normalizePhone(gpPhone) || null,
-
-        specialist_name: specialistName || null,
-        specialist_phone: normalizePhone(specialistPhone) || null,
-        preferred_hospital: preferredHospital || null,
-
         religion: religion || null,
-        height_cm: heightCm ? Number(heightCm) : null,
-        weight_kg: weightKg ? Number(weightKg) : null,
-        eye_color: eyeColor || null,
-        hair_color: hairColor || null,
-        identifying_marks: identifyingMarks || null,
-        skin_tone: skinTone || null,
 
         additional_notes: additionalNotes || null,
+        id_number: idNumber || null,
       };
 
       const res = await fetch("/api/profile", {
@@ -504,11 +498,11 @@ export default function ProfileFormClient({
   return (
     <form onSubmit={handleSave}>
       <Section
-        title="Free Public Tier"
+        title="Identity & Immediate Emergency Contact"
         subtitle="These details are visible when your QR code is scanned on the Free plan."
       >
         <Field
-          label="Profile photo"
+          label="Profile Photo"
           hint="Optional. This will help identify you in an emergency and will show on both Free and Premium public profiles."
         >
           <div style={photoRowStyle}>
@@ -543,19 +537,6 @@ export default function ProfileFormClient({
                   />
                 </label>
 
-{photoMessage && (
-  <div
-    style={{
-      marginTop: 8,
-      fontSize: 13,
-      fontWeight: 600,
-      color: photoMessageType === "error" ? "#D32F2F" : "#157A55",
-    }}
-  >
-    {photoMessage}
-  </div>
-)}
-
                 {profilePhotoUrl ? (
                   <button
                     type="button"
@@ -567,11 +548,24 @@ export default function ProfileFormClient({
                   </button>
                 ) : null}
               </div>
+
+              {photoMessage ? (
+                <div
+                  style={{
+                    marginTop: 10,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: photoMessageType === "error" ? "#D32F2F" : "#157A55",
+                  }}
+                >
+                  {photoMessage}
+                </div>
+              ) : null}
             </div>
           </div>
         </Field>
 
-        <Field label="First name" required>
+        <Field label="First Name" required>
           <input
             style={inputStyle}
             value={firstName}
@@ -580,7 +574,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Last name" required>
+        <Field label="Last Name" required>
           <input
             style={inputStyle}
             value={lastName}
@@ -589,7 +583,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Emergency Contact 1 — First name" required>
+        <Field label="Emergency Contact 1 Name — First Name" required>
           <input
             style={inputStyle}
             value={em1FirstName}
@@ -598,7 +592,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Emergency Contact 1 — Last name" required>
+        <Field label="Emergency Contact 1 Name — Last Name" required>
           <input
             style={inputStyle}
             value={em1LastName}
@@ -607,7 +601,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Emergency Contact 1 — Relationship" required>
+        <Field label="Emergency Contact 1 Relationship" required>
           <input
             style={inputStyle}
             value={em1Rel}
@@ -617,7 +611,7 @@ export default function ProfileFormClient({
         </Field>
 
         <Field
-          label="Emergency Contact 1 — Phone"
+          label="Emergency Contact 1 Number"
           required
           hint="Use digits only."
         >
@@ -684,39 +678,7 @@ export default function ProfileFormClient({
             : undefined
         }
       >
-        <Field label="Gender">
-          <select
-            style={inputStyle}
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-          >
-            <option value="">(not set)</option>
-            <option value="Female">Female</option>
-            <option value="Male">Male</option>
-            <option value="Other">Other</option>
-            <option value="Prefer not to say">Prefer not to say</option>
-          </select>
-        </Field>
-
-        <Field label="Date of birth">
-          <input
-            style={inputStyle}
-            type="date"
-            value={dateOfBirth}
-            onChange={(e) => setDateOfBirth(e.target.value)}
-          />
-        </Field>
-
-        <Field label="Age (auto)">
-          <input
-            style={inputStyle}
-            value={age == null ? "" : String(age)}
-            readOnly
-            placeholder="Auto-calculated"
-          />
-        </Field>
-
-        <Field label="Blood type">
+        <Field label="Blood Type">
           <select
             style={inputStyle}
             value={bloodType}
@@ -744,16 +706,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Conditions">
-          <input
-            style={inputStyle}
-            value={conditions}
-            onChange={(e) => setConditions(e.target.value)}
-            placeholder="e.g. Asthma / Diabetes / Epilepsy"
-          />
-        </Field>
-
-        <Field label="Medications">
+        <Field label="Current Medication">
           <input
             style={inputStyle}
             value={medications}
@@ -762,7 +715,16 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Implanted devices">
+        <Field label="Medical Conditions">
+          <input
+            style={inputStyle}
+            value={conditions}
+            onChange={(e) => setConditions(e.target.value)}
+            placeholder="e.g. Asthma / Diabetes / Epilepsy"
+          />
+        </Field>
+
+        <Field label="Implanted Devices">
           <input
             style={inputStyle}
             value={implantedDevices}
@@ -771,7 +733,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Mobility / disability notes">
+        <Field label="Mobility / Disability Notes">
           <input
             style={inputStyle}
             value={mobilityNotes}
@@ -779,8 +741,13 @@ export default function ProfileFormClient({
             placeholder="e.g. Wheelchair user / Deaf / Non-verbal"
           />
         </Field>
+      </Section>
 
-        <Field label="Pregnancy status">
+      <Section
+        title="Medical Support Information"
+        subtitle="These details are only publicly visible when Premium is active."
+      >
+        <Field label="Pregnancy Status">
           <select
             style={inputStyle}
             value={pregnancyStatus}
@@ -794,7 +761,7 @@ export default function ProfileFormClient({
           </select>
         </Field>
 
-        <Field label="Organ donor status">
+        <Field label="Organ Donor Status">
           <select
             style={inputStyle}
             value={organDonorStatus}
@@ -807,7 +774,81 @@ export default function ProfileFormClient({
           </select>
         </Field>
 
-        <Field label="Important emergency notes">
+        <Field label="Preferred Hospital">
+          <input
+            style={inputStyle}
+            value={preferredHospital}
+            onChange={(e) => setPreferredHospital(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Medical Aid Provider">
+          <input
+            style={inputStyle}
+            value={medicalAidProvider}
+            onChange={(e) => setMedicalAidProvider(e.target.value)}
+            placeholder="e.g. Discovery"
+          />
+        </Field>
+
+        <Field label="Medical Aid Plan">
+          <input
+            style={inputStyle}
+            value={medicalAidPlan}
+            onChange={(e) => setMedicalAidPlan(e.target.value)}
+            placeholder="e.g. Classic Saver"
+          />
+        </Field>
+
+        <Field label="Medical Aid Number">
+          <input
+            style={inputStyle}
+            value={medicalAidPolicy}
+            onChange={(e) => setMedicalAidPolicy(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="GP Name">
+          <input
+            style={inputStyle}
+            value={gpName}
+            onChange={(e) => setGpName(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="GP Number">
+          <input
+            style={inputStyle}
+            value={gpPhone}
+            onChange={(e) => setGpPhone(e.target.value)}
+            placeholder="Optional"
+            inputMode="numeric"
+          />
+        </Field>
+
+        <Field label="Specialist Name">
+          <input
+            style={inputStyle}
+            value={specialistName}
+            onChange={(e) => setSpecialistName(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Specialist Number">
+          <input
+            style={inputStyle}
+            value={specialistPhone}
+            onChange={(e) => setSpecialistPhone(e.target.value)}
+            placeholder="Optional"
+            inputMode="numeric"
+          />
+        </Field>
+
+        <Field label="Additional Medical Notes">
           <textarea
             style={{ ...inputStyle, minHeight: 100 }}
             value={specialNotes}
@@ -818,152 +859,103 @@ export default function ProfileFormClient({
       </Section>
 
       <Section
-        title="Additional Emergency Contacts"
-        info={
-          showUpgrade
-            ? "These details are only publicly visible when Premium is active."
-            : undefined
-        }
+        title="Personal Identification"
+        subtitle="These details are only publicly visible when Premium is active."
       >
-        <Field label="Emergency Contact 2 — First name">
+        <Field label="Date of Birth">
           <input
             style={inputStyle}
-            value={em2FirstName}
-            onChange={(e) => setEm2FirstName(e.target.value)}
-            placeholder="Optional"
+            type="date"
+            value={dateOfBirth}
+            onChange={(e) => setDateOfBirth(e.target.value)}
           />
         </Field>
 
-        <Field label="Emergency Contact 2 — Last name">
+        <Field label="Age">
           <input
             style={inputStyle}
-            value={em2LastName}
-            onChange={(e) => setEm2LastName(e.target.value)}
-            placeholder="Optional"
+            value={age == null ? "" : String(age)}
+            readOnly
+            placeholder="Auto-calculated"
           />
         </Field>
 
-        <Field label="Emergency Contact 2 — Relationship">
-          <input
+        <Field label="Gender">
+          <select
             style={inputStyle}
-            value={em2Rel}
-            onChange={(e) => setEm2Rel(e.target.value)}
-            placeholder="Optional"
-          />
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          >
+            <option value="">(not set)</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Other">Other</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
         </Field>
 
-        <Field label="Emergency Contact 2 — Phone">
+        <Field label="Height (cm)">
           <input
             style={inputStyle}
-            value={em2Phone}
-            onChange={(e) => setEm2Phone(e.target.value)}
-            placeholder="Optional"
+            value={heightCm}
+            onChange={(e) => setHeightCm(e.target.value)}
+            placeholder="e.g. 170"
             inputMode="numeric"
           />
+        </Field>
+
+        <Field label="Weight (kg)">
+          <input
+            style={inputStyle}
+            value={weightKg}
+            onChange={(e) => setWeightKg(e.target.value)}
+            placeholder="e.g. 70"
+            inputMode="numeric"
+          />
+        </Field>
+
+        <Field label="Eye Colour">
+          <input
+            style={inputStyle}
+            value={eyeColor}
+            onChange={(e) => setEyeColor(e.target.value)}
+            placeholder="e.g. Brown"
+          />
+        </Field>
+
+        <Field label="Hair Colour">
+          <input
+            style={inputStyle}
+            value={hairColor}
+            onChange={(e) => setHairColor(e.target.value)}
+            placeholder="e.g. Blonde"
+          />
+        </Field>
+
+        <Field label="Skin Tone">
+          <select
+            style={inputStyle}
+            value={skinTone}
+            onChange={(e) => setSkinTone(e.target.value)}
+          >
+            <option value="">(not set)</option>
+            <option value="Very fair">Very fair</option>
+            <option value="Fair">Fair</option>
+            <option value="Light">Light</option>
+            <option value="Medium">Medium</option>
+            <option value="Tan">Tan</option>
+            <option value="Brown">Brown</option>
+            <option value="Dark brown">Dark brown</option>
+            <option value="Very dark">Very dark</option>
+          </select>
         </Field>
       </Section>
 
       <Section
-        title="Medical Cover and Doctors"
-        info={
-          showUpgrade
-            ? "These details are only publicly visible when Premium is active."
-            : undefined
-        }
+        title="Communication & Location"
+        subtitle="These details are only publicly visible when Premium is active."
       >
-        <Field label="Medical aid provider">
-          <input
-            style={inputStyle}
-            value={medicalAidProvider}
-            onChange={(e) => setMedicalAidProvider(e.target.value)}
-            placeholder="e.g. Discovery"
-          />
-        </Field>
-
-        <Field label="Medical aid plan">
-          <input
-            style={inputStyle}
-            value={medicalAidPlan}
-            onChange={(e) => setMedicalAidPlan(e.target.value)}
-            placeholder="e.g. Classic Saver"
-          />
-        </Field>
-
-        <Field label="Medical aid policy / member number">
-          <input
-            style={inputStyle}
-            value={medicalAidPolicy}
-            onChange={(e) => setMedicalAidPolicy(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-
-        <Field label="GP name">
-          <input
-            style={inputStyle}
-            value={gpName}
-            onChange={(e) => setGpName(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-
-        <Field label="GP practice">
-          <input
-            style={inputStyle}
-            value={gpPractice}
-            onChange={(e) => setGpPractice(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-
-        <Field label="GP phone">
-          <input
-            style={inputStyle}
-            value={gpPhone}
-            onChange={(e) => setGpPhone(e.target.value)}
-            placeholder="Optional"
-            inputMode="numeric"
-          />
-        </Field>
-
-        <Field label="Specialist name">
-          <input
-            style={inputStyle}
-            value={specialistName}
-            onChange={(e) => setSpecialistName(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-
-        <Field label="Specialist phone">
-          <input
-            style={inputStyle}
-            value={specialistPhone}
-            onChange={(e) => setSpecialistPhone(e.target.value)}
-            placeholder="Optional"
-            inputMode="numeric"
-          />
-        </Field>
-
-        <Field label="Preferred hospital / clinic">
-          <input
-            style={inputStyle}
-            value={preferredHospital}
-            onChange={(e) => setPreferredHospital(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-      </Section>
-
-      <Section
-        title="Communication and Identity"
-        info={
-          showUpgrade
-            ? "These details are only publicly visible when Premium is active."
-            : undefined
-        }
-      >
-        <Field label="Primary language">
+        <Field label="Primary Language">
           <input
             style={inputStyle}
             value={primaryLanguage}
@@ -972,7 +964,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Secondary language">
+        <Field label="2nd Language">
           <input
             style={inputStyle}
             value={secondaryLanguage}
@@ -999,7 +991,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="City / Town">
+        <Field label="City">
           <input
             style={inputStyle}
             value={city}
@@ -1008,8 +1000,68 @@ export default function ProfileFormClient({
           />
         </Field>
 
+        <Field label="Religion">
+          <input
+            style={inputStyle}
+            value={religion}
+            onChange={(e) => setReligion(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+      </Section>
+
+      <Section
+        title="Additional Information"
+        subtitle="These details are only publicly visible when Premium is active."
+      >
+        <Field label="Additional Notes">
+          <textarea
+            style={{ ...inputStyle, minHeight: 120 }}
+            value={additionalNotes}
+            onChange={(e) => setAdditionalNotes(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Emergency Contact 2 Name — First Name">
+          <input
+            style={inputStyle}
+            value={em2FirstName}
+            onChange={(e) => setEm2FirstName(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Emergency Contact 2 Name — Last Name">
+          <input
+            style={inputStyle}
+            value={em2LastName}
+            onChange={(e) => setEm2LastName(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Emergency Contact 2 Relationship">
+          <input
+            style={inputStyle}
+            value={em2Rel}
+            onChange={(e) => setEm2Rel(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
+
+        <Field label="Emergency Contact 2 Number">
+          <input
+            style={inputStyle}
+            value={em2Phone}
+            onChange={(e) => setEm2Phone(e.target.value)}
+            placeholder="Optional"
+            inputMode="numeric"
+          />
+        </Field>
+
         <Field
-          label="ID / Passport number"
+          label="ID / Passport Number"
           hint="Stored for account/admin use. Not shown on the public profile."
         >
           <input
@@ -1019,55 +1071,11 @@ export default function ProfileFormClient({
             placeholder="Optional"
           />
         </Field>
-      </Section>
 
-      <Section
-        title="Identification Details"
-        info={
-          showUpgrade
-            ? "These details are only publicly visible when Premium is active."
-            : undefined
-        }
-      >
-        <Field label="Height (cm)">
-          <input
-            style={inputStyle}
-            value={heightCm}
-            onChange={(e) => setHeightCm(e.target.value)}
-            placeholder="e.g. 170"
-            inputMode="numeric"
-          />
-        </Field>
-
-        <Field label="Weight (kg)">
-          <input
-            style={inputStyle}
-            value={weightKg}
-            onChange={(e) => setWeightKg(e.target.value)}
-            placeholder="e.g. 70"
-            inputMode="numeric"
-          />
-        </Field>
-
-        <Field label="Eye color">
-          <input
-            style={inputStyle}
-            value={eyeColor}
-            onChange={(e) => setEyeColor(e.target.value)}
-            placeholder="e.g. Brown"
-          />
-        </Field>
-
-        <Field label="Hair color">
-          <input
-            style={inputStyle}
-            value={hairColor}
-            onChange={(e) => setHairColor(e.target.value)}
-            placeholder="e.g. Blonde"
-          />
-        </Field>
-
-        <Field label="Identifying marks">
+        <Field
+          label="Identifying Marks"
+          hint="Stored for account/admin use unless you later choose to expose it publicly."
+        >
           <textarea
             style={{ ...inputStyle, minHeight: 90 }}
             value={identifyingMarks}
@@ -1076,47 +1084,14 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field label="Skin tone">
-          <select
-            style={inputStyle}
-            value={skinTone}
-            onChange={(e) => setSkinTone(e.target.value)}
-          >
-            <option value="">(not set)</option>
-            <option value="Very fair">Very fair</option>
-            <option value="Fair">Fair</option>
-            <option value="Light">Light</option>
-            <option value="Medium">Medium</option>
-            <option value="Tan">Tan</option>
-            <option value="Brown">Brown</option>
-            <option value="Dark brown">Dark brown</option>
-            <option value="Very dark">Very dark</option>
-          </select>
-        </Field>
-      </Section>
-
-      <Section
-        title="Additional Information"
-        info={
-          showUpgrade
-            ? "These details are only publicly visible when Premium is active."
-            : undefined
-        }
-      >
-        <Field label="Religion">
+        <Field
+          label="GP Practice"
+          hint="Stored with your medical profile."
+        >
           <input
             style={inputStyle}
-            value={religion}
-            onChange={(e) => setReligion(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-
-        <Field label="Additional notes">
-          <textarea
-            style={{ ...inputStyle, minHeight: 120 }}
-            value={additionalNotes}
-            onChange={(e) => setAdditionalNotes(e.target.value)}
+            value={gpPractice}
+            onChange={(e) => setGpPractice(e.target.value)}
             placeholder="Optional"
           />
         </Field>
@@ -1393,6 +1368,7 @@ const messageStyle: React.CSSProperties = {
   fontWeight: 700,
   color: "#0F172A",
 };
+
 const photoRowStyle: React.CSSProperties = {
   display: "flex",
   gap: 16,
