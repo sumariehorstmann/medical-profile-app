@@ -11,6 +11,7 @@ type ProfileRow = {
 
   first_name: string | null;
   last_name: string | null;
+  profile_photo_url: string | null;
 
   emergency1_fullname: string | null;
   emergency1_first_name: string | null;
@@ -75,6 +76,7 @@ const SELECT_FIELDS = `
 
   first_name,
   last_name,
+  profile_photo_url,
 
   emergency1_fullname,
   emergency1_first_name,
@@ -182,6 +184,7 @@ export async function PUT(req: NextRequest) {
   const update = {
     first_name: toNull(body.first_name),
     last_name: toNull(body.last_name),
+    profile_photo_url: toNull(body.profile_photo_url),
 
     emergency1_fullname: toNull(body.emergency1_fullname),
     emergency1_first_name: toNull(body.emergency1_first_name),
