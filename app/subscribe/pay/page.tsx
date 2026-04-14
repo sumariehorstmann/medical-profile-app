@@ -13,7 +13,7 @@ type Profile = {
 
 const BASE_PRICE = 399;
 const DISCOUNT_AMOUNT = 30;
-const AFFILIATE_PRICE = 399;
+const AFFILIATE_PRICE = 369;
 
 function PayPageInner() {
   const router = useRouter();
@@ -102,12 +102,12 @@ function PayPageInner() {
 
     const cleanCode = affiliateCode.trim().toUpperCase();
     const hasAffiliateCode = cleanCode.length > 0;
-    const priceToday = hasAffiliateCode ? AFFILIATE_PRICE : BASE_PRICE;
+    const priceToday = hasAffiliateCode ? BASE_PRICE - DISCOUNT_AMOUNT : BASE_PRICE;
 
     const confirmUpgrade = window.confirm(
       hasAffiliateCode
         ? `Upgrade to Premium. Base price R${BASE_PRICE}, affiliate discount R${DISCOUNT_AMOUNT}, price today R${AFFILIATE_PRICE}. Continue?`
-        : `Upgrade to Premium. Price today R${BASE_PRICE}. Continue?`
+        : `Upgrade to Premium. Price today R${priceToday}. Continue?`
     );
 
     if (!confirmUpgrade) return;
@@ -125,7 +125,7 @@ function PayPageInner() {
           buyerEmail: userEmail,
           firstName: profile.first_name || "",
           lastName: profile.last_name || "",
-          affiliateCode: cleanCode,
+          affiliateCode: cleanCode || "",
         }),
       });
 

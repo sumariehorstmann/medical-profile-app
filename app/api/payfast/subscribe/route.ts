@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 // 🔒 LOCKED PRICING
 const BASE_PRICE = 399;
 const AFFILIATE_PRICE = 369;
+const DISCOUNT_AMOUNT = 30;
 
 function payfastProcessUrl() {
   return process.env.PAYFAST_URL!;
@@ -133,7 +134,10 @@ export async function POST(req: NextRequest) {
 
     // 🔥 PRICE LOGIC (CLEAN)
     let finalAmount = BASE_PRICE;
-
+    
+    if (affiliateCode) {
+  finalAmount = BASE_PRICE - DISCOUNT_AMOUNT;
+}
     if (affiliateCode) {
       const { data: affiliate } = await supabaseAdmin
         .from("affiliates")
