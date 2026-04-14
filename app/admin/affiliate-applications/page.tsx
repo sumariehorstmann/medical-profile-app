@@ -62,13 +62,17 @@ export default function AdminAffiliateApplicationsPage() {
           return;
         }
 
-        const adminEmails = ["rapidresponseonlineinfo@gmail.com"];
+        const adminEmails = [
+  "sumariehorstmann@gmail.com",
+  "rapidresponseonlineinfo@gmail.com",
+];
         const userEmail = String(user.email || "").toLowerCase();
 
         if (!adminEmails.includes(userEmail)) {
-          router.replace("/");
-          return;
-        }
+  setMessage(`Admin access denied for: ${userEmail}`);
+  setLoading(false);
+  return;
+}
 
         const { data, error } = await supabase
           .from("affiliate_applications")
