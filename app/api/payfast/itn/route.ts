@@ -223,7 +223,7 @@ export async function POST(req: NextRequest) {
         .from("affiliates")
         .select("id, user_id, total_earned")
         .eq("affiliate_code", affiliateCode)
-        .eq("status", "active")
+        .eq("status", "approved")
         .maybeSingle();
 
       if (affiliateLookupError) {
@@ -331,6 +331,12 @@ export async function POST(req: NextRequest) {
           shipping_name: shippingName,
           shipping_phone: shippingDetails?.cellphone ?? "",
           shipping_address: shippingAddress,
+          shipping_unit: shippingDetails?.unit_complex_building ?? "",
+          shipping_street: shippingDetails?.street_address ?? "",
+          shipping_city: shippingDetails?.city_town ?? "",
+          shipping_province: shippingDetails?.province ?? "",
+          shipping_postal_code: shippingDetails?.postal_code ?? "",
+          shipping_country: "South Africa",
           qr_url: qrUrl,
           status: "pending",
           first_name: profile.first_name ?? "",
