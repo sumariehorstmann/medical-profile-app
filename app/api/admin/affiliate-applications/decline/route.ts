@@ -44,7 +44,10 @@ export async function POST(req: NextRequest) {
 
     // TEMPORARY ADMIN CHECK
     // Replace this with your real admin email.
-    const adminEmails = ["rapidresponseonlineinfo@gmail.com"];
+    const adminEmails = [
+  "sumariehorstmann@gmail.com",
+  "rapidresponseonlineinfo@gmail.com",
+];
     const userEmail = String(user.email || "").toLowerCase();
 
     if (!adminEmails.includes(userEmail)) {
