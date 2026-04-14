@@ -7,8 +7,8 @@ import { createClient } from "@supabase/supabase-js";
 export const dynamic = "force-dynamic";
 
 // 🔒 LOCKED PRICING
-const BASE_PRICE = 429;
-const AFFILIATE_PRICE = 399;
+const BASE_PRICE = 399;
+const AFFILIATE_PRICE = 369;
 
 function payfastProcessUrl() {
   return process.env.PAYFAST_URL!;
@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
       .from("subscriptions")
       .select("user_id")
       .eq("user_id", user.id)
-      .eq("status", "active")
+      .eq("status", "approved")
       .gt("current_period_end", new Date().toISOString())
       .maybeSingle();
 
@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
         .from("affiliates")
         .select("id")
         .eq("affiliate_code", affiliateCode)
-        .eq("status", "active")
+        .eq("status", "approved")
         .maybeSingle();
 
       if (!affiliate) {
@@ -165,6 +165,8 @@ export async function POST(req: NextRequest) {
     });
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!.trim();
+
+    console.log("FINAL AMOUNT SENT TO PAYFAST:", finalAmount);
 
     // ✅ PayFast payload
     const data: Record<string, string> = {
