@@ -19,66 +19,55 @@ export async function GET(req: Request) {
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select(`
-        id,
-        user_id,
-        public_id,
-        first_name,
-        last_name,
-        profile_photo_url,
-
-        gender,
-        date_of_birth,
-        blood_type,
-        allergies,
-        conditions,
-        medications,
-        special_notes,
-
-        primary_language,
-        secondary_language,
-        medical_aid_provider,
-        medical_aid_policy_number,
-        medical_aid_plan,
-
-        gp_name,
-        gp_practice,
-        gp_phone,
-        specialist_name,
-        specialist_phone,
-        preferred_hospital,
-
-        religion,
-        additional_notes,
-
-        emergency1_fullname,
-        emergency1_relationship,
-        emergency1_phone,
-        emergency2_fullname,
-        emergency2_relationship,
-        emergency2_phone,
-
-        emergency1_first_name,
-        emergency1_last_name,
-        emergency2_first_name,
-        emergency2_last_name,
-
-        height_cm,
-        weight_kg,
-        eye_color,
-        hair_color,
-        identifying_marks,
-        skin_tone,
-
-        implanted_devices,
-        mobility_notes,
-        pregnancy_status,
-        organ_donor_status,
-
-        province,
-        city,
-        nationality,
-        id_number
-      `)
+  id,
+  user_id,
+  public_id,
+  first_name,
+  last_name,
+  profile_photo_url,
+  gender,
+  date_of_birth,
+  blood_type,
+  allergies,
+  conditions,
+  medications,
+  special_notes,
+  primary_language,
+  secondary_language,
+  medical_aid_provider,
+  medical_aid_policy_number,
+  medical_aid_plan,
+  gp_name,
+  gp_phone,
+  specialist_name,
+  specialist_phone,
+  preferred_hospital,
+  religion,
+  additional_notes,
+  height_cm,
+  weight_kg,
+  eye_color,
+  hair_color,
+  identifying_marks,
+  skin_tone,
+  implanted_devices,
+  mobility_notes,
+  pregnancy_status,
+  organ_donor_status,
+  province,
+  city,
+  nationality,
+  emergency1_fullname,
+  emergency1_first_name,
+  emergency1_last_name,
+  emergency1_relationship,
+  emergency1_phone,
+  emergency2_fullname,
+  emergency2_first_name,
+  emergency2_last_name,
+  emergency2_relationship,
+  emergency2_phone
+`)
       .eq("public_id", publicId)
       .maybeSingle();
 
@@ -191,7 +180,6 @@ export async function GET(req: Request) {
           medical_aid_plan: isPremium ? profile.medical_aid_plan : null,
 
           gp_name: isPremium ? profile.gp_name : null,
-          gp_practice: isPremium ? profile.gp_practice : null,
           gp_phone: isPremium ? profile.gp_phone : null,
           specialist_name: isPremium ? profile.specialist_name : null,
           specialist_phone: isPremium ? profile.specialist_phone : null,
@@ -216,8 +204,7 @@ export async function GET(req: Request) {
           city: isPremium ? profile.city : null,
           nationality: isPremium ? profile.nationality : null,
 
-          id_number: null,
-
+          
           emergency_contacts: isPremium
             ? emergency_contacts
             : emergency_contacts.slice(0, 1),
