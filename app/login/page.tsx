@@ -34,6 +34,58 @@ function getPasswordStrength(password: string) {
   return { label: "Strong", color: "#157A55" };
 }
 
+function EyeOpenIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M1 12C2.73 7.61 6.73 5 12 5s9.27 2.61 11 7c-1.73 4.39-5.73 7-11 7S2.73 16.39 1 12z"
+        stroke="#0F172A"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+        stroke="#0F172A"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+}
+
+function EyeClosedIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M3 3L21 21"
+        stroke="#0F172A"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M10.58 10.58A3 3 0 0 0 13.42 13.42"
+        stroke="#0F172A"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M9.88 5.08A10.94 10.94 0 0 1 12 5c5 0 9 4 9 7a9.77 9.77 0 0 1-2.16 3.19"
+        stroke="#0F172A"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M6.1 6.1C4.29 7.38 3 9.11 3 12c0 3 4 7 9 7 1.61 0 3.13-.38 4.5-1.05"
+        stroke="#0F172A"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 function LoginPageInner() {
   const params = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
@@ -45,17 +97,16 @@ function LoginPageInner() {
   const [acceptTerms, setAcceptTerms] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-
-useEffect(() => {
-  setMounted(true);
-}, []);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<MessageType>("info");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const redirectTo = useMemo(() => {
     return params.get("next") || params.get("redirect") || "/profile";
@@ -89,6 +140,14 @@ useEffect(() => {
   function clearMessage() {
     setMessage(null);
     setMessageType("info");
+  }
+
+  function resetSignupFields() {
+    setPassword("");
+    setConfirmPassword("");
+    setAcceptTerms(false);
+    setShowPassword(false);
+    setShowConfirmPassword(false);
   }
 
   function normaliseAuthMessage(raw: string, currentMode: Mode) {
@@ -132,6 +191,12 @@ useEffect(() => {
       if (password.length < 8) {
         setMessageType("error");
         setMessage("Your password must be at least 8 characters long.");
+        return false;
+      }
+
+      if (!confirmPassword.trim()) {
+        setMessageType("error");
+        setMessage("Please confirm your password.");
         return false;
       }
 
@@ -198,6 +263,7 @@ useEffect(() => {
       setMessage(
         "Your account has been created. Please check your email and confirm your address before continuing."
       );
+      resetSignupFields();
     } catch {
       setMessageType("error");
       setMessage(
@@ -275,42 +341,32 @@ useEffect(() => {
             />
           </label>
 
-          <label style={styles.label}>
-  Password
-  <div style={styles.passwordWrap}>
-    <input
-      type={showPassword ? "text" : "password"}
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-      style={styles.inputWithEye}
-      autoComplete="current-password"
-    />
+          <label htmlFor="password" style={styles.label}>
+            <div style={styles.labelText}>Password</div>
 
-    <button
-      type="button"
-      onClick={() => setShowPassword((prev) => !prev)}
-      style={styles.eyeBtn}
-      aria-label={showPassword ? "Hide password" : "Show password"}
-      disabled={loading}
-    >
-      {!mounted ? null : showPassword ? (
-  // Eye OFF (hide password)
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-    <path d="M3 3L21 21" stroke="#0F172A" strokeWidth="2"/>
-    <path d="M10.58 10.58A3 3 0 0013.42 13.42" stroke="#0F172A" strokeWidth="2"/>
-    <path d="M9.88 5.08A10.94 10.94 0 0112 5c5 0 9 4 9 7a9.77 9.77 0 01-2.16 3.19" stroke="#0F172A" strokeWidth="2"/>
-    <path d="M6.1 6.1C4.29 7.38 3 9.11 3 12c0 3 4 7 9 7 1.61 0 3.13-.38 4.5-1.05" stroke="#0F172A" strokeWidth="2"/>
-  </svg>
-) : (
-  // Eye ON (show password)
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-    <path d="M1 12C2.73 7.61 6.73 5 12 5s9.27 2.61 11 7c-1.73 4.39-5.73 7-11 7S2.73 16.39 1 12z" stroke="#0F172A" strokeWidth="2"/>
-    <circle cx="12" cy="12" r="3" stroke="#0F172A" strokeWidth="2"/>
-  </svg>
-)}
-    </button>
-  </div>
-</label>
+            <div style={styles.passwordWrap}>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={styles.passwordInput}
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                disabled={loading}
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                style={styles.eyeBtn}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                disabled={loading}
+              >
+                {!mounted ? null : showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
+              </button>
+            </div>
+          </label>
 
           {mode === "login" ? (
             <div style={styles.forgotWrap}>
@@ -343,6 +399,9 @@ useEffect(() => {
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     style={{
                       ...styles.passwordInput,
                       ...(passwordsDoNotMatch
@@ -351,9 +410,6 @@ useEffect(() => {
                         ? styles.inputSuccess
                         : {}),
                     }}
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
                     autoComplete="new-password"
                     disabled={loading}
                   />
@@ -369,7 +425,7 @@ useEffect(() => {
                     }
                     disabled={loading}
                   >
-                    {showConfirmPassword ? "👁" : "👁‍🗨"}
+                    {!mounted ? null : showConfirmPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
                   </button>
                 </div>
               </label>
@@ -574,35 +630,33 @@ const styles: Record<string, React.CSSProperties> = {
     outline: "none",
   },
   passwordWrap: {
-  position: "relative",
-  width: "100%",
-},
-
-inputWithEye: {
-  width: "100%",
-  padding: "14px 44px 14px 14px",
-  borderRadius: 14,
-  border: "1px solid #d7dce2",
-  fontSize: 16,
-  outline: "none",
-  background: "#fff",
-},
-
-eyeBtn: {
-  position: "absolute",
-  right: 12,
-  top: "50%",
-  transform: "translateY(-50%)",
-  background: "transparent",
-  border: "none",
-  cursor: "pointer",
-  padding: 0,
-  lineHeight: 1,
-  fontSize: 18,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-},
+    position: "relative",
+    width: "100%",
+  },
+  passwordInput: {
+    width: "100%",
+    padding: "12px 48px 12px 14px",
+    border: `1px solid ${BORDER}`,
+    borderRadius: 12,
+    fontSize: 15,
+    color: TEXT,
+    background: "#FFFFFF",
+    outline: "none",
+  },
+  eyeBtn: {
+    position: "absolute",
+    right: 12,
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    padding: 0,
+    lineHeight: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   forgotWrap: {
     marginTop: -4,
     marginBottom: 10,
