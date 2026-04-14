@@ -8,8 +8,8 @@ import PageHeader from "@/components/PageHeader";
 
 type AffiliateRow = {
   id: string;
-  affiliate_code: string;
-  status: string;
+  affiliate_code: string | null;
+  status: string | null;
   total_earned: number | null;
   total_paid: number | null;
   full_name: string | null;
@@ -17,12 +17,19 @@ type AffiliateRow = {
 
 type ReferralRow = {
   id: string;
-  payment_id: string;
+  payment_id: string | null;
   amount: number | null;
   commission: number | null;
   status: string | null;
   created_at: string;
 };
+
+const BRAND_GREEN = "#157A55";
+const TEXT = "#0F172A";
+const MUTED = "#475569";
+const BORDER = "#E5E7EB";
+const BG = "#F8FAFC";
+const PAYOUT_THRESHOLD = 500;
 
 export default function AffiliateDashboardPage() {
   const router = useRouter();
@@ -33,9 +40,12 @@ export default function AffiliateDashboardPage() {
   const [affiliate, setAffiliate] = useState<AffiliateRow | null>(null);
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
   const [origin, setOrigin] = useState("");
+  const [hasPremium, setHasPremium] = useState(false);
 
   useEffect(() => {
-    setOrigin(window.location.origin);
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
+    }
   }, []);
 
   useEffect(() => {
@@ -56,6 +66,23 @@ export default function AffiliateDashboardPage() {
           return;
         }
 
+        const { data: subscription, error: subscriptionError } = await supabase
+          .from("subscriptions")
+          .select("status, current_period_end")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (subscriptionError) throw subscriptionError;
+
+        const premiumActive =
+          !!subscription &&
+          subscription.status === "active" &&
+          (!subscription.current_period_end ||
+            new Date(subscription.current_period_end).getTime() > Date.now());
+
+        if (!mounted) return;
+        setHasPremium(premiumActive);
+
         const { data: affiliateData, error: affiliateError } = await supabase
           .from("affiliates")
           .select("id, affiliate_code, status, total_earned, total_paid, full_name")
@@ -69,18 +96,26 @@ export default function AffiliateDashboardPage() {
           return;
         }
 
-        const { data: referralData, error: referralError } = await supabase
-          .from("affiliate_referrals")
-          .select("id, payment_id, amount, commission, status, created_at")
-          .eq("affiliate_id", affiliateData.id)
-          .order("created_at", { ascending: false });
-
-        if (referralError) throw referralError;
-
         if (!mounted) return;
-
         setAffiliate(affiliateData);
-        setReferrals(referralData ?? []);
+
+        if (
+          premiumActive &&
+          (affiliateData.status === "approved" || affiliateData.status === "active")
+        ) {
+          const { data: referralData, error: referralError } = await supabase
+            .from("affiliate_referrals")
+            .select("id, payment_id, amount, commission, status, created_at")
+            .eq("affiliate_id", affiliateData.id)
+            .order("created_at", { ascending: false });
+
+          if (referralError) throw referralError;
+
+          if (!mounted) return;
+          setReferrals(referralData ?? []);
+        } else {
+          setReferrals([]);
+        }
       } catch (err: any) {
         if (!mounted) return;
         setMessage(err?.message || "Failed to load affiliate dashboard.");
@@ -100,10 +135,65 @@ export default function AffiliateDashboardPage() {
     try {
       await navigator.clipboard.writeText(text);
       setMessage(successMessage);
-      setTimeout(() => setMessage(null), 2000);
+      window.setTimeout(() => {
+        setMessage(null);
+      }, 2200);
     } catch {
       setMessage("Could not copy. Please copy manually.");
     }
+  }
+
+  function normalizeStatus(value: string | null | undefined) {
+    return String(value || "").trim().toLowerCase();
+  }
+
+  function titleCaseStatus(value: string | null | undefined) {
+    const status = normalizeStatus(value);
+    if (!status) return "-";
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  }
+
+  function getNextCutoffAndPayout(now = new Date()) {
+    const year = now.getFullYear();
+
+    const cycles = [
+      {
+        cutoff: new Date(year, 2, 15, 23, 59, 59, 999),
+        payout: new Date(year, 2, 31, 23, 59, 59, 999),
+      },
+      {
+        cutoff: new Date(year, 5, 15, 23, 59, 59, 999),
+        payout: new Date(year, 5, 30, 23, 59, 59, 999),
+      },
+      {
+        cutoff: new Date(year, 8, 15, 23, 59, 59, 999),
+        payout: new Date(year, 8, 30, 23, 59, 59, 999),
+      },
+      {
+        cutoff: new Date(year, 11, 15, 23, 59, 59, 999),
+        payout: new Date(year, 11, 31, 23, 59, 59, 999),
+      },
+    ];
+
+    for (const cycle of cycles) {
+      if (now.getTime() <= cycle.payout.getTime()) {
+        return cycle;
+      }
+    }
+
+    return {
+      cutoff: new Date(year + 1, 2, 15, 23, 59, 59, 999),
+      payout: new Date(year + 1, 2, 31, 23, 59, 59, 999),
+    };
+  }
+
+  function formatDate(dateValue: Date | string) {
+    const date = typeof dateValue === "string" ? new Date(dateValue) : dateValue;
+    return date.toLocaleDateString("en-ZA", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   }
 
   if (loading) {
@@ -121,12 +211,218 @@ export default function AffiliateDashboardPage() {
     return null;
   }
 
+  const affiliateStatus = normalizeStatus(affiliate.status);
+  const isPending = affiliateStatus === "pending";
+  const isRejected = affiliateStatus === "rejected";
+  const isApproved =
+    affiliateStatus === "approved" || affiliateStatus === "active";
+
+  const nextCycle = getNextCutoffAndPayout();
+  const referralLink =
+    origin && affiliate.affiliate_code
+      ? `${origin}/subscribe?ref=${affiliate.affiliate_code}`
+      : "";
+
   const totalEarned = Number(affiliate.total_earned ?? 0);
   const totalPaid = Number(affiliate.total_paid ?? 0);
-  const pendingPayout = Number((totalEarned - totalPaid).toFixed(2));
-  const referralLink = origin
-    ? `${origin}/subscribe?ref=${affiliate.affiliate_code}`
-    : "";
+
+  const approvedUnpaid = referrals
+    .filter((item) => normalizeStatus(item.status) === "approved")
+    .reduce((sum, item) => sum + Number(item.commission ?? 0), 0);
+
+  const pendingCommissions = referrals
+    .filter((item) => normalizeStatus(item.status) === "pending")
+    .reduce((sum, item) => sum + Number(item.commission ?? 0), 0);
+
+  const paidCommissions = referrals
+    .filter((item) => normalizeStatus(item.status) === "paid")
+    .reduce((sum, item) => sum + Number(item.commission ?? 0), 0);
+
+  const currentEligiblePayout = Number(approvedUnpaid.toFixed(2));
+  const thresholdRemaining = Math.max(
+    0,
+    Number((PAYOUT_THRESHOLD - currentEligiblePayout).toFixed(2))
+  );
+  const thresholdMet = currentEligiblePayout >= PAYOUT_THRESHOLD;
+
+  if (!hasPremium) {
+    return (
+      <main style={styles.page}>
+        <div style={styles.card}>
+          <PageHeader />
+
+          <h1 style={styles.h1}>Affiliate Dashboard</h1>
+
+          <div style={styles.stateBox}>
+            <h2 style={styles.h2}>Affiliate Access Disabled</h2>
+            <p style={styles.p}>
+              Your affiliate dashboard is only available while your RROI Premium
+              subscription is active.
+            </p>
+            <p style={styles.p}>
+              To continue using your affiliate dashboard and earning commission,
+              please reactivate Premium.
+            </p>
+
+            <div style={styles.summaryGrid}>
+              <div style={styles.summaryCard}>
+                <div style={styles.summaryTitle}>Affiliate Status</div>
+                <div style={styles.summaryValue}>
+                  {titleCaseStatus(affiliate.status)}
+                </div>
+              </div>
+              <div style={styles.summaryCard}>
+                <div style={styles.summaryTitle}>Total Earned</div>
+                <div style={styles.summaryValue}>R{totalEarned.toFixed(2)}</div>
+              </div>
+              <div style={styles.summaryCard}>
+                <div style={styles.summaryTitle}>Total Paid</div>
+                <div style={styles.summaryValue}>R{totalPaid.toFixed(2)}</div>
+              </div>
+            </div>
+
+            {message ? <div style={styles.notice}>{message}</div> : null}
+
+            <div style={styles.links}>
+              <Link href="/subscribe" style={styles.primaryLinkBtn}>
+                Upgrade to Premium
+              </Link>
+              <Link href="/profile" style={styles.link}>
+                Profile
+              </Link>
+              <Link href="/affiliate/terms" style={styles.linkMuted}>
+                Terms
+              </Link>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (isPending) {
+    return (
+      <main style={styles.page}>
+        <div style={styles.card}>
+          <PageHeader />
+
+          <h1 style={styles.h1}>Affiliate Dashboard</h1>
+
+          <div style={styles.stateBox}>
+            <h2 style={styles.h2}>Application Pending Review</h2>
+            <p style={styles.p}>
+              Your affiliate application is currently under review.
+            </p>
+            <p style={styles.p}>
+              Applications are approved or declined within
+              <strong> 7 working days</strong>.
+            </p>
+            <p style={styles.p}>
+              Your affiliate dashboard and referral tools will become active once
+              your application has been approved.
+            </p>
+
+            <div style={styles.summaryGrid}>
+              <div style={styles.summaryCard}>
+                <div style={styles.summaryTitle}>Status</div>
+                <div style={styles.summaryValue}>Pending</div>
+              </div>
+              <div style={styles.summaryCard}>
+                <div style={styles.summaryTitle}>Application</div>
+                <div style={styles.summaryValue}>Under review</div>
+              </div>
+            </div>
+
+            {message ? <div style={styles.notice}>{message}</div> : null}
+
+            <div style={styles.links}>
+              <Link href="/profile" style={styles.primaryLinkBtn}>
+                Go to Profile
+              </Link>
+              <Link href="/affiliate/terms" style={styles.link}>
+                View Terms
+              </Link>
+              <Link href="/" style={styles.linkMuted}>
+                Home
+              </Link>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (isRejected) {
+    return (
+      <main style={styles.page}>
+        <div style={styles.card}>
+          <PageHeader />
+
+          <h1 style={styles.h1}>Affiliate Dashboard</h1>
+
+          <div style={styles.stateBox}>
+            <h2 style={styles.h2}>Application Declined</h2>
+            <p style={styles.p}>
+              Your affiliate application was not approved.
+            </p>
+            <p style={styles.p}>
+              Please contact RROI if you would like to ask whether
+              re-application is possible.
+            </p>
+
+            <div style={styles.summaryGrid}>
+              <div style={styles.summaryCard}>
+                <div style={styles.summaryTitle}>Status</div>
+                <div style={styles.summaryValue}>Declined</div>
+              </div>
+            </div>
+
+            {message ? <div style={styles.notice}>{message}</div> : null}
+
+            <div style={styles.links}>
+              <Link href="/contact" style={styles.primaryLinkBtn}>
+                Contact Support
+              </Link>
+              <Link href="/profile" style={styles.link}>
+                Profile
+              </Link>
+              <Link href="/affiliate/terms" style={styles.linkMuted}>
+                Terms
+              </Link>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!isApproved) {
+    return (
+      <main style={styles.page}>
+        <div style={styles.card}>
+          <PageHeader />
+
+          <h1 style={styles.h1}>Affiliate Dashboard</h1>
+
+          <div style={styles.stateBox}>
+            <h2 style={styles.h2}>Affiliate Access Unavailable</h2>
+            <p style={styles.p}>
+              Your affiliate access is not currently active.
+            </p>
+
+            <div style={styles.links}>
+              <Link href="/profile" style={styles.primaryLinkBtn}>
+                Go to Profile
+              </Link>
+              <Link href="/affiliate/terms" style={styles.link}>
+                Terms
+              </Link>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main style={styles.page}>
@@ -136,24 +432,28 @@ export default function AffiliateDashboardPage() {
         <h1 style={styles.h1}>Affiliate Dashboard</h1>
 
         <p style={styles.intro}>
-          Manage your affiliate code, referral link, earnings, and recent
-          referral activity from one place.
+          Track your affiliate code, referral link, eligible payout amount, and
+          referral activity in one place.
         </p>
 
         {message ? <div style={styles.notice}>{message}</div> : null}
 
         <section style={styles.section}>
-          <h2 style={styles.h2}>Affiliate Details</h2>
+          <h2 style={styles.h2}>Affiliate Overview</h2>
 
           <div style={styles.grid}>
             <div style={styles.statCard}>
               <div style={styles.statLabel}>Status</div>
-              <div style={styles.statValue}>{affiliate.status}</div>
+              <div style={styles.statValue}>
+                {titleCaseStatus(affiliate.status)}
+              </div>
             </div>
 
             <div style={styles.statCard}>
               <div style={styles.statLabel}>Affiliate Code</div>
-              <div style={styles.statValue}>{affiliate.affiliate_code}</div>
+              <div style={styles.statValue}>
+                {affiliate.affiliate_code || "Pending email"}
+              </div>
             </div>
 
             <div style={styles.statCard}>
@@ -167,28 +467,85 @@ export default function AffiliateDashboardPage() {
             </div>
 
             <div style={styles.statCard}>
-              <div style={styles.statLabel}>Pending Payout</div>
-              <div style={styles.statValue}>R{pendingPayout.toFixed(2)}</div>
+              <div style={styles.statLabel}>Eligible for Payout</div>
+              <div style={styles.statValue}>
+                R{currentEligiblePayout.toFixed(2)}
+              </div>
             </div>
 
             <div style={styles.statCard}>
-              <div style={styles.statLabel}>Confirmed Referrals</div>
-              <div style={styles.statValue}>{referrals.length}</div>
+              <div style={styles.statLabel}>Pending Verification</div>
+              <div style={styles.statValue}>
+                R{pendingCommissions.toFixed(2)}
+              </div>
+            </div>
+
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Threshold</div>
+              <div style={styles.statValue}>
+                {thresholdMet ? "Reached" : `R${thresholdRemaining.toFixed(2)} left`}
+              </div>
+            </div>
+
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Paid Referral Commission</div>
+              <div style={styles.statValue}>R{paidCommissions.toFixed(2)}</div>
             </div>
           </div>
         </section>
 
         <section style={styles.section}>
-          <h2 style={styles.h2}>Share Your Code</h2>
+          <h2 style={styles.h2}>Payout Schedule</h2>
+
+          <div style={styles.grid}>
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Next Cut-Off Date</div>
+              <div style={styles.statValue}>{formatDate(nextCycle.cutoff)}</div>
+            </div>
+
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Next Payout Date</div>
+              <div style={styles.statValue}>{formatDate(nextCycle.payout)}</div>
+            </div>
+
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Minimum Payout</div>
+              <div style={styles.statValue}>R{PAYOUT_THRESHOLD.toFixed(2)}</div>
+            </div>
+
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Payout Method</div>
+              <div style={styles.statValue}>EFT</div>
+            </div>
+          </div>
+
+          <div style={styles.infoBox}>
+            <p style={styles.infoText}>
+              Approved commissions earned before the cut-off date are processed
+              in that payout cycle.
+            </p>
+            <p style={styles.infoText}>
+              Approved balances below R500 roll over to the next payout period.
+            </p>
+          </div>
+        </section>
+
+        <section style={styles.section}>
+          <h2 style={styles.h2}>Share Your Referral Tools</h2>
 
           <div style={styles.shareBox}>
             <div style={styles.shareLabel}>Affiliate Code</div>
-            <div style={styles.shareValue}>{affiliate.affiliate_code}</div>
+            <div style={styles.shareValue}>
+              {affiliate.affiliate_code || "Pending email"}
+            </div>
             <button
               type="button"
               style={styles.primaryBtn}
+              disabled={!affiliate.affiliate_code}
               onClick={() =>
-                copyText(affiliate.affiliate_code, "Affiliate code copied.")
+                affiliate.affiliate_code
+                  ? copyText(affiliate.affiliate_code, "Affiliate code copied.")
+                  : null
               }
             >
               Copy Code
@@ -213,7 +570,9 @@ export default function AffiliateDashboardPage() {
           <h2 style={styles.h2}>Recent Referrals</h2>
 
           {referrals.length === 0 ? (
-            <div style={styles.emptyBox}>No referrals recorded yet.</div>
+            <div style={styles.emptyBox}>
+              No referral activity has been recorded yet.
+            </div>
           ) : (
             <div style={styles.tableWrap}>
               <table style={styles.table}>
@@ -229,21 +588,17 @@ export default function AffiliateDashboardPage() {
                 <tbody>
                   {referrals.map((referral) => (
                     <tr key={referral.id}>
-                      <td style={styles.td}>
-                        {new Date(referral.created_at).toLocaleDateString("en-ZA", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </td>
-                      <td style={styles.td}>{referral.payment_id}</td>
+                      <td style={styles.td}>{formatDate(referral.created_at)}</td>
+                      <td style={styles.td}>{referral.payment_id || "-"}</td>
                       <td style={styles.td}>
                         R{Number(referral.amount ?? 0).toFixed(2)}
                       </td>
                       <td style={styles.td}>
                         R{Number(referral.commission ?? 0).toFixed(2)}
                       </td>
-                      <td style={styles.td}>{referral.status ?? "-"}</td>
+                      <td style={styles.td}>
+                        {titleCaseStatus(referral.status)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -257,6 +612,10 @@ export default function AffiliateDashboardPage() {
             Profile
           </Link>
           <span style={styles.dot}>•</span>
+          <Link href="/affiliate/terms" style={styles.link}>
+            Terms
+          </Link>
+          <span style={styles.dot}>•</span>
           <Link href="/" style={styles.linkMuted}>
             Home
           </Link>
@@ -266,14 +625,10 @@ export default function AffiliateDashboardPage() {
   );
 }
 
-const BRAND_GREEN = "#157A55";
-const TEXT = "#0F172A";
-const MUTED = "#475569";
-
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
-    background: "#F8FAFC",
+    background: BG,
     padding: 16,
     display: "flex",
     justifyContent: "center",
@@ -283,7 +638,7 @@ const styles: Record<string, React.CSSProperties> = {
   card: {
     width: "100%",
     maxWidth: 980,
-    border: "1px solid #E5E7EB",
+    border: `1px solid ${BORDER}`,
     borderRadius: 16,
     padding: 24,
     background: "#FFFFFF",
@@ -317,6 +672,13 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#F0FDF4",
     color: "#166534",
     fontWeight: 700,
+    lineHeight: 1.5,
+  },
+  stateBox: {
+    border: `1px solid ${BORDER}`,
+    borderRadius: 14,
+    padding: 18,
+    background: "#FFFFFF",
   },
   section: {
     marginTop: 24,
@@ -327,13 +689,30 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 12,
     color: TEXT,
   },
+  p: {
+    margin: "0 0 10px",
+    lineHeight: 1.6,
+    color: TEXT,
+  },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
     gap: 12,
   },
+  summaryGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+    gap: 12,
+    marginTop: 12,
+  },
   statCard: {
-    border: "1px solid #E5E7EB",
+    border: `1px solid ${BORDER}`,
+    borderRadius: 12,
+    padding: 14,
+    background: "#FFFFFF",
+  },
+  summaryCard: {
+    border: `1px solid ${BORDER}`,
     borderRadius: 12,
     padding: 14,
     background: "#FFFFFF",
@@ -347,12 +726,38 @@ const styles: Record<string, React.CSSProperties> = {
   statValue: {
     fontSize: 22,
     fontWeight: 900,
-    wordBreak: "normal",
+    wordBreak: "break-word",
     overflowWrap: "break-word",
     color: TEXT,
   },
+  summaryTitle: {
+    fontSize: 12,
+    fontWeight: 800,
+    opacity: 0.75,
+    marginBottom: 6,
+    color: TEXT,
+  },
+  summaryValue: {
+    fontSize: 20,
+    fontWeight: 900,
+    color: TEXT,
+    wordBreak: "break-word",
+    overflowWrap: "break-word",
+  },
+  infoBox: {
+    marginTop: 14,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 12,
+    padding: 14,
+    background: "#F8FAFC",
+  },
+  infoText: {
+    margin: "0 0 8px",
+    lineHeight: 1.55,
+    color: TEXT,
+  },
   shareBox: {
-    border: "1px solid #E5E7EB",
+    border: `1px solid ${BORDER}`,
     borderRadius: 12,
     padding: 16,
     background: "#F8FAFC",
@@ -370,7 +775,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: BRAND_GREEN,
     marginBottom: 12,
     letterSpacing: 1,
-    wordBreak: "normal",
+    wordBreak: "break-word",
     overflowWrap: "break-word",
   },
   linkBox: {
@@ -393,8 +798,20 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 800,
     cursor: "pointer",
   },
+  primaryLinkBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "11px 14px",
+    borderRadius: 12,
+    border: "none",
+    background: BRAND_GREEN,
+    color: "#FFFFFF",
+    fontWeight: 900,
+    textDecoration: "none",
+  },
   emptyBox: {
-    border: "1px solid #E5E7EB",
+    border: `1px solid ${BORDER}`,
     borderRadius: 12,
     padding: 16,
     background: "#F8FAFC",
@@ -403,7 +820,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   tableWrap: {
     overflowX: "auto",
-    border: "1px solid #E5E7EB",
+    border: `1px solid ${BORDER}`,
     borderRadius: 12,
     background: "#FFFFFF",
   },
@@ -415,7 +832,7 @@ const styles: Record<string, React.CSSProperties> = {
   th: {
     textAlign: "left",
     padding: 12,
-    borderBottom: "1px solid #E5E7EB",
+    borderBottom: `1px solid ${BORDER}`,
     background: "#F8FAFC",
     fontSize: 13,
     fontWeight: 800,
@@ -423,7 +840,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   td: {
     padding: 12,
-    borderBottom: "1px solid #E5E7EB",
+    borderBottom: `1px solid ${BORDER}`,
     fontSize: 14,
     verticalAlign: "top",
     color: TEXT,

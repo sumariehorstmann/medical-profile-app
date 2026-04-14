@@ -7,42 +7,64 @@ import { useRouter } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 type AffiliateRow = {
-  affiliate_code: string;
+  affiliate_code: string | null;
   total_earned: number | null;
   total_paid: number | null;
-  status: string;
+  status: string | null;
 } | null;
+
+const BRAND_GREEN = "#157A55";
+const BORDER = "#E5E7EB";
+const TEXT = "#0F172A";
+const MUTED = "#475569";
+const BG = "#FFFFFF";
 
 export default function AffiliateApplyPage() {
   const supabase = useMemo(() => createSupabaseBrowser(), []);
   const router = useRouter();
 
   const [checking, setChecking] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
   const [existingAffiliate, setExistingAffiliate] = useState<AffiliateRow>(null);
+  const [userEmail, setUserEmail] = useState("");
 
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [country, setCountry] = useState("South Africa");
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
+
+  const [promotionMethod, setPromotionMethod] = useState("");
+  const [otherPromotionMethod, setOtherPromotionMethod] = useState("");
+  const [targetAudience, setTargetAudience] = useState("");
+  const [instagramHandle, setInstagramHandle] = useState("");
+  const [facebookProfile, setFacebookProfile] = useState("");
+  const [tiktokHandle, setTiktokHandle] = useState("");
+  const [experience, setExperience] = useState("");
+  const [experienceDetails, setExperienceDetails] = useState("");
+
   const [bankName, setBankName] = useState("");
   const [accountHolder, setAccountHolder] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [accountType, setAccountType] = useState("Savings");
   const [branchCode, setBranchCode] = useState("");
-  const [agree, setAgree] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-  const [createdCode, setCreatedCode] = useState<string | null>(null);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreeMarketing, setAgreeMarketing] = useState(false);
+  const [agreeTax, setAgreeTax] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
-    async function run() {
+    async function loadPage() {
       setChecking(true);
       setMessage(null);
 
       try {
-        const { data: authData, error: authErr } = await supabase.auth.getUser();
-        if (authErr) throw authErr;
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError) throw authError;
 
         const user = authData.user;
         if (!user) {
@@ -50,13 +72,15 @@ export default function AffiliateApplyPage() {
           return;
         }
 
-        const { data: subscription, error: subErr } = await supabase
+        setUserEmail(user.email || "");
+
+        const { data: subscription, error: subscriptionError } = await supabase
           .from("subscriptions")
           .select("status, current_period_end")
           .eq("user_id", user.id)
           .maybeSingle();
 
-        if (subErr) throw subErr;
+        if (subscriptionError) throw subscriptionError;
 
         const isPremium =
           !!subscription &&
@@ -69,53 +93,72 @@ export default function AffiliateApplyPage() {
           return;
         }
 
-        const { data: affiliate, error: affiliateErr } = await supabase
+        const { data: affiliate, error: affiliateError } = await supabase
           .from("affiliates")
           .select("affiliate_code, total_earned, total_paid, status")
           .eq("user_id", user.id)
           .maybeSingle();
 
-        if (affiliateErr) throw affiliateErr;
+        if (affiliateError) throw affiliateError;
 
         if (!cancelled && affiliate) {
           setExistingAffiliate(affiliate);
-          setCreatedCode(affiliate.affiliate_code);
         }
       } catch (err: any) {
         if (!cancelled) {
-          setMessage(err?.message || "Failed to load affiliate status.");
+          setMessage(err?.message || "Failed to load affiliate application page.");
         }
       } finally {
-        if (!cancelled) setChecking(false);
+        if (!cancelled) {
+          setChecking(false);
+        }
       }
     }
 
-    run();
+    loadPage();
 
     return () => {
       cancelled = true;
     };
   }, [router, supabase]);
 
-  async function handleSubmit(e: React.FormEvent) {
+  function validateForm() {
+    if (!fullName.trim()) return "Please enter your full name.";
+    if (!phone.trim()) return "Please enter your phone number.";
+    if (!country.trim()) return "Please enter your country.";
+    if (!province.trim()) return "Please enter your province.";
+    if (!city.trim()) return "Please enter your city or town.";
+    if (!promotionMethod.trim()) return "Please select how you plan to promote RROI.";
+    if (promotionMethod === "Other" && !otherPromotionMethod.trim()) {
+      return "Please specify your promotion method.";
+    }
+    if (!targetAudience.trim()) return "Please describe your target audience.";
+    if (!experience.trim()) return "Please select whether you have promotion experience.";
+    if (experience === "Yes" && !experienceDetails.trim()) {
+      return "Please briefly describe your experience.";
+    }
+    if (!bankName.trim()) return "Please enter your bank name.";
+    if (!accountHolder.trim()) return "Please enter the account holder name.";
+    if (!accountNumber.trim()) return "Please enter the account number.";
+    if (!branchCode.trim()) return "Please enter the branch code.";
+    if (!agreeTerms) return "You must agree to the affiliate terms and conditions.";
+    if (!agreeMarketing) {
+      return "You must confirm that you will only use official RROI marketing material.";
+    }
+    if (!agreeTax) {
+      return "You must confirm that you are responsible for your own tax declarations.";
+    }
+
+    return null;
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setMessage(null);
 
-    if (!agree) {
-      setMessage("Please accept the affiliate terms to continue.");
-      return;
-    }
-
-    if (
-      !fullName.trim() ||
-      !phone.trim() ||
-      !bankName.trim() ||
-      !accountHolder.trim() ||
-      !accountNumber.trim() ||
-      !accountType.trim() ||
-      !branchCode.trim()
-    ) {
-      setMessage("Please complete all required fields.");
+    const validationError = validateForm();
+    if (validationError) {
+      setMessage(validationError);
       return;
     }
 
@@ -129,28 +172,46 @@ export default function AffiliateApplyPage() {
         },
         body: JSON.stringify({
           fullName: fullName.trim(),
+          email: userEmail.trim(),
           phone: phone.trim(),
+          country: country.trim(),
+          province: province.trim(),
+          city: city.trim(),
+          promotionMethod:
+            promotionMethod === "Other"
+              ? otherPromotionMethod.trim()
+              : promotionMethod.trim(),
+          targetAudience: targetAudience.trim(),
+          instagramHandle: instagramHandle.trim(),
+          facebookProfile: facebookProfile.trim(),
+          tiktokHandle: tiktokHandle.trim(),
+          experience: experience.trim(),
+          experienceDetails: experienceDetails.trim(),
           bankName: bankName.trim(),
           accountHolder: accountHolder.trim(),
           accountNumber: accountNumber.trim(),
           accountType: accountType.trim(),
           branchCode: branchCode.trim(),
+          agreeTerms,
+          agreeMarketing,
+          agreeTax,
         }),
       });
 
       const json = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(json?.error || "Failed to create affiliate account.");
+        throw new Error(json?.error || "Failed to submit affiliate application.");
       }
 
-      setCreatedCode(json.affiliateCode || null);
       setExistingAffiliate({
-        affiliate_code: json.affiliateCode,
+        affiliate_code: null,
         total_earned: 0,
         total_paid: 0,
-        status: "active",
+        status: "pending",
       });
+
+      setMessage("Your affiliate application has been submitted successfully.");
     } catch (err: any) {
       setMessage(err?.message || "Something went wrong. Please try again.");
     } finally {
@@ -158,51 +219,106 @@ export default function AffiliateApplyPage() {
     }
   }
 
-  const showSuccess = !!existingAffiliate;
+  const affiliateStatus = (existingAffiliate?.status || "").toLowerCase();
+  const isPending = affiliateStatus === "pending";
+  const isApproved = affiliateStatus === "approved" || affiliateStatus === "active";
+  const isRejected = affiliateStatus === "rejected";
 
   return (
     <main style={styles.page}>
       <div style={styles.card}>
         <div style={styles.brand}>
-          <Image src="/logo.png" alt="RROI logo" width={96} height={96} priority />
-          <h1 style={styles.h1}>Become an Affiliate</h1>
-          <p style={styles.tagline}>Rapid Response Online Information (RROI)</p>
+          <Image
+            src="/logo.png"
+            alt="RROI logo"
+            width={96}
+            height={96}
+            priority
+          />
+          <h1 style={styles.h1}>Apply to Become an RROI Affiliate</h1>
+          <p style={styles.tagline}>Rapid Response Online Information</p>
         </div>
 
         <div style={styles.notice}>
-          <strong>Premium benefit</strong>
+          <strong>Premium subscribers only</strong>
           <p style={styles.noticeText}>
-            Affiliate access is available to active Premium users only.
+            Only active RROI Premium subscribers may apply for the affiliate
+            program.
           </p>
           <p style={styles.noticeText}>
-            Earn <strong>8% commission on the base price</strong> when someone joins Premium
-            using your code.
+            Applications are manually reviewed. Approval or decline takes place
+            within <strong>7 working days</strong>.
+          </p>
+          <p style={styles.noticeText}>
+            Approved affiliates receive access to the affiliate dashboard after
+            manual approval. Affiliate codes are issued after approval.
           </p>
         </div>
 
         {checking ? (
-          <div style={styles.loadingBox}>Checking your account…</div>
-        ) : showSuccess ? (
-          <div style={styles.success}>
-            <h2 style={styles.h2}>Affiliate account active</h2>
-            <p style={styles.p}>Your affiliate account has been created successfully.</p>
+          <div style={styles.loadingBox}>Checking your account...</div>
+        ) : isPending ? (
+          <section style={styles.statusBox}>
+            <h2 style={styles.h2}>Application Pending Review</h2>
+            <p style={styles.p}>
+              Your affiliate application has been received and is currently under
+              review.
+            </p>
+            <p style={styles.p}>
+              RROI will approve or decline your application within
+              <strong> 7 working days</strong>.
+            </p>
+            <p style={styles.p}>
+              Your affiliate dashboard and code will only become active once your
+              application has been approved.
+            </p>
 
-            <div style={styles.codeBox}>
-              <div style={styles.codeLabel}>Your Affiliate Code</div>
-              <div style={styles.codeValue}>{createdCode}</div>
+            {message ? <p style={styles.successText}>{message}</p> : null}
+
+            <div style={styles.links}>
+              <Link href="/profile" style={styles.primaryLinkBtn}>
+                Go to Profile
+              </Link>
+              <Link href="/affiliate/terms" style={styles.link}>
+                View Terms
+              </Link>
+              <Link href="/" style={styles.linkMuted}>
+                Home
+              </Link>
             </div>
+          </section>
+        ) : isApproved ? (
+          <section style={styles.statusBox}>
+            <h2 style={styles.h2}>Affiliate Application Approved</h2>
+            <p style={styles.p}>
+              Your affiliate profile is active.
+            </p>
+            <p style={styles.p}>
+              You may now access your affiliate dashboard and track your earnings.
+            </p>
 
             <div style={styles.summaryGrid}>
               <div style={styles.summaryCard}>
                 <div style={styles.summaryTitle}>Status</div>
-                <div style={styles.summaryValue}>{existingAffiliate?.status || "active"}</div>
+                <div style={styles.summaryValue}>
+                  {existingAffiliate?.status || "approved"}
+                </div>
               </div>
+
+              <div style={styles.summaryCard}>
+                <div style={styles.summaryTitle}>Affiliate Code</div>
+                <div style={styles.summaryValue}>
+                  {existingAffiliate?.affiliate_code || "Will be emailed"}
+                </div>
+              </div>
+
               <div style={styles.summaryCard}>
                 <div style={styles.summaryTitle}>Total Earned</div>
                 <div style={styles.summaryValue}>
                   R{Number(existingAffiliate?.total_earned ?? 0).toFixed(2)}
                 </div>
               </div>
+
               <div style={styles.summaryCard}>
                 <div style={styles.summaryTitle}>Total Paid</div>
                 <div style={styles.summaryValue}>
@@ -211,128 +327,354 @@ export default function AffiliateApplyPage() {
               </div>
             </div>
 
-            {message && <p style={styles.errorText}>{message}</p>}
+            {message ? <p style={styles.successText}>{message}</p> : null}
+
+            <div style={styles.links}>
+              <Link href="/affiliate/dashboard" style={styles.primaryLinkBtn}>
+                Open Affiliate Dashboard
+              </Link>
+              <Link href="/profile" style={styles.link}>
+                Profile
+              </Link>
+              <Link href="/affiliate/terms" style={styles.linkMuted}>
+                Terms
+              </Link>
+            </div>
+          </section>
+        ) : isRejected ? (
+          <section style={styles.statusBox}>
+            <h2 style={styles.h2}>Application Declined</h2>
+            <p style={styles.p}>
+              Your affiliate application was not approved.
+            </p>
+            <p style={styles.p}>
+              Please contact RROI if you believe this was an error or if you want
+              to ask whether re-application is possible.
+            </p>
+
+            {message ? <p style={styles.errorText}>{message}</p> : null}
 
             <div style={styles.links}>
               <Link href="/profile" style={styles.primaryLinkBtn}>
                 Go to Profile
               </Link>
-              <Link href="/affiliate" style={styles.link}>
-                Affiliate page
+              <Link href="/contact" style={styles.link}>
+                Contact Support
               </Link>
-              <Link href="/" style={styles.linkMuted}>
-                Home
+              <Link href="/affiliate/terms" style={styles.linkMuted}>
+                Terms
               </Link>
             </div>
-          </div>
+          </section>
         ) : (
           <form onSubmit={handleSubmit}>
-            <label style={styles.label}>Full name</label>
-            <input
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              style={styles.input}
-              placeholder="Full name and surname"
-              required
-              disabled={loading}
-            />
+            <section style={styles.section}>
+              <h2 style={styles.sectionTitle}>Personal Details</h2>
 
-            <label style={styles.label}>Phone number</label>
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              style={styles.input}
-              placeholder="e.g. 0821234567"
-              required
-              disabled={loading}
-            />
-
-            <label style={styles.label}>Bank name</label>
-            <input
-              value={bankName}
-              onChange={(e) => setBankName(e.target.value)}
-              style={styles.input}
-              placeholder="e.g. Capitec"
-              required
-              disabled={loading}
-            />
-
-            <label style={styles.label}>Account holder</label>
-            <input
-              value={accountHolder}
-              onChange={(e) => setAccountHolder(e.target.value)}
-              style={styles.input}
-              placeholder="Name on the bank account"
-              required
-              disabled={loading}
-            />
-
-            <label style={styles.label}>Account number</label>
-            <input
-              value={accountNumber}
-              onChange={(e) => setAccountNumber(e.target.value)}
-              style={styles.input}
-              placeholder="Bank account number"
-              required
-              disabled={loading}
-            />
-
-            <label style={styles.label}>Account type</label>
-            <select
-              value={accountType}
-              onChange={(e) => setAccountType(e.target.value)}
-              style={styles.input}
-              disabled={loading}
-            >
-              <option>Savings</option>
-              <option>Cheque</option>
-              <option>Business</option>
-              <option>Transmission</option>
-            </select>
-
-            <label style={styles.label}>Branch code</label>
-            <input
-              value={branchCode}
-              onChange={(e) => setBranchCode(e.target.value)}
-              style={styles.input}
-              placeholder="Branch code"
-              required
-              disabled={loading}
-            />
-
-            <label style={styles.checkboxRow}>
+              <label style={styles.label}>Full name</label>
               <input
-                type="checkbox"
-                checked={agree}
-                onChange={(e) => setAgree(e.target.checked)}
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                style={styles.input}
+                placeholder="Full name and surname"
+                required
                 disabled={loading}
               />
-              <span style={styles.checkboxText}>
-                I agree to the{" "}
-                <Link href="/affiliate/terms" style={styles.inlineLink}>
-                  affiliate terms
-                </Link>{" "}
-                and confirm my banking details are correct.
-              </span>
-            </label>
 
-            <button type="submit" style={styles.primaryBtn} disabled={loading || !agree}>
-              {loading ? "Creating affiliate account..." : "Create affiliate account"}
+              <label style={styles.label}>Email address</label>
+              <input
+                value={userEmail}
+                style={styles.inputDisabled}
+                placeholder="Your account email"
+                disabled
+              />
+
+              <label style={styles.label}>Phone number</label>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                style={styles.input}
+                placeholder="e.g. 0821234567"
+                required
+                disabled={loading}
+              />
+
+              <label style={styles.label}>Country</label>
+              <input
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                style={styles.input}
+                placeholder="Country"
+                required
+                disabled={loading}
+              />
+
+              <label style={styles.label}>Province</label>
+              <input
+                value={province}
+                onChange={(e) => setProvince(e.target.value)}
+                style={styles.input}
+                placeholder="e.g. Western Cape"
+                required
+                disabled={loading}
+              />
+
+              <label style={styles.label}>City / Town</label>
+              <input
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                style={styles.input}
+                placeholder="e.g. Cape Town"
+                required
+                disabled={loading}
+              />
+            </section>
+
+            <section style={styles.section}>
+              <h2 style={styles.sectionTitle}>How You Plan to Promote RROI</h2>
+
+              <label style={styles.label}>Primary promotion method</label>
+              <select
+                value={promotionMethod}
+                onChange={(e) => setPromotionMethod(e.target.value)}
+                style={styles.input}
+                disabled={loading}
+                required
+              >
+                <option value="">Select an option</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="Instagram">Instagram</option>
+                <option value="TikTok">TikTok</option>
+                <option value="Facebook">Facebook</option>
+                <option value="In-person">In-person</option>
+                <option value="Business / Workplace">Business / Workplace</option>
+                <option value="Other">Other</option>
+              </select>
+
+              {promotionMethod === "Other" ? (
+                <>
+                  <label style={styles.label}>Specify promotion method</label>
+                  <input
+                    value={otherPromotionMethod}
+                    onChange={(e) => setOtherPromotionMethod(e.target.value)}
+                    style={styles.input}
+                    placeholder="Describe your promotion method"
+                    disabled={loading}
+                    required
+                  />
+                </>
+              ) : null}
+
+              <label style={styles.label}>Target audience</label>
+              <textarea
+                value={targetAudience}
+                onChange={(e) => setTargetAudience(e.target.value)}
+                style={styles.textarea}
+                placeholder="Who do you plan to promote RROI to?"
+                disabled={loading}
+                required
+              />
+
+              <label style={styles.label}>Instagram handle (optional)</label>
+              <input
+                value={instagramHandle}
+                onChange={(e) => setInstagramHandle(e.target.value)}
+                style={styles.input}
+                placeholder="@yourhandle"
+                disabled={loading}
+              />
+
+              <label style={styles.label}>Facebook page / profile (optional)</label>
+              <input
+                value={facebookProfile}
+                onChange={(e) => setFacebookProfile(e.target.value)}
+                style={styles.input}
+                placeholder="Facebook page or profile"
+                disabled={loading}
+              />
+
+              <label style={styles.label}>TikTok handle (optional)</label>
+              <input
+                value={tiktokHandle}
+                onChange={(e) => setTiktokHandle(e.target.value)}
+                style={styles.input}
+                placeholder="@yourhandle"
+                disabled={loading}
+              />
+
+              <label style={styles.label}>
+                Do you have experience promoting products or services?
+              </label>
+              <select
+                value={experience}
+                onChange={(e) => setExperience(e.target.value)}
+                style={styles.input}
+                disabled={loading}
+                required
+              >
+                <option value="">Select an option</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+
+              {experience === "Yes" ? (
+                <>
+                  <label style={styles.label}>Briefly describe your experience</label>
+                  <textarea
+                    value={experienceDetails}
+                    onChange={(e) => setExperienceDetails(e.target.value)}
+                    style={styles.textarea}
+                    placeholder="Short description of your promotion or sales experience"
+                    disabled={loading}
+                    required
+                  />
+                </>
+              ) : null}
+            </section>
+
+            <section style={styles.section}>
+              <h2 style={styles.sectionTitle}>Payout Banking Details</h2>
+
+              <div style={styles.infoBox}>
+                <p style={styles.infoText}>
+                  Affiliate payouts are processed <strong>quarterly</strong>.
+                </p>
+                <p style={styles.infoText}>
+                  Minimum payout threshold: <strong>R500</strong>.
+                </p>
+                <p style={styles.infoText}>
+                  Cut-off dates: <strong>15 March, 15 June, 15 September, 15 December</strong>.
+                </p>
+                <p style={styles.infoText}>
+                  Payout dates: <strong>31 March, 30 June, 30 September, 31 December</strong>.
+                </p>
+              </div>
+
+              <label style={styles.label}>Bank name</label>
+              <input
+                value={bankName}
+                onChange={(e) => setBankName(e.target.value)}
+                style={styles.input}
+                placeholder="e.g. Capitec"
+                required
+                disabled={loading}
+              />
+
+              <label style={styles.label}>Account holder</label>
+              <input
+                value={accountHolder}
+                onChange={(e) => setAccountHolder(e.target.value)}
+                style={styles.input}
+                placeholder="Name on the bank account"
+                required
+                disabled={loading}
+              />
+
+              <label style={styles.label}>Account number</label>
+              <input
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
+                style={styles.input}
+                placeholder="Bank account number"
+                required
+                disabled={loading}
+                inputMode="numeric"
+              />
+
+              <label style={styles.label}>Account type</label>
+              <select
+                value={accountType}
+                onChange={(e) => setAccountType(e.target.value)}
+                style={styles.input}
+                disabled={loading}
+              >
+                <option value="Savings">Savings</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Business">Business</option>
+                <option value="Transmission">Transmission</option>
+              </select>
+
+              <label style={styles.label}>Branch code</label>
+              <input
+                value={branchCode}
+                onChange={(e) => setBranchCode(e.target.value)}
+                style={styles.input}
+                placeholder="Branch code"
+                required
+                disabled={loading}
+                inputMode="numeric"
+              />
+            </section>
+
+            <section style={styles.section}>
+              <h2 style={styles.sectionTitle}>Agreement</h2>
+
+              <label style={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                  disabled={loading}
+                />
+                <span style={styles.checkboxText}>
+                  I agree to the{" "}
+                  <Link href="/affiliate/terms" style={styles.inlineLink}>
+                    RROI Affiliate Terms &amp; Conditions
+                  </Link>
+                  .
+                </span>
+              </label>
+
+              <label style={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  checked={agreeMarketing}
+                  onChange={(e) => setAgreeMarketing(e.target.checked)}
+                  disabled={loading}
+                />
+                <span style={styles.checkboxText}>
+                  I understand that I may only use official RROI-approved
+                  marketing material and may not create or change RROI marketing
+                  content without written approval.
+                </span>
+              </label>
+
+              <label style={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  checked={agreeTax}
+                  onChange={(e) => setAgreeTax(e.target.checked)}
+                  disabled={loading}
+                />
+                <span style={styles.checkboxText}>
+                  I understand that I am responsible for declaring any affiliate
+                  income to SARS and for meeting my own tax obligations.
+                </span>
+              </label>
+            </section>
+
+            <button
+              type="submit"
+              style={styles.primaryBtn}
+              disabled={loading || !agreeTerms || !agreeMarketing || !agreeTax}
+            >
+              {loading ? "Submitting application..." : "Submit affiliate application"}
             </button>
 
-            {message && <p style={styles.errorText}>{message}</p>}
+            {message ? <p style={styles.errorText}>{message}</p> : null}
 
             <p style={styles.small}>
-              Your affiliate code will be created instantly after successful signup and will also
-              appear on your profile page.
+              Your application will be reviewed manually. If approved, your
+              affiliate dashboard will become active and your affiliate code will
+              be issued after approval.
             </p>
 
             <div style={styles.links}>
               <Link href="/profile" style={styles.linkMuted}>
                 ← Back to Profile
               </Link>
-              <Link href="/affiliate" style={styles.link}>
-                Affiliate page
+              <Link href="/affiliate/terms" style={styles.link}>
+                Terms
               </Link>
               <Link href="/privacy" style={styles.link}>
                 Privacy
@@ -345,143 +687,154 @@ export default function AffiliateApplyPage() {
   );
 }
 
-const BRAND_GREEN = "#157A55";
-
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
     display: "flex",
     justifyContent: "center",
     padding: 16,
-    background: "#FFFFFF",
-    color: "#0F172A",
+    background: BG,
+    color: TEXT,
     fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
   },
   card: {
     width: "100%",
-    maxWidth: 800,
-    border: "1px solid #E5E7EB",
-    borderRadius: 16,
+    maxWidth: 860,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 18,
     padding: 24,
-    background: "#FFFFFF",
+    background: BG,
   },
   brand: {
     textAlign: "center",
-    marginBottom: 18,
+    marginBottom: 20,
   },
   h1: {
     fontSize: 28,
     fontWeight: 900,
-    margin: "8px 0 4px",
+    margin: "10px 0 4px",
+    color: TEXT,
   },
   tagline: {
     fontSize: 14,
     fontWeight: 700,
-    opacity: 0.85,
+    color: MUTED,
     margin: 0,
   },
   notice: {
-    border: "1px solid #E5E7EB",
-    borderRadius: 12,
-    padding: 12,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 14,
+    padding: 14,
     background: "#F8FAFC",
-    marginBottom: 18,
+    marginBottom: 20,
   },
   noticeText: {
-    margin: "6px 0 0",
-    lineHeight: 1.5,
-    opacity: 0.9,
+    margin: "8px 0 0",
+    lineHeight: 1.55,
+    color: TEXT,
   },
   loadingBox: {
-    border: "1px solid #E5E7EB",
-    borderRadius: 12,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 14,
     padding: 16,
     background: "#FFFFFF",
     fontWeight: 800,
   },
-  success: {
-    border: "1px solid #E5E7EB",
-    borderRadius: 12,
-    padding: 16,
+  statusBox: {
+    border: `1px solid ${BORDER}`,
+    borderRadius: 14,
+    padding: 18,
     background: "#FFFFFF",
   },
   h2: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 900,
-    margin: "0 0 8px",
+    margin: "0 0 10px",
+    color: TEXT,
   },
   p: {
-    margin: "0 0 8px",
+    margin: "0 0 10px",
     lineHeight: 1.6,
-    opacity: 0.95,
+    color: TEXT,
   },
-  codeBox: {
-    marginTop: 14,
-    marginBottom: 16,
-    border: `1px solid ${BRAND_GREEN}`,
+  section: {
+    border: `1px solid ${BORDER}`,
     borderRadius: 14,
     padding: 16,
-    background: "#F0FDF4",
-  },
-  codeLabel: {
-    fontSize: 13,
-    fontWeight: 800,
-    marginBottom: 6,
-    opacity: 0.85,
-  },
-  codeValue: {
-    fontSize: 28,
-    fontWeight: 900,
-    color: BRAND_GREEN,
-    letterSpacing: 1,
-  },
-  summaryGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-    gap: 12,
-    marginTop: 10,
-  },
-  summaryCard: {
-    border: "1px solid #E5E7EB",
-    borderRadius: 12,
-    padding: 12,
+    marginBottom: 16,
     background: "#FFFFFF",
   },
-  summaryTitle: {
-    fontSize: 12,
-    fontWeight: 800,
-    opacity: 0.75,
-    marginBottom: 6,
-  },
-  summaryValue: {
+  sectionTitle: {
     fontSize: 18,
     fontWeight: 900,
+    margin: "0 0 14px",
+    color: TEXT,
   },
   label: {
     display: "block",
     marginBottom: 6,
     fontSize: 13,
     fontWeight: 800,
+    color: TEXT,
   },
   input: {
     width: "100%",
-    padding: 10,
+    padding: 12,
     marginBottom: 12,
     border: "1px solid #CBD5E1",
     borderRadius: 12,
     outline: "none",
     background: "#FFFFFF",
+    color: TEXT,
+    fontSize: 14,
+  },
+  inputDisabled: {
+    width: "100%",
+    padding: 12,
+    marginBottom: 12,
+    border: "1px solid #CBD5E1",
+    borderRadius: 12,
+    outline: "none",
+    background: "#F8FAFC",
+    color: MUTED,
+    fontSize: 14,
+  },
+  textarea: {
+    width: "100%",
+    minHeight: 96,
+    padding: 12,
+    marginBottom: 12,
+    border: "1px solid #CBD5E1",
+    borderRadius: 12,
+    outline: "none",
+    background: "#FFFFFF",
+    color: TEXT,
+    fontSize: 14,
+    resize: "vertical",
+    fontFamily: "inherit",
+  },
+  infoBox: {
+    border: `1px solid ${BORDER}`,
+    borderRadius: 12,
+    padding: 12,
+    background: "#F8FAFC",
+    marginBottom: 12,
+  },
+  infoText: {
+    margin: "0 0 8px",
+    lineHeight: 1.5,
+    color: TEXT,
   },
   checkboxRow: {
     display: "flex",
     gap: 10,
     alignItems: "flex-start",
-    margin: "8px 0 14px",
+    margin: "10px 0",
   },
   checkboxText: {
     fontSize: 13,
-    lineHeight: 1.45,
-    opacity: 0.9,
+    lineHeight: 1.5,
+    color: TEXT,
     fontWeight: 700,
   },
   inlineLink: {
@@ -491,19 +844,20 @@ const styles: Record<string, React.CSSProperties> = {
   },
   primaryBtn: {
     width: "100%",
-    padding: "12px 16px",
+    padding: "14px 16px",
     borderRadius: 14,
     border: "none",
     background: BRAND_GREEN,
     color: "#FFFFFF",
     fontWeight: 900,
+    fontSize: 15,
     cursor: "pointer",
   },
   primaryLinkBtn: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "10px 14px",
+    padding: "11px 14px",
     borderRadius: 12,
     border: "none",
     background: BRAND_GREEN,
@@ -512,21 +866,28 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
   },
   small: {
-    marginTop: 10,
+    marginTop: 12,
     fontSize: 13,
-    opacity: 0.85,
-    lineHeight: 1.5,
+    color: MUTED,
+    lineHeight: 1.6,
   },
   errorText: {
     marginTop: 12,
     color: "#B91C1C",
     fontWeight: 700,
+    lineHeight: 1.5,
+  },
+  successText: {
+    marginTop: 12,
+    color: BRAND_GREEN,
+    fontWeight: 800,
+    lineHeight: 1.5,
   },
   links: {
     display: "flex",
     gap: 14,
     flexWrap: "wrap",
-    marginTop: 16,
+    marginTop: 18,
     alignItems: "center",
   },
   link: {
@@ -536,8 +897,32 @@ const styles: Record<string, React.CSSProperties> = {
   },
   linkMuted: {
     textDecoration: "none",
-    color: "#0F172A",
+    color: TEXT,
     opacity: 0.85,
     fontWeight: 800,
+  },
+  summaryGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+    gap: 12,
+    marginTop: 12,
+  },
+  summaryCard: {
+    border: `1px solid ${BORDER}`,
+    borderRadius: 12,
+    padding: 12,
+    background: "#FFFFFF",
+  },
+  summaryTitle: {
+    fontSize: 12,
+    fontWeight: 800,
+    color: MUTED,
+    marginBottom: 6,
+  },
+  summaryValue: {
+    fontSize: 18,
+    fontWeight: 900,
+    color: TEXT,
+    wordBreak: "break-word",
   },
 };
