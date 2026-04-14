@@ -494,7 +494,7 @@ export default function ProfileFormClient({
   return (
     <form onSubmit={handleSave}>
       <Section
-        title="TEST 123 Identity & Immediate Emergency Contact"
+        title="Identity & Immediate Emergency Contact"
         subtitle="These details are visible when your QR code is scanned on the Free plan."
       >
         <Field
