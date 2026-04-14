@@ -51,7 +51,6 @@ type ProfileRow = {
   medical_aid_plan: string | null;
 
   gp_name: string | null;
-  gp_practice: string | null;
   gp_phone: string | null;
   specialist_name: string | null;
   specialist_phone: string | null;
@@ -239,7 +238,6 @@ export default function ProfileFormClient({
   );
 
   const [gpName, setGpName] = useState(initial?.gp_name ?? "");
-  const [gpPractice, setGpPractice] = useState(initial?.gp_practice ?? "");
   const [gpPhone, setGpPhone] = useState(initial?.gp_phone ?? "");
 
   const [specialistName, setSpecialistName] = useState(
@@ -434,7 +432,6 @@ export default function ProfileFormClient({
         medical_aid_plan: medicalAidPlan || null,
         medical_aid_policy_number: medicalAidPolicy || null,
         gp_name: gpName || null,
-        gp_practice: gpPractice || null,
         gp_phone: normalizePhone(gpPhone) || null,
         specialist_name: specialistName || null,
         specialist_phone: normalizePhone(specialistPhone) || null,
@@ -497,7 +494,7 @@ export default function ProfileFormClient({
   return (
     <form onSubmit={handleSave}>
       <Section
-        title="Identity & Immediate Emergency Contact"
+        title="TEST 123 Identity & Immediate Emergency Contact"
         subtitle="These details are visible when your QR code is scanned on the Free plan."
       >
         <Field
@@ -1069,16 +1066,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field
-          label="ID / Passport Number"
-          hint="Stored for account/admin use. Not shown on the public profile."
-        >
-          <input
-            style={inputStyle}
-            placeholder="Optional"
-          />
-        </Field>
-
+        
         <Field
           label="Identifying Marks"
           hint="Stored for account/admin use unless you later choose to expose it publicly."
@@ -1091,17 +1079,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        <Field
-          label="GP Practice"
-          hint="Stored with your medical profile."
-        >
-          <input
-            style={inputStyle}
-            value={gpPractice}
-            onChange={(e) => setGpPractice(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
+        
       </Section>
 
       <div style={{ marginTop: 20, marginBottom: 16 }}>
