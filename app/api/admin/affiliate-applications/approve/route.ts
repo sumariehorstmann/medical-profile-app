@@ -45,12 +45,19 @@ export async function POST(req: NextRequest) {
 
     // TEMPORARY ADMIN CHECK
     // Replace this later with your real admin check.
-    const adminEmails = ["rapidresponseonlineinfo@gmail.com"];
-    const userEmail = String(user.email || "").toLowerCase();
+    const adminEmails = [
+  "sumariehorstmann@gmail.com",
+  "rapidresponseonlineinfo@gmail.com",
+];
 
-    if (!adminEmails.includes(userEmail)) {
-      return NextResponse.json({ error: "Forbidden." }, { status: 403 });
-    }
+const userEmail = String(user.email || "").toLowerCase();
+
+if (!adminEmails.includes(userEmail)) {
+  return NextResponse.json(
+    { error: `Forbidden for user: ${userEmail}` },
+    { status: 403 }
+  );
+}
 
     const body = await req.json().catch(() => ({}));
     const applicationId = normalizeString(body?.applicationId);
