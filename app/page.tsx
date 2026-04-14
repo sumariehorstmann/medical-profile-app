@@ -1,22 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 
 export default function HomePage() {
-  const searchParams = useSearchParams();
-
+  
 useEffect(() => {
-  const ref = searchParams.get("ref");
-
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get("ref");
+  
   if (ref) {
     try {
       sessionStorage.setItem("rroi_ref", ref.toUpperCase());
     } catch {}
   }
-}, [searchParams]);
+}, []);
   return (
     
     <main style={styles.page}>
