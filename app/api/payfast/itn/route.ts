@@ -282,83 +282,93 @@ export async function POST(req: NextRequest) {
 
     const siteUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim();
 
-    if (!siteUrl) {
-      console.error("NEXT_PUBLIC_BASE_URL IS NOT SET");
+if (!siteUrl) {
+  console.error("NEXT_PUBLIC_BASE_URL IS NOT SET");
+  return new NextResponse("OK", { status: 200 });
+}
+
+const qrUrl = `${siteUrl}/e/${publicId}`;
+
+try {
+  const { data: existingOrder, error: existingOrderLookupError } =
+    await supabase
+      .from("orders")
+      .select("id")
+      .eq("payment_id", paymentId)
+      .maybeSingle();
+
+  if (existingOrderLookupError) {
+    console.error("ORDER LOOKUP ERROR:", existingOrderLookupError);
+  } else if (existingOrder) {
+    console.log("ORDER ALREADY EXISTS");
+  } else {
+    const { data: orderForm, error: orderFormError } = await supabase
+      .from("premium_order_forms")
+      .select("*")
+      .eq("user_id", profile.user_id)
+      .maybeSingle();
+
+    if (orderFormError) {
+      console.error("ORDER FORM LOOKUP ERROR:", orderFormError);
       return new NextResponse("OK", { status: 200 });
     }
 
-    const qrUrl = `${siteUrl}/e/${publicId}`;
-    const emergencySplit = splitFullName(profile.emergency1_fullname);
-
-    try {
-      const { data: existingOrder, error: existingOrderLookupError } =
-        await supabase
-          .from("orders")
-          .select("id")
-          .eq("payment_id", paymentId)
-          .maybeSingle();
-
-      if (existingOrderLookupError) {
-        console.error("ORDER LOOKUP ERROR:", existingOrderLookupError);
-      } else if (existingOrder) {
-        console.log("ORDER ALREADY EXISTS");
-      } else {
-        const customerName =
-          `${profile.first_name || ""} ${profile.last_name || ""}`.trim();
-
-        const shippingName = shippingDetails
-          ? `${shippingDetails.name || ""} ${shippingDetails.surname || ""}`.trim()
-          : "";
-
-        const shippingAddress = shippingDetails
-          ? [
-              shippingDetails.unit_complex_building,
-              shippingDetails.street_address,
-              shippingDetails.city_town,
-              shippingDetails.province,
-              shippingDetails.postal_code,
-            ]
-              .filter(Boolean)
-              .join(", ")
-          : "";
-
-        const { error: orderInsertError } = await supabase.from("orders").insert({
-          user_id: profile.user_id,
-          public_id: String(profile.public_id),
-          payment_id: paymentId,
-          customer_name: customerName,
-          email: shippingDetails?.email ?? data.email_address ?? "",
-          shipping_name: shippingName,
-          shipping_phone: shippingDetails?.cellphone ?? "",
-          shipping_address: shippingAddress,
-          shipping_unit: shippingDetails?.unit_complex_building ?? "",
-          shipping_street: shippingDetails?.street_address ?? "",
-          shipping_city: shippingDetails?.city_town ?? "",
-          shipping_province: shippingDetails?.province ?? "",
-          shipping_postal_code: shippingDetails?.postal_code ?? "",
-          shipping_country: "South Africa",
-          qr_url: qrUrl,
-          status: "pending",
-          first_name: profile.first_name ?? "",
-          last_name: profile.last_name ?? "",
-          emergency_contact_name: emergencySplit.name,
-          emergency_contact_surname: emergencySplit.surname,
-          emergency_contact_phone: profile.emergency1_phone ?? "",
-          blood_type: profile.blood_type ?? "",
-          allergies: profile.allergies ?? "",
-          product_type: "premium_bundle",
-          layout_type: "standard_v1",
-        });
-
-        if (orderInsertError) {
-          console.error("ORDER INSERT ERROR:", orderInsertError);
-        } else {
-          console.log("ORDER CREATED SUCCESSFULLY");
-        }
-      }
-    } catch (orderErr) {
-      console.error("ORDER CREATION ERROR:", orderErr);
+    if (!orderForm) {
+      console.error("NO ORDER FORM FOUND FOR USER:", profile.user_id);
+      return new NextResponse("OK", { status: 200 });
     }
+
+    const shippingName =
+      `${orderForm.first_name || ""} ${orderForm.last_name || ""}`.trim();
+
+    const shippingAddress = [
+      orderForm.shipping_unit,
+      orderForm.shipping_street,
+      orderForm.shipping_city,
+      orderForm.shipping_province,
+      orderForm.shipping_postal_code,
+      orderForm.shipping_country,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    const { error: orderInsertError } = await supabase.from("orders").insert({
+      user_id: profile.user_id,
+      public_id: String(profile.public_id),
+      payment_id: paymentId,
+      customer_name: shippingName,
+      email: orderForm.email ?? data.email_address ?? "",
+      shipping_name: shippingName,
+      shipping_phone: orderForm.cellphone ?? "",
+      shipping_address: shippingAddress,
+      shipping_unit: orderForm.shipping_unit ?? "",
+      shipping_street: orderForm.shipping_street ?? "",
+      shipping_city: orderForm.shipping_city ?? "",
+      shipping_province: orderForm.shipping_province ?? "",
+      shipping_postal_code: orderForm.shipping_postal_code ?? "",
+      shipping_country: orderForm.shipping_country ?? "South Africa",
+      qr_url: qrUrl,
+      status: "pending",
+      first_name: orderForm.first_name ?? "",
+      last_name: orderForm.last_name ?? "",
+      emergency_contact_name: orderForm.emergency_contact_name ?? "",
+      emergency_contact_surname: orderForm.emergency_contact_surname ?? "",
+      emergency_contact_phone: orderForm.emergency_contact_phone ?? "",
+      blood_type: orderForm.blood_type ?? "",
+      allergies: orderForm.allergies ?? "",
+      product_type: "premium_bundle",
+      layout_type: "standard_v1",
+    });
+
+    if (orderInsertError) {
+      console.error("ORDER INSERT ERROR:", orderInsertError);
+    } else {
+      console.log("ORDER CREATED SUCCESSFULLY");
+    }
+  }
+} catch (orderErr) {
+  console.error("ORDER CREATION ERROR:", orderErr);
+}
 
     console.log("ITN SUCCESS");
     return new NextResponse("OK", { status: 200 });
