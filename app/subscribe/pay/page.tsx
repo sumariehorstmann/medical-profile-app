@@ -9,6 +9,10 @@ type Profile = {
   public_id: string;
   first_name: string | null;
   last_name: string | null;
+  blood_type: string | null;
+  allergies: string | null;
+  emergency1_fullname: string | null;
+  emergency1_phone: string | null;
 };
 
 const BASE_PRICE = 399;
@@ -54,10 +58,19 @@ function PayPageInner() {
         setUserEmail(user.email ?? "");
 
         const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("id, public_id, first_name, last_name")
-          .eq("user_id", user.id)
-          .single();
+  .from("profiles")
+  .select(`
+    id,
+    public_id,
+    first_name,
+    last_name,
+    blood_type,
+    allergies,
+    emergency1_fullname,
+    emergency1_phone
+  `)
+  .eq("user_id", user.id)
+  .single();
 
         if (profileError || !profileData) {
           setError("Could not load your profile.");
