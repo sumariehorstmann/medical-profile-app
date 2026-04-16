@@ -60,11 +60,40 @@ export async function POST(req: NextRequest) {
       data[key] = value;
     });
 
-    const paymentStatus = data.payment_status ?? "";
-    const paymentId = data.m_payment_id ?? "";
-    const publicId = data.custom_str1 ?? "";
+    const payment_status = data.payment_status;
+const paymentId = String(data.m_payment_id || "").trim();
+const user_id = data.custom_str1;
+
+// ✅ check duplicate
+if (!paymentId) {
+  return new Response("Missing payment_id", { status: 400 });
+}
+
+const { data: existingOrder, error: existingOrderError } = await supabase
+  .from("orders")
+  .select("id")
+  .eq("payment_id", paymentId)
+  .maybeSingle();
+
+if (existingOrderError) {
+  console.error("EXISTING ORDER LOOKUP ERROR:", existingOrderError);
+  return new Response("Lookup error", { status: 500 });
+}
+
+if (existingOrder) {
+  console.log("ITN ALREADY PROCESSED FOR PAYMENT:", paymentId);
+  return new Response("Already processed", { status: 200 });
+}
     const affiliateCode = (data.custom_str3 ?? "").trim().toUpperCase();
     const amountGross = parseFloat(data.amount_gross ?? "0");
+    const EXPECTED_AMOUNT = 399.0;
+
+if (amountGross !== EXPECTED_AMOUNT) {
+  console.error("INVALID PAYMENT AMOUNT:", amountGross);
+  return new Response("Invalid payment amount", { status: 400 });
+}
+    const publicId = String(data.custom_str1 || "").trim();
+
     const receivedSignature = (data.signature ?? "").toLowerCase();
     const passphrase = process.env.PAYFAST_PASSPHRASE ?? "";
 
@@ -87,7 +116,7 @@ export async function POST(req: NextRequest) {
       return new NextResponse("OK", { status: 200 });
     }
 
-    if (paymentStatus !== "COMPLETE") {
+    if (payment_status !== "COMPLETE") {
       console.log("ITN IGNORED - PAYMENT NOT COMPLETE");
       return new NextResponse("OK", { status: 200 });
     }
