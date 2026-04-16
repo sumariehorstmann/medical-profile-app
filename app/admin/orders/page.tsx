@@ -77,6 +77,7 @@ export default function OrdersPage() {
       if (!mounted) return;
 
       if (error) {
+        console.error("LOAD ORDERS ERROR:", error);
         setOrders([]);
       } else {
         setOrders((data || []) as Order[]);
@@ -116,6 +117,9 @@ export default function OrdersPage() {
           order.id === orderId ? { ...order, status } : order
         )
       );
+    } catch (error) {
+      console.error("UPDATE STATUS ERROR:", error);
+      alert("Failed to update order status.");
     } finally {
       setUpdatingId(null);
     }
@@ -133,33 +137,81 @@ export default function OrdersPage() {
         <head>
           <title>RROI Order</title>
           <style>
+            @page {
+              size: A4;
+              margin: 10mm;
+            }
+
+            * {
+              box-sizing: border-box;
+            }
+
             body {
               font-family: Arial, sans-serif;
-              padding: 24px;
+              padding: 0;
+              margin: 0;
               color: #111827;
+              font-size: 11px;
+              line-height: 1.3;
             }
+
             h1, h2, h3 {
-              margin: 0 0 12px;
+              margin: 0 0 6px;
             }
+
+            .print-header {
+              margin-bottom: 10px;
+            }
+
+            .print-title {
+              font-size: 22px;
+              font-weight: 800;
+              margin-bottom: 4px;
+            }
+
+            .print-subtle {
+              font-size: 11px;
+              color: #475569;
+              margin-bottom: 2px;
+            }
+
+            .print-grid {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 10px;
+              align-items: start;
+            }
+
             .section {
-              margin-bottom: 20px;
-              padding: 16px;
+              margin-bottom: 10px;
+              padding: 10px;
               border: 1px solid #d1d5db;
-              border-radius: 12px;
+              border-radius: 10px;
+              background: #ffffff;
+              break-inside: avoid;
+              page-break-inside: avoid;
             }
+
+            .section-title {
+              font-size: 13px;
+              font-weight: 800;
+              margin-bottom: 6px;
+            }
+
+            .row {
+              margin-bottom: 3px;
+            }
+
             .label {
               font-weight: 700;
             }
+
             .qr-wrap {
-              margin-top: 12px;
+              margin-top: 8px;
             }
-            .muted {
-              color: #4b5563;
-            }
-            hr {
-              border: none;
-              border-top: 1px solid #e5e7eb;
-              margin: 20px 0;
+
+            .qr-wrap svg {
+              display: block;
             }
           </style>
         </head>
@@ -195,7 +247,7 @@ export default function OrdersPage() {
                   <span>{formatStatus(order.status)}</span>
                 </div>
                 <div style={styles.orderDate}>
-                  Order Date: {new Date(order.created_at).toLocaleString()}
+                  Order Date: {formatDate(order.created_at)}
                 </div>
               </div>
 
@@ -224,65 +276,91 @@ export default function OrdersPage() {
             </div>
 
             <div id={`print-order-${order.id}`}>
-              <div style={styles.printHeader}>
-                <h2 style={styles.printTitle}>RROI Premium Order</h2>
-                <div style={styles.printSubtle}>
-                  Order Date: {new Date(order.created_at).toLocaleString()}
+              <div className="print-header" style={styles.printHeader}>
+                <h2 className="print-title" style={styles.printTitle}>
+                  RROI Premium Order
+                </h2>
+                <div className="print-subtle" style={styles.printSubtle}>
+                  Order Date: {formatDate(order.created_at)}
                 </div>
-                <div style={styles.printSubtle}>
+                <div className="print-subtle" style={styles.printSubtle}>
                   Status: {formatStatus(order.status)}
                 </div>
               </div>
 
-              <div style={styles.section}>
-                <h3 style={styles.sectionTitle}>Customer Details</h3>
-                <div>
-                  <strong>Customer:</strong> {order.customer_name || "-"}
-                </div>
-                <div>
-                  <strong>Email:</strong> {order.email || "-"}
-                </div>
-                <div>
-                  <strong>Phone:</strong> {order.shipping_phone || "-"}
-                </div>
-              </div>
-
-              <div style={styles.section}>
-                <h3 style={styles.sectionTitle}>Delivery Address</h3>
-                <div>{order.shipping_unit || "-"}</div>
-                <div>{order.shipping_street || "-"}</div>
-                <div>{order.shipping_city || "-"}</div>
-                <div>{order.shipping_province || "-"}</div>
-                <div>{order.shipping_postal_code || "-"}</div>
-                <div>{order.shipping_country || "-"}</div>
-              </div>
-
-              <div style={styles.section}>
-                <h3 style={styles.sectionTitle}>QR & Medical Details</h3>
-                <div>
-                  <strong>QR Link:</strong> {order.qr_url || "-"}
-                </div>
-                <div>
-                  <strong>Blood Type:</strong> {order.blood_type || "-"}
-                </div>
-                <div>
-                  <strong>Allergies:</strong> {order.allergies || "-"}
-                </div>
-
-                {order.qr_url ? (
-                  <div style={styles.qrWrap}>
-                    <QRCodeSVG value={order.qr_url} size={160} />
+              <div className="print-grid" style={styles.printGrid}>
+                <div className="section" style={styles.section}>
+                  <h3 className="section-title" style={styles.sectionTitle}>
+                    Customer Details
+                  </h3>
+                  <div className="row" style={styles.row}>
+                    <strong>Customer:</strong> {order.customer_name || "-"}
                   </div>
-                ) : null}
-              </div>
-
-              <div style={styles.section}>
-                <h3 style={styles.sectionTitle}>Emergency Contact</h3>
-                <div>
-                  {order.emergency_contact_name || "-"}{" "}
-                  {order.emergency_contact_surname || ""}
+                  <div className="row" style={styles.row}>
+                    <strong>Email:</strong> {order.email || "-"}
+                  </div>
+                  <div className="row" style={styles.row}>
+                    <strong>Phone:</strong> {order.shipping_phone || "-"}
+                  </div>
                 </div>
-                <div>{order.emergency_contact_phone || "-"}</div>
+
+                <div className="section" style={styles.section}>
+                  <h3 className="section-title" style={styles.sectionTitle}>
+                    Delivery Address
+                  </h3>
+                  <div className="row" style={styles.row}>
+                    {order.shipping_unit || "-"}
+                  </div>
+                  <div className="row" style={styles.row}>
+                    {order.shipping_street || "-"}
+                  </div>
+                  <div className="row" style={styles.row}>
+                    {order.shipping_city || "-"}
+                  </div>
+                  <div className="row" style={styles.row}>
+                    {order.shipping_province || "-"}
+                  </div>
+                  <div className="row" style={styles.row}>
+                    {order.shipping_postal_code || "-"}
+                  </div>
+                  <div className="row" style={styles.row}>
+                    {order.shipping_country || "-"}
+                  </div>
+                </div>
+
+                <div className="section" style={styles.section}>
+                  <h3 className="section-title" style={styles.sectionTitle}>
+                    QR &amp; Medical Details
+                  </h3>
+                  <div className="row" style={styles.row}>
+                    <strong>QR Link:</strong> {order.qr_url || "-"}
+                  </div>
+                  <div className="row" style={styles.row}>
+                    <strong>Blood Type:</strong> {order.blood_type || "-"}
+                  </div>
+                  <div className="row" style={styles.row}>
+                    <strong>Allergies:</strong> {order.allergies || "-"}
+                  </div>
+
+                  {order.qr_url ? (
+                    <div className="qr-wrap" style={styles.qrWrap}>
+                      <QRCodeSVG value={order.qr_url} size={170} />
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="section" style={styles.section}>
+                  <h3 className="section-title" style={styles.sectionTitle}>
+                    Emergency Contact
+                  </h3>
+                  <div className="row" style={styles.row}>
+                    {order.emergency_contact_name || "-"}{" "}
+                    {order.emergency_contact_surname || ""}
+                  </div>
+                  <div className="row" style={styles.row}>
+                    {order.emergency_contact_phone || "-"}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -305,6 +383,16 @@ function formatStatus(status: string) {
     default:
       return "Pending";
   }
+}
+
+function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleString("en-ZA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 const styles: Record<string, React.CSSProperties> = {
@@ -382,34 +470,44 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: "pointer",
   },
   printHeader: {
-    marginBottom: 18,
+    marginBottom: 10,
   },
   printTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 800,
-    margin: "0 0 6px",
+    margin: "0 0 4px",
     color: "#0f172a",
   },
   printSubtle: {
-    fontSize: 14,
+    fontSize: 13,
     color: "#475569",
-    marginBottom: 4,
+    marginBottom: 2,
+  },
+  printGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 12,
+    alignItems: "start",
   },
   section: {
-    marginBottom: 16,
-    padding: 16,
+    marginBottom: 0,
+    padding: 14,
     border: "1px solid #e5e7eb",
     borderRadius: 14,
     background: "#ffffff",
-    lineHeight: 1.7,
+    lineHeight: 1.55,
   },
   sectionTitle: {
     margin: "0 0 10px",
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 800,
     color: "#0f172a",
   },
+  row: {
+    marginBottom: 3,
+    fontSize: 15,
+  },
   qrWrap: {
-    marginTop: 14,
+    marginTop: 10,
   },
 };
