@@ -54,17 +54,21 @@ export default function OrderPage() {
         .single();
 
       if (profile) {
-        setForm((prev) => ({
-          ...prev,
-          first_name: profile.first_name || "",
-          last_name: profile.last_name || "",
-          blood_type: profile.blood_type || "",
-          allergies: profile.allergies || "",
-          emergency_contact_name: profile.emergency1_fullname || "",
-          emergency_contact_phone: profile.emergency1_phone || "",
-          email: session.user.email || "",
-        }));
-      }
+  const fullName = profile.emergency1_fullname || "";
+  const parts = fullName.trim().split(" ");
+
+  setForm((prev) => ({
+    ...prev,
+    first_name: profile.first_name || "",
+    last_name: profile.last_name || "",
+    blood_type: profile.blood_type || "",
+    allergies: profile.allergies || "",
+    emergency_contact_name: parts[0] || "",
+    emergency_contact_surname: parts.slice(1).join(" ") || "",
+    emergency_contact_phone: profile.emergency1_phone || "",
+    email: session.user.email || "",
+  }));
+}
 
       setLoading(false);
     }
