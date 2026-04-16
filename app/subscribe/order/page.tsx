@@ -23,6 +23,15 @@ type OrderFormData = {
   shipping_country: string;
 };
 
+type ProfileRow = {
+  first_name: string | null;
+  last_name: string | null;
+  blood_type: string | null;
+  allergies: string | null;
+  emergency1_fullname: string | null;
+  emergency1_phone: string | null;
+};
+
 const EMPTY_FORM: OrderFormData = {
   first_name: "",
   last_name: "",
@@ -59,6 +68,25 @@ const FIELD_LABELS: Record<keyof OrderFormData, string> = {
   shipping_country: "Country",
 };
 
+const SECTION_FIELDS: Array<Array<keyof OrderFormData>> = [
+  ["first_name", "last_name", "blood_type", "allergies"],
+  [
+    "emergency_contact_name",
+    "emergency_contact_surname",
+    "emergency_contact_phone",
+  ],
+  [
+    "email",
+    "cellphone",
+    "shipping_unit",
+    "shipping_street",
+    "shipping_city",
+    "shipping_province",
+    "shipping_postal_code",
+    "shipping_country",
+  ],
+];
+
 export default function OrderPage() {
   const router = useRouter();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
@@ -66,6 +94,9 @@ export default function OrderPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof OrderFormData, string>>
+  >({});
   const [form, setForm] = useState<OrderFormData>(EMPTY_FORM);
 
   useEffect(() => {
@@ -100,7 +131,7 @@ export default function OrderPage() {
               emergency1_phone
             `)
             .eq("user_id", user.id)
-            .maybeSingle(),
+            .maybeSingle<ProfileRow>(),
           supabase
             .from("premium_order_forms")
             .select(`
@@ -121,7 +152,7 @@ export default function OrderPage() {
               shipping_country
             `)
             .eq("user_id", user.id)
-            .maybeSingle(),
+            .maybeSingle<OrderFormData>(),
         ]);
 
         const fullName = (profile?.emergency1_fullname || "").trim();
@@ -151,7 +182,9 @@ export default function OrderPage() {
         }
       } catch {
         if (mounted) {
-          setError("Could not load your order form. Please refresh and try again.");
+          setError(
+            "Could not load your order form. Please refresh and try again."
+          );
         }
       } finally {
         if (mounted) {
@@ -175,21 +208,48 @@ export default function OrderPage() {
       ...prev,
       [field]: value,
     }));
+
+    setFieldErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
   }
 
-  function getMissingFields() {
-    return (Object.keys(form) as Array<keyof OrderFormData>)
-      .filter((key) => form[key].trim() === "")
-      .map((key) => FIELD_LABELS[key]);
+  function sanitizeValue(
+    field: keyof OrderFormData,
+    value: string
+  ): string {
+    if (field === "cellphone" || field === "emergency_contact_phone") {
+      return value.replace(/[^\d+]/g, "");
+    }
+
+    if (field === "shipping_postal_code") {
+      return value.replace(/[^\d]/g, "");
+    }
+
+    return value;
+  }
+
+  function validateForm() {
+    const errors: Partial<Record<keyof OrderFormData, string>> = {};
+
+    (Object.keys(form) as Array<keyof OrderFormData>).forEach((key) => {
+      if (form[key].trim() === "") {
+        errors[key] = `${FIELD_LABELS[key]} is required.`;
+      }
+    });
+
+    return errors;
   }
 
   async function handleContinue() {
-    const missingFields = getMissingFields();
+    const validationErrors = validateForm();
+    setFieldErrors(validationErrors);
 
-    if (missingFields.length > 0) {
-      alert(
-        `Please complete all required fields before continuing:\n\n${missingFields.join("\n")}`
-      );
+    if (Object.keys(validationErrors).length > 0) {
+      setError("Please complete all required fields before continuing.");
       return;
     }
 
@@ -239,7 +299,8 @@ export default function OrderPage() {
         </div>
         <div style={styles.container}>
           <div style={styles.card}>
-            <h1 style={styles.title}>Complete Your Order</h1>
+            <div style={styles.progress}>Step 1 of 2 — Order Details</div>
+            <h1 style={styles.title}>Complete Your Order Details</h1>
             <p style={styles.loadingText}>Loading...</p>
           </div>
         </div>
@@ -255,19 +316,29 @@ export default function OrderPage() {
 
       <div style={styles.container}>
         <div style={styles.card}>
-          <h1 style={styles.title}>Complete Your Order</h1>
+          <div style={styles.progress}>Step 1 of 2 — Order Details</div>
+
+          <h1 style={styles.title}>Complete Your Order Details</h1>
+
           <p style={styles.subtitle}>
-            Please complete all required details below before proceeding to secure
-            payment. This information is used to prepare your two physical QR code
-            products and delivery.
+            This information will be used to create your QR code products and
+            deliver your order.
           </p>
+
+          <div style={styles.summaryBox}>
+            <div style={styles.summaryTitle}>Your Premium Kit includes:</div>
+            <ul style={styles.summaryList}>
+              <li>2 × QR code emergency products</li>
+              <li>Premium emergency profile activation</li>
+              <li>Free nationwide delivery</li>
+            </ul>
+          </div>
 
           <div style={styles.noticeBox}>
             <div style={styles.noticeTitle}>Important</div>
             <div style={styles.noticeText}>
-              All fields on this form are required. Profile information shown here
-              may be pre-filled for convenience, but this order form is completed
-              separately for your Premium order.
+              All fields are required. This information is used to create your
+              QR code products and deliver your order correctly.
             </div>
           </div>
 
@@ -280,24 +351,29 @@ export default function OrderPage() {
               label="First Name"
               value={form.first_name}
               onChange={(value) => updateField("first_name", value)}
+              error={fieldErrors.first_name}
             />
 
             <Field
               label="Last Name"
               value={form.last_name}
               onChange={(value) => updateField("last_name", value)}
+              error={fieldErrors.last_name}
             />
 
             <Field
               label="Blood Type"
               value={form.blood_type}
               onChange={(value) => updateField("blood_type", value)}
+              error={fieldErrors.blood_type}
+              placeholder="Example: O+, A-, AB+"
             />
 
             <Field
               label="Allergies"
               value={form.allergies}
               onChange={(value) => updateField("allergies", value)}
+              error={fieldErrors.allergies}
               placeholder="List allergies exactly as you want them recorded"
               multiline
             />
@@ -310,6 +386,7 @@ export default function OrderPage() {
               label="Emergency Contact Name"
               value={form.emergency_contact_name}
               onChange={(value) => updateField("emergency_contact_name", value)}
+              error={fieldErrors.emergency_contact_name}
             />
 
             <Field
@@ -318,14 +395,19 @@ export default function OrderPage() {
               onChange={(value) =>
                 updateField("emergency_contact_surname", value)
               }
+              error={fieldErrors.emergency_contact_surname}
             />
 
             <Field
               label="Emergency Contact Phone Number"
               value={form.emergency_contact_phone}
               onChange={(value) =>
-                updateField("emergency_contact_phone", value)
+                updateField(
+                  "emergency_contact_phone",
+                  sanitizeValue("emergency_contact_phone", value)
+                )
               }
+              error={fieldErrors.emergency_contact_phone}
               inputMode="tel"
             />
           </section>
@@ -337,13 +419,17 @@ export default function OrderPage() {
               label="Email Address"
               value={form.email}
               onChange={(value) => updateField("email", value)}
+              error={fieldErrors.email}
               inputMode="email"
             />
 
             <Field
               label="Cellphone Number"
               value={form.cellphone}
-              onChange={(value) => updateField("cellphone", value)}
+              onChange={(value) =>
+                updateField("cellphone", sanitizeValue("cellphone", value))
+              }
+              error={fieldErrors.cellphone}
               inputMode="tel"
             />
 
@@ -351,65 +437,83 @@ export default function OrderPage() {
               label="Unit / Complex / Building"
               value={form.shipping_unit}
               onChange={(value) => updateField("shipping_unit", value)}
+              error={fieldErrors.shipping_unit}
             />
 
             <Field
               label="Street Address"
               value={form.shipping_street}
               onChange={(value) => updateField("shipping_street", value)}
+              error={fieldErrors.shipping_street}
             />
 
             <Field
               label="City / Town"
               value={form.shipping_city}
               onChange={(value) => updateField("shipping_city", value)}
+              error={fieldErrors.shipping_city}
             />
 
             <Field
               label="Province"
               value={form.shipping_province}
               onChange={(value) => updateField("shipping_province", value)}
+              error={fieldErrors.shipping_province}
             />
 
             <Field
               label="Postal Code"
               value={form.shipping_postal_code}
-              onChange={(value) => updateField("shipping_postal_code", value)}
+              onChange={(value) =>
+                updateField(
+                  "shipping_postal_code",
+                  sanitizeValue("shipping_postal_code", value)
+                )
+              }
+              error={fieldErrors.shipping_postal_code}
               inputMode="numeric"
             />
 
             <Field
               label="Country"
               value={form.shipping_country}
-              onChange={(value) => updateField("shipping_country", value)}
+              onChange={() => {}}
+              error={fieldErrors.shipping_country}
+              disabled
             />
           </section>
 
-          <div style={styles.securityBox}>
-            Secure payment will be processed via PayFast after this form is saved.
+          <div style={styles.stickyFooter}>
+            <div style={styles.securityBox}>
+              • Secure payment via PayFast
+              <br />
+              • Your order details are saved before payment
+              <br />
+              • Your information is protected and private
+            </div>
+
+            <button
+              type="button"
+              onClick={handleContinue}
+              disabled={saving}
+              style={{
+                ...styles.primaryButton,
+                opacity: saving ? 0.7 : 1,
+                cursor: saving ? "not-allowed" : "pointer",
+              }}
+            >
+              {saving ? "Saving..." : "Continue to Secure Payment"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => router.push("/profile")}
+              disabled={saving}
+              style={styles.secondaryButton}
+            >
+              Back to Profile
+            </button>
           </div>
-
-          <button
-            type="button"
-            onClick={handleContinue}
-            disabled={saving}
-            style={{
-              ...styles.primaryButton,
-              opacity: saving ? 0.7 : 1,
-              cursor: saving ? "not-allowed" : "pointer",
-            }}
-          >
-            {saving ? "Saving..." : "Continue to Secure Payment"}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => router.push("/profile")}
-            disabled={saving}
-            style={styles.secondaryButton}
-          >
-            Back to Profile
-          </button>
         </div>
       </div>
     </main>
@@ -423,6 +527,8 @@ type FieldProps = {
   placeholder?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
   multiline?: boolean;
+  error?: string;
+  disabled?: boolean;
 };
 
 function Field({
@@ -432,6 +538,8 @@ function Field({
   placeholder,
   inputMode,
   multiline = false,
+  error,
+  disabled = false,
 }: FieldProps) {
   return (
     <div style={styles.fieldWrap}>
@@ -441,8 +549,14 @@ function Field({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder || label}
-          style={{ ...styles.input, ...styles.textarea }}
+          style={{
+            ...styles.input,
+            ...styles.textarea,
+            ...(error ? styles.inputError : {}),
+            ...(disabled ? styles.inputDisabled : {}),
+          }}
           rows={4}
+          disabled={disabled}
         />
       ) : (
         <input
@@ -451,9 +565,15 @@ function Field({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder || label}
           inputMode={inputMode}
-          style={styles.input}
+          style={{
+            ...styles.input,
+            ...(error ? styles.inputError : {}),
+            ...(disabled ? styles.inputDisabled : {}),
+          }}
+          disabled={disabled}
         />
       )}
+      {error ? <div style={styles.errorText}>{error}</div> : null}
     </div>
   );
 }
@@ -479,6 +599,14 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 24,
     boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
   },
+  progress: {
+    fontSize: 13,
+    fontWeight: 700,
+    color: "#64748b",
+    marginBottom: 10,
+    textTransform: "uppercase",
+    letterSpacing: 0.4,
+  },
   title: {
     fontSize: 34,
     lineHeight: 1.1,
@@ -490,7 +618,27 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 16,
     lineHeight: 1.6,
     color: "#475569",
-    margin: "0 0 20px",
+    margin: "0 0 18px",
+  },
+  summaryBox: {
+    background: "#f8fafc",
+    border: "1px solid #dbe3ea",
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 18,
+  },
+  summaryTitle: {
+    fontSize: 15,
+    fontWeight: 800,
+    color: "#0f172a",
+    marginBottom: 8,
+  },
+  summaryList: {
+    margin: 0,
+    paddingLeft: 18,
+    color: "#334155",
+    lineHeight: 1.8,
+    fontSize: 14,
   },
   noticeBox: {
     background: "#f8fafc",
@@ -521,7 +669,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 20,
     padding: 18,
     border: "1px solid #e5e7eb",
     borderRadius: 16,
@@ -555,10 +703,30 @@ const styles: Record<string, React.CSSProperties> = {
     outline: "none",
     boxSizing: "border-box",
   },
+  inputError: {
+    border: "1px solid #ef4444",
+    background: "#fef2f2",
+  },
+  inputDisabled: {
+    background: "#f8fafc",
+    color: "#334155",
+  },
   textarea: {
     resize: "vertical",
     minHeight: 100,
     fontFamily: "inherit",
+  },
+  errorText: {
+    marginTop: 6,
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#b91c1c",
+  },
+  stickyFooter: {
+    position: "sticky",
+    bottom: 0,
+    background: "#ffffff",
+    paddingTop: 12,
   },
   securityBox: {
     marginBottom: 16,
@@ -569,6 +737,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid #bbf7d0",
     borderRadius: 12,
     padding: 14,
+    lineHeight: 1.7,
   },
   primaryButton: {
     width: "100%",
