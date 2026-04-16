@@ -267,21 +267,21 @@ export default function OrderPage() {
         return;
       }
 
-      const { error: upsertError } = await supabase
-        .from("premium_order_forms")
-        .upsert(
-          {
-            user_id: session.user.id,
-            ...form,
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "user_id" }
-        );
+      const { error } = await supabase
+  .from("premium_order_forms")
+  .upsert({
+    user_id: session.user.id,
+    ...form,
+  })
+  .select()
+  .single();
 
-      if (upsertError) {
-        setError("Failed to save your order form. Please try again.");
-        return;
-      }
+if (error) {
+  console.error("SAVE ERROR:", error);
+  alert("Failed to save order form. Please try again.");
+  setSaving(false);
+  return;
+}
 
       router.push("/subscribe/pay");
     } catch {
