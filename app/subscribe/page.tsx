@@ -72,7 +72,7 @@ useEffect(() => {
         </div>
 
         <div style={styles.actions}>
-          <Link href="/subscribe/pay" style={styles.primaryBtn}>
+          <Link href="/subscribe/order" style={styles.primaryBtn}>
             Upgrade to Premium
           </Link>
 
