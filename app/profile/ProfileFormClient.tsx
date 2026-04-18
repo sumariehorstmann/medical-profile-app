@@ -956,10 +956,7 @@ export default function ProfileFormClient({
             <option value="Very dark">Very dark</option>
           </select>
         </Field>
-        <Field
-  label="Identifying Marks"
-  hint="Stored for account/admin use unless you later choose to expose it publicly."
->
+        <Field label="Identifying Marks">
   <textarea
     style={{ ...inputStyle, minHeight: 90 }}
     value={identifyingMarks}
