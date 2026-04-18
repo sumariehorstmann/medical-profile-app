@@ -38,7 +38,7 @@ export async function POST() {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // Find affiliate row first so we can delete affiliate_referrals correctly
+    // Look up affiliate row
     const { data: affiliateRow, error: affiliateLookupError } = await admin
       .from("affiliates")
       .select("id")
@@ -52,7 +52,21 @@ export async function POST() {
       );
     }
 
-    // Delete referral records where this user was the referred customer
+    // Look up profile row
+    const { data: profileRow, error: profileLookupError } = await admin
+      .from("profiles")
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (profileLookupError) {
+      return NextResponse.json(
+        { error: "Failed to look up profile record" },
+        { status: 500 }
+      );
+    }
+
+    // Delete affiliate referral rows where this user was the referred customer
     const { error: referralUserDeleteError } = await admin
       .from("affiliate_referrals")
       .delete()
@@ -65,7 +79,7 @@ export async function POST() {
       );
     }
 
-    // Delete referral records linked to this user's affiliate account
+    // Delete affiliate referral rows linked to this user's affiliate account
     if (affiliateRow?.id) {
       const { error: referralAffiliateDeleteError } = await admin
         .from("affiliate_referrals")
@@ -80,6 +94,21 @@ export async function POST() {
       }
     }
 
+    // Delete emergency contacts by profile_id
+    if (profileRow?.id) {
+      const { error: emergencyContactsDeleteError } = await admin
+        .from("emergency_contacts")
+        .delete()
+        .eq("profile_id", profileRow.id);
+
+      if (emergencyContactsDeleteError) {
+        return NextResponse.json(
+          { error: "Failed to delete from emergency_contacts" },
+          { status: 500 }
+        );
+      }
+    }
+
     // Delete remaining app data
     const tablesToDelete = [
       { table: "affiliate_applications", column: "user_id" },
@@ -89,9 +118,8 @@ export async function POST() {
       { table: "payments", column: "user_id" },
       { table: "orders", column: "user_id" },
       { table: "shipping_details", column: "user_id" },
-      { table: "profiles", column: "user_id" },
-      { table: "emergency_contacts", column: "user_id" },
       { table: "qr_codes", column: "user_id" },
+      { table: "profiles", column: "user_id" },
     ];
 
     for (const item of tablesToDelete) {
