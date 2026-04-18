@@ -38,17 +38,60 @@ export async function POST() {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // Delete app data first
+    // Find affiliate row first so we can delete affiliate_referrals correctly
+    const { data: affiliateRow, error: affiliateLookupError } = await admin
+      .from("affiliates")
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (affiliateLookupError) {
+      return NextResponse.json(
+        { error: "Failed to look up affiliate record" },
+        { status: 500 }
+      );
+    }
+
+    // Delete referral records where this user was referred
+    const { error: referredReferralDeleteError } = await admin
+      .from("affiliate_referrals")
+      .delete()
+      .eq("referred_user_id", user.id);
+
+    if (referredReferralDeleteError) {
+      return NextResponse.json(
+        { error: "Failed to delete from affiliate_referrals" },
+        { status: 500 }
+      );
+    }
+
+    // Delete referral records linked to this user's affiliate account
+    if (affiliateRow?.id) {
+      const { error: affiliateReferralDeleteError } = await admin
+        .from("affiliate_referrals")
+        .delete()
+        .eq("affiliate_id", affiliateRow.id);
+
+      if (affiliateReferralDeleteError) {
+        return NextResponse.json(
+          { error: "Failed to delete from affiliate_referrals" },
+          { status: 500 }
+        );
+      }
+    }
+
+    // Delete remaining app data
     const tablesToDelete = [
-      { table: "affiliate_referrals", column: "referred_user_id" },
-      { table: "affiliate_referrals", column: "affiliate_user_id" },
       { table: "affiliate_applications", column: "user_id" },
+      { table: "premium_order_forms", column: "user_id" },
       { table: "affiliates", column: "user_id" },
       { table: "subscriptions", column: "user_id" },
       { table: "payments", column: "user_id" },
       { table: "orders", column: "user_id" },
       { table: "shipping_details", column: "user_id" },
       { table: "profiles", column: "user_id" },
+      { table: "emergency_contacts", column: "user_id" },
+      { table: "qr_codes", column: "user_id" },
     ];
 
     for (const item of tablesToDelete) {
@@ -65,8 +108,10 @@ export async function POST() {
       }
     }
 
-    // Delete the auth user last so the email becomes available again
-    const { error: deleteAuthError } = await admin.auth.admin.deleteUser(user.id);
+    // Delete auth user last so email becomes available again
+    const { error: deleteAuthError } = await admin.auth.admin.deleteUser(
+      user.id
+    );
 
     if (deleteAuthError) {
       return NextResponse.json(
