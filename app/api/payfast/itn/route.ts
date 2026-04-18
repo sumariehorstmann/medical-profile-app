@@ -84,14 +84,22 @@ if (existingOrder) {
   console.log("ITN ALREADY PROCESSED FOR PAYMENT:", paymentId);
   return new Response("Already processed", { status: 200 });
 }
-    const affiliateCode = (data.custom_str3 ?? "").trim().toUpperCase();
-    const amountGross = parseFloat(data.amount_gross ?? "0");
-    const EXPECTED_AMOUNT = 399.0;
 
-if (amountGross !== EXPECTED_AMOUNT) {
-  console.error("INVALID PAYMENT AMOUNT:", amountGross);
+const amountGross = parseFloat(data.amount_gross ?? "0");
+const expectedEmail = String(data.custom_str2 || "").trim().toLowerCase();
+const affiliateCode = String(data.custom_str3 || "").trim().toUpperCase();
+const expectedAmount = affiliateCode ? 369.0 : 399.0;
+
+if (expectedEmail && String(data.email_address || "").trim().toLowerCase() !== expectedEmail) {
+  console.error("EMAIL MISMATCH:", data.email_address, expectedEmail);
+  return new Response("Invalid email", { status: 400 });
+}
+
+if (Math.abs(amountGross - expectedAmount) > 0.01) {
+  console.error("INVALID PAYMENT AMOUNT:", amountGross, expectedAmount);
   return new Response("Invalid payment amount", { status: 400 });
 }
+  
     const publicId = String(data.custom_str1 || "").trim();
 
     const receivedSignature = (data.signature ?? "").toLowerCase();
@@ -121,8 +129,7 @@ if (amountGross !== EXPECTED_AMOUNT) {
       return new NextResponse("OK", { status: 200 });
     }
 
-    const expectedAmount = affiliateCode ? AFFILIATE_PRICE : BASE_PRICE;
-
+ 
     if (Number(amountGross.toFixed(2)) !== Number(expectedAmount.toFixed(2))) {
       console.error("INVALID AMOUNT:", amountGross, "EXPECTED:", expectedAmount);
       return new NextResponse("OK", { status: 200 });
