@@ -52,13 +52,13 @@ export async function POST() {
       );
     }
 
-    // Delete referral records where this user was referred
-    const { error: referredReferralDeleteError } = await admin
+    // Delete referral records where this user was the referred customer
+    const { error: referralUserDeleteError } = await admin
       .from("affiliate_referrals")
       .delete()
-      .eq("referred_user_id", user.id);
+      .eq("user_id", user.id);
 
-    if (referredReferralDeleteError) {
+    if (referralUserDeleteError) {
       return NextResponse.json(
         { error: "Failed to delete from affiliate_referrals" },
         { status: 500 }
@@ -67,12 +67,12 @@ export async function POST() {
 
     // Delete referral records linked to this user's affiliate account
     if (affiliateRow?.id) {
-      const { error: affiliateReferralDeleteError } = await admin
+      const { error: referralAffiliateDeleteError } = await admin
         .from("affiliate_referrals")
         .delete()
         .eq("affiliate_id", affiliateRow.id);
 
-      if (affiliateReferralDeleteError) {
+      if (referralAffiliateDeleteError) {
         return NextResponse.json(
           { error: "Failed to delete from affiliate_referrals" },
           { status: 500 }
