@@ -65,6 +65,7 @@ type ProfileRow = {
   hair_color: string | null;
   identifying_marks: string | null;
   skin_tone: string | null;
+  
 };
 
 function calcAge(dob: string | null): number | null {
@@ -955,6 +956,17 @@ export default function ProfileFormClient({
             <option value="Very dark">Very dark</option>
           </select>
         </Field>
+        <Field
+  label="Identifying Marks"
+  hint="Stored for account/admin use unless you later choose to expose it publicly."
+>
+  <textarea
+    style={{ ...inputStyle, minHeight: 90 }}
+    value={identifyingMarks}
+    onChange={(e) => setIdentifyingMarks(e.target.value)}
+    placeholder="e.g. Tattoos / scars / birthmarks"
+  />
+</Field>
       </Section>
 
       <Section
@@ -1066,18 +1078,7 @@ export default function ProfileFormClient({
           />
         </Field>
 
-        
-        <Field
-          label="Identifying Marks"
-          hint="Stored for account/admin use unless you later choose to expose it publicly."
-        >
-          <textarea
-            style={{ ...inputStyle, minHeight: 90 }}
-            value={identifyingMarks}
-            onChange={(e) => setIdentifyingMarks(e.target.value)}
-            placeholder="e.g. Tattoos / scars / birthmarks"
-          />
-        </Field>
+            
 
         
       </Section>
