@@ -5,8 +5,18 @@ import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
+    const body = await request.json();
+    const { password, confirmText } = body;
+
+    if (confirmText !== "DELETE") {
+      return NextResponse.json(
+        { error: "Invalid confirmation text" },
+        { status: 400 }
+      );
+    }
+
     const cookieStore = await cookies();
 
     const supabase = createServerClient(
@@ -31,6 +41,26 @@ export async function POST() {
 
     if (userError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (!password || typeof password !== "string") {
+      return NextResponse.json(
+        { error: "Current password is required" },
+        { status: 400 }
+      );
+    }
+
+    const { error: passwordCheckError } =
+      await supabase.auth.signInWithPassword({
+        email: user.email!,
+        password,
+      });
+
+    if (passwordCheckError) {
+      return NextResponse.json(
+        { error: "Incorrect current password" },
+        { status: 401 }
+      );
     }
 
     const admin = createClient(
@@ -109,6 +139,21 @@ export async function POST() {
       }
     }
 
+    // Delete qr_codes by profile_id
+    if (profileRow?.id) {
+      const { error: qrDeleteError } = await admin
+        .from("qr_codes")
+        .delete()
+        .eq("profile_id", profileRow.id);
+
+      if (qrDeleteError) {
+        return NextResponse.json(
+          { error: "Failed to delete from qr_codes" },
+          { status: 500 }
+        );
+      }
+    }
+
     // Delete remaining app data
     const tablesToDelete = [
       { table: "affiliate_applications", column: "user_id" },
@@ -118,7 +163,6 @@ export async function POST() {
       { table: "payments", column: "user_id" },
       { table: "orders", column: "user_id" },
       { table: "shipping_details", column: "user_id" },
-      { table: "qr_codes", column: "user_id" },
       { table: "profiles", column: "user_id" },
     ];
 
