@@ -482,6 +482,7 @@ const [deleteLoading, setDeleteLoading] = useState(false);
       setLoading(false);
     }
   }
+  
 async function handlePermanentDelete() {
   if (!deletePassword.trim()) {
     setMessage("❌ Please enter your current password.");
@@ -1212,8 +1213,8 @@ async function handlePermanentDelete() {
   type="button"
   style={{
     ...secondaryBtnStyle,
-    borderColor: "#ef4444",
-    color: "#991b1b",
+    borderColor: "#ddd",
+color: "#333",
   }}
   onClick={handlePermanentDelete}
   disabled={
@@ -1222,7 +1223,7 @@ async function handlePermanentDelete() {
     deleteConfirmText.trim() !== "DELETE"
   }
 >
-  {deleteLoading ? "Deleting..." : "Confirm Permanent Deletion"}
+  {deleteLoading ? "Deleting..." : "Delete account"}
 </button>
 {showDeleteBox ? (
   <div
@@ -1239,12 +1240,15 @@ async function handlePermanentDelete() {
     </div>
 
     <div style={{ marginBottom: 12, lineHeight: 1.6, color: "#7f1d1d" }}>
-      This action cannot be undone. If you continue:
-      <br />• your RROI account will be permanently deleted
-      <br />• your profile, QR-linked information, and saved order data will be deleted
-      <br />• your Premium subscription will be removed
-      <br />• if you are an affiliate, your affiliate profile, referral history, and any unpaid commissions will be permanently lost
-      <br />• you will need to sign up again and create a completely new profile if you return
+      This action cannot be undone.
+
+If you continue:
+• your RROI account will be permanently deleted
+• your profile and QR-linked emergency information will be permanently deleted
+• your Premium subscription will be canceled
+• your saved order information will be deleted
+• if you are an affiliate, your affiliate profile, referral history, and any unpaid commissions will be permanently lost
+• you will need to sign up again and create a completely new profile if you return
     </div>
 
     <div style={{ marginBottom: 8, fontWeight: 700 }}>Current Password</div>
