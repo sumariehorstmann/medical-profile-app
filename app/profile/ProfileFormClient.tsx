@@ -1214,16 +1214,16 @@ async function handlePermanentDelete() {
   style={{
     ...secondaryBtnStyle,
     borderColor: "#ddd",
-color: "#333",
+    color: "#333",
   }}
-  onClick={handlePermanentDelete}
-  disabled={
-    deleteLoading ||
-    !deletePassword.trim() ||
-    deleteConfirmText.trim() !== "DELETE"
-  }
+  onClick={() => {
+    setShowDeleteBox(true);
+    setDeletePassword("");
+    setDeleteConfirmText("");
+    setMessage(null);
+  }}
 >
-  {deleteLoading ? "Deleting..." : "Delete account"}
+  Delete account
 </button>
 {showDeleteBox ? (
   <div
