@@ -281,7 +281,50 @@ const [showDeleteBox, setShowDeleteBox] = useState(false);
 const [deletePassword, setDeletePassword] = useState("");
 const [deleteConfirmText, setDeleteConfirmText] = useState("");
 const [deleteLoading, setDeleteLoading] = useState(false);
+async function handlePermanentDelete() {
+  if (!deletePassword.trim()) {
+    setMessage("❌ Please enter your current password.");
+    return;
+  }
 
+  if (deleteConfirmText.trim() !== "DELETE") {
+    setMessage('❌ Please type DELETE exactly to confirm.');
+    return;
+  }
+
+  try {
+    setDeleteLoading(true);
+    setMessage(null);
+
+    const res = await fetch("/api/delete-account", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: deletePassword,
+        confirmText: deleteConfirmText,
+      }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      throw new Error(json?.error || "Failed to delete account");
+    }
+
+    setMessage("✅ Account deleted successfully. Redirecting...");
+    await supabase.auth.signOut();
+
+    setTimeout(() => {
+      router.push("/");
+    }, 2000);
+  } catch (e: any) {
+    setMessage(`❌ ${e?.message || "Something went wrong"}`);
+  } finally {
+    setDeleteLoading(false);
+  }
+}
   function validateRequired(): string | null {
     if (!firstName.trim()) return "First name is required.";
     if (!lastName.trim()) return "Last name is required.";
@@ -483,50 +526,7 @@ const [deleteLoading, setDeleteLoading] = useState(false);
     }
   }
   
-async function handlePermanentDelete() {
-  if (!deletePassword.trim()) {
-    setMessage("❌ Please enter your current password.");
-    return;
-  }
 
-  if (deleteConfirmText.trim() !== "DELETE") {
-    setMessage('❌ Please type DELETE exactly to confirm.');
-    return;
-  }
-
-  try {
-    setDeleteLoading(true);
-    setMessage(null);
-
-    const res = await fetch("/api/delete-account", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        password: deletePassword,
-        confirmText: deleteConfirmText,
-      }),
-    });
-
-    const json = await res.json();
-
-    if (!res.ok) {
-      throw new Error(json?.error || "Failed to delete account");
-    }
-
-    setMessage("✅ Account deleted successfully. Redirecting...");
-    await supabase.auth.signOut();
-
-    setTimeout(() => {
-      router.push("/");
-    }, 2000);
-  } catch (e: any) {
-    setMessage(`❌ ${e?.message || "Something went wrong"}`);
-  } finally {
-    setDeleteLoading(false);
-  }
-}
   async function handleLogout() {
     setMessage(null);
     setLoading(true);
@@ -1225,8 +1225,10 @@ async function handlePermanentDelete() {
 >
   Delete account
 </button>
+
 {showDeleteBox ? (
-  <div
+  <form
+    autoComplete="off"
     style={{
       marginTop: 16,
       border: "1px solid #fecaca",
@@ -1235,20 +1237,34 @@ async function handlePermanentDelete() {
       padding: 18,
     }}
   >
-    <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 10, color: "#991b1b" }}>
+    <div
+      style={{
+        fontWeight: 800,
+        fontSize: 18,
+        marginBottom: 10,
+        color: "#991b1b",
+      }}
+    >
       Permanently Delete Account
     </div>
 
-    <div style={{ marginBottom: 12, lineHeight: 1.6, color: "#7f1d1d" }}>
+    <div
+      style={{
+        marginBottom: 12,
+        lineHeight: 1.6,
+        color: "#7f1d1d",
+      }}
+    >
       This action cannot be undone.
-
-If you continue:
-• your RROI account will be permanently deleted
-• your profile and QR-linked emergency information will be permanently deleted
-• your Premium subscription will be canceled
-• your saved order information will be deleted
-• if you are an affiliate, your affiliate profile, referral history, and any unpaid commissions will be permanently lost
-• you will need to sign up again and create a completely new profile if you return
+      <br />
+      <br />
+      If you continue:
+      <br />• your RROI account will be permanently deleted
+      <br />• your profile and QR-linked emergency information will be permanently deleted
+      <br />• your Premium subscription will be canceled
+      <br />• your saved order information will be deleted
+      <br />• if you are an affiliate, your affiliate profile, referral history, and any unpaid commissions will be permanently lost
+      <br />• you will need to sign up again and create a completely new profile if you return
     </div>
 
     <div style={{ marginBottom: 8, fontWeight: 700 }}>Current Password</div>
@@ -1256,6 +1272,8 @@ If you continue:
       type="password"
       value={deletePassword}
       onChange={(e) => setDeletePassword(e.target.value)}
+      autoComplete="new-password"
+      name="delete-password"
       placeholder="Enter your current password"
       style={inputStyle}
     />
@@ -1271,21 +1289,29 @@ If you continue:
       style={inputStyle}
     />
 
-    <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 16 }}>
+    <div
+      style={{
+        display: "flex",
+        gap: 10,
+        flexWrap: "wrap",
+        marginTop: 16,
+      }}
+    >
       <button
         type="button"
         style={{
           ...secondaryBtnStyle,
-          borderColor: "#ef4444",
-          color: "#991b1b",
+          borderColor: "#ddd",
+          color: "#333",
         }}
+        onClick={handlePermanentDelete}
         disabled={
           deleteLoading ||
           !deletePassword.trim() ||
           deleteConfirmText.trim() !== "DELETE"
         }
       >
-        {deleteLoading ? "Deleting..." : "Confirm Permanent Deletion"}
+        {deleteLoading ? "Deleting..." : "Delete account"}
       </button>
 
       <button
@@ -1295,12 +1321,13 @@ If you continue:
           setShowDeleteBox(false);
           setDeletePassword("");
           setDeleteConfirmText("");
+          setMessage(null);
         }}
       >
         Cancel
       </button>
     </div>
-  </div>
+  </form>
 ) : null}
       </div>
 
