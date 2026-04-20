@@ -5,12 +5,19 @@ import { QRCodeSVG } from "qrcode.react";
 type QRScreensaverProps = {
   qrValue: string;
   firstName?: string;
+  lastName?: string;
 };
 
 export default function QRScreensaver({
   qrValue,
   firstName,
+  lastName,
 }: QRScreensaverProps) {
+  const fullName =
+    firstName || lastName
+      ? `${firstName ?? ""} ${lastName ?? ""}`.trim()
+      : null;
+
   return (
     <div id="qr-screensaver" style={styles.canvas}>
       <div style={styles.inner}>
@@ -37,7 +44,9 @@ export default function QRScreensaver({
           <div style={styles.scanText}>SCAN IN AN EMERGENCY</div>
           <div style={styles.profileText}>Medical Profile</div>
 
-          {firstName ? <div style={styles.nameText}>{firstName}</div> : null}
+          {fullName ? (
+            <div style={styles.nameText}>{fullName}</div>
+          ) : null}
         </div>
       </div>
     </div>
