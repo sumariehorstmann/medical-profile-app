@@ -714,9 +714,10 @@ async function handlePermanentDelete() {
               {publicId ? (
                 <div style={{ marginTop: 12 }}>
                   <DownloadQRWallpaper
-                    publicId={publicId}
-                    firstName={firstName}
-                  />
+  publicId={publicId}
+  firstName={firstName}
+  lastName={lastName}
+/>
                 </div>
               ) : null}
             </div>
