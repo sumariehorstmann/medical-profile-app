@@ -6,18 +6,18 @@ export default function PageHeader() {
       style={{
         display: "flex",
         justifyContent: "center",
-        marginBottom: 24,
+        marginBottom: 30,
       }}
     >
       <Image
-        src="/logo.png"
+        src="/logo-full-v2.png"
         alt="RROI"
-        width={180}
-        height={180}
+        width={260}
+        height={260}
         style={{
           width: "auto",
           height: "auto",
-          maxWidth: "180px",
+          maxWidth: "260px",
         }}
         priority
       />
