@@ -1,283 +1,252 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import { useState } from "react";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
-import PageHeader from "@/components/PageHeader";
 
-type MessageType = "success" | "error" | "info";
+export default function ForgotPasswordPage() {
+  const supabase = createSupabaseBrowser();
 
-export default function ResetPasswordPage() {
-  const supabase = useMemo(() => createSupabaseBrowser(), []);
-  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [messageType, setMessageType] = useState<MessageType>("info");
-
-  useEffect(() => {
-    return () => {
-      if (redirectTimerRef.current) {
-        clearTimeout(redirectTimerRef.current);
-      }
-    };
-  }, []);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<"success" | "error" | "">("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setMessage(null);
-    setMessageType("info");
 
-    if (!password || !confirmPassword) {
+    setMessage("");
+    setMessageType("");
+
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!trimmedEmail) {
       setMessageType("error");
-      setMessage("Please enter and confirm your new password.");
+      setMessage("Please enter your email address.");
       return;
     }
 
-    if (password.length < 8) {
-      setMessageType("error");
-      setMessage("Your new password must be at least 8 characters long.");
-      return;
-    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (password !== confirmPassword) {
+    if (!emailRegex.test(trimmedEmail)) {
       setMessageType("error");
-      setMessage("Your passwords do not match.");
+      setMessage("Please enter a valid email address.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.updateUser({ password });
+      const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
+        redirectTo: "https://www.rroi.co.za/reset-password",
+      });
 
       if (error) {
         setMessageType("error");
-        setMessage(
-          error.message || "Unable to update your password right now."
-        );
+        setMessage(error.message || "Unable to send reset email right now.");
+        setLoading(false);
         return;
       }
 
       setMessageType("success");
       setMessage(
-        "Your password has been updated successfully. Redirecting you to the login page..."
+        "If an account exists for this email address, a password reset link has been sent. Please check your inbox and spam folder."
       );
-
-      redirectTimerRef.current = setTimeout(() => {
-        window.location.href = "/login";
-      }, 2000);
+      setEmail("");
     } catch {
       setMessageType("error");
-      setMessage("Unable to update your password right now.");
+      setMessage("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main style={styles.page}>
-      <div style={styles.card}>
-        <PageHeader />
-
-        <h1 style={styles.h1}>Set a new password</h1>
-
-        <p style={styles.intro}>
-          Enter your new password below to complete your password reset.
-        </p>
-
-        <form onSubmit={handleSubmit} noValidate>
-          <label htmlFor="password" style={styles.label}>
-            <div style={styles.labelText}>New password</div>
-            <input
-              id="password"
-              name="password"
-              style={styles.input}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
-              disabled={loading}
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "#f3f4f6",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "32px 16px",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 600,
+            background: "#ffffff",
+            borderRadius: 24,
+            boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+            padding: "40px 28px",
+            textAlign: "center",
+          }}
+        >
+          <div style={{ marginBottom: 20 }}>
+            <Image
+              src="/logo.png"
+              alt="RROI logo"
+              width={220}
+              height={220}
+              priority
+              style={{
+                width: "100%",
+                maxWidth: 220,
+                height: "auto",
+                margin: "0 auto",
+              }}
             />
-          </label>
+          </div>
 
-          <div style={styles.note}>Use at least 8 characters.</div>
-
-          <label htmlFor="confirmPassword" style={styles.label}>
-            <div style={styles.labelText}>Confirm new password</div>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              style={styles.input}
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              autoComplete="new-password"
-              disabled={loading}
-            />
-          </label>
-
-          <button style={styles.submitBtn} disabled={loading} type="submit">
-            {loading ? "Please wait..." : "Update password"}
-          </button>
-        </form>
-
-        {message ? (
-          <div
-            role="status"
-            aria-live="polite"
+          <h1
             style={{
-              ...styles.message,
-              ...(messageType === "error"
-                ? styles.messageError
-                : messageType === "success"
-                ? styles.messageSuccess
-                : styles.messageInfo),
+              fontSize: 54,
+              lineHeight: 1.05,
+              fontWeight: 800,
+              color: "#08153a",
+              margin: "0 0 16px 0",
+              letterSpacing: "-0.02em",
             }}
           >
-            {message}
+            Forgot password
+          </h1>
+
+          <p
+            style={{
+              margin: "0 0 28px 0",
+              fontSize: 17,
+              lineHeight: 1.6,
+              color: "#334155",
+            }}
+          >
+            Enter your email address below and we will send you a secure link to
+            reset your password.
+          </p>
+
+          <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
+            <label
+              htmlFor="email"
+              style={{
+                display: "block",
+                fontSize: 16,
+                fontWeight: 700,
+                color: "#08153a",
+                marginBottom: 10,
+              }}
+            >
+              Email address
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              style={{
+                width: "100%",
+                height: 58,
+                borderRadius: 16,
+                border: "1px solid #cbd5e1",
+                padding: "0 18px",
+                fontSize: 18,
+                color: "#08153a",
+                outline: "none",
+                marginBottom: 20,
+                background: "#ffffff",
+              }}
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: "100%",
+                height: 58,
+                border: "none",
+                borderRadius: 999,
+                background: loading ? "#5aa383" : "#157a55",
+                color: "#ffffff",
+                fontSize: 18,
+                fontWeight: 800,
+                cursor: loading ? "not-allowed" : "pointer",
+                boxShadow: "0 8px 20px rgba(21,122,85,0.18)",
+              }}
+            >
+              {loading ? "Sending reset link..." : "Send reset link"}
+            </button>
+          </form>
+
+          {message ? (
+            <div
+              style={{
+                marginTop: 18,
+                padding: "14px 16px",
+                borderRadius: 16,
+                fontSize: 16,
+                lineHeight: 1.5,
+                textAlign: "left",
+                border:
+                  messageType === "error"
+                    ? "1px solid #f5b5b5"
+                    : "1px solid #b7e3c8",
+                background:
+                  messageType === "error" ? "#fff1f1" : "#effaf3",
+                color: messageType === "error" ? "#b42318" : "#157a55",
+              }}
+            >
+              {message}
+            </div>
+          ) : null}
+
+          <div
+            style={{
+              marginTop: 24,
+              display: "flex",
+              justifyContent: "center",
+              gap: 10,
+              flexWrap: "wrap",
+              fontSize: 16,
+              fontWeight: 600,
+              color: "#64748b",
+            }}
+          >
+            <Link
+              href="/login"
+              style={{
+                color: "#08153a",
+                textDecoration: "none",
+              }}
+            >
+              Back to login
+            </Link>
+
+            <span>•</span>
+
+            <Link
+              href="/"
+              style={{
+                color: "#334155",
+                textDecoration: "none",
+              }}
+            >
+              Home
+            </Link>
           </div>
-        ) : null}
-
-        <div style={styles.cardLinks}>
-          <Link href="/login" style={styles.primaryLink}>
-            Back to login
-          </Link>
-
-          <span style={styles.dot}>•</span>
-
-          <Link href="/" style={styles.secondaryLink}>
-            Home
-          </Link>
         </div>
       </div>
     </main>
   );
 }
-
-const BRAND_GREEN = "#157A55";
-const TEXT = "#0F172A";
-const MUTED = "#475569";
-const BORDER = "#D1D5DB";
-
-const styles: Record<string, React.CSSProperties> = {
-  page: {
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-    background: "#F8FAFC",
-  },
-  card: {
-    width: "100%",
-    maxWidth: 560,
-    background: "#FFFFFF",
-    borderRadius: 18,
-    padding: 30,
-    border: "1px solid #E5E7EB",
-    boxShadow: "0 14px 42px rgba(15, 23, 42, 0.08)",
-  },
-  h1: {
-    margin: "0 0 10px",
-    textAlign: "center",
-    fontSize: 34,
-    fontWeight: 900,
-    color: TEXT,
-  },
-  intro: {
-    textAlign: "center",
-    margin: "0 0 20px",
-    lineHeight: 1.55,
-    color: "#334155",
-    fontSize: 15,
-  },
-  label: {
-    display: "block",
-    marginBottom: 12,
-  },
-  labelText: {
-    marginBottom: 6,
-    fontWeight: 800,
-    color: TEXT,
-    fontSize: 15,
-  },
-  input: {
-    width: "100%",
-    padding: "12px 14px",
-    border: `1px solid ${BORDER}`,
-    borderRadius: 12,
-    fontSize: 15,
-    color: TEXT,
-    background: "#FFFFFF",
-    outline: "none",
-  },
-  note: {
-    marginTop: -4,
-    marginBottom: 10,
-    fontSize: 13,
-    color: MUTED,
-  },
-  submitBtn: {
-    width: "100%",
-    padding: "14px 16px",
-    marginTop: 12,
-    cursor: "pointer",
-    borderRadius: 999,
-    border: "none",
-    background: BRAND_GREEN,
-    color: "#FFFFFF",
-    fontWeight: 900,
-    fontSize: 16,
-    boxShadow: "0 6px 16px rgba(21, 122, 85, 0.16)",
-  },
-  message: {
-    marginTop: 14,
-    lineHeight: 1.55,
-    padding: "12px 14px",
-    borderRadius: 12,
-    fontSize: 14,
-  },
-  messageError: {
-    background: "#FEF2F2",
-    border: "1px solid #FECACA",
-    color: "#991B1B",
-  },
-  messageSuccess: {
-    background: "#F0FDF4",
-    border: "1px solid #BBF7D0",
-    color: "#166534",
-  },
-  messageInfo: {
-    background: "#EFF6FF",
-    border: "1px solid #BFDBFE",
-    color: "#1D4ED8",
-  },
-  cardLinks: {
-    marginTop: 18,
-    display: "flex",
-    gap: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    flexWrap: "wrap",
-  },
-  primaryLink: {
-    textDecoration: "none",
-    color: TEXT,
-    fontWeight: 800,
-    fontSize: 14,
-  },
-  secondaryLink: {
-    textDecoration: "none",
-    color: MUTED,
-    fontWeight: 700,
-    fontSize: 14,
-  },
-  dot: {
-    color: "#94A3B8",
-    fontSize: 14,
-    lineHeight: 1,
-  },
-};

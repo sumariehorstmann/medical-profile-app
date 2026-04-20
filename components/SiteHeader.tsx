@@ -1,148 +1,119 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { createSupabaseBrowser } from "@/lib/supabase/client";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function SiteHeader() {
-  const supabase = useMemo(() => createSupabaseBrowser(), []);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const [loggingOut, setLoggingOut] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
 
-    async function loadSession() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
+    async function checkSession() {
+      const { data } = await supabase.auth.getSession();
       if (!mounted) return;
-      setIsLoggedIn(!!session);
+      setIsLoggedIn(!!data.session);
+      setLoading(false);
     }
 
-    loadSession();
+    checkSession();
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!mounted) return;
       setIsLoggedIn(!!session);
+      setLoading(false);
     });
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, []);
 
   async function handleLogout() {
-    try {
-      setLoggingOut(true);
-      await supabase.auth.signOut();
-      window.location.href = "/";
-    } finally {
-      setLoggingOut(false);
-    }
+    await supabase.auth.signOut();
+    window.location.href = "/";
   }
 
   return (
-    <header style={styles.header}>
-      <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
-        <Image
-          src="/logo.png"
-          alt="RROI logo"
-          width={40}
-          height={40}
-          style={{ objectFit: "contain" }}
-          priority
-        />
-        <span style={styles.headerBrandText}>RROI</span>
-      </Link>
+    <header
+      style={{
+        width: "100%",
+        borderBottom: "1px solid #E5E7EB",
+        background: "#FFFFFF",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1400,
+          margin: "0 auto",
+          padding: "16px 28px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Link
+          href="/"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            textDecoration: "none",
+            color: "#0F172A",
+            fontWeight: 900,
+            fontSize: 20,
+          }}
+        >
+          <Image
+            src="/logo.png"
+            alt="RROI"
+            width={32}
+            height={32}
+            style={{ width: 32, height: 32 }}
+            priority
+          />
+          <span>RROI</span>
+        </Link>
 
-      <div style={styles.headerActions}>
-        {isLoggedIn ? (
+        {loading ? null : isLoggedIn ? (
           <button
-            type="button"
             onClick={handleLogout}
-            style={styles.logoutBtn}
-            disabled={loggingOut}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#157A55",
+              fontWeight: 800,
+              fontSize: 16,
+              cursor: "pointer",
+            }}
           >
-            {loggingOut ? "Logging out..." : "Log out"}
+            Log out
           </button>
         ) : (
-          <>
-            <Link href="/login" style={styles.loginLink}>
-              Log in
-            </Link>
-
-            <Link href="/login" style={styles.signupLink}>
-              Sign up
-            </Link>
-          </>
+          <Link
+            href="/login"
+            style={{
+              textDecoration: "none",
+              color: "#157A55",
+              fontWeight: 800,
+              fontSize: 16,
+            }}
+          >
+            Log in
+          </Link>
         )}
       </div>
     </header>
   );
 }
-
-const BRAND_GREEN = "#157A55";
-const TEXT = "#0F172A";
-const BORDER = "#E5E7EB";
-
-const styles: Record<string, React.CSSProperties> = {
-  header: {
-    position: "sticky",
-    top: 0,
-    zIndex: 1000,
-    height: 68,
-    padding: "0 16px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderBottom: `1px solid ${BORDER}`,
-    background: "#FFFFFF",
-  },
-  headerLogo: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    textDecoration: "none",
-  },
-  headerBrandText: {
-    color: TEXT,
-    fontWeight: 900,
-    fontSize: 16,
-  },
-  headerActions: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-  },
-  loginLink: {
-    textDecoration: "none",
-    fontWeight: 800,
-    color: BRAND_GREEN,
-    padding: "8px 10px",
-    borderRadius: 12,
-  },
-  signupLink: {
-    textDecoration: "none",
-    fontWeight: 900,
-    color: "#FFFFFF",
-    background: BRAND_GREEN,
-    padding: "8px 14px",
-    borderRadius: 10,
-  },
-  logoutBtn: {
-    border: "none",
-    background: "transparent",
-    color: BRAND_GREEN,
-    fontWeight: 800,
-    fontSize: 14,
-    cursor: "pointer",
-    padding: "8px 10px",
-    borderRadius: 12,
-  },
-};
