@@ -164,11 +164,7 @@ export default function PublicPageClient({ profile }: Props) {
             : "Free-tier emergency profile."}
         </p>
 
-        <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <button onClick={() => window.print()} style={buttonStyle}>
-            Print
-          </button>
-        </div>
+        
       </div>
 
       <Section title="Section 1 — Identity & Immediate Emergency Contact">
