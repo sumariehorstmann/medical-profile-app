@@ -7,9 +7,11 @@ import QRScreensaver from "./QRScreensaver";
 export default function DownloadQRWallpaper({
   publicId,
   firstName,
+  lastName,
 }: {
   publicId: string;
   firstName?: string;
+  lastName?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
@@ -57,7 +59,11 @@ export default function DownloadQRWallpaper({
         }}
       >
         <div ref={ref}>
-          <QRScreensaver qrValue={qrUrl} firstName={firstName} />
+          <QRScreensaver
+            qrValue={qrUrl}
+            firstName={firstName}
+            lastName={lastName}
+          />
         </div>
       </div>
 
