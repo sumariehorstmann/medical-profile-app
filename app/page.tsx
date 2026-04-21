@@ -22,31 +22,34 @@ export default function HomePage() {
         <div style={styles.brand}>
           <PageHeader />
 
-          <h1 style={styles.h1}>
-            Your emergency profile, instantly accessible with a QR code when it
-            matters most
-          </h1>
+          <div style={styles.heroTextWrap}>
+            <h1 style={styles.h1}>
+              Emergency information, instantly accessible via QR code
+            </h1>
 
-          <p style={styles.sub}>
-            Create your emergency profile for free in minutes. In an emergency,
-            your QR code can give access to critical information instantly when
-            you are unable to communicate it yourself.
-          </p>
-
-          <Link href="/login" style={styles.primaryBtn}>
-            Sign up free
-          </Link>
-
-          <div style={styles.ctaNote}>
-            No payment required • Upgrade only if you want full public profile
-            visibility
+            <p style={styles.sub}>
+              Create your emergency profile for free. In an emergency, your QR
+              code provides access to critical information when you cannot
+              communicate it yourself.
+            </p>
           </div>
 
-          <div style={styles.already}>
-            <span style={styles.alreadyText}>Already have an account?</span>{" "}
-            <Link href="/login" style={styles.alreadyLink}>
-              Log in
+          <div style={styles.heroCtaWrap}>
+            <Link href="/login" style={styles.primaryBtn}>
+              Sign up free
             </Link>
+
+            <div style={styles.ctaNote}>
+              No payment required • Upgrade only if you want full public profile
+              visibility
+            </div>
+
+            <div style={styles.already}>
+              <span style={styles.alreadyText}>Already have an account?</span>{" "}
+              <Link href="/login" style={styles.alreadyLink}>
+                Log in
+              </Link>
+            </div>
           </div>
 
           <div style={styles.reassure}>
@@ -62,7 +65,7 @@ export default function HomePage() {
 
       <section style={styles.blocks}>
         <div style={styles.card}>
-          <h2 style={styles.h2}>What is RROI?</h2>
+          <h2 style={styles.h2}>About RROI</h2>
           <p style={styles.p}>
             RROI is an online emergency information profile designed to make
             critical personal details accessible when you are unable to
@@ -88,7 +91,7 @@ export default function HomePage() {
           <div style={styles.step}>
             <div style={styles.stepNum}>2</div>
             <div>
-              <div style={styles.stepTitle}>Complete and save your full profile</div>
+              <div style={styles.stepTitle}>Complete and store your full profile</div>
               <div style={styles.stepText}>
                 On the free plan, you can complete and save your full profile at
                 any time.
@@ -113,7 +116,7 @@ export default function HomePage() {
             <div style={styles.stepNum}>4</div>
             <div>
               <div style={styles.stepTitle}>
-                Upgrade when you want full visibility
+                Upgrade to enable full profile visibility
               </div>
               <div style={styles.stepText}>
                 Upgrade to Premium when you want your full medical profile to be
@@ -124,7 +127,7 @@ export default function HomePage() {
         </div>
 
         <div style={styles.card}>
-          <h2 style={styles.h2}>What you receive</h2>
+          <h2 style={styles.h2}>Included features</h2>
           <ul style={styles.ul}>
             <li>A personal QR code linked to your emergency profile</li>
             <li>A downloadable QR code lock screen for your phone</li>
@@ -157,6 +160,9 @@ export default function HomePage() {
               Includes your first year subscription
             </div>
             <div style={styles.priceSubStrong}>R99 per year thereafter</div>
+            <div style={styles.premiumLine}>
+              Full emergency profile access when scanned
+            </div>
 
             <ul style={styles.ul}>
               <li>Full medical profile visible when your QR code is scanned</li>
@@ -175,8 +181,7 @@ export default function HomePage() {
         <div style={styles.card}>
           <h2 style={styles.h2}>Affiliates</h2>
           <p style={styles.p}>
-            Earn commission by sharing RROI. Get 8% on every successful Premium
-            signup using your referral code.
+            Share RROI and earn commission on Premium signups.
           </p>
           <Link href="/affiliate/terms" style={styles.secondaryBtn}>
             Apply to become an affiliate
@@ -219,54 +224,70 @@ const styles: Record<string, React.CSSProperties> = {
     color: TEXT,
   },
   hero: {
-    padding: "34px 16px 18px",
+    padding: "28px 16px 22px",
     display: "flex",
     justifyContent: "center",
   },
   brand: {
     width: "100%",
-    maxWidth: 620,
+    maxWidth: 700,
     textAlign: "center",
   },
+  heroTextWrap: {
+    maxWidth: 760,
+    margin: "0 auto",
+  },
   h1: {
-    marginTop: 16,
-    marginBottom: 14,
-    fontSize: 28,
-    lineHeight: 1.15,
+    margin: "10px auto 0",
+    maxWidth: 680,
+    fontSize: 26,
+    lineHeight: 1.18,
     fontWeight: 900,
+    letterSpacing: "-0.02em",
+    color: TEXT,
   },
   sub: {
-    margin: "0 0 14px",
-    fontSize: 18,
-    lineHeight: 1.5,
+    margin: "18px auto 0",
+    maxWidth: 700,
+    fontSize: 17,
+    lineHeight: 1.65,
     color: "#334155",
+  },
+  heroCtaWrap: {
+    marginTop: 26,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   primaryBtn: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    maxWidth: 340,
-    padding: "14px 18px",
-    borderRadius: 14,
+    maxWidth: 380,
+    minHeight: 62,
+    padding: "16px 22px",
+    borderRadius: 16,
     background: BRAND_GREEN,
     color: "#FFFFFF",
     textDecoration: "none",
     fontWeight: 900,
-    fontSize: 16,
-    margin: "10px auto 0",
-    boxShadow: "0 6px 16px rgba(21, 122, 85, 0.16)",
+    fontSize: 17,
+    letterSpacing: "-0.01em",
+    boxShadow: "0 10px 24px rgba(21, 122, 85, 0.16)",
   },
   ctaNote: {
-    marginTop: 10,
+    marginTop: 12,
+    maxWidth: 560,
     fontSize: 14,
-    lineHeight: 1.5,
+    lineHeight: 1.55,
     color: MUTED,
     fontWeight: 600,
   },
   already: {
-    marginTop: 12,
-    fontSize: 15,
+    marginTop: 16,
+    fontSize: 16,
+    lineHeight: 1.5,
   },
   alreadyText: {
     color: MUTED,
@@ -277,59 +298,64 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
   },
   reassure: {
-    marginTop: 14,
+    marginTop: 18,
     fontSize: 14,
-    fontWeight: 700,
-    color: MUTED,
+    fontWeight: 800,
+    color: "#334155",
     lineHeight: 1.5,
   },
   helperLine: {
     marginTop: 10,
     fontSize: 13,
     color: MUTED,
-    lineHeight: 1.5,
+    lineHeight: 1.55,
+    maxWidth: 760,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   blocks: {
     padding: "10px 16px 28px",
     display: "flex",
     flexDirection: "column",
-    gap: 14,
+    gap: 18,
     alignItems: "center",
   },
   card: {
     width: "100%",
-    maxWidth: 620,
+    maxWidth: 780,
     border: `1px solid ${BORDER}`,
-    borderRadius: 16,
-    padding: 18,
+    borderRadius: 18,
+    padding: 22,
     background: "#FFFFFF",
   },
   h2: {
-    margin: "0 0 10px",
-    fontSize: 18,
+    margin: "0 0 12px",
+    fontSize: 20,
     fontWeight: 900,
+    color: TEXT,
   },
   p: {
     margin: 0,
-    lineHeight: 1.6,
+    lineHeight: 1.7,
     color: "#334155",
+    fontSize: 16,
   },
   stepFirst: {
     display: "flex",
-    gap: 12,
+    gap: 14,
     alignItems: "flex-start",
-    padding: "4px 0 12px",
+    padding: "6px 0 14px",
   },
   step: {
     display: "flex",
-    gap: 12,
+    gap: 14,
     alignItems: "flex-start",
-    padding: "12px 0",
+    padding: "14px 0",
     borderTop: "1px solid #EEF2F7",
   },
   stepNum: {
-    width: 28,
-    height: 28,
+    width: 36,
+    height: 36,
     borderRadius: 999,
     background: BRAND_GREEN,
     color: "#FFFFFF",
@@ -337,36 +363,42 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     fontWeight: 900,
+    fontSize: 16,
     flex: "0 0 auto",
     marginTop: 2,
   },
   stepTitle: {
     fontWeight: 900,
-    marginBottom: 3,
-    fontSize: 16,
+    marginBottom: 4,
+    fontSize: 18,
+    color: TEXT,
+    lineHeight: 1.35,
   },
   stepText: {
     color: "#334155",
-    lineHeight: 1.5,
+    lineHeight: 1.6,
+    fontSize: 16,
   },
   compareBlockFirst: {
     paddingTop: 4,
-    marginTop: 4,
+    marginTop: 2,
   },
   compareBlock: {
     borderTop: "1px solid #EEF2F7",
-    paddingTop: 14,
-    marginTop: 14,
+    paddingTop: 16,
+    marginTop: 16,
   },
   compareTitle: {
     fontSize: 18,
     fontWeight: 900,
     marginBottom: 6,
+    color: TEXT,
   },
   price: {
     fontSize: 28,
     fontWeight: 900,
     margin: "6px 0 4px",
+    color: TEXT,
   },
   priceSub: {
     fontSize: 14,
@@ -377,39 +409,48 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 15,
     fontWeight: 800,
     color: TEXT,
+    marginBottom: 10,
+  },
+  premiumLine: {
+    fontSize: 15,
+    fontWeight: 800,
+    color: BRAND_GREEN,
     marginBottom: 12,
+    lineHeight: 1.5,
   },
   ul: {
     margin: "0 0 14px",
-    paddingLeft: 18,
-    lineHeight: 1.75,
+    paddingLeft: 22,
+    lineHeight: 1.8,
     color: "#334155",
+    fontSize: 16,
   },
   secondaryBtn: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "11px 16px",
+    padding: "12px 18px",
     borderRadius: 14,
     border: `1px solid ${BRAND_GREEN}`,
     color: BRAND_GREEN,
     textDecoration: "none",
     fontWeight: 900,
-    marginTop: 12,
+    marginTop: 14,
     background: "#FFFFFF",
+    fontSize: 16,
   },
   notice: {
     width: "100%",
-    maxWidth: 620,
+    maxWidth: 780,
     border: `1px solid ${BORDER}`,
-    borderRadius: 16,
-    padding: 18,
+    borderRadius: 18,
+    padding: 22,
     background: "#F8FAFC",
   },
   noticeP: {
-    margin: "8px 0 0",
-    lineHeight: 1.6,
+    margin: "10px 0 0",
+    lineHeight: 1.7,
     color: "#334155",
-    fontSize: 14,
+    fontSize: 15,
   },
 };
