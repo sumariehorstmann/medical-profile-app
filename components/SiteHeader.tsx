@@ -3,12 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 export default function SiteHeader() {
   const supabase = useMemo(() => createSupabaseBrowser(), []);
+  const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
+
+  const isHomePage = pathname === "/";
 
   useEffect(() => {
     let mounted = true;
@@ -47,6 +51,8 @@ export default function SiteHeader() {
     }
   }
 
+  const showLoggedOutButtons = isHomePage || !isLoggedIn;
+
   return (
     <header style={styles.header}>
       <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
@@ -62,16 +68,7 @@ export default function SiteHeader() {
       </Link>
 
       <div style={styles.headerActions}>
-        {isLoggedIn === null ? null : isLoggedIn ? (
-          <button
-            type="button"
-            onClick={handleLogout}
-            style={styles.logoutBtn}
-            disabled={loggingOut}
-          >
-            {loggingOut ? "Logging out..." : "Log out"}
-          </button>
-        ) : (
+        {isLoggedIn === null ? null : showLoggedOutButtons ? (
           <>
             <Link href="/login" style={styles.loginLink}>
               Log in
@@ -81,6 +78,15 @@ export default function SiteHeader() {
               Sign up
             </Link>
           </>
+        ) : (
+          <button
+            type="button"
+            onClick={handleLogout}
+            style={styles.logoutBtn}
+            disabled={loggingOut}
+          >
+            {loggingOut ? "Logging out..." : "Log out"}
+          </button>
         )}
       </div>
     </header>
