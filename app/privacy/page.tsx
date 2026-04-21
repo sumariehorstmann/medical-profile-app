@@ -218,7 +218,7 @@ export default function PrivacyPage() {
         <p style={paragraph}>
           <strong>RROI (Pty) Ltd</strong>
           <br />
-          Email: rapidresponseonlineinfo@gmail.com
+          Email: support@rroi.co.za
         </p>
         <p style={paragraph}>
   If you believe your personal information has been handled unlawfully,

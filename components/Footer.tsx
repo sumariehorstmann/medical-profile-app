@@ -11,7 +11,7 @@ export default function Footer() {
 
       <div style={styles.meta}>
         <div>RROI (Pty) Ltd • South Africa</div>
-        <div>Email: rapidresponseonlineinfo@gmail.com</div>
+        <div>Email: support@rroi.co.za</div>
         <div>© {new Date().getFullYear()} RROI (Pty) Ltd. All rights reserved.</div>
       </div>
     </footer>

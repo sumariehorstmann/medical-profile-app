@@ -142,7 +142,7 @@ export default function TermsPage() {
         <p style={paragraph}>
           <strong>RROI (Pty) Ltd</strong>
           <br />
-          Email: rapidresponseonlineinfo@gmail.com
+          Email: support@rroi.co.za
         </p>
 
         <div style={{ marginTop: 36, display: "flex", justifyContent: "center" }}>

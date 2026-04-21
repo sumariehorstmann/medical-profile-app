@@ -94,14 +94,14 @@ export default function ContactPage() {
             label="Email"
             value={
               <a
-                href="mailto:rapidresponseonlineinfo@gmail.com"
+                href="mailto:support@rroi.co.za"
                 style={{
                   color: "#157A55",
                   fontWeight: 700,
                   textDecoration: "none",
                 }}
               >
-                rapidresponseonlineinfo@gmail.com
+                support@rroi.co.za
               </a>
             }
           />

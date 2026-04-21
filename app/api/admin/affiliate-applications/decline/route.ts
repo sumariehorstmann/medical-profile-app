@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     // Replace this with your real admin email.
     const adminEmails = [
   "sumariehorstmann@gmail.com",
-  "rapidresponseonlineinfo@gmail.com",
+  "support@rroi.co.za",
 ];
     const userEmail = String(user.email || "").toLowerCase();
 
