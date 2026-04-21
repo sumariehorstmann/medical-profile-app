@@ -1,198 +1,236 @@
-import PageHeader from "@/components/PageHeader";
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+const BRAND_GREEN = "#157A55";
+const TEXT = "#0F172A";
+const MUTED = "#475569";
+const BORDER = "#E5E7EB";
+const PAGE_BG = "#F8FAFC";
+const CARD_BG = "#FFFFFF";
 
 export default function TermsPage() {
-  const lastUpdated = "19 April 2026";
+  const router = useRouter();
+
+  function handleBack() {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
+  }
 
   return (
-    <main
-      style={{
-        maxWidth: 860,
-        margin: "40px auto",
-        padding: "20px",
-        color: "#111111",
-        lineHeight: 1.65,
-      }}
-    >
-      <PageHeader />
+    <main style={styles.page}>
+      <section style={styles.container}>
+        <div style={styles.card}>
+          <div style={styles.topBlock}>
+            <h1 style={styles.title}>Terms &amp; Conditions</h1>
+            <p style={styles.subtitle}>
+              These terms govern your use of the RROI platform and services.
+              Please read them carefully before using the site.
+            </p>
+          </div>
 
-      <div
-        style={{
-          background: "#FFFFFF",
-          border: "1px solid #E5E7EB",
-          borderRadius: 20,
-          padding: "28px 24px",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
-        }}
-      >
-        <h1 style={title}>Terms & Conditions</h1>
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>1. Acceptance of Terms</h2>
+            <p style={styles.paragraph}>
+              By creating an account or using RROI, you agree to be bound by
+              these Terms &amp; Conditions and any related policies published on
+              the site.
+            </p>
+          </div>
 
-        <p style={muted}>
-          <strong>Last updated:</strong> {lastUpdated}
-        </p>
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>2. Service Description</h2>
+            <p style={styles.paragraph}>
+              RROI provides a digital emergency medical profile platform that
+              allows users to store and share selected information through a QR
+              code-linked profile.
+            </p>
+          </div>
 
-        <h2 style={sectionTitle}>1. Introduction</h2>
-        <p style={paragraph}>
-          These Terms and Conditions govern your use of RROI (Pty) Ltd and its
-          services. By accessing or using the platform, you agree to be bound
-          by these terms.
-        </p>
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>3. User Responsibility</h2>
+            <p style={styles.paragraph}>
+              You are responsible for ensuring that all information entered on
+              your profile is accurate, complete, and kept up to date. RROI is
+              not responsible for errors caused by incorrect or outdated
+              information submitted by the user.
+            </p>
+          </div>
 
-        <h2 style={sectionTitle}>2. Service Description</h2>
-        <p style={paragraph}>
-          RROI provides a QR-based emergency profile system that allows users
-          to store personal, medical, and emergency information and make such
-          information accessible when a QR code is scanned.
-        </p>
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>4. Emergency Use Disclaimer</h2>
+            <p style={styles.paragraph}>
+              RROI is designed to assist in emergencies by making user-provided
+              information easier to access. It does not replace professional
+              medical advice, diagnosis, treatment, or emergency services.
+            </p>
+          </div>
 
-        <h2 style={sectionTitle}>3. User Responsibility</h2>
-        <ul style={listStyle}>
-          <li>You are responsible for ensuring your information is accurate and up to date.</li>
-          <li>You decide what information is stored and made publicly accessible.</li>
-          <li>You are responsible for safeguarding access to your account.</li>
-        </ul>
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>5. Subscription and Visibility</h2>
+            <p style={styles.paragraph}>
+              Free users may create and save a full profile, but only limited
+              profile information is publicly visible when the QR code is
+              scanned. Premium users unlock expanded public profile visibility
+              based on the active subscription status.
+            </p>
+          </div>
 
-        <h2 style={sectionTitle}>4. Public QR Code Risk</h2>
-        <p style={paragraph}>
-          By using RROI, you acknowledge that your QR code is designed to be
-          scanned by third parties in emergency situations. Any person who scans
-          your QR code may access the information configured for public display.
-        </p>
-        <p style={paragraph}>
-          RROI is not responsible for how third parties use or interpret
-          information accessed through a scanned QR code.
-        </p>
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>6. Account Suspension or Removal</h2>
+            <p style={styles.paragraph}>
+              RROI reserves the right to suspend or terminate accounts that are
+              used unlawfully, fraudulently, abusively, or in violation of these
+              terms.
+            </p>
+          </div>
 
-        <h2 style={sectionTitle}>5. No Medical Advice</h2>
-        <p style={paragraph}>
-          RROI does not provide medical advice. All information stored on the
-          platform is user-provided and may not be accurate, complete, or current.
-        </p>
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>7. Limitation of Liability</h2>
+            <p style={styles.paragraph}>
+              To the fullest extent permitted by law, RROI will not be liable
+              for any loss, damage, injury, delay, or claim arising from use of
+              the platform, reliance on profile information, or inability to
+              access the service.
+            </p>
+          </div>
 
-        <h2 style={sectionTitle}>6. Emergency Use Disclaimer</h2>
-        <p style={paragraph}>
-          RROI is a support tool only and does not replace professional medical
-          services, emergency responders, or official emergency systems. Users
-          and third parties must always contact official emergency services in
-          a medical emergency.
-        </p>
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>8. Changes to Terms</h2>
+            <p style={styles.paragraph}>
+              We may update these Terms &amp; Conditions from time to time. Any
+              changes will be posted on this page and will take effect once
+              published.
+            </p>
+          </div>
 
-        <h2 style={sectionTitle}>7. Limitation of Liability</h2>
-        <p style={paragraph}>
-          To the maximum extent permitted by law, RROI (Pty) Ltd shall not be
-          liable for any direct, indirect, incidental, or consequential damages
-          arising from:
-        </p>
-        <ul style={listStyle}>
-          <li>Incorrect, incomplete, or outdated user information</li>
-          <li>Failure to access or scan a QR code</li>
-          <li>System downtime, delays, or technical issues</li>
-          <li>Actions taken by third parties based on accessed information</li>
-        </ul>
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>9. Contact</h2>
+            <p style={styles.paragraph}>
+              If you have any questions about these Terms &amp; Conditions,
+              please contact us at{" "}
+              <a href="mailto:support@rroi.co.za" style={styles.link}>
+                support@rroi.co.za
+              </a>
+              .
+            </p>
+          </div>
 
-        <h2 style={sectionTitle}>8. Payments and Subscriptions</h2>
-        <p style={paragraph}>
-          Premium features require payment. Payments are processed via PayFast.
-        </p>
-        <ul style={listStyle}>
-          <li>Initial upgrade includes a once-off payment for the Premium Kit.</li>
-          <li>Annual subscription fees apply for continued premium access.</li>
-          <li>Payments are non-refundable unless required by law.</li>
-        </ul>
+          <div style={styles.footerLinks}>
+            <Link href="/contact" style={styles.footerLink}>
+              Contact
+            </Link>
+            <span style={styles.dot}>•</span>
+            <Link href="/privacy-policy" style={styles.footerLink}>
+              Privacy Policy
+            </Link>
+          </div>
 
-        <h2 style={sectionTitle}>9. Orders and Physical Products</h2>
-        <p style={paragraph}>
-          RROI may provide physical QR products as part of premium offerings.
-        </p>
-        <ul style={listStyle}>
-          <li>Production begins after successful payment.</li>
-          <li>Delivery timelines are estimates and may vary.</li>
-          <li>RROI is not liable for courier delays once dispatched.</li>
-        </ul>
-
-        <h2 style={sectionTitle}>10. Account Termination</h2>
-        <p style={paragraph}>
-          You may delete your account at any time. Upon deletion, your profile
-          will no longer be publicly accessible.
-        </p>
-        <p style={paragraph}>
-          RROI reserves the right to suspend or terminate accounts for misuse,
-          abuse, fraud, or violation of these terms.
-        </p>
-
-        <h2 style={sectionTitle}>11. Acceptable Use</h2>
-        <ul style={listStyle}>
-          <li>You may not use the platform for unlawful purposes.</li>
-          <li>You may not upload false, misleading, or harmful information.</li>
-          <li>You may not attempt to disrupt or compromise the platform.</li>
-        </ul>
-
-        <h2 style={sectionTitle}>12. Changes to Terms</h2>
-        <p style={paragraph}>
-          RROI may update these Terms at any time. Continued use of the platform
-          after changes constitutes acceptance of the updated Terms.
-        </p>
-
-        <h2 style={sectionTitle}>13. Governing Law</h2>
-        <p style={paragraph}>
-          These Terms are governed by the laws of the Republic of South Africa.
-        </p>
-
-        <h2 style={sectionTitle}>14. Contact</h2>
-        <p style={paragraph}>
-          <strong>RROI (Pty) Ltd</strong>
-          <br />
-          Email: support@rroi.co.za
-        </p>
-
-        <div style={{ marginTop: 36, display: "flex", justifyContent: "center" }}>
-          <Link
-            href="/"
-            style={{
-              textDecoration: "none",
-              fontWeight: 900,
-              color: "#FFFFFF",
-              background: "#157A55",
-              padding: "12px 18px",
-              borderRadius: 12,
-            }}
-          >
-            ← Back to Home
-          </Link>
+          <div style={styles.backWrap}>
+            <button type="button" onClick={handleBack} style={styles.backBtn}>
+              ← Back
+            </button>
+          </div>
         </div>
-      </div>
+      </section>
     </main>
   );
 }
 
-const title: React.CSSProperties = {
-  fontSize: 40,
-  lineHeight: 1.1,
-  marginBottom: 10,
-  fontWeight: 900,
-};
-
-const sectionTitle: React.CSSProperties = {
-  fontSize: 26,
-  marginTop: 28,
-  marginBottom: 10,
-  fontWeight: 900,
-};
-
-const paragraph: React.CSSProperties = {
-  margin: "0 0 14px",
-  fontSize: 17,
-};
-
-const listStyle: React.CSSProperties = {
-  marginTop: 6,
-  marginBottom: 14,
-  paddingLeft: 24,
-  fontSize: 17,
-  lineHeight: 1.7,
-};
-
-const muted: React.CSSProperties = {
-  marginBottom: 24,
-  color: "#4B5563",
+const styles: Record<string, React.CSSProperties> = {
+  page: {
+    background: PAGE_BG,
+    minHeight: "100%",
+    padding: "40px 16px 56px",
+  },
+  container: {
+    maxWidth: 900,
+    margin: "0 auto",
+    width: "100%",
+  },
+  card: {
+    background: CARD_BG,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 24,
+    padding: 28,
+    boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
+  },
+  topBlock: {
+    marginBottom: 24,
+  },
+  title: {
+    margin: 0,
+    fontSize: 34,
+    lineHeight: 1.1,
+    fontWeight: 900,
+    color: TEXT,
+  },
+  subtitle: {
+    margin: "12px 0 0",
+    fontSize: 16,
+    lineHeight: 1.6,
+    color: MUTED,
+    maxWidth: 650,
+  },
+  section: {
+    border: `1px solid ${BORDER}`,
+    borderRadius: 18,
+    padding: 20,
+    background: "#FFFFFF",
+    marginBottom: 18,
+  },
+  sectionTitle: {
+    margin: "0 0 10px",
+    fontSize: 20,
+    fontWeight: 800,
+    color: TEXT,
+  },
+  paragraph: {
+    margin: 0,
+    fontSize: 15,
+    lineHeight: 1.7,
+    color: MUTED,
+  },
+  link: {
+    color: BRAND_GREEN,
+    fontWeight: 700,
+    textDecoration: "none",
+  },
+  footerLinks: {
+    marginTop: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    flexWrap: "wrap",
+  },
+  footerLink: {
+    textDecoration: "none",
+    color: BRAND_GREEN,
+    fontWeight: 700,
+    fontSize: 14,
+  },
+  dot: {
+    color: "#94A3B8",
+    fontSize: 14,
+  },
+  backWrap: {
+    marginTop: 24,
+    display: "flex",
+    justifyContent: "center",
+  },
+  backBtn: {
+    border: `1px solid ${BORDER}`,
+    background: "#FFFFFF",
+    color: TEXT,
+    fontWeight: 800,
+    fontSize: 14,
+    padding: "10px 16px",
+    borderRadius: 12,
+    cursor: "pointer",
+  },
 };
