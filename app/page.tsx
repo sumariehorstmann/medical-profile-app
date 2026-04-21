@@ -187,7 +187,16 @@ export default function HomePage() {
             Apply to become an affiliate
           </Link>
         </div>
-
+<div style={styles.card}>
+  <h2 style={styles.h2}>Online Store</h2>
+  <p style={styles.p}>
+    Purchase additional engraved QR code physical items online. Available to
+    both free and Premium users.
+  </p>
+  <Link href="/store" style={styles.secondaryBtn}>
+    Visit online store
+  </Link>
+</div>
         <div style={styles.notice}>
           <strong>Important notice</strong>
           <p style={styles.noticeP}>
