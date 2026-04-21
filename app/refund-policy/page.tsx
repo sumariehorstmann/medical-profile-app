@@ -1,228 +1,236 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
 
-const sections = [
-  {
-    title: "1. Digital Products (Premium Subscription)",
-    content: (
-      <>
-        <p className="text-[17px] leading-8 text-slate-600">
-          RROI Premium is a digital service that provides enhanced profile
-          visibility and functionality.
-        </p>
+import PageHeader from "@/components/PageHeader";
+import PageBottomNav from "@/components/PageBottomNav";
 
-        <p className="mt-4 text-[17px] leading-8 text-slate-600">
-          Once payment has been successfully processed and Premium access has
-          been activated:
-        </p>
-
-        <ul className="mt-3 list-disc space-y-2 pl-6 text-[17px] leading-8 text-slate-600">
-          <li>Payments are non-refundable</li>
-          <li>Access is considered used immediately upon activation</li>
-        </ul>
-
-        <p className="mt-5 text-[17px] leading-8 text-slate-600">
-          Refunds will only be considered in the following cases:
-        </p>
-
-        <ul className="mt-3 list-disc space-y-2 pl-6 text-[17px] leading-8 text-slate-600">
-          <li>Duplicate payment</li>
-          <li>Verified billing error</li>
-          <li>Where required by applicable law</li>
-        </ul>
-      </>
-    ),
-  },
-  {
-    title: "2. Custom Physical Products (QR Items)",
-    content: (
-      <>
-        <p className="text-[17px] leading-8 text-slate-600">
-          All RROI physical products are made to order, custom-linked to a
-          user&apos;s unique QR profile, and manufactured specifically for each
-          customer.
-        </p>
-
-        <ul className="mt-4 list-disc space-y-2 pl-6 text-[17px] leading-8 text-slate-600">
-          <li>No cancellations are allowed once payment has been made</li>
-          <li>
-            No returns or refunds are accepted for change of mind or incorrect
-            information submitted by the user
-          </li>
-        </ul>
-
-        <p className="mt-5 text-[17px] leading-8 text-slate-600">
-          Customers are responsible for ensuring that all submitted details are
-          accurate before completing payment.
-        </p>
-      </>
-    ),
-  },
-  {
-    title: "3. Damaged, Defective, or Incorrect Items",
-    content: (
-      <>
-        <p className="text-[17px] leading-8 text-slate-600">
-          We will replace or refund an order only if:
-        </p>
-
-        <ul className="mt-4 list-disc space-y-2 pl-6 text-[17px] leading-8 text-slate-600">
-          <li>The item arrives damaged</li>
-          <li>The item is defective</li>
-          <li>The item does not match the confirmed order details</li>
-          <li>The wrong item was sent</li>
-        </ul>
-
-        <p className="mt-5 text-[17px] leading-8 text-slate-600">To qualify:</p>
-
-        <ul className="mt-3 list-disc space-y-2 pl-6 text-[17px] leading-8 text-slate-600">
-          <li>The issue must be reported within 48 hours of delivery</li>
-          <li>Clear photographic evidence must be provided</li>
-        </ul>
-
-        <p className="mt-5 text-[17px] leading-8 text-slate-600">
-          RROI reserves the right to assess each claim before approving a
-          replacement or refund.
-        </p>
-      </>
-    ),
-  },
-  {
-    title: "4. Shipping and Delivery Issues",
-    content: (
-      <>
-        <p className="text-[17px] leading-8 text-slate-600">
-          RROI uses third-party courier services for delivery. We are not
-          responsible for delays caused by courier services or incorrect
-          delivery details provided by the customer.
-        </p>
-
-        <p className="mt-5 text-[17px] leading-8 text-slate-600">
-          If a parcel is lost or damaged in transit, we will assist in resolving
-          the issue with the courier.
-        </p>
-      </>
-    ),
-  },
-  {
-    title: "5. Refund Processing (If Applicable)",
-    content: (
-      <>
-        <p className="text-[17px] leading-8 text-slate-600">
-          If a refund is approved, it will be processed via the original payment
-          method where possible.
-        </p>
-
-        <p className="mt-5 text-[17px] leading-8 text-slate-600">
-          Processing time: 5–10 business days.
-        </p>
-      </>
-    ),
-  },
-  {
-    title: "6. Contact",
-    content: (
-      <div className="space-y-4">
-        <p className="text-[17px] leading-8 text-slate-600">
-          Email:{" "}
-          <a
-            href="mailto:support@rroi.co.za"
-            className="font-medium text-emerald-700 underline underline-offset-4"
-          >
-            support@rroi.co.za
-          </a>
-        </p>
-
-        <p className="text-[17px] leading-8 text-slate-600">
-          Website:{" "}
-          <a
-            href="https://www.rroi.co.za"
-            target="_blank"
-            rel="noreferrer"
-            className="font-medium text-emerald-700 underline underline-offset-4"
-          >
-            www.rroi.co.za
-          </a>
-        </p>
-      </div>
-    ),
-  },
-];
+const TEXT = "#0F172A";
+const MUTED = "#475569";
+const BORDER = "#E5E7EB";
+const PAGE_BG = "#F8FAFC";
+const CARD_BG = "#FFFFFF";
 
 export default function RefundPolicyPage() {
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-5xl">
-        <div className="rounded-[32px] border border-slate-200 bg-white px-6 py-10 shadow-sm sm:px-10 sm:py-14 lg:px-16">
-          <div className="flex flex-col items-center text-center">
-            <Image
-              src="/logo.png"
-              alt="RROI logo"
-              width={180}
-              height={180}
-              className="h-auto w-[130px] sm:w-[160px]"
-              priority
-            />
+    <main style={styles.page}>
+      <section style={styles.container}>
+        <div style={styles.card}>
+          <PageHeader />
 
-            <h1 className="mt-8 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-              Refund &amp; Returns Policy
-            </h1>
-
-            <div className="mt-6 max-w-3xl space-y-3">
-              <p className="text-[18px] leading-8 text-slate-600">
-                RROI provides both digital services and custom-manufactured
-                physical products.
-              </p>
-              <p className="text-[18px] leading-8 text-slate-600">
-                Due to the nature of these offerings, specific refund and return
-                conditions apply.
-              </p>
-              <p className="text-[18px] leading-8 text-slate-600">
-                By completing a purchase, you agree to the terms outlined in
-                this policy.
-              </p>
-            </div>
+          <div style={styles.topBlock}>
+            <h1 style={styles.title}>Refund &amp; Returns Policy</h1>
+            <p style={styles.subtitle}>
+              RROI provides both digital services and custom-manufactured
+              physical products. Due to the nature of these offerings, specific
+              refund and return conditions apply. By completing a purchase, you
+              agree to the terms outlined in this policy.
+            </p>
           </div>
 
-          <div className="mt-12 space-y-6">
-            {sections.map((section) => (
-              <section
-                key={section.title}
-                className="rounded-[24px] border border-slate-200 bg-white px-5 py-6 sm:px-8 sm:py-8"
-              >
-                <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-                  {section.title}
-                </h2>
-                <div className="mt-5">{section.content}</div>
-              </section>
-            ))}
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              1. Digital Products (Premium Subscription)
+            </h2>
+            <p style={styles.paragraph}>
+              RROI Premium is a digital service that provides enhanced profile
+              visibility and functionality.
+            </p>
+            <p style={styles.paragraphSpaced}>
+              Once payment has been successfully processed and Premium access has
+              been activated:
+            </p>
+            <ul style={styles.list}>
+              <li style={styles.listItem}>Payments are non-refundable</li>
+              <li style={styles.listItem}>
+                Access is considered used immediately upon activation
+              </li>
+            </ul>
+            <p style={styles.paragraphSpaced}>
+              Refunds will only be considered in the following cases:
+            </p>
+            <ul style={styles.list}>
+              <li style={styles.listItem}>Duplicate payment</li>
+              <li style={styles.listItem}>Verified billing error</li>
+              <li style={styles.listItem}>Where required by applicable law</li>
+            </ul>
           </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              2. Custom Physical Products (QR Items)
+            </h2>
+            <p style={styles.paragraph}>
+              All RROI physical products are made to order, custom-linked to a
+              user&apos;s unique QR profile, and manufactured specifically for
+              each customer.
+            </p>
+            <ul style={styles.listSpaced}>
+              <li style={styles.listItem}>
+                No cancellations are allowed once payment has been made
+              </li>
+              <li style={styles.listItem}>
+                No returns or refunds are accepted for change of mind or
+                incorrect information submitted by the user
+              </li>
+            </ul>
+            <p style={styles.paragraphSpaced}>
+              Customers are responsible for ensuring that all submitted details
+              are accurate before completing payment.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              3. Damaged, Defective, or Incorrect Items
+            </h2>
+            <p style={styles.paragraph}>
+              We will replace or refund an order only if:
+            </p>
+            <ul style={styles.listSpaced}>
+              <li style={styles.listItem}>The item arrives damaged</li>
+              <li style={styles.listItem}>The item is defective</li>
+              <li style={styles.listItem}>
+                The item does not match the confirmed order details
+              </li>
+              <li style={styles.listItem}>The wrong item was sent</li>
+            </ul>
+            <p style={styles.paragraphSpaced}>To qualify:</p>
+            <ul style={styles.list}>
+              <li style={styles.listItem}>
+                The issue must be reported within 48 hours of delivery
+              </li>
+              <li style={styles.listItem}>
+                Clear photographic evidence must be provided
+              </li>
+            </ul>
+            <p style={styles.paragraphSpaced}>
+              RROI reserves the right to assess each claim before approving a
+              replacement or refund.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>4. Shipping and Delivery Issues</h2>
+            <p style={styles.paragraph}>
+              RROI uses third-party courier services for delivery. We are not
+              responsible for delays caused by courier services or incorrect
+              delivery details provided by the customer.
+            </p>
+            <p style={styles.paragraphSpaced}>
+              If a parcel is lost or damaged in transit, we will assist in
+              resolving the issue with the courier.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              5. Refund Processing (If Applicable)
+            </h2>
+            <p style={styles.paragraph}>
+              If a refund is approved, it will be processed via the original
+              payment method where possible.
+            </p>
+            <p style={styles.paragraphSpaced}>
+              Processing time: 5–10 business days.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>6. Contact</h2>
+            <p style={styles.paragraph}>
+              If you have any questions about this Refund &amp; Returns Policy,
+              please contact us at{" "}
+              <a href="mailto:support@rroi.co.za" style={styles.link}>
+                support@rroi.co.za
+              </a>
+              .
+            </p>
+          </div>
+
+          <PageBottomNav />
         </div>
-
-        <footer className="mt-8 pb-6 text-center">
-          <p className="text-sm text-slate-500">
-            © 2026 RROI. All rights reserved.
-          </p>
-
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-emerald-700">
-            <Link href="/terms" className="hover:underline">
-              Terms &amp; Conditions
-            </Link>
-            <span className="text-slate-300">|</span>
-            <Link href="/privacy-policy" className="hover:underline">
-              Privacy Policy
-            </Link>
-            <span className="text-slate-300">|</span>
-            <Link href="/refund-policy" className="hover:underline">
-              Refund &amp; Returns Policy
-            </Link>
-            <span className="text-slate-300">|</span>
-            <Link href="/contact" className="hover:underline">
-              Contact
-            </Link>
-          </div>
-        </footer>
-      </div>
+      </section>
     </main>
   );
 }
+
+const styles: Record<string, React.CSSProperties> = {
+  page: {
+    background: PAGE_BG,
+    minHeight: "100%",
+    padding: "40px 16px 56px",
+  },
+  container: {
+    maxWidth: 900,
+    margin: "0 auto",
+    width: "100%",
+  },
+  card: {
+    background: CARD_BG,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 24,
+    padding: 28,
+    boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
+  },
+  topBlock: {
+    marginBottom: 24,
+    textAlign: "center",
+  },
+  title: {
+    margin: 0,
+    fontSize: 34,
+    fontWeight: 900,
+    color: TEXT,
+  },
+  subtitle: {
+    margin: "12px auto 0",
+    fontSize: 16,
+    color: MUTED,
+    lineHeight: 1.6,
+    maxWidth: 650,
+  },
+  section: {
+    border: `1px solid ${BORDER}`,
+    borderRadius: 18,
+    padding: 20,
+    background: "#FFFFFF",
+    marginBottom: 18,
+  },
+  sectionTitle: {
+    margin: "0 0 10px",
+    fontSize: 20,
+    fontWeight: 800,
+    color: TEXT,
+  },
+  paragraph: {
+    margin: 0,
+    fontSize: 15,
+    lineHeight: 1.7,
+    color: MUTED,
+  },
+  paragraphSpaced: {
+    margin: "12px 0 0",
+    fontSize: 15,
+    lineHeight: 1.7,
+    color: MUTED,
+  },
+  list: {
+    margin: "10px 0 0 22px",
+    padding: 0,
+    color: MUTED,
+  },
+  listSpaced: {
+    margin: "12px 0 0 22px",
+    padding: 0,
+    color: MUTED,
+  },
+  listItem: {
+    marginBottom: 8,
+    fontSize: 15,
+    lineHeight: 1.7,
+  },
+  link: {
+    color: "#157A55",
+    fontWeight: 700,
+    textDecoration: "none",
+  },
+};
