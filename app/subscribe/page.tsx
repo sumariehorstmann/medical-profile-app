@@ -1,225 +1,140 @@
 "use client";
 
-import { useEffect } from "react";
-import Link from "next/link";
-import PageHeader from "@/components/PageHeader";
+import { useState } from "react";
 
 export default function SubscribePage() {
-  
-useEffect(() => {
-  const ref = new URLSearchParams(window.location.search).get("ref");
+  const [agreed, setAgreed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  if (ref) {
+  const handleSubscribe = async () => {
+    if (!agreed) {
+      alert("Please agree to the Terms, Privacy Policy, and Refund Policy.");
+      return;
+    }
+
     try {
-      sessionStorage.setItem("rroi_ref", ref.toUpperCase());
-    } catch {}
-  }
-}, []);
+      setLoading(true);
+
+      const res = await fetch("/api/payfast/subscribe", {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Payment failed");
+      }
+
+      // Redirect to PayFast
+      window.location.href = data.url;
+    } catch (err: any) {
+      alert(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main style={styles.page}>
-      <section style={styles.hero}>
-        <div style={styles.brand}>
-          <PageHeader />
+      <div style={styles.card}>
+        <h1 style={styles.title}>Upgrade to Premium</h1>
 
-          <h1 style={styles.h1}>RROI Premium Upgrade</h1>
+        <p style={styles.subtitle}>
+          Unlock full emergency profile visibility and receive your QR product kit.
+        </p>
 
-          <p style={styles.sub}>
-            Upgrade to Premium to unlock full public profile visibility when
-            your QR code is scanned.
-          </p>
-        </div>
-      </section>
+        {/* ✅ CHECKBOX */}
+        <div style={styles.checkboxContainer}>
+          <input
+            type="checkbox"
+            id="agree"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            style={styles.checkbox}
+          />
 
-      <section style={styles.blocks}>
-        <div style={styles.card}>
-          <h2 style={styles.h2}>Free tier</h2>
-          <ul style={styles.ul}>
-            <li>Create your account for free</li>
-            <li>Complete and save your full profile</li>
-            <li>QR public view shows Section 1 only</li>
-            <li>Upgrade later at any time</li>
-          </ul>
-        </div>
-
-        <div style={styles.card}>
-          <h2 style={styles.h2}>Premium tier</h2>
-
-          <div style={styles.price}>R399 first year</div>
-          <div style={styles.priceSub}>Includes your Premium setup</div>
-          <div style={styles.priceSubStrong}>
-            Annual renewal thereafter of R99
-          </div>
-
-          <ul style={styles.ul}>
-            <li>Full medical profile visible when QR is scanned</li>
-            <li>Two physical QR items included</li>
-            <li>Free nationwide delivery</li>
-            <li>Secure online emergency profile</li>
-          </ul>
+          <label htmlFor="agree" style={styles.checkboxLabel}>
+            I agree to the{" "}
+            <a href="/terms" style={styles.link}>Terms & Conditions</a>,{" "}
+            <a href="/privacy" style={styles.link}>Privacy Policy</a>, and{" "}
+            <a href="/refund-policy" style={styles.link}>Refund & Returns Policy</a>
+          </label>
         </div>
 
-        <div style={styles.notice}>
-          <strong>Important notice</strong>
-          <p style={styles.noticeP}>
-            RROI does not provide medical advice, diagnosis, or emergency
-            services.
-          </p>
-          <p style={styles.noticeP}>
-            RROI is not a replacement for professional medical care or emergency
-            response services. In an emergency, always contact local emergency
-            services.
-          </p>
-        </div>
-
-        <div style={styles.actions}>
-          <Link href="/subscribe/order" style={styles.primaryBtn}>
-            Upgrade to Premium
-          </Link>
-
-          <Link href="/profile" style={styles.secondaryBtn}>
-            Back to profile
-          </Link>
-
-          <Link href="/" style={styles.backHome}>
-            ← Back to home
-          </Link>
-        </div>
-      </section>
+        {/* ✅ BUTTON */}
+        <button
+          onClick={handleSubscribe}
+          disabled={!agreed || loading}
+          style={{
+            ...styles.button,
+            opacity: !agreed || loading ? 0.6 : 1,
+            cursor: !agreed || loading ? "not-allowed" : "pointer",
+          }}
+        >
+          {loading ? "Redirecting..." : "Upgrade to Premium"}
+        </button>
+      </div>
     </main>
   );
 }
-
-const BRAND_GREEN = "#157A55";
-const TEXT = "#0F172A";
-const BORDER = "#E5E7EB";
-const MUTED = "#475569";
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
     display: "flex",
-    flexDirection: "column",
-    background: "#FFFFFF",
-    color: TEXT,
-  },
-  hero: {
-    padding: "34px 16px 18px",
-    display: "flex",
     justifyContent: "center",
-  },
-  brand: {
-    width: "100%",
-    maxWidth: 620,
-    textAlign: "center",
-  },
-  h1: {
-    marginTop: 16,
-    marginBottom: 12,
-    fontSize: 28,
-    lineHeight: 1.15,
-    fontWeight: 900,
-  },
-  sub: {
-    margin: 0,
-    fontSize: 18,
-    lineHeight: 1.5,
-    color: "#334155",
-  },
-  blocks: {
-    padding: "10px 16px 28px",
-    display: "flex",
-    flexDirection: "column",
-    gap: 14,
     alignItems: "center",
+    background: "#F8FAFC",
+    padding: 16,
   },
   card: {
-    width: "100%",
-    maxWidth: 620,
-    border: `1px solid ${BORDER}`,
-    borderRadius: 16,
-    padding: 18,
     background: "#FFFFFF",
-  },
-  h2: {
-    margin: "0 0 10px",
-    fontSize: 18,
-    fontWeight: 900,
-  },
-  price: {
-    fontSize: 28,
-    fontWeight: 900,
-    margin: "6px 0 4px",
-  },
-  priceSub: {
-    fontSize: 14,
-    color: MUTED,
-    marginBottom: 4,
-  },
-  priceSubStrong: {
-    fontSize: 15,
-    fontWeight: 800,
-    color: TEXT,
-    marginBottom: 12,
-  },
-  ul: {
-    margin: 0,
-    paddingLeft: 18,
-    lineHeight: 1.75,
-    color: "#334155",
-  },
-  notice: {
+    borderRadius: 20,
+    padding: 28,
+    maxWidth: 420,
     width: "100%",
-    maxWidth: 620,
-    border: `1px solid ${BORDER}`,
-    borderRadius: 16,
-    padding: 18,
-    background: "#F8FAFC",
-  },
-  noticeP: {
-    margin: "8px 0 0",
-    lineHeight: 1.6,
-    color: "#334155",
-    fontSize: 14,
-  },
-  actions: {
-    width: "100%",
-    maxWidth: 620,
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
-  primaryBtn: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    padding: "14px 18px",
-    borderRadius: 14,
-    background: BRAND_GREEN,
-    color: "#FFFFFF",
-    textDecoration: "none",
-    fontWeight: 900,
-    fontSize: 16,
-    boxShadow: "0 6px 16px rgba(21, 122, 85, 0.16)",
-  },
-  secondaryBtn: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    padding: "14px 18px",
-    borderRadius: 14,
-    border: `1px solid ${BRAND_GREEN}`,
-    color: BRAND_GREEN,
-    background: "#FFFFFF",
-    textDecoration: "none",
-    fontWeight: 900,
-    fontSize: 16,
-  },
-  backHome: {
+    border: "1px solid #E5E7EB",
+    boxShadow: "0 10px 30px rgba(15,23,42,0.06)",
     textAlign: "center",
-    color: MUTED,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 800,
+    marginBottom: 10,
+    color: "#0F172A",
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#475569",
+    marginBottom: 24,
+  },
+  checkboxContainer: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 10,
+    textAlign: "left",
+    marginBottom: 20,
+  },
+  checkbox: {
+    marginTop: 4,
+  },
+  checkboxLabel: {
+    fontSize: 13,
+    color: "#475569",
+    lineHeight: 1.5,
+  },
+  link: {
+    color: "#157A55",
+    fontWeight: 600,
     textDecoration: "none",
+  },
+  button: {
+    width: "100%",
+    padding: "12px 16px",
+    borderRadius: 10,
+    border: "none",
+    background: "#157A55",
+    color: "#FFFFFF",
     fontWeight: 700,
     fontSize: 14,
   },
