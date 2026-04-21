@@ -48,8 +48,7 @@ useEffect(() => {
           </div>
 
           <div style={styles.helperLine}>
-            Free profile setup • Complete and save your full profile on free •
-            Upgrade later for full public profile visibility
+            Create your full profile for free • Only essential info is visible publicly • Upgrade anytime to unlock full emergency access
           </div>
         </div>
       </section>
