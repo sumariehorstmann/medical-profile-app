@@ -12,7 +12,11 @@ export default function SiteHeader() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const isHomePage = pathname === "/";
+  const showGuestButtons =
+    pathname === "/" ||
+    pathname === "/login" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password";
 
   useEffect(() => {
     let mounted = true;
@@ -51,8 +55,6 @@ export default function SiteHeader() {
     }
   }
 
-  const showLoggedOutButtons = isHomePage || !isLoggedIn;
-
   return (
     <header style={styles.header}>
       <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
@@ -68,7 +70,7 @@ export default function SiteHeader() {
       </Link>
 
       <div style={styles.headerActions}>
-        {isLoggedIn === null ? null : showLoggedOutButtons ? (
+        {isLoggedIn === null ? null : showGuestButtons || !isLoggedIn ? (
           <>
             <Link href="/login" style={styles.loginLink}>
               Log in
