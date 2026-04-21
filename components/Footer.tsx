@@ -7,6 +7,7 @@ export default function Footer() {
         <Link href="/contact" style={styles.link}>Contact</Link>
         <Link href="/terms" style={styles.link}>Terms & Conditions</Link>
         <Link href="/privacy" style={styles.link}>Privacy Policy</Link>
+        <Link href="/refund-policy" style={styles.link}>Refund & Returns</Link>
       </div>
 
       <div style={styles.meta}>
