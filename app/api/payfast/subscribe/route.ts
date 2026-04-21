@@ -42,6 +42,20 @@ function buildSignature(data: Record<string, string>, passphrase?: string) {
   return crypto.createHash("md5").update(pairs.join("&")).digest("hex");
 }
 
+function getClientIp(req: NextRequest) {
+  const forwardedFor = req.headers.get("x-forwarded-for");
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0].trim();
+  }
+
+  const realIp = req.headers.get("x-real-ip");
+  if (realIp) {
+    return realIp.trim();
+  }
+
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const cookieStore = await cookies();
@@ -82,12 +96,19 @@ export async function POST(req: NextRequest) {
     const affiliateCode = String(body?.affiliateCode ?? "")
       .trim()
       .toUpperCase();
+    const agreedToLegal = body?.agreedToLegal === true;
+
+    if (!agreedToLegal) {
+      return NextResponse.json(
+        { error: "You must agree to the Terms, Privacy Policy, and Refund Policy." },
+        { status: 400 }
+      );
+    }
 
     if (!publicId || !email) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
     }
 
-    // ✅ Validate env
     const requiredEnv = [
       "PAYFAST_MERCHANT_ID",
       "PAYFAST_MERCHANT_KEY",
@@ -104,7 +125,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ✅ Validate profile ownership
     const { data: profile, error: profileError } = await supabaseAdmin
       .from("profiles")
       .select("user_id, public_id")
@@ -116,7 +136,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    // ✅ Prevent duplicate active subscription
     const { data: existingSub } = await supabaseAdmin
       .from("subscriptions")
       .select("user_id")
@@ -132,12 +151,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🔥 PRICE LOGIC (CLEAN)
     let finalAmount = BASE_PRICE;
-    
-    if (affiliateCode) {
-  finalAmount = BASE_PRICE - DISCOUNT_AMOUNT;
-}
+
     if (affiliateCode) {
       const { data: affiliate } = await supabaseAdmin
         .from("affiliates")
@@ -154,12 +169,39 @@ export async function POST(req: NextRequest) {
       }
 
       finalAmount = AFFILIATE_PRICE;
+    } else {
+      finalAmount = BASE_PRICE;
     }
 
-    // ✅ Payment record
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!.trim();
+    const agreedAt = new Date().toISOString();
+    const ipAddress = getClientIp(req);
+    const userAgent = req.headers.get("user-agent");
+
+    const { error: consentError } = await supabaseAdmin
+      .from("payment_consents")
+      .insert({
+        user_id: user.id,
+        consent_type: "premium_checkout",
+        terms_url: `${baseUrl}/terms`,
+        privacy_url: `${baseUrl}/privacy`,
+        refund_url: `${baseUrl}/refund-policy`,
+        agreed_at: agreedAt,
+        ip_address: ipAddress,
+        user_agent: userAgent,
+      });
+
+    if (consentError) {
+      console.error("CONSENT LOG ERROR:", consentError);
+      return NextResponse.json(
+        { error: "Failed to record legal agreement." },
+        { status: 500 }
+      );
+    }
+
     const paymentId = `rroi_${publicId}_${Date.now()}`;
 
-    await supabaseAdmin.from("payments").insert({
+    const { error: paymentError } = await supabaseAdmin.from("payments").insert({
       user_id: profile.user_id,
       public_id: profile.public_id,
       provider: "payfast",
@@ -168,11 +210,16 @@ export async function POST(req: NextRequest) {
       status: "pending",
     });
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!.trim();
+    if (paymentError) {
+      console.error("PAYMENT INSERT ERROR:", paymentError);
+      return NextResponse.json(
+        { error: "Failed to create payment record." },
+        { status: 500 }
+      );
+    }
 
     console.log("FINAL AMOUNT SENT TO PAYFAST:", finalAmount);
 
-    // ✅ PayFast payload
     const data: Record<string, string> = {
       merchant_id: process.env.PAYFAST_MERCHANT_ID!,
       merchant_key: process.env.PAYFAST_MERCHANT_KEY!,
