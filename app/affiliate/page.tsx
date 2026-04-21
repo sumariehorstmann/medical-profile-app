@@ -21,60 +21,75 @@ export default function AffiliatePage() {
           <div style={styles.topBlock}>
             <h1 style={styles.title}>Affiliate Program</h1>
             <p style={styles.subtitle}>
-              The RROI affiliate program is available only to users with an
-              active Premium subscription.
+              Join the RROI affiliate program and earn commission on qualifying
+              Premium upgrades made through your approved affiliate code.
             </p>
           </div>
 
           <div style={styles.notice}>
             <p style={styles.noticeText}>
-              To apply, you must first log in or sign up, then upgrade to
-              Premium if needed.
+              The RROI affiliate program is available only to users with an
+              active Premium subscription.
             </p>
             <p style={{ ...styles.noticeText, marginBottom: 0 }}>
-              Once you have an active Premium subscription, you can apply to
-              become an affiliate from your profile page.
+              Approval is not automatic. All applications are reviewed before an
+              affiliate account is activated.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>What it is</h2>
+            <h2 style={styles.sectionTitle}>What the program is</h2>
             <p style={styles.paragraph}>
-              Approved affiliates receive a unique referral code. When someone
-              subscribes using that code, they receive a discount and the
-              affiliate earns commission on successful paid Premium signups,
-              subject to the affiliate terms.
+              Approved affiliates receive a unique referral code. When a new
+              customer uses that code to complete a qualifying Premium upgrade,
+              the customer receives the applicable discount and the affiliate may
+              earn commission, subject to the affiliate terms and payout rules.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>How it works</h2>
+            <h2 style={styles.sectionTitle}>How to apply</h2>
             <ol style={styles.orderedList}>
-              <li>Log in or sign up for an RROI account.</li>
+              <li>Create or log in to your RROI account.</li>
               <li>Upgrade to Premium if your profile is still on the free tier.</li>
               <li>Go to your profile page.</li>
-              <li>Click “Apply to Become an Affiliate” from your Premium profile.</li>
-              <li>Complete the application form and submit your details.</li>
+              <li>Select “Apply to Become an Affiliate”.</li>
+              <li>Complete and submit the affiliate application form.</li>
+              <li>Wait for review and approval.</li>
             </ol>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Key Rules</h2>
+            <h2 style={styles.sectionTitle}>Important rules</h2>
             <ul style={styles.unorderedList}>
               <li>You must have an active Premium subscription to apply.</li>
-              <li>No self-referrals.</li>
-              <li>Commission applies to first-year Premium signups only.</li>
-              <li>No commission is paid on renewals.</li>
+              <li>Approval is subject to review and may be declined.</li>
+              <li>No self-referrals are allowed.</li>
+              <li>Commission applies only to qualifying paid upgrades.</li>
+              <li>No commission is paid on renewals unless expressly stated.</li>
               <li>
-                RROI may suspend affiliate access for misuse or misleading
-                promotion.
+                RROI may suspend or remove affiliate access for misuse,
+                misleading promotion, or breach of the affiliate terms.
               </li>
             </ul>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>Before you apply</h2>
+            <p style={styles.paragraph}>
+              Please read the affiliate terms carefully before submitting your
+              application. Those terms govern approval, commissions, conduct,
+              suspension, and other important conditions of the program.
+            </p>
           </div>
 
           <div style={styles.ctaWrap}>
             <Link href="/login" style={styles.primaryBtn}>
               Log in or Sign up
+            </Link>
+
+            <Link href="/affiliate/terms" style={styles.secondaryLink}>
+              View Affiliate Terms
             </Link>
           </div>
 
@@ -172,7 +187,9 @@ const styles: Record<string, React.CSSProperties> = {
   ctaWrap: {
     marginTop: 24,
     display: "flex",
-    justifyContent: "center",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 12,
   },
   primaryBtn: {
     display: "inline-block",
@@ -184,5 +201,11 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#FFFFFF",
     textDecoration: "none",
     fontWeight: 800,
+  },
+  secondaryLink: {
+    textDecoration: "none",
+    color: BRAND_GREEN,
+    fontWeight: 700,
+    fontSize: 15,
   },
 };
