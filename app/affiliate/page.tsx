@@ -1,211 +1,392 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
-import PageBottomNav from "@/components/PageBottomNav";
 
-const TEXT = "#0F172A";
-const MUTED = "#475569";
-const BORDER = "#E5E7EB";
-const PAGE_BG = "#F8FAFC";
-const CARD_BG = "#FFFFFF";
-const BRAND_GREEN = "#157A55";
+export default function HomePage() {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
 
-export default function AffiliatePage() {
+    if (ref) {
+      try {
+        sessionStorage.setItem("rroi_ref", ref.toUpperCase());
+      } catch {}
+    }
+  }, []);
+
   return (
     <main style={styles.page}>
-      <section style={styles.container}>
-        <div style={styles.card}>
+      <section style={styles.hero}>
+        <div style={styles.brand}>
           <PageHeader />
 
-          <div style={styles.topBlock}>
-            <h1 style={styles.title}>Affiliate Program</h1>
-            <p style={styles.subtitle}>
-              Join the RROI affiliate program and earn commission on qualifying
-              Premium upgrades made through your approved affiliate code.
-            </p>
+          <h1 style={styles.h1}>
+            Your emergency profile, instantly accessible with a QR code when it
+            matters most
+          </h1>
+
+          <p style={styles.sub}>
+            Create your emergency profile for free in minutes. In an emergency,
+            your QR code can give access to critical information instantly.
+          </p>
+
+          <Link href="/login" style={styles.primaryBtn}>
+            Sign up free
+          </Link>
+
+          <div style={styles.already}>
+            <span style={styles.alreadyText}>Already have an account?</span>{" "}
+            <Link href="/login" style={styles.alreadyLink}>
+              Log in
+            </Link>
           </div>
 
-          <div style={styles.notice}>
-            <p style={styles.noticeText}>
-              The RROI affiliate program is available only to users with an
-              active Premium subscription.
-            </p>
-            <p style={{ ...styles.noticeText, marginBottom: 0 }}>
-              Approval is not automatic. All applications are reviewed before an
-              affiliate account is activated.
-            </p>
+          <div style={styles.reassure}>
+            Secure • POPIA-aligned • You control what is publicly visible
           </div>
 
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>What the program is</h2>
-            <p style={styles.paragraph}>
-              Approved affiliates receive a unique referral code. When a new
-              customer uses that code to complete a qualifying Premium upgrade,
-              the customer receives the applicable discount and the affiliate may
-              earn commission, subject to the affiliate terms and payout rules.
-            </p>
+          <div style={styles.helperLine}>
+            Create your full profile for free • Only essential info is visible
+            publicly • Upgrade anytime to unlock full emergency access
+          </div>
+        </div>
+      </section>
+
+      <section style={styles.blocks}>
+        <div style={styles.card}>
+          <h2 style={styles.h2}>What is RROI?</h2>
+          <p style={styles.p}>
+            RROI is an online emergency information profile designed to make
+            critical personal details accessible when you are unable to
+            communicate them yourself. Information is accessed by scanning your
+            unique QR code, which links to your public emergency profile.
+          </p>
+        </div>
+
+        <div style={styles.card}>
+          <h2 style={styles.h2}>How it works</h2>
+
+          <div style={styles.step}>
+            <div style={styles.stepNum}>1</div>
+            <div>
+              <div style={styles.stepTitle}>Sign up for free</div>
+              <div style={styles.stepText}>
+                Create your account and complete your full emergency profile at
+                no cost.
+              </div>
+            </div>
           </div>
 
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>How to apply</h2>
-            <ol style={styles.orderedList}>
-              <li>Create or log in to your RROI account.</li>
-              <li>Upgrade to Premium if your profile is still on the free tier.</li>
-              <li>Go to your profile page.</li>
-              <li>Select “Apply to Become an Affiliate”.</li>
-              <li>Complete and submit the affiliate application form.</li>
-              <li>Wait for review and approval.</li>
-            </ol>
+          <div style={styles.step}>
+            <div style={styles.stepNum}>2</div>
+            <div>
+              <div style={styles.stepTitle}>Complete and save everything</div>
+              <div style={styles.stepText}>
+                On the free plan, you can complete and save your full profile at
+                any time.
+              </div>
+            </div>
           </div>
 
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Important rules</h2>
-            <ul style={styles.unorderedList}>
-              <li>You must have an active Premium subscription to apply.</li>
-              <li>Approval is subject to review and may be declined.</li>
-              <li>No self-referrals are allowed.</li>
-              <li>Commission applies only to qualifying paid upgrades.</li>
-              <li>No commission is paid on renewals unless expressly stated.</li>
-              <li>
-                RROI may suspend or remove affiliate access for misuse,
-                misleading promotion, or breach of the affiliate terms.
-              </li>
+          <div style={styles.step}>
+            <div style={styles.stepNum}>3</div>
+            <div>
+              <div style={styles.stepTitle}>
+                Free public QR view shows Section 1 only
+              </div>
+              <div style={styles.stepText}>
+                When your QR code is scanned on the free plan, only your Section
+                1 public emergency details are visible.
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.step}>
+            <div style={styles.stepNum}>4</div>
+            <div>
+              <div style={styles.stepTitle}>
+                Upgrade when you want full visibility
+              </div>
+              <div style={styles.stepText}>
+                Upgrade to Premium when you want your full medical profile to be
+                visible when your QR code is scanned.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={styles.card}>
+          <h2 style={styles.h2}>What you receive</h2>
+          <ul style={styles.ul}>
+            <li>A personal QR code linked to your emergency profile</li>
+            <li>A downloadable QR code lock screen for your phone</li>
+            <li>A secure online profile you can update at any time</li>
+            <li>
+              Two physical QR code products with free nationwide delivery on
+              Premium
+            </li>
+          </ul>
+        </div>
+
+        <div style={styles.card}>
+          <h2 style={styles.h2}>Free vs Premium</h2>
+
+          <div style={styles.compareBlock}>
+            <div style={styles.compareTitle}>Free</div>
+            <ul style={styles.ul}>
+              <li>Create an account for free</li>
+              <li>Complete and save your full profile</li>
+              <li>Only Section 1 is visible when your QR code is scanned</li>
+              <li>Downloadable QR code lock screen for your phone</li>
+              <li>Upgrade later at any time</li>
             </ul>
           </div>
 
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Before you apply</h2>
-            <p style={styles.paragraph}>
-              Please read the affiliate terms carefully before submitting your
-              application. Those terms govern approval, commissions, conduct,
-              suspension, and other important conditions of the program.
-            </p>
+          <div style={styles.compareBlock}>
+            <div style={styles.compareTitle}>Premium</div>
+            <div style={styles.price}>R399 once-off</div>
+            <div style={styles.priceSub}>
+              Includes your first year subscription
+            </div>
+            <div style={styles.priceSubStrong}>R99 per year thereafter</div>
+
+            <ul style={styles.ul}>
+              <li>Full medical profile visible when your QR code is scanned</li>
+              <li>Downloadable QR code lock screen for your phone</li>
+              <li>Includes 2 physical QR code products</li>
+              <li>Free nationwide delivery included</li>
+              <li>Secure online emergency profile</li>
+            </ul>
           </div>
 
-          <div style={styles.ctaWrap}>
-            <Link href="/login" style={styles.primaryBtn}>
-              Log in or Sign up
-            </Link>
+          <Link href="/login" style={styles.primaryBtn}>
+            Sign up free
+          </Link>
+        </div>
 
-            <Link href="/affiliate/terms" style={styles.secondaryLink}>
-              View Affiliate Terms
-            </Link>
-          </div>
+        <div style={styles.card}>
+          <h2 style={styles.h2}>Affiliates</h2>
+          <p style={styles.p}>
+            Earn commission by sharing RROI. Get 8% on every successful Premium
+            signup using your referral code.
+          </p>
+          <Link href="/affiliate/terms" style={styles.secondaryBtn}>
+            Apply to become an affiliate
+          </Link>
+        </div>
 
-          <PageBottomNav />
+        <div style={styles.notice}>
+          <strong>Important notice</strong>
+          <p style={styles.noticeP}>
+            RROI does not provide medical advice, diagnosis, or emergency
+            services. RROI is not a replacement for professional medical care or
+            emergency response services. In an emergency, always contact local
+            emergency services.
+          </p>
+          <p style={styles.noticeP}>
+            RROI is an information-sharing tool only and does not guarantee
+            emergency response or medical outcomes.
+          </p>
+          <p style={styles.noticeP}>
+            Information is provided by the user and may not always be complete
+            or up to date.
+          </p>
         </div>
       </section>
     </main>
   );
 }
 
+const BRAND_GREEN = "#157A55";
+const TEXT = "#0F172A";
+const BORDER = "#E5E7EB";
+const MUTED = "#475569";
+
 const styles: Record<string, React.CSSProperties> = {
   page: {
-    background: PAGE_BG,
-    minHeight: "100%",
-    padding: "40px 16px 56px",
-  },
-  container: {
-    maxWidth: 900,
-    margin: "0 auto",
-    width: "100%",
-  },
-  card: {
-    background: CARD_BG,
-    border: `1px solid ${BORDER}`,
-    borderRadius: 24,
-    padding: 28,
-    boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
-    color: TEXT,
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-  },
-  topBlock: {
-    marginBottom: 24,
-    textAlign: "center",
-  },
-  title: {
-    margin: 0,
-    fontSize: 34,
-    lineHeight: 1.1,
-    fontWeight: 900,
-    color: TEXT,
-  },
-  subtitle: {
-    margin: "12px auto 0",
-    fontSize: 16,
-    lineHeight: 1.6,
-    color: MUTED,
-    maxWidth: 650,
-  },
-  notice: {
-    border: `1px solid ${BORDER}`,
-    borderRadius: 18,
-    padding: 20,
-    background: "#F8FAFC",
-    marginBottom: 18,
-  },
-  noticeText: {
-    margin: "0 0 12px",
-    fontSize: 15,
-    lineHeight: 1.7,
-    color: MUTED,
-  },
-  section: {
-    border: `1px solid ${BORDER}`,
-    borderRadius: 18,
-    padding: 20,
-    background: "#FFFFFF",
-    marginBottom: 18,
-  },
-  sectionTitle: {
-    margin: "0 0 10px",
-    fontSize: 20,
-    fontWeight: 800,
-    color: TEXT,
-  },
-  paragraph: {
-    margin: 0,
-    fontSize: 15,
-    lineHeight: 1.7,
-    color: MUTED,
-  },
-  orderedList: {
-    margin: "6px 0 0 22px",
-    padding: 0,
-    fontSize: 15,
-    lineHeight: 1.9,
-    color: MUTED,
-  },
-  unorderedList: {
-    margin: "6px 0 0 18px",
-    padding: 0,
-    fontSize: 15,
-    lineHeight: 1.9,
-    color: MUTED,
-  },
-  ctaWrap: {
-    marginTop: 24,
+    minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
-    gap: 12,
+    background: "#FFFFFF",
+    color: TEXT,
+  },
+  hero: {
+    padding: "34px 16px 18px",
+    display: "flex",
+    justifyContent: "center",
+  },
+  brand: {
+    width: "100%",
+    maxWidth: 620,
+    textAlign: "center",
+  },
+  h1: {
+    marginTop: 16,
+    marginBottom: 14,
+    fontSize: 28,
+    lineHeight: 1.15,
+    fontWeight: 900,
+  },
+  sub: {
+    margin: "0 0 14px",
+    fontSize: 18,
+    lineHeight: 1.5,
+    color: "#334155",
   },
   primaryBtn: {
-    display: "inline-block",
-    minWidth: 260,
-    textAlign: "center",
-    padding: "12px 18px",
-    borderRadius: 12,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    maxWidth: 340,
+    padding: "14px 18px",
+    borderRadius: 14,
     background: BRAND_GREEN,
     color: "#FFFFFF",
     textDecoration: "none",
-    fontWeight: 800,
+    fontWeight: 900,
+    fontSize: 16,
+    margin: "10px auto 0",
+    boxShadow: "0 6px 16px rgba(21, 122, 85, 0.16)",
   },
-  secondaryLink: {
-    textDecoration: "none",
-    color: BRAND_GREEN,
-    fontWeight: 700,
+  already: {
+    marginTop: 12,
     fontSize: 15,
+  },
+  alreadyText: {
+    color: MUTED,
+  },
+  alreadyLink: {
+    color: BRAND_GREEN,
+    fontWeight: 800,
+    textDecoration: "none",
+  },
+  reassure: {
+    marginTop: 14,
+    fontSize: 14,
+    fontWeight: 700,
+    color: MUTED,
+    lineHeight: 1.5,
+  },
+  helperLine: {
+    marginTop: 10,
+    fontSize: 13,
+    color: MUTED,
+    lineHeight: 1.5,
+  },
+  blocks: {
+    padding: "10px 16px 28px",
+    display: "flex",
+    flexDirection: "column",
+    gap: 14,
+    alignItems: "center",
+  },
+  card: {
+    width: "100%",
+    maxWidth: 620,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 16,
+    padding: 18,
+    background: "#FFFFFF",
+  },
+  h2: {
+    margin: "0 0 10px",
+    fontSize: 18,
+    fontWeight: 900,
+  },
+  p: {
+    margin: 0,
+    lineHeight: 1.6,
+    color: "#334155",
+  },
+  step: {
+    display: "flex",
+    gap: 12,
+    alignItems: "flex-start",
+    padding: "12px 0",
+    borderTop: "1px solid #EEF2F7",
+  },
+  stepNum: {
+    width: 28,
+    height: 28,
+    borderRadius: 999,
+    background: BRAND_GREEN,
+    color: "#FFFFFF",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: 900,
+    flex: "0 0 auto",
+    marginTop: 2,
+  },
+  stepTitle: {
+    fontWeight: 900,
+    marginBottom: 3,
+    fontSize: 16,
+  },
+  stepText: {
+    color: "#334155",
+    lineHeight: 1.5,
+  },
+  compareBlock: {
+    borderTop: "1px solid #EEF2F7",
+    paddingTop: 14,
+    marginTop: 14,
+  },
+  compareTitle: {
+    fontSize: 18,
+    fontWeight: 900,
+    marginBottom: 6,
+  },
+  price: {
+    fontSize: 28,
+    fontWeight: 900,
+    margin: "6px 0 4px",
+  },
+  priceSub: {
+    fontSize: 14,
+    color: MUTED,
+    marginBottom: 4,
+  },
+  priceSubStrong: {
+    fontSize: 15,
+    fontWeight: 800,
+    color: TEXT,
+    marginBottom: 12,
+  },
+  ul: {
+    margin: "0 0 14px",
+    paddingLeft: 18,
+    lineHeight: 1.75,
+    color: "#334155",
+  },
+  secondaryBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "11px 16px",
+    borderRadius: 14,
+    border: `1px solid ${BRAND_GREEN}`,
+    color: BRAND_GREEN,
+    textDecoration: "none",
+    fontWeight: 900,
+    marginTop: 12,
+    background: "#FFFFFF",
+  },
+  notice: {
+    width: "100%",
+    maxWidth: 620,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 16,
+    padding: 18,
+    background: "#F8FAFC",
+  },
+  noticeP: {
+    margin: "8px 0 0",
+    lineHeight: 1.6,
+    color: "#334155",
+    fontSize: 14,
   },
 };
