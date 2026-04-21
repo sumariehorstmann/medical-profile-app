@@ -283,7 +283,7 @@ if (error) {
   return;
 }
 
-      router.push("/subscribe/pay");
+      router.push("/subscribe")
     } catch {
       setError("Something went wrong while saving your order form.");
     } finally {
