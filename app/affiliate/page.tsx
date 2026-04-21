@@ -1,30 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import PageHeader from "@/components/PageHeader";
+import PageBottomNav from "@/components/PageBottomNav";
 
-const BRAND_GREEN = "#157A55";
 const TEXT = "#0F172A";
 const MUTED = "#475569";
 const BORDER = "#E5E7EB";
 const PAGE_BG = "#F8FAFC";
 const CARD_BG = "#FFFFFF";
+const BRAND_GREEN = "#157A55";
 
 export default function AffiliatePage() {
-  const router = useRouter();
-
-  function handleBack() {
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/");
-    }
-  }
-
   return (
     <main style={styles.page}>
       <section style={styles.container}>
         <div style={styles.card}>
+          <PageHeader />
+
           <div style={styles.topBlock}>
             <h1 style={styles.title}>Affiliate Program</h1>
             <p style={styles.subtitle}>
@@ -66,7 +59,7 @@ export default function AffiliatePage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Key rules</h2>
+            <h2 style={styles.sectionTitle}>Key Rules</h2>
             <ul style={styles.unorderedList}>
               <li>You must have an active Premium subscription to apply.</li>
               <li>No self-referrals.</li>
@@ -85,25 +78,7 @@ export default function AffiliatePage() {
             </Link>
           </div>
 
-          <div style={styles.footerLinks}>
-            <Link href="/contact" style={styles.footerLink}>
-              Contact
-            </Link>
-            <span style={styles.dot}>•</span>
-            <Link href="/privacy-policy" style={styles.footerLink}>
-              Privacy Policy
-            </Link>
-            <span style={styles.dot}>•</span>
-            <Link href="/terms" style={styles.footerLink}>
-              Terms &amp; Conditions
-            </Link>
-          </div>
-
-          <div style={styles.backWrap}>
-            <button type="button" onClick={handleBack} style={styles.backBtn}>
-              ← Back
-            </button>
-          </div>
+          <PageBottomNav />
         </div>
       </section>
     </main>
@@ -115,8 +90,6 @@ const styles: Record<string, React.CSSProperties> = {
     background: PAGE_BG,
     minHeight: "100%",
     padding: "40px 16px 56px",
-    color: TEXT,
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
   },
   container: {
     maxWidth: 900,
@@ -129,9 +102,12 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 24,
     padding: 28,
     boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
+    color: TEXT,
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
   },
   topBlock: {
     marginBottom: 24,
+    textAlign: "center",
   },
   title: {
     margin: 0,
@@ -141,7 +117,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: TEXT,
   },
   subtitle: {
-    margin: "12px 0 0",
+    margin: "12px auto 0",
     fontSize: 16,
     lineHeight: 1.6,
     color: MUTED,
@@ -208,38 +184,5 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#FFFFFF",
     textDecoration: "none",
     fontWeight: 800,
-  },
-  footerLinks: {
-    marginTop: 20,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    flexWrap: "wrap",
-  },
-  footerLink: {
-    textDecoration: "none",
-    color: BRAND_GREEN,
-    fontWeight: 700,
-    fontSize: 14,
-  },
-  dot: {
-    color: "#94A3B8",
-    fontSize: 14,
-  },
-  backWrap: {
-    marginTop: 24,
-    display: "flex",
-    justifyContent: "center",
-  },
-  backBtn: {
-    border: `1px solid ${BORDER}`,
-    background: "#FFFFFF",
-    color: TEXT,
-    fontWeight: 800,
-    fontSize: 14,
-    padding: "10px 16px",
-    borderRadius: 12,
-    cursor: "pointer",
   },
 };
