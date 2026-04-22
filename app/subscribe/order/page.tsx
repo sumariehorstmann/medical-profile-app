@@ -269,10 +269,15 @@ export default function OrderPage() {
 
       const { error } = await supabase
   .from("premium_order_forms")
-  .upsert({
-    user_id: session.user.id,
-    ...form,
-  })
+  .upsert(
+    {
+      user_id: session.user.id,
+      ...form,
+    },
+    {
+      onConflict: "user_id",
+    }
+  )
   .select()
   .single();
 
@@ -503,7 +508,7 @@ if (error) {
             >
               {saving ? "Saving..." : "Continue to Secure Payment"}
             </button>
-            
+
 {error ? <div style={styles.errorBox}>{error}</div> : null}
 
             <button
