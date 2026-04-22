@@ -88,7 +88,7 @@ export default async function ProfilePage() {
               want your full medical profile to be visible when your QR code is
               scanned.
             </p>
-            <Link href="/subscribe" style={styles.upgradeBtn}>
+            <Link href="/subscribe/order" style={styles.upgradeBtn}>
               Upgrade to Premium
             </Link>
           </div>
@@ -185,7 +185,7 @@ export default async function ProfilePage() {
               </p>
 
               <div style={styles.buttonRow}>
-                <Link href="/subscribe" style={styles.secondaryBtn}>
+                <Link href="/subscribe/order" style={styles.secondaryBtn}>
                   Upgrade to Premium
                 </Link>
               </div>
