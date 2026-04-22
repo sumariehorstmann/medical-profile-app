@@ -342,8 +342,7 @@ if (error) {
             </div>
           </div>
 
-          {error ? <div style={styles.errorBox}>{error}</div> : null}
-
+          
           <section style={styles.section}>
             <h2 style={styles.sectionTitle}>Personal Details</h2>
 
@@ -504,6 +503,8 @@ if (error) {
             >
               {saving ? "Saving..." : "Continue to Secure Payment"}
             </button>
+            
+{error ? <div style={styles.errorBox}>{error}</div> : null}
 
             <button
               type="button"
