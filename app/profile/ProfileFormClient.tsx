@@ -1194,7 +1194,7 @@ async function handlePermanentDelete() {
           <button
             type="button"
             style={secondaryBtnStyle}
-            onClick={() => router.push("/subscribe")}
+            onClick={() => router.push("/subscribe/order")}
             disabled={loading}
           >
             Unlock Full Profile (Premium)
