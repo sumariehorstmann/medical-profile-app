@@ -88,7 +88,18 @@ if (existingOrder) {
 const amountGross = parseFloat(data.amount_gross ?? "0");
 const expectedEmail = String(data.custom_str2 || "").trim().toLowerCase();
 const affiliateCode = String(data.custom_str3 || "").trim().toUpperCase();
-const expectedAmount = affiliateCode ? 369.0 : 399.0;
+const { data: paymentAmountRow, error: paymentAmountLookupError } = await supabase
+  .from("payments")
+  .select("amount")
+  .eq("provider_payment_id", paymentId)
+  .single();
+
+if (paymentAmountLookupError || !paymentAmountRow) {
+  console.error("PAYMENT AMOUNT LOOKUP FAILED:", paymentAmountLookupError, paymentId);
+  return new Response("Payment not found", { status: 400 });
+}
+
+const expectedAmount = Number(paymentAmountRow.amount);
 
 if (expectedEmail && String(data.email_address || "").trim().toLowerCase() !== expectedEmail) {
   console.error("EMAIL MISMATCH:", data.email_address, expectedEmail);
