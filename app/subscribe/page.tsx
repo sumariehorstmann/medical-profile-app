@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 const TEXT = "#0F172A";
@@ -18,7 +19,7 @@ type ProfileRow = {
 
 export default function SubscribePage() {
   const supabase = createSupabaseBrowser();
-
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [agreed, setAgreed] = useState(false);
@@ -45,7 +46,10 @@ export default function SubscribePage() {
         }
 
         setEmail(user.email ?? "");
-
+const refCode = String(searchParams.get("ref") || "").trim().toUpperCase();
+if (refCode) {
+  setAffiliateCode(refCode);
+}
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select("public_id, first_name, last_name")
@@ -66,7 +70,7 @@ export default function SubscribePage() {
     }
 
     loadData();
-  }, [supabase]);
+  }, [supabase, searchParams]);
 
   async function handleSubscribe() {
     if (!agreed) {
