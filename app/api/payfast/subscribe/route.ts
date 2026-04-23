@@ -233,7 +233,7 @@ export async function POST(req: NextRequest) {
       item_description: "RROI Premium Kit",
       custom_str1: publicId,
       custom_str2: email,
-      
+      custom_str3: affiliateCode || "",
     };
 
     data.signature = buildSignature(data, process.env.PAYFAST_PASSPHRASE);
