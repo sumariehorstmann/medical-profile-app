@@ -36,9 +36,7 @@ function buildSignature(data: Record<string, string>, passphrase?: string) {
     (key) => `${key}=${encode(String(data[key]))}`
   );
 
-  if (passphrase && passphrase.trim() !== "") {
-    pairs.push(`passphrase=${encode(passphrase)}`);
-  }
+  
 
   return crypto.createHash("md5").update(pairs.join("&")).digest("hex");
 }
@@ -236,10 +234,10 @@ export async function POST(req: NextRequest) {
       item_description: "RROI Premium Kit",
       custom_str1: publicId,
       custom_str2: email,
-      custom_str3: affiliateCode || "",
+      
     };
 
-    data.signature = buildSignature(data, process.env.PAYFAST_PASSPHRASE);
+    data.signature = buildSignature(data);
 
     return NextResponse.json({
       processUrl: payfastProcessUrl(),
