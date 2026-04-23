@@ -233,9 +233,7 @@ export async function POST(req: NextRequest) {
       m_payment_id: paymentId,
       amount: finalAmount.toFixed(2),
       item_name: "RROI Premium Kit",
-      item_description: affiliateCode
-        ? "RROI Premium Kit (Affiliate Pricing Applied)"
-        : "RROI Premium Kit",
+      item_description: "RROI Premium Kit",
       custom_str1: publicId,
       custom_str2: email,
       custom_str3: affiliateCode || "",
