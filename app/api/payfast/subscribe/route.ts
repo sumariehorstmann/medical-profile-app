@@ -20,23 +20,22 @@ function encode(value: string) {
 }
 
 function buildSignature(data: Record<string, string>, passphrase?: string) {
-  const keys = Object.keys(data)
-    .filter((key) => {
-      const value = data[key];
-      return (
-        key !== "signature" &&
-        value !== undefined &&
-        value !== null &&
-        String(value).trim() !== ""
-      );
-    })
-    .sort();
+  const pairs: string[] = [];
 
-  const pairs: string[] = keys.map(
-    (key) => `${key}=${encode(String(data[key]))}`
-  );
+  for (const [key, value] of Object.entries(data)) {
+    if (
+      key !== "signature" &&
+      value !== undefined &&
+      value !== null &&
+      String(value).trim() !== ""
+    ) {
+      pairs.push(`${key}=${encode(String(value))}`);
+    }
+  }
 
-  
+  if (passphrase && passphrase.trim() !== "") {
+    pairs.push(`passphrase=${encode(passphrase)}`);
+  }
 
   return crypto.createHash("md5").update(pairs.join("&")).digest("hex");
 }
@@ -237,7 +236,7 @@ export async function POST(req: NextRequest) {
       
     };
 
-    data.signature = buildSignature(data);
+    data.signature = buildSignature(data, process.env.PAYFAST_PASSPHRASE);
 
     return NextResponse.json({
       processUrl: payfastProcessUrl(),
