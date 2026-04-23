@@ -30,14 +30,14 @@ function buildSignature(data: Record<string, string>, passphrase?: string) {
         String(value).trim() !== ""
       );
     })
-    .sort(); // 🔴 CRITICAL FIX
+    .sort();
 
   const pairs: string[] = keys.map(
-    (key) => `${key}=${encodeURIComponent(String(data[key]).trim())}`
+    (key) => `${key}=${encode(String(data[key]))}`
   );
 
   if (passphrase && passphrase.trim() !== "") {
-    pairs.push(`passphrase=${encodeURIComponent(passphrase.trim())}`);
+    pairs.push(`passphrase=${encode(passphrase)}`);
   }
 
   return crypto.createHash("md5").update(pairs.join("&")).digest("hex");
