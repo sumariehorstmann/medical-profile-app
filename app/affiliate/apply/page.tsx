@@ -54,7 +54,91 @@ export default function AffiliateApplyPage() {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [agreeMarketing, setAgreeMarketing] = useState(false);
   const [agreeTax, setAgreeTax] = useState(false);
+useEffect(() => {
+  const saved = localStorage.getItem("affiliate_apply_draft");
+  if (!saved) return;
 
+  try {
+    const draft = JSON.parse(saved);
+
+    setFullName(draft.fullName ?? "");
+    setPhone(draft.phone ?? "");
+    setCountry(draft.country ?? "South Africa");
+    setProvince(draft.province ?? "");
+    setCity(draft.city ?? "");
+
+    setPromotionMethod(draft.promotionMethod ?? "");
+    setOtherPromotionMethod(draft.otherPromotionMethod ?? "");
+    setTargetAudience(draft.targetAudience ?? "");
+    setInstagramHandle(draft.instagramHandle ?? "");
+    setFacebookProfile(draft.facebookProfile ?? "");
+    setTiktokHandle(draft.tiktokHandle ?? "");
+    setExperience(draft.experience ?? "");
+    setExperienceDetails(draft.experienceDetails ?? "");
+
+    setBankName(draft.bankName ?? "");
+    setAccountHolder(draft.accountHolder ?? "");
+    setAccountNumber(draft.accountNumber ?? "");
+    setAccountType(draft.accountType ?? "Savings");
+    setBranchCode(draft.branchCode ?? "");
+
+    setAgreeTerms(draft.agreeTerms ?? false);
+    setAgreeMarketing(draft.agreeMarketing ?? false);
+    setAgreeTax(draft.agreeTax ?? false);
+  } catch {
+    localStorage.removeItem("affiliate_apply_draft");
+  }
+}, []);
+useEffect(() => {
+  localStorage.setItem(
+    "affiliate_apply_draft",
+    JSON.stringify({
+      fullName,
+      phone,
+      country,
+      province,
+      city,
+      promotionMethod,
+      otherPromotionMethod,
+      targetAudience,
+      instagramHandle,
+      facebookProfile,
+      tiktokHandle,
+      experience,
+      experienceDetails,
+      bankName,
+      accountHolder,
+      accountNumber,
+      accountType,
+      branchCode,
+      agreeTerms,
+      agreeMarketing,
+      agreeTax,
+    })
+  );
+}, [
+  fullName,
+  phone,
+  country,
+  province,
+  city,
+  promotionMethod,
+  otherPromotionMethod,
+  targetAudience,
+  instagramHandle,
+  facebookProfile,
+  tiktokHandle,
+  experience,
+  experienceDetails,
+  bankName,
+  accountHolder,
+  accountNumber,
+  accountType,
+  branchCode,
+  agreeTerms,
+  agreeMarketing,
+  agreeTax,
+]);
   useEffect(() => {
     let cancelled = false;
 
