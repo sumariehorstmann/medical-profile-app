@@ -20,23 +20,24 @@ function encode(value: string) {
 }
 
 function buildSignature(data: Record<string, string>, passphrase?: string) {
-  const pairs: string[] = [];
+  const keys = Object.keys(data)
+    .filter((key) => {
+      const value = data[key];
+      return (
+        key !== "signature" &&
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== ""
+      );
+    })
+    .sort(); // 🔴 CRITICAL FIX
 
-  for (const key in data) {
-    const value = data[key];
-
-    if (
-      key !== "signature" &&
-      value !== undefined &&
-      value !== null &&
-      String(value).trim() !== ""
-    ) {
-      pairs.push(`${key}=${encode(String(value))}`);
-    }
-  }
+  const pairs: string[] = keys.map(
+    (key) => `${key}=${encodeURIComponent(String(data[key]).trim())}`
+  );
 
   if (passphrase && passphrase.trim() !== "") {
-    pairs.push(`passphrase=${encode(passphrase)}`);
+    pairs.push(`passphrase=${encodeURIComponent(passphrase.trim())}`);
   }
 
   return crypto.createHash("md5").update(pairs.join("&")).digest("hex");
