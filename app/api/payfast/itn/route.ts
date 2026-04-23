@@ -278,8 +278,9 @@ if (Math.abs(amountGross - expectedAmount) > 0.01) {
       } else if (!affiliate) {
         console.log("AFFILIATE CODE NOT FOUND OR NOT ACTIVE");
       } else if (affiliate.user_id === profile.user_id) {
-        console.log("SELF REFERRAL BLOCKED");
-      } else {
+  console.log("SELF REFERRAL BLOCKED:", paymentId);
+  return new Response("Self referral blocked", { status: 200 });
+} else {
         const { data: existingReferral, error: existingReferralError } =
           await supabase
             .from("affiliate_referrals")
