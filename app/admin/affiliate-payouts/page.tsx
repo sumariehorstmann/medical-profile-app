@@ -482,7 +482,45 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
               </tbody>
             </table>
           </div>
+<h2 style={styles.sectionTitle}>Payout History</h2>
 
+<div style={styles.tableWrap}>
+  <table style={styles.table}>
+    <thead>
+      <tr>
+        <th style={styles.th}>Paid Date</th>
+        <th style={styles.th}>Cycle</th>
+        <th style={styles.th}>Amount</th>
+        <th style={styles.th}>Referrals</th>
+        <th style={styles.th}>Cut-off</th>
+        <th style={styles.th}>Paid By</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {payoutHistory.length === 0 ? (
+        <tr>
+          <td style={styles.emptyCell} colSpan={6}>
+            No payout history yet.
+          </td>
+        </tr>
+      ) : (
+        payoutHistory.map((payout) => (
+          <tr key={payout.id}>
+            <td style={styles.td}>{formatDate(payout.paid_at)}</td>
+            <td style={styles.td}>{payout.payout_cycle || "-"}</td>
+            <td style={styles.tdStrong}>
+              {formatMoney(Number(payout.payout_amount ?? 0))}
+            </td>
+            <td style={styles.td}>{payout.referral_count ?? 0}</td>
+            <td style={styles.td}>{formatDate(payout.cutoff_date)}</td>
+            <td style={styles.td}>{payout.paid_by_email || "-"}</td>
+          </tr>
+        ))
+      )}
+    </tbody>
+  </table>
+</div>
           <div style={styles.bottomNote}>
             This is version 1 of the payout dashboard. It is read-only except for
             marking eligible payouts as paid after manual EFT. The next step will be
@@ -520,6 +558,12 @@ const styles: Record<string, React.CSSProperties> = {
     flexWrap: "wrap",
     marginBottom: 24,
   },
+  sectionTitle: {
+  margin: "28px 0 12px",
+  fontSize: 22,
+  fontWeight: 900,
+  color: TEXT,
+},
   title: {
     margin: 0,
     fontSize: 34,
