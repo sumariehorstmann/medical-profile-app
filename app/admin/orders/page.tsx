@@ -105,7 +105,42 @@ setLoading(false);
       setUpdatingId(null);
     }
   }
+async function recoverMissingOrders() {
+  const confirmed = window.confirm(
+    "Recover missing orders from paid payments without orders?"
+  );
 
+  if (!confirmed) return;
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session?.access_token) {
+    alert("Admin session missing. Please log in again.");
+    return;
+  }
+
+  const res = await fetch("/api/admin/orders/recover", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
+  });
+
+  const json = await res.json();
+
+  if (!res.ok) {
+    alert(json.error || "Recovery failed.");
+    return;
+  }
+
+  alert(
+    `Recovery complete.\nChecked: ${json.checked}\nRecovered: ${json.recovered}\nSkipped: ${json.skipped}`
+  );
+
+  window.location.reload();
+}
   function handlePrint(orderId: string) {
     const printElement = document.getElementById(`print-order-${orderId}`);
     if (!printElement) return;
@@ -216,10 +251,26 @@ setLoading(false);
       <div style={styles.container}>
         <h1 style={styles.title}>Orders</h1>
 
-        {loading ? <div>Loading orders...</div> : null}
-        {!loading && orders.length === 0 ? <div>No orders yet</div> : null}
+<button
+  onClick={recoverMissingOrders}
+  style={{
+    marginBottom: 20,
+    backgroundColor: "#f59e0b",
+    color: "#fff",
+    padding: "10px 16px",
+    borderRadius: 6,
+    border: "none",
+    cursor: "pointer",
+    fontWeight: 600,
+  }}
+>
+  Recover Missing Orders
+</button>
 
-        {orders.map((order) => (
+{loading ? <div>Loading orders...</div> : null}
+{!loading && orders.length === 0 ? <div>No orders yet</div> : null}
+
+{orders.map((order) => (
           <div key={order.id} style={styles.card}>
             <div style={styles.topRow}>
               <div>
