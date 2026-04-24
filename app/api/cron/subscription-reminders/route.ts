@@ -1,3 +1,4 @@
+import { sendRenewalEmail } from "@/app/lib/email/sendRenewalEmail";
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
@@ -42,7 +43,19 @@ export async function GET() {
 
   // --- Send emails (placeholder for now) ---
   for (const sub of toSend30) {
-    console.log("Send 30-day email to", sub.user_id);
+    const { data: profile } = await supabase
+  .from("profiles")
+  .select("email, first_name")
+  .eq("id", sub.user_id)
+  .single();
+
+if (!profile?.email) continue;
+
+await sendRenewalEmail({
+  to: profile.email,
+  firstName: profile.first_name,
+  daysLeft: 30,
+});
 
     await supabase
       .from("subscriptions")
@@ -54,16 +67,20 @@ export async function GET() {
   }
 
   for (const sub of toSend7) {
-    console.log("Send 7-day email to", sub.user_id);
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("email, first_name")
+    .eq("id", sub.user_id)
+    .single();
 
-    await supabase
-      .from("subscriptions")
-      .update({
-        renewal_7_email_sent: true,
-        last_renewal_reminder_sent_at: new Date(),
-      })
-      .eq("id", sub.id);
-  }
+  if (!profile?.email) continue;
+
+  await sendRenewalEmail({
+    to: profile.email,
+    firstName: profile.first_name,
+    daysLeft: 7,
+  });
+}
 
   return NextResponse.json({
     success: true,
