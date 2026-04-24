@@ -505,7 +505,7 @@ if (!eftReference || eftReference.trim().length < 3) {
             <table style={styles.table}>
               <thead>
                 <tr>
-                  <th style={styles.th}>Affiliate</th>
+                  <th style={{ ...styles.th, ...styles.stickyHeader }}>Affiliate</th>
                   <th style={styles.th}>Code</th>
                   <th style={styles.th}>Status</th>
                   <th style={styles.th}>Bank</th>
@@ -534,7 +534,9 @@ if (!eftReference || eftReference.trim().length < 3) {
                 ) : (
                   payoutRows.map((row) => (
                     <tr key={row.affiliateId}>
-                      <td style={styles.td}>{row.fullName}</td>
+                      <td style={{ ...styles.td, ...styles.stickyCell }}>
+  {row.fullName}
+</td>
                       <td style={styles.td}>{row.affiliateCode}</td>
                       <td style={styles.td}>
                         <span
@@ -886,4 +888,18 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.7,
     color: MUTED,
   },
+  stickyCell: {
+  position: "sticky",
+  left: 0,
+  background: "#FFFFFF",
+  zIndex: 2,
+  boxShadow: "1px 0 0 #E5E7EB",
+},
+stickyHeader: {
+  position: "sticky",
+  left: 0,
+  background: "#F8FAFC",
+  zIndex: 3,
+  boxShadow: "1px 0 0 #E5E7EB",
+},
 };
