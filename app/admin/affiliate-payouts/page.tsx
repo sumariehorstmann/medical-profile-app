@@ -280,6 +280,9 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
   }, [affiliates, referrals, payoutCycle.cutoff]);
 
   const totals = useMemo(() => {
+    const totalPaidHistory = payoutHistory.reduce((sum, p) => {
+  return sum + Number(p.payout_amount ?? 0);
+}, 0);
     const totalAffiliates = payoutRows.length;
     const approvedAffiliates = payoutRows.filter(
       (row) => row.status.toLowerCase() === "approved"
@@ -301,8 +304,9 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
       totalConfirmedCommissions,
       totalEligibleNow,
       eligibleAffiliateCount,
+      totalPaidHistory,
     };
-  }, [payoutRows, referrals]);
+  }, [payoutRows, referrals, payoutHistory]);
 
   if (loading) {
     return (
@@ -343,39 +347,48 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
           {message ? <div style={styles.errorBox}>{message}</div> : null}
 
           <div style={styles.grid}>
-            <div style={styles.statCard}>
-              <div style={styles.statLabel}>Total Affiliates</div>
-              <div style={styles.statValue}>{totals.totalAffiliates}</div>
-            </div>
+  <div style={styles.statCard}>
+    <div style={styles.statLabel}>Total Affiliates</div>
+    <div style={styles.statValue}>{totals.totalAffiliates}</div>
+  </div>
 
-            <div style={styles.statCard}>
-              <div style={styles.statLabel}>Approved Affiliates</div>
-              <div style={styles.statValue}>{totals.approvedAffiliates}</div>
-            </div>
-<div style={styles.statCard}>
-  <div style={styles.statLabel}>Current Payout Cycle</div>
-  <div style={styles.statValue}>{payoutCycle.label}</div>
-  <div style={styles.statSubtle}>
-    Cut-off: {formatDate(payoutCycle.cutoff.toISOString())} · Payout:{" "}
-    {formatDate(payoutCycle.payout.toISOString())}
+  <div style={styles.statCard}>
+    <div style={styles.statLabel}>Approved Affiliates</div>
+    <div style={styles.statValue}>{totals.approvedAffiliates}</div>
+  </div>
+
+  <div style={styles.statCard}>
+    <div style={styles.statLabel}>Total Paid Out</div>
+    <div style={styles.statValue}>
+      {formatMoney(totals.totalPaidHistory)}
+    </div>
+  </div>
+
+  <div style={styles.statCard}>
+    <div style={styles.statLabel}>Current Payout Cycle</div>
+    <div style={styles.statValue}>{payoutCycle.label}</div>
+    <div style={styles.statSubtle}>
+      Cut-off: {formatDate(payoutCycle.cutoff.toISOString())} · Payout:{" "}
+      {formatDate(payoutCycle.payout.toISOString())}
+    </div>
+  </div>
+
+  <div style={styles.statCard}>
+    <div style={styles.statLabel}>Confirmed Commission</div>
+    <div style={styles.statValue}>
+      {formatMoney(totals.totalConfirmedCommissions)}
+    </div>
+  </div>
+
+  <div style={styles.statCard}>
+    <div style={styles.statLabel}>Ready for Payout Now</div>
+    <div style={styles.statValue}>{formatMoney(totals.totalEligibleNow)}</div>
+    <div style={styles.statSubtle}>
+      {totals.eligibleAffiliateCount} affiliate
+      {totals.eligibleAffiliateCount === 1 ? "" : "s"}
+    </div>
   </div>
 </div>
-            <div style={styles.statCard}>
-              <div style={styles.statLabel}>Confirmed Commission</div>
-              <div style={styles.statValue}>
-                {formatMoney(totals.totalConfirmedCommissions)}
-              </div>
-            </div>
-
-            <div style={styles.statCard}>
-              <div style={styles.statLabel}>Ready for Payout Now</div>
-              <div style={styles.statValue}>{formatMoney(totals.totalEligibleNow)}</div>
-              <div style={styles.statSubtle}>
-                {totals.eligibleAffiliateCount} affiliate
-                {totals.eligibleAffiliateCount === 1 ? "" : "s"}
-              </div>
-            </div>
-          </div>
 
           <div style={styles.noticeCard}>
             <div style={styles.noticeTitle}>How to use this page</div>
