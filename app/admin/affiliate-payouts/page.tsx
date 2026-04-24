@@ -144,7 +144,14 @@ const payoutCycle = getCurrentPayoutCycle();
           .order("created_at", { ascending: false });
 
         if (referralError) throw referralError;
+const { data: payoutHistoryData, error: payoutHistoryError } = await supabase
+  .from("affiliate_payouts")
+  .select("*")
+  .order("paid_at", { ascending: false });
 
+if (payoutHistoryError) throw payoutHistoryError;
+
+setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
         if (!mounted) return;
 
         setAffiliates((affiliateData ?? []) as AffiliateRow[]);
