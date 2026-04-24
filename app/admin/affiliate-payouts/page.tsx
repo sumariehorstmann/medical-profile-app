@@ -35,6 +35,7 @@ type ReferralRow = {
   commission?: number | null;
   status?: string | null;
   created_at?: string | null;
+  paid?: boolean | null;
 };
 
 type PayoutRow = {
@@ -72,6 +73,7 @@ export default function AdminAffiliatePayoutsPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [affiliates, setAffiliates] = useState<AffiliateRow[]>([]);
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
+  const [workingAffiliateId, setWorkingAffiliateId] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -138,6 +140,68 @@ export default function AdminAffiliatePayoutsPage() {
     };
   }, [supabase]);
 
+  async function handleMarkPaid(affiliateId: string) {
+    try {
+      setWorkingAffiliateId(affiliateId);
+      setMessage(null);
+
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError || !session?.access_token) {
+        throw new Error("You must be logged in as admin.");
+      }
+
+      const res = await fetch("/api/admin/affiliate-payouts/mark-paid", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ affiliateId }),
+      });
+
+      const json = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Failed to mark payout as paid.");
+      }
+
+      const payoutAmount = Number(json?.payoutAmount ?? 0);
+
+      setReferrals((prev) =>
+        prev.map((referral) =>
+          referral.affiliate_id === affiliateId &&
+          String(referral.status || "").toLowerCase() === "confirmed" &&
+          referral.paid !== true
+            ? { ...referral, paid: true }
+            : referral
+        )
+      );
+
+      setAffiliates((prev) =>
+        prev.map((affiliate) =>
+          affiliate.id === affiliateId
+            ? {
+                ...affiliate,
+                total_paid: Number(affiliate.total_paid ?? 0) + payoutAmount,
+              }
+            : affiliate
+        )
+      );
+
+      setMessage(
+        `Payout marked as paid successfully. Amount: ${formatMoney(payoutAmount)}`
+      );
+    } catch (err: any) {
+      setMessage(err?.message || "Failed to mark payout as paid.");
+    } finally {
+      setWorkingAffiliateId(null);
+    }
+  }
+
   const payoutRows = useMemo<PayoutRow[]>(() => {
     return affiliates.map((affiliate) => {
       const affiliateReferrals = referrals.filter(
@@ -148,7 +212,11 @@ export default function AdminAffiliatePayoutsPage() {
         (referral) => String(referral.status || "").toLowerCase() === "confirmed"
       );
 
-      const unpaidConfirmed = confirmedReferrals.reduce((sum, referral) => {
+      const unpaidConfirmedReferrals = confirmedReferrals.filter(
+        (referral) => referral.paid !== true
+      );
+
+      const unpaidConfirmed = unpaidConfirmedReferrals.reduce((sum, referral) => {
         return sum + Number(referral.commission ?? 0);
       }, 0);
 
@@ -179,6 +247,7 @@ export default function AdminAffiliatePayoutsPage() {
     const approvedAffiliates = payoutRows.filter(
       (row) => row.status.toLowerCase() === "approved"
     ).length;
+
     const totalConfirmedCommissions = referrals
       .filter((referral) => String(referral.status || "").toLowerCase() === "confirmed")
       .reduce((sum, referral) => sum + Number(referral.commission ?? 0), 0);
@@ -287,13 +356,14 @@ export default function AdminAffiliatePayoutsPage() {
                   <th style={styles.th}>Total Earned</th>
                   <th style={styles.th}>Total Paid</th>
                   <th style={styles.th}>Latest Referral</th>
+                  <th style={styles.th}>Action</th>
                 </tr>
               </thead>
 
               <tbody>
                 {payoutRows.length === 0 ? (
                   <tr>
-                    <td style={styles.emptyCell} colSpan={10}>
+                    <td style={styles.emptyCell} colSpan={11}>
                       No affiliates found yet.
                     </td>
                   </tr>
@@ -334,6 +404,28 @@ export default function AdminAffiliatePayoutsPage() {
                       <td style={styles.td}>{formatMoney(row.totalEarned)}</td>
                       <td style={styles.td}>{formatMoney(row.totalPaid)}</td>
                       <td style={styles.td}>{formatDate(row.latestReferralDate)}</td>
+                      <td style={styles.td}>
+                        {row.unpaidConfirmed >= MIN_PAYOUT ? (
+                          <button
+                            onClick={() => handleMarkPaid(row.affiliateId)}
+                            disabled={workingAffiliateId === row.affiliateId}
+                            style={{
+                              ...styles.actionButton,
+                              opacity: workingAffiliateId === row.affiliateId ? 0.6 : 1,
+                              cursor:
+                                workingAffiliateId === row.affiliateId
+                                  ? "not-allowed"
+                                  : "pointer",
+                            }}
+                          >
+                            {workingAffiliateId === row.affiliateId
+                              ? "Processing..."
+                              : "Mark as Paid"}
+                          </button>
+                        ) : (
+                          <span style={styles.notEligibleText}>Not eligible</span>
+                        )}
+                      </td>
                     </tr>
                   ))
                 )}
@@ -342,9 +434,9 @@ export default function AdminAffiliatePayoutsPage() {
           </div>
 
           <div style={styles.bottomNote}>
-            This is version 1 of the payout dashboard. It is read-only and helps you
-            identify who should be paid manually by EFT. The next step will be adding
-            a manual “mark as paid” action and payout history tracking.
+            This is version 1 of the payout dashboard. It is read-only except for
+            marking eligible payouts as paid after manual EFT. The next step will be
+            adding payout history tracking.
           </div>
         </div>
       </section>
@@ -480,7 +572,7 @@ const styles: Record<string, React.CSSProperties> = {
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    minWidth: 1100,
+    minWidth: 1220,
   },
   th: {
     textAlign: "left",
@@ -533,6 +625,18 @@ const styles: Record<string, React.CSSProperties> = {
   badgeRed: {
     background: "#FEE2E2",
     color: RED,
+  },
+  actionButton: {
+    padding: "8px 14px",
+    borderRadius: 8,
+    background: GREEN,
+    color: "#FFFFFF",
+    fontWeight: 700,
+    border: "none",
+  },
+  notEligibleText: {
+    color: "#94A3B8",
+    fontWeight: 600,
   },
   bottomNote: {
     marginTop: 18,
