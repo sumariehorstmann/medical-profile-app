@@ -136,7 +136,7 @@ export default function AdminAffiliatePayoutsPage() {
   const [workingAffiliateId, setWorkingAffiliateId] = useState<string | null>(
     null
   );
-
+const [showEligibleOnly, setShowEligibleOnly] = useState(false);
   useEffect(() => {
     let mounted = true;
 
@@ -500,7 +500,16 @@ if (!eftReference || eftReference.trim().length < 3) {
           </div>
 
           <h2 style={styles.sectionTitle}>Manual EFT Payment List</h2>
-
+<div style={{ marginBottom: 12 }}>
+  <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <input
+      type="checkbox"
+      checked={showEligibleOnly}
+      onChange={(e) => setShowEligibleOnly(e.target.checked)}
+    />
+    Show eligible payouts only
+  </label>
+</div>
           <div style={styles.tableWrap}>
             <table style={styles.table}>
               <thead>
@@ -532,7 +541,10 @@ if (!eftReference || eftReference.trim().length < 3) {
                     </td>
                   </tr>
                 ) : (
-                  payoutRows.map((row) => (
+                  (showEligibleOnly
+  ? payoutRows.filter((row) => row.eligibleNow)
+  : payoutRows
+).map((row) => (
                     <tr key={row.affiliateId}>
                       <td style={{ ...styles.td, ...styles.stickyCell }}>
   {row.fullName}
