@@ -24,6 +24,11 @@ type AffiliateRow = {
   total_earned?: number | null;
   total_paid?: number | null;
   created_at?: string | null;
+  bank_name?: string | null;
+  account_holder?: string | null;
+  account_number?: string | null;
+  account_type?: string | null;
+  branch_code?: string | null;
 };
 
 type ReferralRow = {
@@ -50,7 +55,13 @@ type PayoutRow = {
   eligibleNow: boolean;
   confirmedReferralCount: number;
   latestReferralDate: string | null;
+  bankName: string;
+  accountHolder: string;
+  accountNumber: string;
+  accountType: string;
+  branchCode: string;
 };
+
 type AffiliatePayoutHistoryRow = {
   id: string;
   affiliate_id?: string | null;
@@ -63,42 +74,69 @@ type AffiliatePayoutHistoryRow = {
   eft_reference?: string | null;
   notes?: string | null;
 };
+
 function formatMoney(value: number) {
   return `R${value.toFixed(2)}`;
 }
 
 function formatDate(value?: string | null) {
   if (!value) return "-";
+
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "-";
+
   return date.toLocaleDateString("en-ZA", {
     day: "2-digit",
     month: "short",
     year: "numeric",
   });
 }
+
 function getCurrentPayoutCycle() {
   const now = new Date();
   const year = now.getFullYear();
 
   const cycles = [
-    { label: `Q1 ${year}`, cutoff: new Date(year, 2, 15), payout: new Date(year, 2, 31) },
-    { label: `Q2 ${year}`, cutoff: new Date(year, 5, 15), payout: new Date(year, 5, 30) },
-    { label: `Q3 ${year}`, cutoff: new Date(year, 8, 15), payout: new Date(year, 8, 30) },
-    { label: `Q4 ${year}`, cutoff: new Date(year, 11, 15), payout: new Date(year, 11, 31) },
+    {
+      label: `Q1 ${year}`,
+      cutoff: new Date(year, 2, 15, 23, 59, 59),
+      payout: new Date(year, 2, 31),
+    },
+    {
+      label: `Q2 ${year}`,
+      cutoff: new Date(year, 5, 15, 23, 59, 59),
+      payout: new Date(year, 5, 30),
+    },
+    {
+      label: `Q3 ${year}`,
+      cutoff: new Date(year, 8, 15, 23, 59, 59),
+      payout: new Date(year, 8, 30),
+    },
+    {
+      label: `Q4 ${year}`,
+      cutoff: new Date(year, 11, 15, 23, 59, 59),
+      payout: new Date(year, 11, 31),
+    },
   ];
 
   return cycles.find((cycle) => now <= cycle.cutoff) ?? cycles[3];
 }
+
 export default function AdminAffiliatePayoutsPage() {
   const supabase = useMemo(() => createSupabaseBrowser(), []);
+  const payoutCycle = getCurrentPayoutCycle();
+
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
   const [affiliates, setAffiliates] = useState<AffiliateRow[]>([]);
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
-  const [workingAffiliateId, setWorkingAffiliateId] = useState<string | null>(null);
-  const [payoutHistory, setPayoutHistory] = useState<AffiliatePayoutHistoryRow[]>([]);
-const payoutCycle = getCurrentPayoutCycle();
+  const [payoutHistory, setPayoutHistory] = useState<
+    AffiliatePayoutHistoryRow[]
+  >([]);
+  const [workingAffiliateId, setWorkingAffiliateId] = useState<string | null>(
+    null
+  );
+
   useEffect(() => {
     let mounted = true;
 
@@ -144,18 +182,22 @@ const payoutCycle = getCurrentPayoutCycle();
           .order("created_at", { ascending: false });
 
         if (referralError) throw referralError;
-const { data: payoutHistoryData, error: payoutHistoryError } = await supabase
-  .from("affiliate_payouts")
-  .select("*")
-  .order("paid_at", { ascending: false });
 
-if (payoutHistoryError) throw payoutHistoryError;
+        const { data: payoutHistoryData, error: payoutHistoryError } =
+          await supabase
+            .from("affiliate_payouts")
+            .select("*")
+            .order("paid_at", { ascending: false });
 
-setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
+        if (payoutHistoryError) throw payoutHistoryError;
+
         if (!mounted) return;
 
         setAffiliates((affiliateData ?? []) as AffiliateRow[]);
         setReferrals((referralData ?? []) as ReferralRow[]);
+        setPayoutHistory(
+          (payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]
+        );
       } catch (err: any) {
         if (!mounted) return;
         setMessage(err?.message || "Failed to load affiliate payout data.");
@@ -172,6 +214,23 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
   }, [supabase]);
 
   async function handleMarkPaid(affiliateId: string) {
+    const selectedRow = payoutRows.find((row) => row.affiliateId === affiliateId);
+
+    if (!selectedRow) {
+      setMessage("Affiliate payout row not found.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Confirm manual EFT payment?\n\nAffiliate: ${
+        selectedRow.fullName
+      }\nAmount: ${formatMoney(
+        selectedRow.unpaidConfirmed
+      )}\nCycle: ${payoutCycle.label}\n\nOnly continue if the EFT has already been paid.`
+    );
+
+    if (!confirmed) return;
+
     try {
       setWorkingAffiliateId(affiliateId);
       setMessage(null);
@@ -224,7 +283,9 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
       );
 
       setMessage(
-        `Payout marked as paid successfully. Amount: ${formatMoney(payoutAmount)}`
+        `Payout marked as paid successfully. Amount: ${formatMoney(
+          payoutAmount
+        )}`
       );
     } catch (err: any) {
       setMessage(err?.message || "Failed to mark payout as paid.");
@@ -244,22 +305,26 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
       );
 
       const unpaidConfirmedReferrals = confirmedReferrals.filter((referral) => {
-  if (referral.paid === true) return false;
-  if (!referral.created_at) return false;
+        if (referral.paid === true) return false;
+        if (!referral.created_at) return false;
 
-  const referralDate = new Date(referral.created_at);
-  return referralDate <= payoutCycle.cutoff;
-});
+        const referralDate = new Date(referral.created_at);
+        return referralDate <= payoutCycle.cutoff;
+      });
 
-      const unpaidConfirmed = unpaidConfirmedReferrals.reduce((sum, referral) => {
-        return sum + Number(referral.commission ?? 0);
-      }, 0);
+      const unpaidConfirmed = unpaidConfirmedReferrals.reduce(
+        (sum, referral) => sum + Number(referral.commission ?? 0),
+        0
+      );
 
       const totalEarned = Number(affiliate.total_earned ?? 0);
       const totalPaid = Number(affiliate.total_paid ?? 0);
       const thresholdRemaining = Math.max(0, MIN_PAYOUT - unpaidConfirmed);
+
       const latestReferralDate =
-        confirmedReferrals.length > 0 ? confirmedReferrals[0].created_at ?? null : null;
+        confirmedReferrals.length > 0
+          ? confirmedReferrals[0].created_at ?? null
+          : null;
 
       return {
         affiliateId: affiliate.id,
@@ -271,32 +336,43 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
         unpaidConfirmed,
         thresholdRemaining,
         eligibleNow:
-  unpaidConfirmed >= MIN_PAYOUT &&
-  new Date() >= payoutCycle.cutoff,
+          unpaidConfirmed >= MIN_PAYOUT && new Date() >= payoutCycle.cutoff,
         confirmedReferralCount: confirmedReferrals.length,
         latestReferralDate,
+        bankName: String(affiliate.bank_name || "-"),
+        accountHolder: String(affiliate.account_holder || "-"),
+        accountNumber: String(affiliate.account_number || "-"),
+        accountType: String(affiliate.account_type || "-"),
+        branchCode: String(affiliate.branch_code || "-"),
       };
     });
   }, [affiliates, referrals, payoutCycle.cutoff]);
 
   const totals = useMemo(() => {
-    const totalPaidHistory = payoutHistory.reduce((sum, p) => {
-  return sum + Number(p.payout_amount ?? 0);
-}, 0);
+    const totalPaidHistory = payoutHistory.reduce(
+      (sum, payout) => sum + Number(payout.payout_amount ?? 0),
+      0
+    );
+
     const totalAffiliates = payoutRows.length;
+
     const approvedAffiliates = payoutRows.filter(
       (row) => row.status.toLowerCase() === "approved"
     ).length;
 
     const totalConfirmedCommissions = referrals
-      .filter((referral) => String(referral.status || "").toLowerCase() === "confirmed")
+      .filter(
+        (referral) => String(referral.status || "").toLowerCase() === "confirmed"
+      )
       .reduce((sum, referral) => sum + Number(referral.commission ?? 0), 0);
 
     const totalEligibleNow = payoutRows
       .filter((row) => row.eligibleNow)
       .reduce((sum, row) => sum + row.unpaidConfirmed, 0);
 
-    const eligibleAffiliateCount = payoutRows.filter((row) => row.eligibleNow).length;
+    const eligibleAffiliateCount = payoutRows.filter(
+      (row) => row.eligibleNow
+    ).length;
 
     return {
       totalAffiliates,
@@ -329,8 +405,8 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
             <div>
               <h1 style={styles.title}>Admin Affiliate Payouts</h1>
               <p style={styles.subtitle}>
-                View confirmed commissions, payout eligibility, and which affiliates
-                are ready for manual EFT payout.
+                View affiliate commissions, banking details, payout eligibility,
+                and manual EFT payout history.
               </p>
             </div>
 
@@ -347,58 +423,66 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
           {message ? <div style={styles.errorBox}>{message}</div> : null}
 
           <div style={styles.grid}>
-  <div style={styles.statCard}>
-    <div style={styles.statLabel}>Total Affiliates</div>
-    <div style={styles.statValue}>{totals.totalAffiliates}</div>
-  </div>
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Total Affiliates</div>
+              <div style={styles.statValue}>{totals.totalAffiliates}</div>
+            </div>
 
-  <div style={styles.statCard}>
-    <div style={styles.statLabel}>Approved Affiliates</div>
-    <div style={styles.statValue}>{totals.approvedAffiliates}</div>
-  </div>
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Approved Affiliates</div>
+              <div style={styles.statValue}>{totals.approvedAffiliates}</div>
+            </div>
 
-  <div style={styles.statCard}>
-    <div style={styles.statLabel}>Total Paid Out</div>
-    <div style={styles.statValue}>
-      {formatMoney(totals.totalPaidHistory)}
-    </div>
-  </div>
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Total Paid Out</div>
+              <div style={styles.statValue}>
+                {formatMoney(totals.totalPaidHistory)}
+              </div>
+            </div>
 
-  <div style={styles.statCard}>
-    <div style={styles.statLabel}>Current Payout Cycle</div>
-    <div style={styles.statValue}>{payoutCycle.label}</div>
-    <div style={styles.statSubtle}>
-      Cut-off: {formatDate(payoutCycle.cutoff.toISOString())} · Payout:{" "}
-      {formatDate(payoutCycle.payout.toISOString())}
-    </div>
-  </div>
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Current Payout Cycle</div>
+              <div style={styles.statValue}>{payoutCycle.label}</div>
+              <div style={styles.statSubtle}>
+                Cut-off: {formatDate(payoutCycle.cutoff.toISOString())} ·
+                Payout: {formatDate(payoutCycle.payout.toISOString())}
+              </div>
+            </div>
 
-  <div style={styles.statCard}>
-    <div style={styles.statLabel}>Confirmed Commission</div>
-    <div style={styles.statValue}>
-      {formatMoney(totals.totalConfirmedCommissions)}
-    </div>
-  </div>
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Confirmed Commission</div>
+              <div style={styles.statValue}>
+                {formatMoney(totals.totalConfirmedCommissions)}
+              </div>
+            </div>
 
-  <div style={styles.statCard}>
-    <div style={styles.statLabel}>Ready for Payout Now</div>
-    <div style={styles.statValue}>{formatMoney(totals.totalEligibleNow)}</div>
-    <div style={styles.statSubtle}>
-      {totals.eligibleAffiliateCount} affiliate
-      {totals.eligibleAffiliateCount === 1 ? "" : "s"}
-    </div>
-  </div>
-</div>
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Ready for Payout Now</div>
+              <div style={styles.statValue}>
+                {formatMoney(totals.totalEligibleNow)}
+              </div>
+              <div style={styles.statSubtle}>
+                {totals.eligibleAffiliateCount} affiliate
+                {totals.eligibleAffiliateCount === 1 ? "" : "s"}
+              </div>
+            </div>
+          </div>
 
           <div style={styles.noticeCard}>
-            <div style={styles.noticeTitle}>How to use this page</div>
+            <div style={styles.noticeTitle}>Manual EFT payout rules</div>
             <div style={styles.noticeText}>
-  Affiliate payouts are processed <strong>quarterly</strong>. Minimum payout
-  threshold is <strong>{formatMoney(MIN_PAYOUT)}</strong>. Cut-off dates are{" "}
-  <strong>15 March, 15 June, 15 September, 15 December</strong>. Payout dates
-  are <strong>31 March, 30 June, 30 September, 31 December</strong>.
-</div>
+              Affiliate payouts are processed <strong>quarterly</strong>.
+              Minimum payout threshold is{" "}
+              <strong>{formatMoney(MIN_PAYOUT)}</strong>. Cut-off dates are{" "}
+              <strong>15 March, 15 June, 15 September, 15 December</strong>.
+              Payout dates are{" "}
+              <strong>31 March, 30 June, 30 September, 31 December</strong>.
+              Only click <strong>Mark as Paid</strong> after the EFT payment has
+              been completed manually.
+            </div>
           </div>
+
+          <h2 style={styles.sectionTitle}>Manual EFT Payment List</h2>
 
           <div style={styles.tableWrap}>
             <table style={styles.table}>
@@ -407,6 +491,11 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
                   <th style={styles.th}>Affiliate</th>
                   <th style={styles.th}>Code</th>
                   <th style={styles.th}>Status</th>
+                  <th style={styles.th}>Bank</th>
+                  <th style={styles.th}>Account Holder</th>
+                  <th style={styles.th}>Account Number</th>
+                  <th style={styles.th}>Account Type</th>
+                  <th style={styles.th}>Branch Code</th>
                   <th style={styles.th}>Confirmed Referrals</th>
                   <th style={styles.th}>Unpaid Confirmed</th>
                   <th style={styles.th}>Threshold</th>
@@ -421,7 +510,7 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
               <tbody>
                 {payoutRows.length === 0 ? (
                   <tr>
-                    <td style={styles.emptyCell} colSpan={11}>
+                    <td style={styles.emptyCell} colSpan={16}>
                       No affiliates found yet.
                     </td>
                   </tr>
@@ -442,28 +531,37 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
                           {row.status}
                         </span>
                       </td>
+                      <td style={styles.td}>{row.bankName}</td>
+                      <td style={styles.td}>{row.accountHolder}</td>
+                      <td style={styles.tdStrong}>{row.accountNumber}</td>
+                      <td style={styles.td}>{row.accountType}</td>
+                      <td style={styles.tdStrong}>{row.branchCode}</td>
                       <td style={styles.td}>{row.confirmedReferralCount}</td>
-                      <td style={styles.tdStrong}>{formatMoney(row.unpaidConfirmed)}</td>
+                      <td style={styles.tdStrong}>
+                        {formatMoney(row.unpaidConfirmed)}
+                      </td>
                       <td style={styles.td}>
                         {row.eligibleNow
                           ? formatMoney(0)
                           : formatMoney(row.thresholdRemaining)}
                       </td>
                       <td style={styles.td}>
-  {row.unpaidConfirmed >= MIN_PAYOUT ? (
-    row.eligibleNow ? (
-      <span style={{ ...styles.badge, ...styles.badgeGreen }}>Ready</span>
-    ) : (
-      <span style={{ ...styles.badge, ...styles.badgeAmber }}>
-        Waiting for cutoff
-      </span>
-    )
-  ) : (
-    <span style={{ ...styles.badge, ...styles.badgeRed }}>
-      Below threshold
-    </span>
-  )}
-</td>
+                        {row.unpaidConfirmed >= MIN_PAYOUT ? (
+                          row.eligibleNow ? (
+                            <span style={{ ...styles.badge, ...styles.badgeGreen }}>
+                              Ready
+                            </span>
+                          ) : (
+                            <span style={{ ...styles.badge, ...styles.badgeAmber }}>
+                              Waiting for cutoff
+                            </span>
+                          )
+                        ) : (
+                          <span style={{ ...styles.badge, ...styles.badgeRed }}>
+                            Below threshold
+                          </span>
+                        )}
+                      </td>
                       <td style={styles.td}>{formatMoney(row.totalEarned)}</td>
                       <td style={styles.td}>{formatMoney(row.totalPaid)}</td>
                       <td style={styles.td}>{formatDate(row.latestReferralDate)}</td>
@@ -474,7 +572,8 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
                             disabled={workingAffiliateId === row.affiliateId}
                             style={{
                               ...styles.actionButton,
-                              opacity: workingAffiliateId === row.affiliateId ? 0.6 : 1,
+                              opacity:
+                                workingAffiliateId === row.affiliateId ? 0.6 : 1,
                               cursor:
                                 workingAffiliateId === row.affiliateId
                                   ? "not-allowed"
@@ -495,47 +594,55 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
               </tbody>
             </table>
           </div>
-<h2 style={styles.sectionTitle}>Payout History</h2>
 
-<div style={styles.tableWrap}>
-  <table style={styles.table}>
-    <thead>
-      <tr>
-        <th style={styles.th}>Paid Date</th>
-        <th style={styles.th}>Cycle</th>
-        <th style={styles.th}>Amount</th>
-        <th style={styles.th}>Referrals</th>
-        <th style={styles.th}>Cut-off</th>
-        <th style={styles.th}>Paid By</th>
-      </tr>
-    </thead>
+          <h2 style={styles.sectionTitle}>Payout History</h2>
 
-    <tbody>
-      {payoutHistory.length === 0 ? (
-        <tr>
-          <td style={styles.emptyCell} colSpan={6}>
-            No payout history yet.
-          </td>
-        </tr>
-      ) : (
-        payoutHistory.map((payout) => (
-          <tr key={payout.id}>
-            <td style={styles.td}>{formatDate(payout.paid_at)}</td>
-            <td style={styles.td}>{payout.payout_cycle || "-"}</td>
-            <td style={styles.tdStrong}>
-              {formatMoney(Number(payout.payout_amount ?? 0))}
-            </td>
-            <td style={styles.td}>{payout.referral_count ?? 0}</td>
-            <td style={styles.td}>{formatDate(payout.cutoff_date)}</td>
-            <td style={styles.td}>{payout.paid_by_email || "-"}</td>
-          </tr>
-        ))
-      )}
-    </tbody>
-  </table>
-</div>
+          <div style={styles.tableWrap}>
+            <table style={styles.historyTable}>
+              <thead>
+                <tr>
+                  <th style={styles.th}>Paid Date</th>
+                  <th style={styles.th}>Cycle</th>
+                  <th style={styles.th}>Amount</th>
+                  <th style={styles.th}>Referrals</th>
+                  <th style={styles.th}>Cut-off</th>
+                  <th style={styles.th}>Paid By</th>
+                  <th style={styles.th}>EFT Ref</th>
+                  <th style={styles.th}>Notes</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {payoutHistory.length === 0 ? (
+                  <tr>
+                    <td style={styles.emptyCell} colSpan={8}>
+                      No payout history yet.
+                    </td>
+                  </tr>
+                ) : (
+                  payoutHistory.map((payout) => (
+                    <tr key={payout.id}>
+                      <td style={styles.td}>{formatDate(payout.paid_at)}</td>
+                      <td style={styles.td}>{payout.payout_cycle || "-"}</td>
+                      <td style={styles.tdStrong}>
+                        {formatMoney(Number(payout.payout_amount ?? 0))}
+                      </td>
+                      <td style={styles.td}>{payout.referral_count ?? 0}</td>
+                      <td style={styles.td}>{formatDate(payout.cutoff_date)}</td>
+                      <td style={styles.td}>{payout.paid_by_email || "-"}</td>
+                      <td style={styles.td}>{payout.eft_reference || "-"}</td>
+                      <td style={styles.td}>{payout.notes || "-"}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
           <div style={styles.bottomNote}>
-            This dashboard tracks affiliate commissions, quarterly payout eligibility, manual EFT payout actions, and payout history for admin audit purposes.
+            This dashboard tracks affiliate commissions, quarterly payout
+            eligibility, banking details for manual EFT, payout actions, and
+            payout history for admin audit purposes.
           </div>
         </div>
       </section>
@@ -550,7 +657,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "40px 16px 56px",
   },
   container: {
-    maxWidth: 1400,
+    maxWidth: 1500,
     margin: "0 auto",
     width: "100%",
   },
@@ -570,11 +677,11 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 24,
   },
   sectionTitle: {
-  margin: "28px 0 12px",
-  fontSize: 22,
-  fontWeight: 900,
-  color: TEXT,
-},
+    margin: "28px 0 12px",
+    fontSize: 22,
+    fontWeight: 900,
+    color: TEXT,
+  },
   title: {
     margin: 0,
     fontSize: 34,
@@ -677,7 +784,12 @@ const styles: Record<string, React.CSSProperties> = {
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    minWidth: 1220,
+    minWidth: 1800,
+  },
+  historyTable: {
+    width: "100%",
+    borderCollapse: "collapse",
+    minWidth: 1100,
   },
   th: {
     textAlign: "left",
