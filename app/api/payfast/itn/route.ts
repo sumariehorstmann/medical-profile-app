@@ -397,9 +397,48 @@ try {
     }
 
     if (!orderForm) {
-      console.error("NO ORDER FORM FOUND FOR USER:", profile.user_id);
-      return new NextResponse("OK", { status: 200 });
-    }
+  console.error("NO ORDER FORM FOUND — FALLBACK ORDER CREATION");
+
+  const { name, surname } = splitFullName(profile.first_name + " " + profile.last_name);
+
+  const fallbackName = `${name} ${surname}`.trim();
+
+  const { error: orderInsertError } = await supabase.from("orders").insert({
+    user_id: profile.user_id,
+    public_id: String(profile.public_id),
+    payment_id: paymentId,
+    customer_name: fallbackName,
+    email: data.email_address ?? "",
+    shipping_name: fallbackName,
+    shipping_phone: "",
+    shipping_address: "",
+    shipping_unit: "",
+    shipping_street: "",
+    shipping_city: "",
+    shipping_province: "",
+    shipping_postal_code: "",
+    shipping_country: "South Africa",
+    qr_url: qrUrl,
+    status: "pending",
+    first_name: name,
+    last_name: surname,
+    emergency_contact_name: profile.emergency1_fullname ?? "",
+    emergency_contact_surname: "",
+    emergency_contact_phone: profile.emergency1_phone ?? "",
+    blood_type: profile.blood_type ?? "",
+    allergies: profile.allergies ?? "",
+    product_type: "premium_bundle",
+    layout_type: "fallback_missing_form",
+  });
+
+  if (orderInsertError) {
+    console.error("FALLBACK ORDER FAILED:", orderInsertError);
+  } else {
+    console.log("FALLBACK ORDER CREATED");
+  }
+
+  return new NextResponse("OK", { status: 200 });
+}
 
     const shippingName =
       `${orderForm.first_name || ""} ${orderForm.last_name || ""}`.trim();
