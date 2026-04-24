@@ -224,9 +224,13 @@ const payoutCycle = getCurrentPayoutCycle();
         (referral) => String(referral.status || "").toLowerCase() === "confirmed"
       );
 
-      const unpaidConfirmedReferrals = confirmedReferrals.filter(
-        (referral) => referral.paid !== true
-      );
+      const unpaidConfirmedReferrals = confirmedReferrals.filter((referral) => {
+  if (referral.paid === true) return false;
+  if (!referral.created_at) return false;
+
+  const referralDate = new Date(referral.created_at);
+  return referralDate <= payoutCycle.cutoff;
+});
 
       const unpaidConfirmed = unpaidConfirmedReferrals.reduce((sum, referral) => {
         return sum + Number(referral.commission ?? 0);
@@ -247,12 +251,14 @@ const payoutCycle = getCurrentPayoutCycle();
         totalPaid,
         unpaidConfirmed,
         thresholdRemaining,
-        eligibleNow: unpaidConfirmed >= MIN_PAYOUT,
+        eligibleNow:
+  unpaidConfirmed >= MIN_PAYOUT &&
+  new Date() >= payoutCycle.cutoff,
         confirmedReferralCount: confirmedReferrals.length,
         latestReferralDate,
       };
     });
-  }, [affiliates, referrals]);
+  }, [affiliates, referrals, payoutCycle.cutoff]);
 
   const totals = useMemo(() => {
     const totalAffiliates = payoutRows.length;
@@ -412,20 +418,25 @@ const payoutCycle = getCurrentPayoutCycle();
                           : formatMoney(row.thresholdRemaining)}
                       </td>
                       <td style={styles.td}>
-                        <span
-                          style={{
-                            ...styles.badge,
-                            ...(row.eligibleNow ? styles.badgeGreen : styles.badgeRed),
-                          }}
-                        >
-                          {row.eligibleNow ? "Yes" : "No"}
-                        </span>
-                      </td>
+  {row.unpaidConfirmed >= MIN_PAYOUT ? (
+    row.eligibleNow ? (
+      <span style={{ ...styles.badge, ...styles.badgeGreen }}>Ready</span>
+    ) : (
+      <span style={{ ...styles.badge, ...styles.badgeAmber }}>
+        Waiting for cutoff
+      </span>
+    )
+  ) : (
+    <span style={{ ...styles.badge, ...styles.badgeRed }}>
+      Below threshold
+    </span>
+  )}
+</td>
                       <td style={styles.td}>{formatMoney(row.totalEarned)}</td>
                       <td style={styles.td}>{formatMoney(row.totalPaid)}</td>
                       <td style={styles.td}>{formatDate(row.latestReferralDate)}</td>
                       <td style={styles.td}>
-                        {row.unpaidConfirmed >= MIN_PAYOUT ? (
+                        {row.eligibleNow ? (
                           <button
                             onClick={() => handleMarkPaid(row.affiliateId)}
                             disabled={workingAffiliateId === row.affiliateId}
