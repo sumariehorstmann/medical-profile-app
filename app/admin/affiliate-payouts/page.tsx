@@ -222,14 +222,21 @@ export default function AdminAffiliatePayoutsPage() {
     }
 
     const confirmed = window.confirm(
-      `Confirm manual EFT payment?\n\nAffiliate: ${
-        selectedRow.fullName
-      }\nAmount: ${formatMoney(
-        selectedRow.unpaidConfirmed
-      )}\nCycle: ${payoutCycle.label}\n\nOnly continue if the EFT has already been paid.`
-    );
+  `Confirm manual EFT payment?\n\nAffiliate: ${
+    selectedRow.fullName
+  }\nAmount: ${formatMoney(
+    selectedRow.unpaidConfirmed
+  )}\nCycle: ${payoutCycle.label}\n\nOnly continue if the EFT has already been paid.`
+);
 
-    if (!confirmed) return;
+if (!confirmed) return;
+
+const eftReference = window.prompt("Enter EFT payment reference:");
+
+if (!eftReference || eftReference.trim().length < 3) {
+  setMessage("EFT reference is required before marking a payout as paid.");
+  return;
+}
 
     try {
       setWorkingAffiliateId(affiliateId);
@@ -245,13 +252,15 @@ export default function AdminAffiliatePayoutsPage() {
       }
 
       const res = await fetch("/api/admin/affiliate-payouts/mark-paid", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ affiliateId }),
-      });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    affiliateId,
+    eftReference,
+  }),
+});
 
       const json = await res.json().catch(() => ({}));
 

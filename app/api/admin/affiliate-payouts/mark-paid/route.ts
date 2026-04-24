@@ -27,7 +27,14 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const affiliateId = String(body?.affiliateId || "").trim();
+const eftReference = String(body?.eftReference || "").trim();
 
+if (!eftReference || eftReference.length < 3) {
+  return NextResponse.json(
+    { error: "EFT reference is required." },
+    { status: 400 }
+  );
+}
     if (!affiliateId) {
       return NextResponse.json(
         { error: "Missing affiliateId." },
@@ -145,6 +152,7 @@ const { error: payoutHistoryError } = await supabase
     payout_cycle: payoutCycle,
     cutoff_date: cutoffDate.toISOString(),
     paid_by_email: userEmail,
+    eft_reference: eftReference,
   });
 
 if (payoutHistoryError) {
