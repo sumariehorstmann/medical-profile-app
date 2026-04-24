@@ -127,7 +127,11 @@ export default async function ProfilePage() {
                 )
               : "-"}
           </p>
-
+{!isPremium && (
+  <Link href="/renew" style={styles.primaryBtn}>
+    Renew Premium
+  </Link>
+)}
           {!isPremium && (
             <p style={styles.mutedText}>
               On the Free plan, only Section 1 is publicly visible when your QR
