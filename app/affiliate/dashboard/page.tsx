@@ -13,6 +13,11 @@ type AffiliateRow = {
   total_earned: number | null;
   total_paid: number | null;
   full_name: string | null;
+  bank_name: string | null;
+  account_holder: string | null;
+  account_number: string | null;
+  account_type: string | null;
+  branch_code: string | null;
 };
 
 type ReferralRow = {
@@ -22,6 +27,7 @@ type ReferralRow = {
   commission: number | null;
   status: string | null;
   created_at: string;
+  paid: boolean | null;
 };
 
 const BRAND_GREEN = "#157A55";
@@ -36,11 +42,18 @@ export default function AffiliateDashboardPage() {
   const supabase = useMemo(() => createSupabaseBrowser(), []);
 
   const [loading, setLoading] = useState(true);
+  const [savingBank, setSavingBank] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [affiliate, setAffiliate] = useState<AffiliateRow | null>(null);
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
   const [origin, setOrigin] = useState("");
   const [hasPremium, setHasPremium] = useState(false);
+
+  const [bankName, setBankName] = useState("");
+  const [accountHolder, setAccountHolder] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [accountType, setAccountType] = useState("Savings");
+  const [branchCode, setBranchCode] = useState("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -85,7 +98,9 @@ export default function AffiliateDashboardPage() {
 
         const { data: affiliateData, error: affiliateError } = await supabase
           .from("affiliates")
-          .select("id, affiliate_code, status, total_earned, total_paid, full_name")
+          .select(
+            "id, affiliate_code, status, total_earned, total_paid, full_name, bank_name, account_holder, account_number, account_type, branch_code"
+          )
           .eq("user_id", user.id)
           .maybeSingle();
 
@@ -97,15 +112,22 @@ export default function AffiliateDashboardPage() {
         }
 
         if (!mounted) return;
+
         setAffiliate(affiliateData);
+        setBankName(affiliateData.bank_name ?? "");
+        setAccountHolder(affiliateData.account_holder ?? "");
+        setAccountNumber(affiliateData.account_number ?? "");
+        setAccountType(affiliateData.account_type ?? "Savings");
+        setBranchCode(affiliateData.branch_code ?? "");
 
         if (
           premiumActive &&
-          (affiliateData.status === "approved" || affiliateData.status === "active")
+          (affiliateData.status === "approved" ||
+            affiliateData.status === "active")
         ) {
           const { data: referralData, error: referralError } = await supabase
             .from("affiliate_referrals")
-            .select("id, payment_id, amount, commission, status, created_at")
+            .select("id, payment_id, amount, commission, status, created_at, paid")
             .eq("affiliate_id", affiliateData.id)
             .order("created_at", { ascending: false });
 
@@ -130,6 +152,52 @@ export default function AffiliateDashboardPage() {
       mounted = false;
     };
   }, [router, supabase]);
+
+  async function saveBankDetails() {
+    if (!affiliate) return;
+
+    if (
+      !bankName.trim() ||
+      !accountHolder.trim() ||
+      !accountNumber.trim() ||
+      !accountType.trim() ||
+      !branchCode.trim()
+    ) {
+      setMessage("Please complete all payout banking details.");
+      return;
+    }
+
+    try {
+      setSavingBank(true);
+      setMessage(null);
+
+      const updates = {
+        bank_name: bankName.trim(),
+        account_holder: accountHolder.trim(),
+        account_number: accountNumber.trim(),
+        account_type: accountType.trim(),
+        branch_code: branchCode.trim(),
+      };
+
+      const { error } = await supabase
+        .from("affiliates")
+        .update(updates)
+        .eq("id", affiliate.id);
+
+      if (error) throw error;
+
+      setAffiliate({
+        ...affiliate,
+        ...updates,
+      });
+
+      setMessage("Payout banking details saved.");
+    } catch (err: any) {
+      setMessage(err?.message || "Failed to save banking details.");
+    } finally {
+      setSavingBank(false);
+    }
+  }
 
   async function copyText(text: string, successMessage: string) {
     try {
@@ -189,6 +257,7 @@ export default function AffiliateDashboardPage() {
 
   function formatDate(dateValue: Date | string) {
     const date = typeof dateValue === "string" ? new Date(dateValue) : dateValue;
+
     return date.toLocaleDateString("en-ZA", {
       day: "2-digit",
       month: "short",
@@ -207,9 +276,7 @@ export default function AffiliateDashboardPage() {
     );
   }
 
-  if (!affiliate) {
-    return null;
-  }
+  if (!affiliate) return null;
 
   const affiliateStatus = normalizeStatus(affiliate.status);
   const isPending = affiliateStatus === "pending";
@@ -226,8 +293,11 @@ export default function AffiliateDashboardPage() {
   const totalEarned = Number(affiliate.total_earned ?? 0);
   const totalPaid = Number(affiliate.total_paid ?? 0);
 
-  const approvedUnpaid = referrals
-    .filter((item) => normalizeStatus(item.status) === "approved")
+  const confirmedUnpaid = referrals
+    .filter(
+      (item) =>
+        normalizeStatus(item.status) === "confirmed" && item.paid !== true
+    )
     .reduce((sum, item) => sum + Number(item.commission ?? 0), 0);
 
   const pendingCommissions = referrals
@@ -235,10 +305,10 @@ export default function AffiliateDashboardPage() {
     .reduce((sum, item) => sum + Number(item.commission ?? 0), 0);
 
   const paidCommissions = referrals
-    .filter((item) => normalizeStatus(item.status) === "paid")
+    .filter((item) => item.paid === true)
     .reduce((sum, item) => sum + Number(item.commission ?? 0), 0);
 
-  const currentEligiblePayout = Number(approvedUnpaid.toFixed(2));
+  const currentEligiblePayout = Number(confirmedUnpaid.toFixed(2));
   const thresholdRemaining = Math.max(
     0,
     Number((PAYOUT_THRESHOLD - currentEligiblePayout).toFixed(2))
@@ -250,7 +320,6 @@ export default function AffiliateDashboardPage() {
       <main style={styles.page}>
         <div style={styles.card}>
           <PageHeader />
-
           <h1 style={styles.h1}>Affiliate Dashboard</h1>
 
           <div style={styles.stateBox}>
@@ -259,32 +328,11 @@ export default function AffiliateDashboardPage() {
               Your affiliate dashboard is only available while your RROI Premium
               subscription is active.
             </p>
-            <p style={styles.p}>
-              To continue using your affiliate dashboard and earning commission,
-              please reactivate Premium.
-            </p>
-
-            <div style={styles.summaryGrid}>
-              <div style={styles.summaryCard}>
-                <div style={styles.summaryTitle}>Affiliate Status</div>
-                <div style={styles.summaryValue}>
-                  {titleCaseStatus(affiliate.status)}
-                </div>
-              </div>
-              <div style={styles.summaryCard}>
-                <div style={styles.summaryTitle}>Total Earned</div>
-                <div style={styles.summaryValue}>R{totalEarned.toFixed(2)}</div>
-              </div>
-              <div style={styles.summaryCard}>
-                <div style={styles.summaryTitle}>Total Paid</div>
-                <div style={styles.summaryValue}>R{totalPaid.toFixed(2)}</div>
-              </div>
-            </div>
 
             {message ? <div style={styles.notice}>{message}</div> : null}
 
             <div style={styles.links}>
-              <Link href="/subscribe" style={styles.primaryLinkBtn}>
+              <Link href="/subscribe/order" style={styles.primaryLinkBtn}>
                 Upgrade to Premium
               </Link>
               <Link href="/profile" style={styles.link}>
@@ -300,38 +348,28 @@ export default function AffiliateDashboardPage() {
     );
   }
 
-  if (isPending) {
+  if (isPending || isRejected || !isApproved) {
     return (
       <main style={styles.page}>
         <div style={styles.card}>
           <PageHeader />
-
           <h1 style={styles.h1}>Affiliate Dashboard</h1>
 
           <div style={styles.stateBox}>
-            <h2 style={styles.h2}>Application Pending Review</h2>
+            <h2 style={styles.h2}>
+              {isPending
+                ? "Application Pending Review"
+                : isRejected
+                ? "Application Declined"
+                : "Affiliate Access Unavailable"}
+            </h2>
             <p style={styles.p}>
-              Your affiliate application is currently under review.
+              {isPending
+                ? "Your affiliate application is currently under review. Applications are approved or declined within 7 working days."
+                : isRejected
+                ? "Your affiliate application was not approved. Please contact RROI if you would like to ask whether re-application is possible."
+                : "Your affiliate access is not currently active."}
             </p>
-            <p style={styles.p}>
-              Applications are approved or declined within
-              <strong> 7 working days</strong>.
-            </p>
-            <p style={styles.p}>
-              Your affiliate dashboard and referral tools will become active once
-              your application has been approved.
-            </p>
-
-            <div style={styles.summaryGrid}>
-              <div style={styles.summaryCard}>
-                <div style={styles.summaryTitle}>Status</div>
-                <div style={styles.summaryValue}>Pending</div>
-              </div>
-              <div style={styles.summaryCard}>
-                <div style={styles.summaryTitle}>Application</div>
-                <div style={styles.summaryValue}>Under review</div>
-              </div>
-            </div>
 
             {message ? <div style={styles.notice}>{message}</div> : null}
 
@@ -352,78 +390,6 @@ export default function AffiliateDashboardPage() {
     );
   }
 
-  if (isRejected) {
-    return (
-      <main style={styles.page}>
-        <div style={styles.card}>
-          <PageHeader />
-
-          <h1 style={styles.h1}>Affiliate Dashboard</h1>
-
-          <div style={styles.stateBox}>
-            <h2 style={styles.h2}>Application Declined</h2>
-            <p style={styles.p}>
-              Your affiliate application was not approved.
-            </p>
-            <p style={styles.p}>
-              Please contact RROI if you would like to ask whether
-              re-application is possible.
-            </p>
-
-            <div style={styles.summaryGrid}>
-              <div style={styles.summaryCard}>
-                <div style={styles.summaryTitle}>Status</div>
-                <div style={styles.summaryValue}>Declined</div>
-              </div>
-            </div>
-
-            {message ? <div style={styles.notice}>{message}</div> : null}
-
-            <div style={styles.links}>
-              <Link href="/contact" style={styles.primaryLinkBtn}>
-                Contact Support
-              </Link>
-              <Link href="/profile" style={styles.link}>
-                Profile
-              </Link>
-              <Link href="/affiliate/terms" style={styles.linkMuted}>
-                Terms
-              </Link>
-            </div>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  if (!isApproved) {
-    return (
-      <main style={styles.page}>
-        <div style={styles.card}>
-          <PageHeader />
-
-          <h1 style={styles.h1}>Affiliate Dashboard</h1>
-
-          <div style={styles.stateBox}>
-            <h2 style={styles.h2}>Affiliate Access Unavailable</h2>
-            <p style={styles.p}>
-              Your affiliate access is not currently active.
-            </p>
-
-            <div style={styles.links}>
-              <Link href="/profile" style={styles.primaryLinkBtn}>
-                Go to Profile
-              </Link>
-              <Link href="/affiliate/terms" style={styles.link}>
-                Terms
-              </Link>
-            </div>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
   return (
     <main style={styles.page}>
       <div style={styles.card}>
@@ -432,8 +398,8 @@ export default function AffiliateDashboardPage() {
         <h1 style={styles.h1}>Affiliate Dashboard</h1>
 
         <p style={styles.intro}>
-          Track your affiliate code, referral link, eligible payout amount, and
-          referral activity in one place.
+          Track your affiliate code, referral link, eligible payout amount,
+          payout banking details, and referral activity in one place.
         </p>
 
         {message ? <div style={styles.notice}>{message}</div> : null}
@@ -483,12 +449,14 @@ export default function AffiliateDashboardPage() {
             <div style={styles.statCard}>
               <div style={styles.statLabel}>Threshold</div>
               <div style={styles.statValue}>
-                {thresholdMet ? "Reached" : `R${thresholdRemaining.toFixed(2)} left`}
+                {thresholdMet
+                  ? "Reached"
+                  : `R${thresholdRemaining.toFixed(2)} left`}
               </div>
             </div>
 
             <div style={styles.statCard}>
-              <div style={styles.statLabel}>Paid Referral Commission</div>
+              <div style={styles.statLabel}>Paid Commission</div>
               <div style={styles.statValue}>R{paidCommissions.toFixed(2)}</div>
             </div>
           </div>
@@ -528,6 +496,87 @@ export default function AffiliateDashboardPage() {
               Approved balances below R500 roll over to the next payout period.
             </p>
           </div>
+        </section>
+
+        <section style={styles.section}>
+          <h2 style={styles.h2}>Payout Banking Details</h2>
+
+          <div style={styles.infoBox}>
+            <p style={styles.infoText}>
+              These banking details are used by RROI to process manual EFT
+              affiliate payouts.
+            </p>
+          </div>
+
+          <div style={styles.formGrid}>
+            <label style={styles.field}>
+              <span style={styles.label}>Bank Name</span>
+              <input
+                value={bankName}
+                onChange={(e) => setBankName(e.target.value)}
+                style={styles.input}
+                placeholder="Example: Capitec, FNB, Standard Bank"
+              />
+            </label>
+
+            <label style={styles.field}>
+              <span style={styles.label}>Account Holder</span>
+              <input
+                value={accountHolder}
+                onChange={(e) => setAccountHolder(e.target.value)}
+                style={styles.input}
+                placeholder="Name on bank account"
+              />
+            </label>
+
+            <label style={styles.field}>
+              <span style={styles.label}>Account Number</span>
+              <input
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
+                style={styles.input}
+                placeholder="Bank account number"
+              />
+            </label>
+
+            <label style={styles.field}>
+              <span style={styles.label}>Account Type</span>
+              <select
+                value={accountType}
+                onChange={(e) => setAccountType(e.target.value)}
+                style={styles.input}
+              >
+                <option value="Savings">Savings</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Current">Current</option>
+                <option value="Transmission">Transmission</option>
+              </select>
+            </label>
+
+            <label style={styles.field}>
+              <span style={styles.label}>Branch Code</span>
+              <input
+                value={branchCode}
+                onChange={(e) => setBranchCode(e.target.value)}
+                style={styles.input}
+                placeholder="Universal or branch code"
+              />
+            </label>
+          </div>
+
+          <button
+            type="button"
+            style={{
+              ...styles.primaryBtn,
+              opacity: savingBank ? 0.65 : 1,
+              cursor: savingBank ? "not-allowed" : "pointer",
+              marginTop: 14,
+            }}
+            disabled={savingBank}
+            onClick={saveBankDetails}
+          >
+            {savingBank ? "Saving..." : "Save Banking Details"}
+          </button>
         </section>
 
         <section style={styles.section}>
@@ -597,7 +646,9 @@ export default function AffiliateDashboardPage() {
                         R{Number(referral.commission ?? 0).toFixed(2)}
                       </td>
                       <td style={styles.td}>
-                        {titleCaseStatus(referral.status)}
+                        {referral.paid
+                          ? "Paid"
+                          : titleCaseStatus(referral.status)}
                       </td>
                     </tr>
                   ))}
@@ -699,19 +750,7 @@ const styles: Record<string, React.CSSProperties> = {
     gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
     gap: 12,
   },
-  summaryGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-    gap: 12,
-    marginTop: 12,
-  },
   statCard: {
-    border: `1px solid ${BORDER}`,
-    borderRadius: 12,
-    padding: 14,
-    background: "#FFFFFF",
-  },
-  summaryCard: {
     border: `1px solid ${BORDER}`,
     borderRadius: 12,
     padding: 14,
@@ -730,20 +769,6 @@ const styles: Record<string, React.CSSProperties> = {
     overflowWrap: "break-word",
     color: TEXT,
   },
-  summaryTitle: {
-    fontSize: 12,
-    fontWeight: 800,
-    opacity: 0.75,
-    marginBottom: 6,
-    color: TEXT,
-  },
-  summaryValue: {
-    fontSize: 20,
-    fontWeight: 900,
-    color: TEXT,
-    wordBreak: "break-word",
-    overflowWrap: "break-word",
-  },
   infoBox: {
     marginTop: 14,
     border: `1px solid ${BORDER}`,
@@ -755,6 +780,32 @@ const styles: Record<string, React.CSSProperties> = {
     margin: "0 0 8px",
     lineHeight: 1.55,
     color: TEXT,
+  },
+  formGrid: {
+    marginTop: 14,
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+    gap: 12,
+  },
+  field: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 6,
+  },
+  label: {
+    fontSize: 13,
+    fontWeight: 800,
+    color: TEXT,
+  },
+  input: {
+    width: "100%",
+    border: `1px solid ${BORDER}`,
+    borderRadius: 10,
+    padding: "11px 12px",
+    fontSize: 14,
+    color: TEXT,
+    background: "#FFFFFF",
+    outline: "none",
   },
   shareBox: {
     border: `1px solid ${BORDER}`,
