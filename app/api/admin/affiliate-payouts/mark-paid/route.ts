@@ -5,7 +5,24 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+function getCurrentCutoffDate() {
+  const now = new Date();
+  const year = now.getFullYear();
 
+  const cutoffs = [
+    new Date(year, 2, 15, 23, 59, 59),  // 15 March
+    new Date(year, 5, 15, 23, 59, 59),  // 15 June
+    new Date(year, 8, 15, 23, 59, 59),  // 15 September
+    new Date(year, 11, 15, 23, 59, 59), // 15 December
+  ];
+
+  for (const cutoff of cutoffs) {
+    if (now <= cutoff) return cutoff;
+  }
+
+  // if after Dec cutoff → use last cutoff
+  return cutoffs[3];
+}
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -75,12 +92,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { data: referrals, error: referralsError } = await supabase
-      .from("affiliate_referrals")
-      .select("id, commission, status, paid")
-      .eq("affiliate_id", affiliateId)
-      .eq("status", "confirmed")
-      .eq("paid", false);
+    const cutoffDate = getCurrentCutoffDate();
+
+const { data: referrals, error: referralsError } = await supabase
+  .from("affiliate_referrals")
+  .select("id, commission, status, paid, created_at")
+  .eq("affiliate_id", affiliateId)
+  .eq("status", "confirmed")
+  .eq("paid", false)
+  .lte("created_at", cutoffDate.toISOString());
 
     if (referralsError) {
       return NextResponse.json(
