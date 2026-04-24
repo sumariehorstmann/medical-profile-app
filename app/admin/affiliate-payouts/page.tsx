@@ -345,7 +345,15 @@ if (!eftReference || eftReference.trim().length < 3) {
         unpaidConfirmed,
         thresholdRemaining,
         eligibleNow:
-          unpaidConfirmed >= MIN_PAYOUT && new Date() >= payoutCycle.cutoff,
+  unpaidConfirmed >= MIN_PAYOUT &&
+  new Date() >= payoutCycle.cutoff &&
+  Boolean(
+    affiliate.bank_name &&
+      affiliate.account_holder &&
+      affiliate.account_number &&
+      affiliate.account_type &&
+      affiliate.branch_code
+  ),
         confirmedReferralCount: confirmedReferrals.length,
         latestReferralDate,
         bankName: String(affiliate.bank_name || "-"),
@@ -555,22 +563,30 @@ if (!eftReference || eftReference.trim().length < 3) {
                           : formatMoney(row.thresholdRemaining)}
                       </td>
                       <td style={styles.td}>
-                        {row.unpaidConfirmed >= MIN_PAYOUT ? (
-                          row.eligibleNow ? (
-                            <span style={{ ...styles.badge, ...styles.badgeGreen }}>
-                              Ready
-                            </span>
-                          ) : (
-                            <span style={{ ...styles.badge, ...styles.badgeAmber }}>
-                              Waiting for cutoff
-                            </span>
-                          )
-                        ) : (
-                          <span style={{ ...styles.badge, ...styles.badgeRed }}>
-                            Below threshold
-                          </span>
-                        )}
-                      </td>
+  {row.bankName === "-" ||
+  row.accountHolder === "-" ||
+  row.accountNumber === "-" ||
+  row.accountType === "-" ||
+  row.branchCode === "-" ? (
+    <span style={{ ...styles.badge, ...styles.badgeRed }}>
+      Missing bank details
+    </span>
+  ) : row.unpaidConfirmed >= MIN_PAYOUT ? (
+    row.eligibleNow ? (
+      <span style={{ ...styles.badge, ...styles.badgeGreen }}>
+        Ready
+      </span>
+    ) : (
+      <span style={{ ...styles.badge, ...styles.badgeAmber }}>
+        Waiting for cutoff
+      </span>
+    )
+  ) : (
+    <span style={{ ...styles.badge, ...styles.badgeRed }}>
+      Below threshold
+    </span>
+  )}
+</td>
                       <td style={styles.td}>{formatMoney(row.totalEarned)}</td>
                       <td style={styles.td}>{formatMoney(row.totalPaid)}</td>
                       <td style={styles.td}>{formatDate(row.latestReferralDate)}</td>
