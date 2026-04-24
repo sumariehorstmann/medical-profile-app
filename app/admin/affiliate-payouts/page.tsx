@@ -535,9 +535,7 @@ setPayoutHistory((payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]);
   </table>
 </div>
           <div style={styles.bottomNote}>
-            This is version 1 of the payout dashboard. It is read-only except for
-            marking eligible payouts as paid after manual EFT. The next step will be
-            adding payout history tracking.
+            This dashboard tracks affiliate commissions, quarterly payout eligibility, manual EFT payout actions, and payout history for admin audit purposes.
           </div>
         </div>
       </section>
