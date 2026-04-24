@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
     }
 
     const cutoffDate = getCurrentCutoffDate();
-
+const payoutCycle = `Q${Math.floor(cutoffDate.getMonth() / 3) + 1} ${cutoffDate.getFullYear()}`;
 const { data: referrals, error: referralsError } = await supabase
   .from("affiliate_referrals")
   .select("id, commission, status, paid, created_at")
@@ -136,7 +136,23 @@ const { data: referrals, error: referralsError } = await supabase
     }
 
     const newTotalPaid = Number(affiliate.total_paid ?? 0) + payoutAmount;
+const { error: payoutHistoryError } = await supabase
+  .from("affiliate_payouts")
+  .insert({
+    affiliate_id: affiliateId,
+    payout_amount: payoutAmount,
+    referral_count: referralIds.length,
+    payout_cycle: payoutCycle,
+    cutoff_date: cutoffDate.toISOString(),
+    paid_by_email: userEmail,
+  });
 
+if (payoutHistoryError) {
+  return NextResponse.json(
+    { error: "Failed to create payout history record." },
+    { status: 500 }
+  );
+}
     const { error: affiliateUpdateError } = await supabase
       .from("affiliates")
       .update({ total_paid: newTotalPaid })
