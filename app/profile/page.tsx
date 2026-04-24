@@ -44,7 +44,7 @@ export default async function ProfilePage() {
 
   const { data: subscription } = await supabase
     .from("subscriptions")
-    .select("status, plan, current_period_end")
+    .select("status, plan, current_period_start, current_period_end")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -58,7 +58,10 @@ export default async function ProfilePage() {
     subscription?.status === "active" &&
     !!subscription?.current_period_end &&
     new Date(subscription.current_period_end).getTime() > Date.now();
-
+const hasHadPremium =
+  subscription?.plan === "premium" ||
+  (subscription?.current_period_end &&
+    new Date(subscription.current_period_end).getTime() < Date.now());
   const isAffiliate = !!affiliate;
 
   return (
@@ -88,9 +91,17 @@ export default async function ProfilePage() {
               want your full medical profile to be visible when your QR code is
               scanned.
             </p>
-            <Link href="/subscribe/order" style={styles.upgradeBtn}>
-              Upgrade to Premium
-            </Link>
+            {!isPremium && !hasHadPremium && (
+  <Link href="/subscribe/order" style={styles.upgradeBtn}>
+    Get Premium Kit - R399
+  </Link>
+)}
+
+{!isPremium && hasHadPremium && (
+  <Link href="/renew" style={styles.upgradeBtn}>
+    Renew Premium - R99/year
+  </Link>
+)}
           </div>
         )}
 
