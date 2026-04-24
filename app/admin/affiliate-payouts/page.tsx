@@ -212,7 +212,62 @@ const [showEligibleOnly, setShowEligibleOnly] = useState(false);
       mounted = false;
     };
   }, [supabase]);
+function downloadEligiblePayoutsCsv() {
+  const eligibleRows = payoutRows.filter((row) => row.eligibleNow);
 
+  if (eligibleRows.length === 0) {
+    setMessage("No eligible payouts to download.");
+    return;
+  }
+
+  const headers = [
+    "Affiliate",
+    "Affiliate Code",
+    "Bank",
+    "Account Holder",
+    "Account Number",
+    "Account Type",
+    "Branch Code",
+    "Payout Amount",
+    "Payout Cycle",
+  ];
+
+  const csvRows = eligibleRows.map((row) => [
+    row.fullName,
+    row.affiliateCode,
+    row.bankName,
+    row.accountHolder,
+    row.accountNumber,
+    row.accountType,
+    row.branchCode,
+    row.unpaidConfirmed.toFixed(2),
+    payoutCycle.label,
+  ]);
+
+  const csvContent = [headers, ...csvRows]
+    .map((row) =>
+      row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")
+    )
+    .join("\n");
+
+  const blob = new Blob([csvContent], {
+    type: "text/csv;charset=utf-8;",
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = `rroi-eligible-affiliate-payouts-${payoutCycle.label.replace(
+    /\s+/g,
+    "-"
+  )}.csv`;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
   async function handleMarkPaid(affiliateId: string) {
   const eftRef = prompt("Enter EFT reference for this payment:");
 
@@ -493,6 +548,17 @@ if (!eftReference || eftReference.trim().length < 3) {
           </div>
 
           <h2 style={styles.sectionTitle}>Manual EFT Payment List</h2>
+
+<div style={{ marginBottom: 12 }}>
+  <button
+    type="button"
+    onClick={downloadEligiblePayoutsCsv}
+    style={styles.actionButton}
+  >
+    Download Eligible Payouts CSV
+  </button>
+</div>
+
 <div style={{ marginBottom: 12 }}>
   <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
     <input
