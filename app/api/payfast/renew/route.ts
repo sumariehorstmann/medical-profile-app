@@ -17,15 +17,19 @@ function encode(value: string) {
   return encodeURIComponent(value).replace(/%20/g, "+");
 }
 
-function buildSignature(data: Record<string, string>) {
-  const query = Object.keys(data)
-    .sort()
-    .map((key) => `${key}=${encode(data[key])}`)
+function buildQueryString(data: Record<string, string>) {
+  return Object.entries(data)
+    .map(([key, value]) => `${key}=${encode(value)}`)
     .join("&");
+}
 
-  const withPassphrase = `${query}&passphrase=${encode(PASSPHRASE)}`;
+function buildSignature(data: Record<string, string>) {
+  const query = buildQueryString(data);
+  const finalQuery = PASSPHRASE
+    ? `${query}&passphrase=${encode(PASSPHRASE)}`
+    : query;
 
-  return crypto.createHash("md5").update(withPassphrase).digest("hex");
+  return crypto.createHash("md5").update(finalQuery).digest("hex");
 }
 
 export async function POST(req: NextRequest) {
@@ -65,11 +69,11 @@ export async function POST(req: NextRequest) {
     };
 
     const signature = buildSignature(paymentData);
-    const params = new URLSearchParams({ ...paymentData, signature });
+const queryString = `${buildQueryString(paymentData)}&signature=${signature}`;
 
-    return NextResponse.json({
-      redirectUrl: `${PAYFAST_URL}?${params.toString()}`,
-    });
+return NextResponse.json({
+  redirectUrl: `${PAYFAST_URL}?${queryString}`,
+});
   } catch (error) {
     console.error("Renewal payment error:", error);
     return NextResponse.json(
