@@ -214,21 +214,14 @@ const [showEligibleOnly, setShowEligibleOnly] = useState(false);
   }, [supabase]);
 
   async function handleMarkPaid(affiliateId: string) {
-    const selectedRow = payoutRows.find((row) => row.affiliateId === affiliateId);
+  const eftRef = prompt("Enter EFT reference for this payment:");
 
-    if (!selectedRow) {
-      setMessage("Affiliate payout row not found.");
-      return;
-    }
+  if (!eftRef || !eftRef.trim()) {
+    alert("EFT reference is required.");
+    return;
+  }
 
-    const confirmed = window.confirm(
-  `Confirm manual EFT payment?\n\nAffiliate: ${
-    selectedRow.fullName
-  }\nAmount: ${formatMoney(
-    selectedRow.unpaidConfirmed
-  )}\nCycle: ${payoutCycle.label}\n\nOnly continue if the EFT has already been paid.`
-);
-
+    const confirmed = window.confirm("Confirm manual EFT payment?");
 if (!confirmed) return;
 
 const eftReference = window.prompt("Enter EFT payment reference:");
@@ -572,10 +565,18 @@ if (!eftReference || eftReference.trim().length < 3) {
                         {formatMoney(row.unpaidConfirmed)}
                       </td>
                       <td style={styles.td}>
-                        {row.eligibleNow
-                          ? formatMoney(0)
-                          : formatMoney(row.thresholdRemaining)}
-                      </td>
+  {row.eligibleNow ? (
+    <button
+      onClick={() => handleMarkPaid(row.affiliateId)}
+      disabled={workingAffiliateId === row.affiliateId}
+      style={styles.actionButton}
+    >
+      {workingAffiliateId === row.affiliateId ? "Processing..." : "Mark as Paid"}
+    </button>
+  ) : (
+    <span style={styles.notEligibleText}>Not eligible</span>
+  )}
+</td>
                       <td style={styles.td}>
   {row.bankName === "-" ||
   row.accountHolder === "-" ||
