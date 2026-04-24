@@ -1197,7 +1197,7 @@ async function handlePermanentDelete() {
             onClick={() => router.push("/subscribe/order")}
             disabled={loading}
           >
-            Unlock Full Profile (Premium)
+            Upgrade to Premium Full Kit
           </button>
         ) : null}
 
