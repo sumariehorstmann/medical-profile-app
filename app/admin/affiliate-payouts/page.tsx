@@ -66,7 +66,19 @@ function formatDate(value?: string | null) {
     year: "numeric",
   });
 }
+function getCurrentPayoutCycle() {
+  const now = new Date();
+  const year = now.getFullYear();
 
+  const cycles = [
+    { label: `Q1 ${year}`, cutoff: new Date(year, 2, 15), payout: new Date(year, 2, 31) },
+    { label: `Q2 ${year}`, cutoff: new Date(year, 5, 15), payout: new Date(year, 5, 30) },
+    { label: `Q3 ${year}`, cutoff: new Date(year, 8, 15), payout: new Date(year, 8, 30) },
+    { label: `Q4 ${year}`, cutoff: new Date(year, 11, 15), payout: new Date(year, 11, 31) },
+  ];
+
+  return cycles.find((cycle) => now <= cycle.cutoff) ?? cycles[3];
+}
 export default function AdminAffiliatePayoutsPage() {
   const supabase = useMemo(() => createSupabaseBrowser(), []);
   const [loading, setLoading] = useState(true);
@@ -74,7 +86,7 @@ export default function AdminAffiliatePayoutsPage() {
   const [affiliates, setAffiliates] = useState<AffiliateRow[]>([]);
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
   const [workingAffiliateId, setWorkingAffiliateId] = useState<string | null>(null);
-
+const payoutCycle = getCurrentPayoutCycle();
   useEffect(() => {
     let mounted = true;
 
@@ -315,7 +327,14 @@ export default function AdminAffiliatePayoutsPage() {
               <div style={styles.statLabel}>Approved Affiliates</div>
               <div style={styles.statValue}>{totals.approvedAffiliates}</div>
             </div>
-
+<div style={styles.statCard}>
+  <div style={styles.statLabel}>Current Payout Cycle</div>
+  <div style={styles.statValue}>{payoutCycle.label}</div>
+  <div style={styles.statSubtle}>
+    Cut-off: {formatDate(payoutCycle.cutoff.toISOString())} · Payout:{" "}
+    {formatDate(payoutCycle.payout.toISOString())}
+  </div>
+</div>
             <div style={styles.statCard}>
               <div style={styles.statLabel}>Confirmed Commission</div>
               <div style={styles.statValue}>
