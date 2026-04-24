@@ -51,7 +51,18 @@ type PayoutRow = {
   confirmedReferralCount: number;
   latestReferralDate: string | null;
 };
-
+type AffiliatePayoutHistoryRow = {
+  id: string;
+  affiliate_id?: string | null;
+  payout_amount?: number | null;
+  referral_count?: number | null;
+  payout_cycle?: string | null;
+  cutoff_date?: string | null;
+  paid_at?: string | null;
+  paid_by_email?: string | null;
+  eft_reference?: string | null;
+  notes?: string | null;
+};
 function formatMoney(value: number) {
   return `R${value.toFixed(2)}`;
 }
@@ -86,6 +97,7 @@ export default function AdminAffiliatePayoutsPage() {
   const [affiliates, setAffiliates] = useState<AffiliateRow[]>([]);
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
   const [workingAffiliateId, setWorkingAffiliateId] = useState<string | null>(null);
+  const [payoutHistory, setPayoutHistory] = useState<AffiliatePayoutHistoryRow[]>([]);
 const payoutCycle = getCurrentPayoutCycle();
   useEffect(() => {
     let mounted = true;
