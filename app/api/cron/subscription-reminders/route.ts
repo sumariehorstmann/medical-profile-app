@@ -10,6 +10,17 @@ const supabase = createClient(
 export async function GET() {
   const today = new Date();
 
+  // --- AUTO DOWNGRADE EXPIRED USERS ---
+  const { count: downgradedCount } = await supabase
+    .from("subscriptions")
+    .update({
+      plan: "free",
+      status: "active",
+    })
+    .eq("plan", "premium")
+    .lt("expires_at", today.toISOString())
+    .select();
+
   const in30Days = new Date();
   in30Days.setDate(today.getDate() + 30);
 
