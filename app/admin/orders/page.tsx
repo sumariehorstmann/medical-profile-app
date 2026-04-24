@@ -48,42 +48,23 @@ export default function OrdersPage() {
     async function loadOrders() {
       setLoading(true);
 
-      const { data, error } = await supabase
-        .from("orders")
-        .select(`
-          id,
-          status,
-          created_at,
-          customer_name,
-          email,
-          shipping_phone,
-          shipping_unit,
-          shipping_street,
-          shipping_city,
-          shipping_province,
-          shipping_postal_code,
-          shipping_country,
-          qr_url,
-          first_name,
-          last_name,
-          blood_type,
-          allergies,
-          emergency_contact_name,
-          emergency_contact_surname,
-          emergency_contact_phone
-        `)
-        .order("created_at", { ascending: false });
+      const res = await fetch("/api/admin/orders", {
+  method: "GET",
+  cache: "no-store",
+});
 
-      if (!mounted) return;
+const json = await res.json();
 
-      if (error) {
-        console.error("LOAD ORDERS ERROR:", error);
-        setOrders([]);
-      } else {
-        setOrders((data || []) as Order[]);
-      }
+if (!res.ok) {
+  console.error("LOAD ORDERS ERROR:", json);
+  setOrders([]);
+} else {
+  setOrders((json.orders || []) as Order[]);
+}
 
-      setLoading(false);
+    if (!mounted) return;
+
+setLoading(false);
     }
 
     loadOrders();
