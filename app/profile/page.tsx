@@ -127,16 +127,13 @@ const hasHadPremium =
           </p>
           <p>
             <strong>Expires:</strong>{" "}
-            {subscription?.current_period_end
-              ? new Date(subscription.current_period_end).toLocaleDateString(
-                  "en-ZA",
-                  {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric",
-                  }
-                )
-              : "-"}
+{isPremium && subscription?.current_period_end
+  ? new Date(subscription.current_period_end).toLocaleDateString("en-ZA", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    })
+  : "-"}
           </p>
 
           {!isPremium && (
