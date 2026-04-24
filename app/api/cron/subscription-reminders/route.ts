@@ -18,7 +18,7 @@ export async function GET() {
       status: "active",
     })
     .eq("plan", "premium")
-    .lt("expires_at", today.toISOString())
+    .lt("current_period_end", today.toISOString())
     .select();
 
   const in30Days = new Date();
