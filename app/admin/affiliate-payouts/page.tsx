@@ -336,10 +336,11 @@ export default function AdminAffiliatePayoutsPage() {
           <div style={styles.noticeCard}>
             <div style={styles.noticeTitle}>How to use this page</div>
             <div style={styles.noticeText}>
-              This page shows unpaid confirmed commissions per affiliate. Use it to
-              decide who qualifies for quarterly manual EFT payout. Minimum payout
-              threshold is {formatMoney(MIN_PAYOUT)}.
-            </div>
+  Affiliate payouts are processed <strong>quarterly</strong>. Minimum payout
+  threshold is <strong>{formatMoney(MIN_PAYOUT)}</strong>. Cut-off dates are{" "}
+  <strong>15 March, 15 June, 15 September, 15 December</strong>. Payout dates
+  are <strong>31 March, 30 June, 30 September, 31 December</strong>.
+</div>
           </div>
 
           <div style={styles.tableWrap}>
