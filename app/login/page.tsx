@@ -92,6 +92,17 @@ function LoginPageInner() {
 
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
+  useEffect(() => {
+  if (mode === "signup") {
+    const savedEmail = sessionStorage.getItem("signup_email");
+    const savedPassword = sessionStorage.getItem("signup_password");
+    const savedConfirm = sessionStorage.getItem("signup_confirm_password");
+
+    if (savedEmail) setEmail(savedEmail);
+    if (savedPassword) setPassword(savedPassword);
+    if (savedConfirm) setConfirmPassword(savedConfirm);
+  }
+}, [mode]);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -332,7 +343,12 @@ function LoginPageInner() {
               style={styles.input}
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+  setEmail(e.target.value);
+  if (mode === "signup") {
+    sessionStorage.setItem("signup_email", e.target.value);
+  }
+}}
               autoComplete="email"
               inputMode="email"
               disabled={loading}
@@ -348,7 +364,12 @@ function LoginPageInner() {
                 name="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+  setPassword(e.target.value);
+  if (mode === "signup") {
+    sessionStorage.setItem("signup_password", e.target.value);
+  }
+}}
                 style={styles.passwordInput}
                 autoComplete={mode === "login" ? "current-password" : "new-password"}
                 disabled={loading}
@@ -399,7 +420,12 @@ function LoginPageInner() {
                     name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => {
+  setConfirmPassword(e.target.value);
+  if (mode === "signup") {
+    sessionStorage.setItem("signup_confirm_password", e.target.value);
+  }
+}}
                     style={{
                       ...styles.passwordInput,
                       ...(passwordsDoNotMatch
