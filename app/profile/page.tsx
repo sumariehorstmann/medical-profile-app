@@ -210,9 +210,7 @@ const hasHadPremium =
               </p>
 
               <div style={styles.buttonRow}>
-                <Link href="/subscribe/order" style={styles.secondaryBtn}>
-                  Upgrade to Premium
-                </Link>
+                
               </div>
             </>
           )}
