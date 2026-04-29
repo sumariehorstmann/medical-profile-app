@@ -90,10 +90,18 @@ function LoginPageInner() {
   const params = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
 
-  const [mode, setMode] = useState<Mode>("login");
-  const [email, setEmail] = useState("");
-  useEffect(() => {
-  if (mode === "signup") {
+  const [mode, setMode] = useState<Mode>(
+  params.get("mode") === "signup" ? "signup" : "login"
+);
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [confirmPassword, setConfirmPassword] = useState("");
+const [acceptTerms, setAcceptTerms] = useState(false);
+
+useEffect(() => {
+  if (params.get("mode") === "signup") {
+    setMode("signup");
+
     const savedEmail = sessionStorage.getItem("signup_email");
     const savedPassword = sessionStorage.getItem("signup_password");
     const savedConfirm = sessionStorage.getItem("signup_confirm_password");
@@ -102,10 +110,7 @@ function LoginPageInner() {
     if (savedPassword) setPassword(savedPassword);
     if (savedConfirm) setConfirmPassword(savedConfirm);
   }
-}, [mode]);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [acceptTerms, setAcceptTerms] = useState(false);
+}, [params]);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
