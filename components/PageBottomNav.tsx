@@ -8,7 +8,16 @@ export default function PageBottomNav() {
   return (
     <div style={styles.wrap}>
       <button
-        onClick={() => router.back()}
+        onClick={() => {
+          const params = new URLSearchParams(window.location.search);
+          const from = params.get("from");
+
+          if (from === "signup") {
+            router.push("/login?mode=signup");
+          } else {
+            router.back();
+          }
+        }}
         style={styles.secondaryBtn}
       >
         ← Back
