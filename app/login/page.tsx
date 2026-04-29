@@ -118,7 +118,11 @@ function LoginPageInner() {
   useEffect(() => {
     setMounted(true);
   }, []);
-
+useEffect(() => {
+  if (params.get("mode") === "signup") {
+    setMode("signup");
+  }
+}, [params]);
   const redirectTo = useMemo(() => {
     return params.get("next") || params.get("redirect") || "/profile";
   }, [params]);
