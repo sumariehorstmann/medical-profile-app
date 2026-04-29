@@ -447,13 +447,23 @@ function LoginPageInner() {
                 />
                 <span style={styles.checkboxText}>
                   I agree to the{" "}
-                  <Link href="/terms" style={styles.inlineLink}>
-                    Terms &amp; Conditions
-                  </Link>{" "}
+                  <Link
+  href="/terms"
+  target="_blank"
+  rel="noopener noreferrer"
+  style={styles.inlineLink}
+>
+  Terms & Conditions
+</Link>
                   and{" "}
-                  <Link href="/privacy" style={styles.inlineLink}>
-                    Privacy Policy
-                  </Link>
+                  <Link
+  href="/privacy"
+  target="_blank"
+  rel="noopener noreferrer"
+  style={styles.inlineLink}
+>
+  Privacy Policy
+</Link>
                   .
                 </span>
               </label>
