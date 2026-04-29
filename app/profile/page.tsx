@@ -103,6 +103,9 @@ const hasHadPremium =
     <li>2 physical QR code items</li>
     <li>Free nationwide delivery</li>
   </ul>
+  <Link href="/premium-kit" style={styles.viewKitLink}>
+  See what's in the Premium Kit →
+</Link>
 </div>
 
 {!isPremium && hasHadPremium && (
