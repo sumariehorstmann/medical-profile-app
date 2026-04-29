@@ -482,11 +482,27 @@ useEffect(() => {
                 />
                 <span style={styles.checkboxText}>
                   I agree to the{" "}
-<Link href="/terms?from=signup" style={styles.inlineLink}>
+<Link
+  href="/terms?from=signup"
+  style={styles.inlineLink}
+  onClick={() => {
+    sessionStorage.setItem("signup_email", email);
+    sessionStorage.setItem("signup_password", password);
+    sessionStorage.setItem("signup_confirm_password", confirmPassword);
+  }}
+>
   Terms &amp; Conditions
 </Link>{" "}
 and{" "}
-<Link href="/privacy?from=signup" style={styles.inlineLink}>
+<Link
+  href="/privacy?from=signup"
+  style={styles.inlineLink}
+  onClick={() => {
+    sessionStorage.setItem("signup_email", email);
+    sessionStorage.setItem("signup_password", password);
+    sessionStorage.setItem("signup_confirm_password", confirmPassword);
+  }}
+>
   Privacy Policy
 </Link>
                   .
