@@ -96,20 +96,23 @@ const hasHadPremium =
     Get Premium Kit - R399
   </Link>
 )}
-<div style={styles.premiumIncludes}>
-  <p style={styles.includesTitle}>Premium Kit includes:</p>
-  <ul style={styles.includesList}>
-    <li>1-year RROI Premium subscription</li>
-    <li>2 physical QR code items</li>
-    <li>Free nationwide delivery</li>
-  </ul>
-  <Link
-  href="/premium-kit"
-  style={{ ...styles.viewKitLink, marginTop: 8, display: "inline-block" }}
->
-  See what's in the Premium Kit →
-</Link>
-</div>
+{!hasHadPremium && (
+  <div style={styles.premiumIncludes}>
+    <p style={styles.includesTitle}>Premium Kit includes:</p>
+    <ul style={styles.includesList}>
+      <li>1-year RROI Premium subscription</li>
+      <li>2 physical QR code items</li>
+      <li>Free nationwide delivery</li>
+    </ul>
+
+    <Link
+      href="/premium-kit"
+      style={{ ...styles.viewKitLink, marginTop: 8, display: "inline-block" }}
+    >
+      See what's in the Premium Kit →
+    </Link>
+  </div>
+)}
 
 {!isPremium && hasHadPremium && (
   <Link href="/renew" style={styles.upgradeBtn}>
