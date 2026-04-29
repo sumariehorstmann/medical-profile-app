@@ -96,6 +96,14 @@ const hasHadPremium =
     Get Premium Kit - R399
   </Link>
 )}
+<div style={styles.premiumIncludes}>
+  <p style={styles.includesTitle}>Premium Kit includes:</p>
+  <ul style={styles.includesList}>
+    <li>1-year RROI Premium subscription</li>
+    <li>2 physical QR code items</li>
+    <li>Free nationwide delivery</li>
+  </ul>
+</div>
 
 {!isPremium && hasHadPremium && (
   <Link href="/renew" style={styles.upgradeBtn}>
@@ -217,6 +225,24 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: 900,
     margin: "0 auto",
   },
+  premiumIncludes: {
+  marginTop: 12,
+},
+
+includesTitle: {
+  fontWeight: 800,
+  fontSize: 14,
+  margin: "0 0 6px",
+  color: "#065F46",
+},
+
+includesList: {
+  margin: 0,
+  paddingLeft: 18,
+  fontSize: 14,
+  color: "#374151",
+  lineHeight: 1.5,
+},
   h1: {
     margin: "0 0 20px",
     fontSize: 34,
