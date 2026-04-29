@@ -4,6 +4,9 @@ export default function PremiumKitPage() {
   return (
     <div style={styles.page}>
       <div style={styles.container}>
+        <Link href="/profile" style={styles.backLink}>
+  ← Back to Profile
+</Link>
         <h1 style={styles.h1}>Premium Kit</h1>
 
         <p style={styles.subtitle}>
@@ -16,7 +19,7 @@ export default function PremiumKitPage() {
         </div>
 
         <div style={styles.card}>
-          <h2 style={styles.h2}>What’s included</h2>
+          <h2 style={styles.h2}>What is included</h2>
 
           <ul style={styles.list}>
             <li>1-year RROI Premium subscription</li>
@@ -26,7 +29,7 @@ export default function PremiumKitPage() {
         </div>
 
         <Link href="/subscribe/order" style={styles.cta}>
-          Get Premium Kit – R399
+          Get Premium Kit for R399
         </Link>
       </div>
     </div>
