@@ -40,6 +40,7 @@ type Profile = {
   eye_color?: string | null;
   hair_color?: string | null;
   skin_tone?: string | null;
+  identifying_marks?: string | null;
 
   primary_language?: string | null;
   secondary_language?: string | null;
@@ -253,6 +254,10 @@ export default function PublicPageClient({ profile }: Props) {
             <Row label="Eye Colour" value={valueOrDash(profile.eye_color)} />
             <Row label="Hair Colour" value={valueOrDash(profile.hair_color)} />
             <Row label="Skin Tone" value={valueOrDash(profile.skin_tone)} />
+            <Row
+  label="Identifying Marks"
+  value={valueOrDash(profile.identifying_marks)}
+/>
           </Section>
 
           <Section title="Section 5 — Communication & Location">
