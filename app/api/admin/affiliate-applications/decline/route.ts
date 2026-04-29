@@ -66,10 +66,10 @@ export async function POST(req: NextRequest) {
     }
 
     const { data: application, error: applicationError } = await supabaseAdmin
-      .from("affiliate_applications")
-      .select("id, status")
-      .eq("id", applicationId)
-      .maybeSingle();
+  .from("affiliate_applications")
+  .select("id, status, email, full_name")
+  .eq("id", applicationId)
+  .maybeSingle();
 
     if (applicationError) {
       console.error("APPLICATION LOOKUP ERROR:", applicationError);
@@ -112,7 +112,27 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
-
+try {
+  await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/email/send`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      to: application.email,
+      subject: "RROI Affiliate Application Update",
+      html: `
+        <h2>Application Update</h2>
+        <p>Hi ${application.full_name},</p>
+        <p>Thank you for applying to the RROI affiliate program.</p>
+        <p>Unfortunately, your application was not approved at this time.</p>
+        <p>You are welcome to contact us if you would like feedback.</p>
+        <br/>
+        <p>— RROI Team</p>
+      `,
+    }),
+  });
+} catch (emailError) {
+  console.error("EMAIL SEND ERROR (DECLINED):", emailError);
+}
     return NextResponse.json({
       success: true,
       message: "Affiliate application declined successfully.",

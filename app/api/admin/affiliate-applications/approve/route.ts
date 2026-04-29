@@ -1,3 +1,4 @@
+import { sendAffiliateApplicationEmail } from "@/app/lib/email/sendAffiliateApplicationEmail";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
@@ -191,7 +192,32 @@ if (!adminEmails.includes(userEmail)) {
         { status: 500 }
       );
     }
-
+// Send approval email
+if (!application?.email) {
+  console.error("Missing email on application:", application?.id);
+} else {
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/email/send`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to: application.email,
+        subject: "RROI Affiliate Application Approved",
+        html: `
+          <h2>Application Approved</h2>
+          <p>Hi ${application.full_name},</p>
+          <p>Congratulations — your RROI affiliate application has been approved.</p>
+          <p>You can now access your affiliate dashboard and start sharing your referral code.</p>
+          <p>If you have any questions, feel free to contact us.</p>
+          <br/>
+          <p>— RROI Team</p>
+        `,
+      }),
+    });
+  } catch (emailError) {
+    console.error("EMAIL SEND ERROR (APPROVED):", emailError);
+  }
+}
     return NextResponse.json({
       success: true,
       affiliateCode,

@@ -365,7 +365,7 @@ export default function AffiliateDashboardPage() {
             </h2>
             <p style={styles.p}>
               {isPending
-                ? "Your affiliate application is currently under review. Applications are approved or declined within 7 working days."
+                ? "Your affiliate application is currently under review. Applications are typically approved or declined within 14 calendar days."
                 : isRejected
                 ? "Your affiliate application was not approved. Please contact RROI if you would like to ask whether re-application is possible."
                 : "Your affiliate access is not currently active."}
