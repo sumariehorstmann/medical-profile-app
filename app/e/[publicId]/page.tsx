@@ -38,7 +38,6 @@ type PublicProfile = {
   medical_aid_plan?: string | null;
 
   gp_name?: string | null;
-  gp_practice?: string | null;
   gp_phone?: string | null;
   specialist_name?: string | null;
   specialist_phone?: string | null;
@@ -157,6 +156,7 @@ export default async function PublicEmergencyPage({
     eye_color: profile.eye_color ?? null,
     hair_color: profile.hair_color ?? null,
     skin_tone: profile.skin_tone ?? null,
+    identifying_marks: profile.identifying_marks ?? null,
 
     primary_language: profile.primary_language ?? null,
     secondary_language: profile.secondary_language ?? null,

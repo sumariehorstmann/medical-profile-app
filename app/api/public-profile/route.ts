@@ -50,6 +50,7 @@ export async function GET(req: Request) {
   hair_color,
   identifying_marks,
   skin_tone,
+  identifying_marks,
   implanted_devices,
   mobility_notes,
   pregnancy_status,
