@@ -23,9 +23,10 @@ const styles: Record<string, React.CSSProperties> = {
   footer: {
   marginTop: 40,
   padding: "20px 16px",
-  borderTop: "1px solid #334155",
-  background: "#1F2937",
+  borderTop: "1px solid #2A2A2A",
+  background: "#000000", // PURE BLACK
   textAlign: "center",
+  colorScheme: "dark",   // tells browser this is already dark
 },
   links: {
   display: "grid",
@@ -34,17 +35,17 @@ const styles: Record<string, React.CSSProperties> = {
   gap: 20,
   marginBottom: 12,
 },
-  link: {
+ link: {
   textDecoration: "none",
   fontWeight: 800,
-  color: "#CBD5E1",
+  color: "#E5E7EB",
   fontSize: 14,
   textAlign: "center",
-  WebkitTextFillColor: "#CBD5E1",
+  WebkitTextFillColor: "#E5E7EB",
 },
   meta: {
   fontSize: 13,
-  color: "#CBD5E1",
+  color: "#9CA3AF",
   lineHeight: 1.6,
 },
 };
