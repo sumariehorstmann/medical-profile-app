@@ -21,12 +21,12 @@ export default function Footer() {
 
 const styles: Record<string, React.CSSProperties> = {
   footer: {
-    marginTop: 40,
-    padding: "20px 16px",
-    borderTop: "1px solid #E5E7EB",
-    background: "#FFFFFF",
-    textAlign: "center",
-  },
+  marginTop: 40,
+  padding: "20px 16px",
+  borderTop: "1px solid #334155",
+  background: "#1F2937",
+  textAlign: "center",
+},
   links: {
   display: "grid",
   gridTemplateColumns: "repeat(4, auto)",
@@ -37,12 +37,14 @@ const styles: Record<string, React.CSSProperties> = {
   link: {
   textDecoration: "none",
   fontWeight: 800,
-  color: "#0F172A",
+  color: "#CBD5E1",
   fontSize: 14,
+  textAlign: "center",
+  WebkitTextFillColor: "#CBD5E1",
 },
   meta: {
-    fontSize: 13,
-    color: "#475569",
-    lineHeight: 1.6,
-  },
+  fontSize: 13,
+  color: "#CBD5E1",
+  lineHeight: 1.6,
+},
 };
