@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-dynamic";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -330,8 +330,8 @@ useEffect(() => {
             program.
           </p>
           <p style={styles.noticeText}>
-            Applications are manually reviewed. Approval or decline takes place
-            within <strong>7 working days</strong>.
+            Applications are manually reviewed. Approval or decline typically takes place
+            within <strong>14 calendar days</strong>.
           </p>
           <p style={styles.noticeText}>
             Approved affiliates receive access to the affiliate dashboard after
@@ -349,8 +349,8 @@ useEffect(() => {
               review.
             </p>
             <p style={styles.p}>
-              RROI will approve or decline your application within
-              <strong> 7 working days</strong>.
+              RROI is currently reviewing your application. A decision will typically be made within
+              <strong>14 calender days</strong>.
             </p>
             <p style={styles.p}>
               Your affiliate dashboard and code will only become active once your
