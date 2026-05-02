@@ -173,20 +173,21 @@ export default function HomePage() {
             </ul>
           </div>
 
-          <Link href="/login" style={styles.primaryBtn}>
-            Sign up free
-          </Link>
+          <Link href="/login?mode=signup" style={styles.primaryBtn}>
+  Sign up free
+</Link>
         </div>
 
         <div style={styles.card}>
-          <h2 style={styles.h2}>Affiliates</h2>
-          <p style={styles.p}>
-            Share RROI and earn commission on Premium signups.
-          </p>
-          <Link href="/affiliate/terms" style={styles.secondaryBtn}>
-            Apply to become an affiliate
-          </Link>
-        </div>
+  <h2 style={styles.h2}>Affiliates</h2>
+  <p style={styles.p}>
+    Share RROI and earn commission when users upgrade to Premium. Learn how the
+    affiliate program works and how you can get started.
+  </p>
+  <Link href="/affiliate" style={styles.secondaryBtn}>
+    Learn about the affiliate program
+  </Link>
+</div>
 <div style={styles.card}>
   <h2 style={styles.h2}>Online Store</h2>
   <p style={styles.p}>
