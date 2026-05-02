@@ -21,62 +21,76 @@ export default function AffiliatePage() {
           <div style={styles.topBlock}>
             <h1 style={styles.title}>RROI Affiliate Program</h1>
             <p style={styles.subtitle}>
-              Share RROI and earn commission when users upgrade to Premium.
-              This page gives a basic overview of how the affiliate program
-              works.
+              Share RROI and earn commission when new users upgrade to Premium
+              using your approved affiliate code.
             </p>
           </div>
 
           <div style={styles.notice}>
-            <p style={styles.noticeText}>
-              Full affiliate rules, payout terms, and program conditions are
-              provided during the application process.
+            Affiliate applications are only available from inside an active
+            Premium profile.
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>How to apply</h2>
+            <ol style={styles.orderedList}>
+              <li>Sign up for a free RROI account.</li>
+              <li>Upgrade your account to Premium.</li>
+              <li>
+                On your Premium profile, click “Apply to become an affiliate”.
+              </li>
+              <li>Complete and submit the affiliate application.</li>
+              <li>
+                RROI will review your application and approve or decline it.
+              </li>
+              <li>
+                If approved, you will receive your unique affiliate code.
+              </li>
+            </ol>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>Affiliate discount</h2>
+            <p style={styles.paragraph}>
+              New users who upgrade to Premium using your affiliate code receive
+              a <strong>R30 discount</strong>.
+            </p>
+            <p style={styles.paragraph}>
+              Normal Premium price: <strong>R399</strong>
+              <br />
+              Affiliate code discount: <strong>R30</strong>
+              <br />
+              User pays: <strong>R369</strong>
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>How it works</h2>
-            <ul style={styles.unorderedList}>
-              <li>You apply to become an RROI affiliate.</li>
-              <li>Approved affiliates receive a unique affiliate code.</li>
-              <li>You share RROI with your audience or network.</li>
-              <li>You earn commission on qualifying Premium upgrades.</li>
-            </ul>
-          </div>
-
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Who can apply</h2>
+            <h2 style={styles.sectionTitle}>Affiliate commission</h2>
             <p style={styles.paragraph}>
-              The affiliate program is available to active RROI Premium
-              subscribers. Applications are reviewed manually before approval.
+              Affiliates earn <strong>8% commission</strong> on the discounted
+              Premium price of <strong>R369</strong>.
+            </p>
+            <p style={styles.paragraph}>
+              Commission per qualifying Premium upgrade:{" "}
+              <strong>R29.52</strong>.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Commission and payouts</h2>
+            <h2 style={styles.sectionTitle}>Payouts</h2>
             <p style={styles.paragraph}>
-              Approved affiliates can earn commission on qualifying Premium
-              signups. Payouts are handled manually according to the affiliate
-              payout rules.
-            </p>
-          </div>
-
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Before you apply</h2>
-            <p style={styles.paragraph}>
-              You will receive the detailed affiliate terms and conditions when
-              applying. Please read them carefully before submitting your
-              application.
+              Affiliate payouts are processed quarterly, meaning payouts take
+              place four times per year according to RROI’s payout rules.
             </p>
           </div>
 
           <div style={styles.ctaWrap}>
-            <Link href="/affiliate/apply" style={styles.primaryBtn}>
-              Apply for the affiliate program
+            <Link href="/login?mode=signup" style={styles.primaryBtn}>
+              Sign up free
             </Link>
 
-            <Link href="/affiliate/terms" style={styles.secondaryLink}>
-              View affiliate terms
+            <Link href="/login" style={styles.secondaryLink}>
+              Log in to your account
             </Link>
           </div>
 
@@ -131,13 +145,9 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 18,
     background: "#ECFDF5",
     marginBottom: 18,
-  },
-  noticeText: {
-    margin: 0,
-    fontSize: 15,
-    lineHeight: 1.7,
     color: "#065F46",
-    fontWeight: 700,
+    fontWeight: 800,
+    lineHeight: 1.6,
   },
   section: {
     border: `1px solid ${BORDER}`,
@@ -153,13 +163,13 @@ const styles: Record<string, React.CSSProperties> = {
     color: TEXT,
   },
   paragraph: {
-    margin: 0,
+    margin: "0 0 10px",
     fontSize: 15,
     lineHeight: 1.7,
     color: MUTED,
   },
-  unorderedList: {
-    margin: "6px 0 0 18px",
+  orderedList: {
+    margin: "6px 0 0 22px",
     padding: 0,
     fontSize: 15,
     lineHeight: 1.9,
