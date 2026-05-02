@@ -35,7 +35,7 @@ export default function HomePage() {
           </div>
 
           <div style={styles.heroCtaWrap}>
-            <Link href="/login" style={styles.primaryBtn}>
+            <Link href="/login?mode=signup" style={styles.primaryBtn}>
               Sign up free
             </Link>
 

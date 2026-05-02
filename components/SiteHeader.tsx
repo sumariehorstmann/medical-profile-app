@@ -76,7 +76,7 @@ export default function SiteHeader() {
               Log in
             </Link>
 
-            <Link href="/login" style={styles.signupLink}>
+            <Link href="/login?mode=signup" style={styles.signupLink}>
               Sign up
             </Link>
           </>
