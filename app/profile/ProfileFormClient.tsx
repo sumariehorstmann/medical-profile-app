@@ -543,7 +543,7 @@ async function handlePermanentDelete() {
   return (
     <form onSubmit={handleSave}>
       <Section
-        title="Identity & Immediate Emergency Contact"
+        title="Section 1 — Identity & Immediate Emergency Contact"
         subtitle="These details are visible when your QR code is scanned on the Free plan."
       >
         <Field
@@ -726,7 +726,7 @@ async function handlePermanentDelete() {
       </Section>
 
       <Section
-        title="Critical Medical Information"
+        title="Section 2 — Critical Medical Information"
         subtitle="These details are only publicly visible when Premium is active."
         info={
           showUpgrade
@@ -800,7 +800,7 @@ async function handlePermanentDelete() {
       </Section>
 
       <Section
-        title="Medical Support Information"
+        title="Section 3 — Medical Support Information"
         subtitle="These details are only publicly visible when Premium is active."
       >
         <Field label="Pregnancy Status">
@@ -915,7 +915,7 @@ async function handlePermanentDelete() {
       </Section>
 
       <Section
-        title="Personal Identification"
+        title="Section 4 — Personal Identification"
         subtitle="These details are only publicly visible when Premium is active."
       >
         <Field label="Date of Birth">
@@ -1016,7 +1016,7 @@ async function handlePermanentDelete() {
       </Section>
 
       <Section
-        title="Communication & Location"
+        title="Section 5 — Communication & Location"
         subtitle="These details are only publicly visible when Premium is active."
       >
         <Field label="Primary Language">
@@ -1075,7 +1075,7 @@ async function handlePermanentDelete() {
       </Section>
 
       <Section
-        title="Additional Information"
+        title="Section 6 — Additional Information"
         subtitle="These details are only publicly visible when Premium is active."
       >
         <Field label="Additional Notes">
