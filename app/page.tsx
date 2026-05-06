@@ -198,23 +198,7 @@ export default function HomePage() {
     Visit online store
   </Link>
 </div>
-        <div style={styles.notice}>
-          <strong>Important notice</strong>
-          <p style={styles.noticeP}>
-            RROI does not provide medical advice, diagnosis, or emergency
-            services. RROI is not a replacement for professional medical care or
-            emergency response services. In an emergency, always contact local
-            emergency services.
-          </p>
-          <p style={styles.noticeP}>
-            RROI is an information-sharing tool only and does not guarantee
-            emergency response or medical outcomes.
-          </p>
-          <p style={styles.noticeP}>
-            Information is provided by the user and may not always be complete
-            or up to date.
-          </p>
-        </div>
+        
       </section>
     </main>
   );
@@ -449,18 +433,5 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#FFFFFF",
     fontSize: 16,
   },
-  notice: {
-    width: "100%",
-    maxWidth: 780,
-    border: `1px solid ${BORDER}`,
-    borderRadius: 18,
-    padding: 22,
-    background: "#F8FAFC",
-  },
-  noticeP: {
-    margin: "10px 0 0",
-    lineHeight: 1.7,
-    color: "#334155",
-    fontSize: 15,
-  },
+  
 };
