@@ -66,7 +66,9 @@ export default function SiteHeader() {
           style={{ objectFit: "contain" }}
           priority
         />
-        <span style={styles.headerBrandText}>RROI</span>
+        <span style={styles.headerBrandText}>
+  Rapid Response Online Information
+</span>
       </Link>
 
       <div style={styles.headerActions}>
@@ -113,16 +115,18 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#FFFFFF",
   },
   headerLogo: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    textDecoration: "none",
-  },
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+  textDecoration: "none",
+},
   headerBrandText: {
-    color: TEXT,
-    fontWeight: 900,
-    fontSize: 16,
-  },
+  fontSize: 14,
+  fontWeight: 700,
+  color: "#15803D", // GREEN (same brand tone)
+  marginLeft: 8,
+  whiteSpace: "nowrap",
+},
   headerActions: {
     display: "flex",
     alignItems: "center",
