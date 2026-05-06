@@ -14,6 +14,19 @@ export default function Footer() {
         <div style={styles.meta}>
           <div>RROI (Pty) Ltd • South Africa</div>
           <div>Email: support@rroi.co.za</div>
+
+          {/* LEGAL DISCLAIMER */}
+          <div style={styles.disclaimer}>
+            RROI is not a medical service, healthcare provider, or emergency response service.
+            All information displayed is provided by users and may be incomplete or inaccurate.
+            RROI does not verify or guarantee the accuracy of any information.
+            In an emergency, always contact your local emergency services immediately.
+          </div>
+
+          <div style={styles.disclaimer}>
+            By using this platform, you agree to our Terms & Conditions and Privacy Policy.
+          </div>
+
           <div>© {new Date().getFullYear()} RROI (Pty) Ltd. All rights reserved.</div>
         </div>
       </div>
@@ -55,6 +68,13 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 13,
     color: "#64748B",
     WebkitTextFillColor: "#64748B",
+    lineHeight: 1.6,
+  },
+  disclaimer: {
+    marginTop: 10,
+    fontSize: 12,
+    color: "#94A3B8",
+    WebkitTextFillColor: "#94A3B8",
     lineHeight: 1.6,
   },
 };
