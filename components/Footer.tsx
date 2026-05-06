@@ -4,12 +4,12 @@ export default function Footer() {
   return (
     <footer style={styles.footer}>
       <div style={styles.container}>
-        <div style={styles.links}>
+        <nav style={styles.links} aria-label="Footer navigation">
           <Link href="/contact" style={styles.link}>Contact</Link>
           <Link href="/terms" style={styles.link}>Terms & Conditions</Link>
           <Link href="/privacy" style={styles.link}>Privacy Policy</Link>
           <Link href="/refund-policy" style={styles.link}>Returns</Link>
-        </div>
+        </nav>
 
         <div style={styles.meta}>
           <div>RROI (Pty) Ltd • South Africa</div>
@@ -25,16 +25,18 @@ const styles: Record<string, React.CSSProperties> = {
   footer: {
     marginTop: 48,
     borderTop: "1px solid #E5E7EB",
-    background: "#FFFFFF",
+    backgroundColor: "#FFFFFF",
+    color: "#0F172A",
+    colorScheme: "light",
   },
-
   container: {
     maxWidth: 720,
     margin: "0 auto",
     padding: "24px 16px 28px",
     textAlign: "center",
+    backgroundColor: "#FFFFFF",
+    colorScheme: "light",
   },
-
   links: {
     display: "flex",
     justifyContent: "center",
@@ -42,18 +44,17 @@ const styles: Record<string, React.CSSProperties> = {
     flexWrap: "wrap",
     marginBottom: 14,
   },
-
   link: {
     textDecoration: "none",
-    fontWeight: 700,
+    fontWeight: 800,
     color: "#0F172A",
+    WebkitTextFillColor: "#0F172A",
     fontSize: 14,
-    transition: "opacity 0.2s ease",
   },
-
   meta: {
     fontSize: 13,
     color: "#64748B",
+    WebkitTextFillColor: "#64748B",
     lineHeight: 1.6,
   },
 };
