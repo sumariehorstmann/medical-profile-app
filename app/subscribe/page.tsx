@@ -59,7 +59,7 @@ useEffect(() => {
         } = await supabase.auth.getUser();
 
         if (userError || !user) {
-  window.location.href = "/login";
+  window.location.href = "/login?next=/subscribe";
   return;
 }
 
