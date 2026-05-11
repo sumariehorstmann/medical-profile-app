@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
@@ -29,17 +28,17 @@ export default function SubscribePage() {
   const [email, setEmail] = useState("");
   const [affiliateCode, setAffiliateCode] = useState("");
 
-const searchParams = useSearchParams();
-
 useEffect(() => {
-  const ref = searchParams.get("ref");
+  const ref = new URLSearchParams(window.location.search)
+    .get("ref")
+    ?.trim()
+    .toUpperCase();
 
   if (!ref) return;
 
   localStorage.setItem("rroi_affiliate_ref", ref);
-
-  setAffiliateCode(ref.toUpperCase());
-}, [searchParams]);
+  setAffiliateCode(ref);
+}, []);
 
   useEffect(() => {
     async function loadData() {
