@@ -1078,15 +1078,7 @@ async function handlePermanentDelete() {
         title="Section 6 — Additional Information"
         subtitle="These details are only publicly visible when Premium is active."
       >
-        <Field label="Additional Notes">
-          <textarea
-            style={{ ...inputStyle, minHeight: 120 }}
-            value={additionalNotes}
-            onChange={(e) => setAdditionalNotes(e.target.value)}
-            placeholder="Optional"
-          />
-        </Field>
-
+        
         <Field label="Emergency Contact 2 Name — First Name">
           <input
             style={inputStyle}
@@ -1124,8 +1116,15 @@ async function handlePermanentDelete() {
           />
         </Field>
 
+<Field label="Additional Notes">
+          <textarea
+            style={{ ...inputStyle, minHeight: 120 }}
+            value={additionalNotes}
+            onChange={(e) => setAdditionalNotes(e.target.value)}
+            placeholder="Optional"
+          />
+        </Field>
             
-
         
       </Section>
 
