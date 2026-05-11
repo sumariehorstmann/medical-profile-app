@@ -600,7 +600,20 @@ export default function AffiliateDashboardPage() {
               Copy Code
             </button>
           </div>
+<section style={styles.section}>
+  <h2 style={styles.h2}>Marketing Resources</h2>
 
+  <div style={styles.infoBox}>
+    <p style={styles.infoText}>
+      Download official RROI advertisements, approved captions, hashtags, and
+      marketing wording for promoting your affiliate code.
+    </p>
+
+    <Link href="/affiliate/resources" style={styles.primaryLinkBtn}>
+      Open Marketing Resources
+    </Link>
+  </div>
+</section>
           <div style={{ ...styles.shareBox, marginTop: 14 }}>
             <div style={styles.shareLabel}>Referral Link</div>
             <div style={styles.linkBox}>{referralLink || "Loading link..."}</div>
