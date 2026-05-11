@@ -1,3 +1,4 @@
+import { sendAffiliateApplicationEmail } from "../../../lib/email/sendAffiliateApplicationEmail";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
@@ -279,7 +280,11 @@ export async function POST(req: NextRequest) {
         );
       }
     }
-
+await sendAffiliateApplicationEmail({
+  to: email,
+  firstName: fullName,
+  status: "submitted",
+});
     return NextResponse.json({
       success: true,
       status: "pending",
