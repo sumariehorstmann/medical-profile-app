@@ -312,10 +312,7 @@ if (type === "renewal") {
         console.error("AFFILIATE LOOKUP ERROR:", affiliateLookupError);
       } else if (!affiliate) {
         console.log("AFFILIATE CODE NOT FOUND OR NOT ACTIVE");
-      } else if (affiliate.user_id === profile.user_id) {
-  console.log("SELF REFERRAL BLOCKED:", paymentId);
-  return new Response("Self referral blocked", { status: 200 });
-} else {
+      } else {
         const { data: existingReferral, error: existingReferralError } =
           await supabase
             .from("affiliate_referrals")
