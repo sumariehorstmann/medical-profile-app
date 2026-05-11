@@ -54,6 +54,8 @@ export default function AffiliateDashboardPage() {
   const [accountNumber, setAccountNumber] = useState("");
   const [accountType, setAccountType] = useState("Savings");
   const [branchCode, setBranchCode] = useState("");
+  const [deactivatingAffiliate, setDeactivatingAffiliate] = useState(false);
+  const [reactivatingAffiliate, setReactivatingAffiliate] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -199,6 +201,66 @@ export default function AffiliateDashboardPage() {
     }
   }
 
+async function deactivateAffiliateAccess() {
+  const confirmed = window.confirm(
+    "Deactivate affiliate access? Your affiliate code, referral history, and payout history will be preserved."
+  );
+
+  if (!confirmed) return;
+
+  try {
+    setDeactivatingAffiliate(true);
+    setMessage(null);
+
+    const res = await fetch("/api/affiliate/deactivate", {
+      method: "POST",
+    });
+
+    const json = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(json?.error || "Failed to deactivate affiliate access.");
+    }
+
+    setAffiliate((current) =>
+      current ? { ...current, status: "inactive" } : current
+    );
+
+    setMessage("Affiliate access deactivated.");
+  } catch (err: any) {
+    setMessage(err?.message || "Something went wrong.");
+  } finally {
+    setDeactivatingAffiliate(false);
+  }
+}
+
+async function reactivateAffiliateAccess() {
+  try {
+    setReactivatingAffiliate(true);
+    setMessage(null);
+
+    const res = await fetch("/api/affiliate/reactivate", {
+      method: "POST",
+    });
+
+    const json = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(json?.error || "Failed to reactivate affiliate access.");
+    }
+
+    setAffiliate((current) =>
+      current ? { ...current, status: "approved" } : current
+    );
+
+    setMessage("Affiliate access reactivated.");
+  } catch (err: any) {
+    setMessage(err?.message || "Something went wrong.");
+  } finally {
+    setReactivatingAffiliate(false);
+  }
+}
+
   async function copyText(
   text: string,
   successMessage: string,
@@ -290,7 +352,7 @@ export default function AffiliateDashboardPage() {
   const isRejected = affiliateStatus === "rejected";
   const isApproved =
     affiliateStatus === "approved" || affiliateStatus === "active";
-
+  const isInactive = affiliateStatus === "inactive";
   const nextCycle = getNextCutoffAndPayout();
   const referralLink =
     origin && affiliate.affiliate_code
@@ -350,11 +412,10 @@ export default function AffiliateDashboardPage() {
   <button
     type="button"
     style={styles.secondaryBtn}
-    onClick={() => {
-      alert("Deactivate Affiliate Access will be connected next.");
-    }}
+    disabled={deactivatingAffiliate}
+onClick={deactivateAffiliateAccess}
   >
-    Deactivate Affiliate Access
+    {deactivatingAffiliate ? "Deactivating..." : "Deactivate Affiliate Access"}
   </button>
 </section>
 
@@ -375,7 +436,7 @@ export default function AffiliateDashboardPage() {
     );
   }
 
-  if (isPending || isRejected || !isApproved) {
+  if (isPending || isRejected || isInactive || !isApproved) {
     return (
       <main style={styles.page}>
         <div style={styles.card}>
@@ -384,23 +445,40 @@ export default function AffiliateDashboardPage() {
 
           <div style={styles.stateBox}>
             <h2 style={styles.h2}>
-              {isPending
-                ? "Application Pending Review"
-                : isRejected
-                ? "Application Declined"
-                : "Affiliate Access Unavailable"}
-            </h2>
+  {isPending
+    ? "Application Pending Review"
+    : isRejected
+    ? "Application Declined"
+    : isInactive
+    ? "Affiliate Access Deactivated"
+    : "Affiliate Access Unavailable"}
+</h2>
             <p style={styles.p}>
-              {isPending
-                ? "Your affiliate application is currently under review. Applications are typically approved or declined within 14 calendar days."
-                : isRejected
-                ? "Your affiliate application was not approved. Please contact RROI if you would like to ask whether re-application is possible."
-                : "Your affiliate access is not currently active."}
-            </p>
+  {isPending
+    ? "Your affiliate application is currently under review. Applications are typically approved or declined within 14 calendar days."
+    : isRejected
+    ? "Your affiliate application was not approved. Please contact RROI if you would like to ask whether re-application is possible."
+    : isInactive
+    ? "Your affiliate access is currently deactivated. Your affiliate code, referral history, and payout history have been preserved."
+    : "Your affiliate access is not currently active."}
+</p>
 
             {message ? <div style={styles.notice}>{message}</div> : null}
 
-            <div style={styles.links}>
+{isInactive ? (
+  <button
+    type="button"
+    style={styles.primaryBtn}
+    disabled={reactivatingAffiliate}
+    onClick={reactivateAffiliateAccess}
+  >
+    {reactivatingAffiliate
+      ? "Reactivating..."
+      : "Reactivate Affiliate Access"}
+  </button>
+) : null}
+
+<div style={styles.links}>
               <Link href="/profile" style={styles.primaryLinkBtn}>
                 Go to Profile
               </Link>
