@@ -29,15 +29,22 @@ export default function SubscribePage() {
   const [affiliateCode, setAffiliateCode] = useState("");
 
 useEffect(() => {
-  const ref = new URLSearchParams(window.location.search)
+  const urlRef = new URLSearchParams(window.location.search)
     .get("ref")
     ?.trim()
     .toUpperCase();
 
-  if (!ref) return;
+  if (urlRef) {
+    localStorage.setItem("rroi_affiliate_ref", urlRef);
+    setAffiliateCode(urlRef);
+    return;
+  }
 
-  localStorage.setItem("rroi_affiliate_ref", ref);
-  setAffiliateCode(ref);
+  const savedRef = localStorage.getItem("rroi_affiliate_ref");
+
+  if (savedRef) {
+    setAffiliateCode(savedRef.toUpperCase());
+  }
 }, []);
 
   useEffect(() => {
