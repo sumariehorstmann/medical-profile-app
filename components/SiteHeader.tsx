@@ -59,19 +59,15 @@ export default function SiteHeader() {
   return (
     <header style={styles.header}>
       <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
-        <Image
-          src="/logo.png"
-          alt="RROI logo"
-          width={36}
-          height={36}
-          style={styles.logoImage}
-          priority
-        />
-
-        <span style={styles.headerBrandText}>
-          Rapid Response Online Info
-        </span>
-      </Link>
+  <Image
+    src="/logo-header.png"
+    alt="RROI"
+    width={210}
+    height={48}
+    priority
+    style={styles.headerFullLogo}
+  />
+</Link>
 
       <div style={styles.headerActions}>
         {isLoggedIn === null ? null : showGuestButtons || !isLoggedIn ? (
@@ -114,7 +110,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 10,
+    gap: 8,
     borderBottom: `1px solid ${BORDER}`,
     background: "#FFFFFF",
     boxSizing: "border-box",
@@ -124,26 +120,17 @@ const styles: Record<string, React.CSSProperties> = {
   headerLogo: {
     display: "flex",
     alignItems: "center",
-    gap: 8,
     textDecoration: "none",
     minWidth: 0,
     flex: "1 1 auto",
     overflow: "hidden",
   },
 
-  logoImage: {
+  headerFullLogo: {
+    width: "min(190px, 48vw)",
+    height: "auto",
+    maxHeight: 42,
     objectFit: "contain",
-    flexShrink: 0,
-  },
-
-  headerBrandText: {
-    fontSize: 14,
-    fontWeight: 800,
-    color: BRAND_GREEN,
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    lineHeight: 1.2,
   },
 
   headerActions: {
@@ -157,7 +144,7 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
     fontWeight: 800,
     color: BRAND_GREEN,
-    padding: "8px 6px",
+    padding: "8px 4px",
     borderRadius: 10,
     fontSize: 14,
     whiteSpace: "nowrap",
@@ -181,7 +168,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 800,
     fontSize: 14,
     cursor: "pointer",
-    padding: "8px 6px",
+    padding: "8px 4px",
     borderRadius: 10,
     whiteSpace: "nowrap",
   },
