@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
@@ -28,6 +29,18 @@ export default function SubscribePage() {
   const [email, setEmail] = useState("");
   const [affiliateCode, setAffiliateCode] = useState("");
 
+const searchParams = useSearchParams();
+
+useEffect(() => {
+  const ref = searchParams.get("ref");
+
+  if (!ref) return;
+
+  localStorage.setItem("rroi_affiliate_ref", ref);
+
+  setAffiliateCode(ref.toUpperCase());
+}, [searchParams]);
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -40,19 +53,12 @@ export default function SubscribePage() {
         } = await supabase.auth.getUser();
 
         if (userError || !user) {
-          setMessage("Please log in first.");
-          return;
-        }
+  window.location.href = "/login";
+  return;
+}
 
         setEmail(user.email ?? "");
-const refCode = new URLSearchParams(window.location.search)
-  .get("ref")
-  ?.trim()
-  .toUpperCase();
 
-if (refCode) {
-  setAffiliateCode(refCode);
-}
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select("public_id, first_name, last_name")
