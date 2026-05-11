@@ -775,25 +775,6 @@ async function reactivateAffiliateAccess() {
     {deactivatingAffiliate ? "Deactivating..." : "Deactivate Affiliate Access"}
   </button>
 </section>
-
-<section style={styles.dangerSection}>
-  <h2 style={styles.h2}>Affiliate Access</h2>
-
-  <p style={styles.infoText}>
-    Your affiliate code and referral history will be preserved. You may
-    reactivate your affiliate access later if your Premium subscription is
-    active and your account remains in good standing.
-  </p>
-
-  <button
-    type="button"
-    style={styles.secondaryBtn}
-    disabled={deactivatingAffiliate}
-    onClick={deactivateAffiliateAccess}
-  >
-    {deactivatingAffiliate ? "Deactivating..." : "Deactivate Affiliate Access"}
-  </button>
-</section>
         <div style={styles.links}>
           <Link href="/profile" style={styles.link}>
             Profile
