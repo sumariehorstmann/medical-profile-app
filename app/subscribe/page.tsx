@@ -59,7 +59,15 @@ useEffect(() => {
         } = await supabase.auth.getUser();
 
         if (userError || !user) {
+  const currentRef = localStorage.getItem("rroi_affiliate_ref");
+
+if (currentRef) {
+  window.location.href = `/login?next=/subscribe?ref=${currentRef}`;
+} else {
   window.location.href = "/login?next=/subscribe";
+}
+
+return;
   return;
 }
 
