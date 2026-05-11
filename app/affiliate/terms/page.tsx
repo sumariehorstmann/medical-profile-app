@@ -224,8 +224,35 @@ export default function AffiliateTermsPage() {
             </p>
           </div>
 
+<div style={styles.section}>
+  <h2 style={styles.sectionTitle}>11. Affiliate Deactivation</h2>
+
+  <p style={styles.paragraph}>
+    Affiliates may request or use available platform tools to deactivate their
+    affiliate access. Deactivation does not delete the affiliate account,
+    affiliate code, referral history, payout history, or related records.
+  </p>
+
+  <p style={styles.paragraphSpaced}>
+    Affiliate codes remain the property of RROI and may not be transferred,
+    sold, reassigned, or reused by another person.
+  </p>
+
+  <p style={styles.paragraphSpaced}>
+    RROI may retain affiliate, referral, payout, and program records for
+    operational, legal, accounting, tax, fraud prevention, compliance, and audit
+    purposes.
+  </p>
+
+  <p style={styles.paragraphSpaced}>
+    If an affiliate later reapplies or reactivates their affiliate access, RROI
+    may reactivate the existing affiliate profile and code subject to Premium
+    subscription status, account standing, and program rules.
+  </p>
+</div>
+
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>11. Suspension and Termination</h2>
+            <h2 style={styles.sectionTitle}>12. Suspension and Termination</h2>
 
             <p style={styles.paragraph}>
               RROI may suspend or terminate affiliate access immediately if
@@ -246,7 +273,7 @@ export default function AffiliateTermsPage() {
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>
-              12. No Employment or Partnership
+              13. No Employment or Partnership
             </h2>
 
             <p style={styles.paragraph}>
@@ -261,7 +288,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>13. No Guaranteed Earnings</h2>
+            <h2 style={styles.sectionTitle}>14. No Guaranteed Earnings</h2>
 
             <p style={styles.paragraph}>
               RROI does not guarantee any level of referrals, conversions,
@@ -277,7 +304,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>14. Changes to the Program</h2>
+            <h2 style={styles.sectionTitle}>15. Changes to the Program</h2>
 
             <p style={styles.paragraph}>
               RROI may change, pause, restrict, or discontinue the affiliate
@@ -294,7 +321,7 @@ export default function AffiliateTermsPage() {
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>
-              15. Main Terms and Privacy Policy
+              16. Main Terms and Privacy Policy
             </h2>
 
             <p style={styles.paragraph}>
@@ -310,7 +337,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>16. Governing Law</h2>
+            <h2 style={styles.sectionTitle}>17. Governing Law</h2>
 
             <p style={styles.paragraph}>
               These Affiliate Terms are governed by the laws of the Republic of
@@ -319,7 +346,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>17. Contact</h2>
+            <h2 style={styles.sectionTitle}>18. Contact</h2>
 
             <p style={styles.paragraph}>
               If you have any questions regarding the RROI Affiliate Program or

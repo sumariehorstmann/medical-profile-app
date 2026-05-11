@@ -48,7 +48,7 @@ export default function AffiliateDashboardPage() {
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
   const [origin, setOrigin] = useState("");
   const [hasPremium, setHasPremium] = useState(false);
-
+  const [copiedItem, setCopiedItem] = useState<"code" | "link" | null>(null);
   const [bankName, setBankName] = useState("");
   const [accountHolder, setAccountHolder] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
@@ -199,17 +199,24 @@ export default function AffiliateDashboardPage() {
     }
   }
 
-  async function copyText(text: string, successMessage: string) {
-    try {
-      await navigator.clipboard.writeText(text);
-      setMessage(successMessage);
-      window.setTimeout(() => {
-        setMessage(null);
-      }, 2200);
-    } catch {
-      setMessage("Could not copy. Please copy manually.");
-    }
+  async function copyText(
+  text: string,
+  successMessage: string,
+  item: "code" | "link"
+) {
+  try {
+    await navigator.clipboard.writeText(text);
+    setCopiedItem(item);
+    setMessage(successMessage);
+
+    window.setTimeout(() => {
+      setCopiedItem(null);
+      setMessage(null);
+    }, 2200);
+  } catch {
+    setMessage("Could not copy. Please copy manually.");
   }
+}
 
   function normalizeStatus(value: string | null | undefined) {
     return String(value || "").trim().toLowerCase();
@@ -330,6 +337,26 @@ export default function AffiliateDashboardPage() {
             </p>
 
             {message ? <div style={styles.notice}>{message}</div> : null}
+
+<section style={styles.dangerSection}>
+  <h2 style={styles.h2}>Affiliate Access</h2>
+
+  <p style={styles.infoText}>
+    Your affiliate code and referral history will be preserved. You may
+    reactivate your affiliate access later if your Premium subscription is
+    active and your account remains in good standing.
+  </p>
+
+  <button
+    type="button"
+    style={styles.secondaryBtn}
+    onClick={() => {
+      alert("Deactivate Affiliate Access will be connected next.");
+    }}
+  >
+    Deactivate Affiliate Access
+  </button>
+</section>
 
             <div style={styles.links}>
               <Link href="/subscribe/order" style={styles.primaryLinkBtn}>
@@ -593,11 +620,11 @@ export default function AffiliateDashboardPage() {
               disabled={!affiliate.affiliate_code}
               onClick={() =>
                 affiliate.affiliate_code
-                  ? copyText(affiliate.affiliate_code, "Affiliate code copied.")
+                  ? copyText(affiliate.affiliate_code, "Affiliate code copied.", "code")
                   : null
               }
             >
-              Copy Code
+              {copiedItem === "code" ? "Copied" : "Copy Code"}
             </button>
           </div>
 <section style={styles.section}>
@@ -621,10 +648,10 @@ export default function AffiliateDashboardPage() {
               type="button"
               style={styles.primaryBtn}
               disabled={!referralLink}
-              onClick={() => copyText(referralLink, "Referral link copied.")}
-            >
-              Copy Referral Link
-            </button>
+              onClick={() => copyText(referralLink, "Referral link copied.", "link")}
+>
+  {copiedItem === "link" ? "Copied" : "Copy Referral Link"}
+</button>
           </div>
         </section>
 
@@ -933,4 +960,23 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 14,
     lineHeight: 1,
   },
+  dangerSection: {
+  marginTop: 24,
+  border: `1px solid ${BORDER}`,
+  borderRadius: 14,
+  padding: 16,
+  background: "#FFFBEB",
+},
+
+secondaryBtn: {
+  marginTop: 12,
+  display: "inline-block",
+  padding: "10px 16px",
+  borderRadius: 10,
+  border: `1px solid ${BORDER}`,
+  background: "#FFFFFF",
+  color: TEXT,
+  fontWeight: 800,
+  cursor: "pointer",
+},
 };
