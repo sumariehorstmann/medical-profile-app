@@ -60,13 +60,13 @@ export default function SiteHeader() {
     <header style={styles.header}>
       <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
   <Image
-    src="/logo-header.png"
-    alt="RROI"
-    width={210}
-    height={48}
-    priority
-    style={styles.headerFullLogo}
-  />
+  src="/logo-header.png"
+  alt="RROI"
+  width={240}
+  height={55}
+  priority
+  style={styles.headerFullLogo}
+/>
 </Link>
 
       <div style={styles.headerActions}>
@@ -101,44 +101,45 @@ const BORDER = "#E5E7EB";
 
 const styles: Record<string, React.CSSProperties> = {
   header: {
-    position: "sticky",
-    top: 0,
-    zIndex: 1000,
-    width: "100%",
-    minHeight: 64,
-    padding: "10px 12px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
-    borderBottom: `1px solid ${BORDER}`,
-    background: "#FFFFFF",
-    boxSizing: "border-box",
-    overflow: "hidden",
-  },
-
-  headerLogo: {
-    display: "flex",
-    alignItems: "center",
-    textDecoration: "none",
-    minWidth: 0,
-    flex: "1 1 auto",
-    overflow: "hidden",
-  },
-
-  headerFullLogo: {
-  width: "min(240px, 58vw)",
-  height: "auto",
-  maxHeight: 52,
-  objectFit: "contain",
+  position: "sticky",
+  top: 0,
+  zIndex: 1000,
+  width: "100%",
+  minHeight: 72,
+  padding: "10px 16px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 12,
+  borderBottom: `1px solid ${BORDER}`,
+  background: "#FFFFFF",
+  boxSizing: "border-box",
 },
 
-  headerActions: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    flexShrink: 0,
-  },
+headerLogo: {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-start",
+  textDecoration: "none",
+  minWidth: 0,
+  flex: "1 1 auto",
+},
+
+headerFullLogo: {
+  width: "clamp(150px, 42vw, 230px)",
+  height: "auto",
+  maxHeight: 56,
+  objectFit: "contain",
+  display: "block",
+},
+
+headerActions: {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  gap: 8,
+  flexShrink: 0,
+},
 
   loginLink: {
   textDecoration: "none",
