@@ -180,19 +180,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div style={styles.footerLinks}>
-            <Link href="/affiliate" style={styles.footerLink}>
-              Affiliate Program
-            </Link>
-            <span style={styles.dot}>•</span>
-            <Link href="/privacy" style={styles.footerLink}>
-              Privacy
-            </Link>
-            <span style={styles.dot}>•</span>
-            <Link href="/terms" style={styles.footerLink}>
-              Terms
-            </Link>
-          </div>
+          
         </div>
       </section>
     </main>
@@ -513,20 +501,7 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.6,
     color: "#CBD5E1",
   },
-  footerLinks: {
-    marginTop: 22,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 10,
-    flexWrap: "wrap",
-    fontSize: 14,
-  },
-  footerLink: {
-    color: MUTED,
-    textDecoration: "none",
-    fontWeight: 800,
-  },
+
   dot: {
     color: "#CBD5E1",
   },
