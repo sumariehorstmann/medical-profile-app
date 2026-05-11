@@ -194,14 +194,59 @@ return;
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Affiliate Code</h2>
-            <input
-              type="text"
-              value={affiliateCode}
-              onChange={(e) => setAffiliateCode(e.target.value.toUpperCase())}
-              placeholder="Enter affiliate code if you have one"
-              style={styles.input}
-            />
+            <h2 style={styles.sectionTitle}>Affiliate Discount</h2>
+
+{affiliateCode ? (
+  <div
+    style={{
+      background: "#ECFDF5",
+      border: "1px solid #A7F3D0",
+      borderRadius: 12,
+      padding: 14,
+    }}
+  >
+    <p
+      style={{
+        margin: 0,
+        fontSize: 15,
+        fontWeight: 700,
+        color: "#065F46",
+      }}
+    >
+      Affiliate Discount Applied
+    </p>
+
+    <p
+      style={{
+        margin: "6px 0 0",
+        fontSize: 14,
+        color: "#065F46",
+      }}
+    >
+      Code: {affiliateCode}
+    </p>
+
+    <p
+      style={{
+        margin: "6px 0 0",
+        fontSize: 14,
+        color: "#065F46",
+      }}
+    >
+      You save R30 on your Premium upgrade.
+    </p>
+  </div>
+) : (
+  <input
+    type="text"
+    value={affiliateCode}
+    onChange={(e) =>
+      setAffiliateCode(e.target.value.toUpperCase())
+    }
+    placeholder="Enter affiliate code"
+    style={styles.input}
+  />
+)}
           </div>
 
           <div style={styles.section}>
