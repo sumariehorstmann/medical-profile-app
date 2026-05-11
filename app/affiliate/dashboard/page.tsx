@@ -361,7 +361,7 @@ async function reactivateAffiliateAccess() {
 
   const totalEarned = Number(affiliate.total_earned ?? 0);
   const totalPaid = Number(affiliate.total_paid ?? 0);
-
+  const totalReferrals = referrals.length;
   const confirmedUnpaid = referrals
     .filter(
       (item) =>
@@ -519,7 +519,12 @@ async function reactivateAffiliateAccess() {
             </div>
 
             <div style={styles.statCard}>
-              <div style={styles.statLabel}>Eligible for Payout</div>
+  <div style={styles.statLabel}>Total Referrals</div>
+  <div style={styles.statValue}>{totalReferrals}</div>
+</div>
+
+            <div style={styles.statCard}>
+              <div style={styles.statLabel}>Available for Payout</div>
               <div style={styles.statValue}>
                 R{currentEligiblePayout.toFixed(2)}
               </div>
@@ -533,7 +538,7 @@ async function reactivateAffiliateAccess() {
             </div>
 
             <div style={styles.statCard}>
-              <div style={styles.statLabel}>Threshold</div>
+              <div style={styles.statLabel}>Remaining to Threshold</div>
               <div style={styles.statValue}>
                 {thresholdMet
                   ? "Reached"
@@ -541,11 +546,7 @@ async function reactivateAffiliateAccess() {
               </div>
             </div>
 
-            <div style={styles.statCard}>
-              <div style={styles.statLabel}>Paid Commission</div>
-              <div style={styles.statValue}>R{paidCommissions.toFixed(2)}</div>
-            </div>
-          </div>
+           </div> 
         </section>
 
         <section style={styles.section}>
