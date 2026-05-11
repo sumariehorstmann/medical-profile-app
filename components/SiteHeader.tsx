@@ -127,11 +127,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   headerFullLogo: {
-    width: "min(190px, 48vw)",
-    height: "auto",
-    maxHeight: 42,
-    objectFit: "contain",
-  },
+  width: "min(240px, 58vw)",
+  height: "auto",
+  maxHeight: 52,
+  objectFit: "contain",
+},
 
   headerActions: {
     display: "flex",
@@ -141,25 +141,25 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   loginLink: {
-    textDecoration: "none",
-    fontWeight: 800,
-    color: BRAND_GREEN,
-    padding: "8px 4px",
-    borderRadius: 10,
-    fontSize: 14,
-    whiteSpace: "nowrap",
-  },
+  textDecoration: "none",
+  fontWeight: 800,
+  color: BRAND_GREEN,
+  padding: "8px 2px",
+  borderRadius: 10,
+  fontSize: 14,
+  whiteSpace: "nowrap",
+},
 
-  signupLink: {
-    textDecoration: "none",
-    fontWeight: 900,
-    color: "#FFFFFF",
-    background: BRAND_GREEN,
-    padding: "9px 12px",
-    borderRadius: 10,
-    fontSize: 14,
-    whiteSpace: "nowrap",
-  },
+signupLink: {
+  textDecoration: "none",
+  fontWeight: 900,
+  color: "#FFFFFF",
+  background: BRAND_GREEN,
+  padding: "8px 10px",
+  borderRadius: 10,
+  fontSize: 14,
+  whiteSpace: "nowrap",
+},
 
   logoutBtn: {
     border: "none",
