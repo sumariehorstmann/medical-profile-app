@@ -59,15 +59,15 @@ export default function SiteHeader() {
   return (
     <header style={styles.header}>
       <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
-  <Image
-  src="/logo-header.png"
-  alt="RROI"
-  width={240}
-  height={55}
-  priority
-  style={styles.headerFullLogo}
-/>
-</Link>
+        <Image
+          src="/logo.png"
+          alt="RROI"
+          width={64}
+          height={64}
+          priority
+          style={styles.headerLogoImage}
+        />
+      </Link>
 
       <div style={styles.headerActions}>
         {isLoggedIn === null ? null : showGuestButtons || !isLoggedIn ? (
@@ -96,71 +96,68 @@ export default function SiteHeader() {
 }
 
 const BRAND_GREEN = "#157A55";
-const TEXT = "#0F172A";
 const BORDER = "#E5E7EB";
 
 const styles: Record<string, React.CSSProperties> = {
   header: {
-  position: "sticky",
-  top: 0,
-  zIndex: 1000,
-  width: "100%",
-  minHeight: 72,
-  padding: "10px 16px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: 12,
-  borderBottom: `1px solid ${BORDER}`,
-  background: "#FFFFFF",
-  boxSizing: "border-box",
-},
+    position: "sticky",
+    top: 0,
+    zIndex: 1000,
+    width: "100%",
+    minHeight: 76,
+    padding: "8px 16px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    borderBottom: `1px solid ${BORDER}`,
+    background: "#FFFFFF",
+    boxSizing: "border-box",
+  },
 
-headerLogo: {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-start",
-  textDecoration: "none",
-  minWidth: 0,
-  flex: "1 1 auto",
-},
+  headerLogo: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    textDecoration: "none",
+    flexShrink: 0,
+  },
 
-headerFullLogo: {
-  width: "clamp(150px, 42vw, 230px)",
-  height: "auto",
-  maxHeight: 56,
-  objectFit: "contain",
-  display: "block",
-},
+  headerLogoImage: {
+    width: 56,
+    height: 56,
+    objectFit: "contain",
+    display: "block",
+  },
 
-headerActions: {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  gap: 8,
-  flexShrink: 0,
-},
+  headerActions: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 8,
+    flexShrink: 0,
+  },
 
   loginLink: {
-  textDecoration: "none",
-  fontWeight: 800,
-  color: BRAND_GREEN,
-  padding: "8px 2px",
-  borderRadius: 10,
-  fontSize: 14,
-  whiteSpace: "nowrap",
-},
+    textDecoration: "none",
+    fontWeight: 800,
+    color: BRAND_GREEN,
+    padding: "8px 4px",
+    borderRadius: 10,
+    fontSize: 14,
+    whiteSpace: "nowrap",
+  },
 
-signupLink: {
-  textDecoration: "none",
-  fontWeight: 900,
-  color: "#FFFFFF",
-  background: BRAND_GREEN,
-  padding: "8px 10px",
-  borderRadius: 10,
-  fontSize: 14,
-  whiteSpace: "nowrap",
-},
+  signupLink: {
+    textDecoration: "none",
+    fontWeight: 900,
+    color: "#FFFFFF",
+    background: BRAND_GREEN,
+    padding: "9px 12px",
+    borderRadius: 10,
+    fontSize: 14,
+    whiteSpace: "nowrap",
+  },
 
   logoutBtn: {
     border: "none",
