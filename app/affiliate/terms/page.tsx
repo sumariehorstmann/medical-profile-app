@@ -3,6 +3,7 @@
 import PageHeader from "@/components/PageHeader";
 import PageBottomNav from "@/components/PageBottomNav";
 
+const BRAND_GREEN = "#157A55";
 const TEXT = "#0F172A";
 const MUTED = "#475569";
 const BORDER = "#E5E7EB";
@@ -18,92 +19,315 @@ export default function AffiliateTermsPage() {
 
           <div style={styles.topBlock}>
             <h1 style={styles.title}>Affiliate Terms</h1>
+
             <p style={styles.subtitle}>
-              These terms apply to participants in the RROI Affiliate Program.
-              By participating, you agree to these terms in addition to the main
-              RROI Terms and Privacy Policy.
+              These Affiliate Terms govern participation in the RROI Affiliate
+              Program. By applying to or participating in the program, you agree
+              to these terms in addition to the main RROI Terms &amp;
+              Conditions and Privacy Policy.
             </p>
           </div>
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>1. Overview</h2>
+
             <p style={styles.paragraph}>
-              These Affiliate Terms apply to participants in the RROI Affiliate
-              Program. By participating in the program, you agree to these terms
-              in addition to RROI’s Terms and Privacy Policy.
+              The RROI Affiliate Program allows approved affiliates to promote
+              RROI using an assigned affiliate code and approved marketing
+              material. Subject to these terms, affiliates may earn commission
+              on qualifying paid Premium upgrades completed through their
+              approved affiliate code.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>2. Who Can Apply</h2>
+            <h2 style={styles.sectionTitle}>2. Eligibility</h2>
+
             <p style={styles.paragraph}>
-              To apply to become an RROI affiliate, you must be logged in as an
-              active Premium subscriber.
+              To apply to become an affiliate, you must have an active RROI
+              Premium subscription and a valid RROI account in good standing.
+              Submission of an application does not guarantee approval.
             </p>
+
             <p style={styles.paragraphSpaced}>
-              If you already have a Premium subscription, please log in and go
-              to your profile page to apply.
+              RROI may approve, decline, suspend, or revoke affiliate access at
+              its discretion where reasonably necessary to protect the platform,
+              users, brand reputation, operational integrity, or legal
+              compliance requirements.
             </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>3. Application and Approval</h2>
+
+            <p style={styles.paragraph}>
+              After submitting an affiliate application, your application will
+              be reviewed manually. Affiliate access becomes active only once
+              approval has been granted by RROI.
+            </p>
+
             <p style={styles.paragraphSpaced}>
-              If you have a free profile, please log in and upgrade to Premium
-              first.
+              Until approval is confirmed by RROI, no applicant may represent
+              themselves as an authorised RROI affiliate.
             </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>4. Affiliate Code</h2>
+
+            <p style={styles.paragraph}>
+              Approved affiliates receive a unique affiliate code and referral
+              link. These may be displayed within the affiliate dashboard or
+              other official RROI systems.
+            </p>
+
             <p style={styles.paragraphSpaced}>
-              If you do not yet have a profile, please sign up, log in, upgrade
-              to Premium, and then apply to become an affiliate from your
-              profile.
+              Affiliates are responsible for using their affiliate code honestly,
+              lawfully, and only in accordance with these Affiliate Terms and
+              any official guidance issued by RROI.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>3. Affiliate Code</h2>
+            <h2 style={styles.sectionTitle}>5. Qualifying Commissions</h2>
+
             <p style={styles.paragraph}>
-              Once your affiliate account is created successfully, you will
-              receive a unique affiliate code, which will also appear on your
-              profile page.
+              Commission is earned only on qualifying paid Premium upgrades
+              successfully completed using an approved affiliate code and
+              recorded by RROI systems as attributable to that affiliate.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              No commission is payable on fraudulent transactions, reversed or
+              refunded payments, duplicate accounts, test transactions,
+              renewals unless expressly stated otherwise, or any transaction
+              that RROI reasonably determines to be invalid, manipulated,
+              abusive, misleading, or non-genuine.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>4. Discount and Commission</h2>
+            <h2 style={styles.sectionTitle}>6. Discounts and Commission Structure</h2>
+
             <p style={styles.paragraph}>
-              Customers using your affiliate code receive a discount on the
-              Premium upgrade. You will earn a commission on each successful
-              payment made using your code.
+              Customers using an approved affiliate code may receive the
+              discount applicable at the time of purchase, if any.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              RROI may change pricing, discount structures, commission rates,
+              referral mechanics, payout thresholds, promotional campaigns, or
+              affiliate program rules from time to time.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>5. Payouts</h2>
+            <h2 style={styles.sectionTitle}>7. Payouts</h2>
+
             <p style={styles.paragraph}>
-              Commissions are paid out quarterly, provided the minimum payout
-              threshold is reached. RROI reserves the right to adjust payout
-              schedules if required.
+              Affiliate commissions are paid subject to the official payout
+              schedule, minimum payout threshold, verification checks, and
+              payout rules determined by RROI.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              RROI may withhold, delay, reverse, reject, or adjust commissions
+              associated with refunds, reversals, disputes, chargebacks, fraud
+              investigations, invalid transactions, incorrect payout details,
+              verification reviews, or breaches of these Affiliate Terms.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              Affiliates are responsible for ensuring that payout banking
+              details provided to RROI are complete and accurate.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>6. Affiliate Responsibilities</h2>
+            <h2 style={styles.sectionTitle}>8. Affiliate Conduct</h2>
+
+            <p style={styles.paragraph}>
+              Affiliates must promote RROI honestly, lawfully,
+              professionally, and in good faith. Affiliates may not make false,
+              misleading, exaggerated, or unapproved claims about RROI, its
+              services, pricing, emergency function, legal status, or potential
+              affiliate earnings.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              Affiliates may not market RROI as a medical service, healthcare
+              provider, emergency responder, or guaranteed life-saving solution.
+            </p>
+
             <ul style={styles.unorderedList}>
-              <li>Promote RROI honestly and ethically.</li>
-              <li>Do not provide misleading information.</li>
-              <li>Do not spam or misuse marketing channels.</li>
+              <li>No spam, harassment, or deceptive marketing practices.</li>
+
+              <li>
+                No impersonation of RROI, including fake pages, fake support
+                accounts, misleading domains, or pretending to be an employee
+                or official representative.
+              </li>
+
+              <li>
+                No misleading medical, healthcare, emergency response, or
+                safety-related claims.
+              </li>
+
+              <li>
+                No editing or altering official RROI branding, pricing,
+                advertisements, or approved marketing material without written
+                permission from RROI.
+              </li>
+
+              <li>
+                No conduct that may reasonably harm users, the platform, or the
+                RROI brand.
+              </li>
             </ul>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>7. Termination</h2>
+            <h2 style={styles.sectionTitle}>
+              9. Official Marketing Material and Brand Use
+            </h2>
+
             <p style={styles.paragraph}>
-              RROI reserves the right to revoke affiliate access if these terms
-              are violated or if misuse is detected.
+              Approved affiliates may access official RROI marketing resources,
+              advertisements, captions, hashtags, videos, graphics, and
+              promotional material through the affiliate dashboard or other
+              approved RROI channels.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              Affiliates may use only official RROI-approved marketing material
+              unless written permission is granted by RROI to create or publish
+              custom content.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              RROI may require any post, caption, advertisement, video,
+              website, or promotional material to be edited, corrected,
+              unpublished, or removed if it is inaccurate, misleading,
+              outdated, non-compliant, harmful to the brand, or inconsistent
+              with official RROI positioning.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>8. Changes</h2>
+            <h2 style={styles.sectionTitle}>10. Tax Responsibility</h2>
+
             <p style={styles.paragraph}>
-              These terms may be updated at any time. Continued participation
-              implies acceptance of the updated terms.
+              Affiliates are solely responsible for complying with their own
+              tax, accounting, reporting, registration, and SARS obligations
+              relating to any affiliate commissions or income earned through
+              the RROI Affiliate Program.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>11. Suspension and Termination</h2>
+
+            <p style={styles.paragraph}>
+              RROI may suspend or terminate affiliate access immediately if
+              these Affiliate Terms are breached, if misuse or fraud is
+              suspected, if the affiliate’s Premium subscription is no longer
+              active, or if RROI reasonably determines that continued
+              participation creates legal, operational, security, compliance,
+              or reputational risk.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              On suspension or termination, unpaid commissions may be withheld
+              to the extent reasonably necessary to investigate invalid
+              activity, fraud, refunds, reversals, chargebacks, or other
+              breaches of these Affiliate Terms.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              12. No Employment or Partnership
+            </h2>
+
+            <p style={styles.paragraph}>
+              Participation in the affiliate program does not create any
+              employment, agency, joint venture, franchise, or partnership
+              relationship between the affiliate and RROI.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              Affiliates act solely as independent promotional partners.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>13. No Guaranteed Earnings</h2>
+
+            <p style={styles.paragraph}>
+              RROI does not guarantee any level of referrals, conversions,
+              commissions, approval, or income.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              Affiliate earnings, if any, depend on multiple factors including
+              valid referrals, completed payments, compliance with these terms,
+              approved marketing activity, and the commercial performance of
+              the affiliate program.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>14. Changes to the Program</h2>
+
+            <p style={styles.paragraph}>
+              RROI may change, pause, restrict, or discontinue the affiliate
+              program, or amend these Affiliate Terms, commission rules,
+              discount rules, qualification criteria, payout structures,
+              marketing rules, or affiliate tools from time to time.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              Continued participation after updated terms or rules are
+              published constitutes acceptance of those updated terms.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              15. Main Terms and Privacy Policy
+            </h2>
+
+            <p style={styles.paragraph}>
+              These Affiliate Terms must be read together with the main RROI
+              Terms &amp; Conditions and Privacy Policy.
+            </p>
+
+            <p style={styles.paragraphSpaced}>
+              If there is a conflict between these Affiliate Terms and the main
+              RROI Terms &amp; Conditions, these Affiliate Terms apply
+              specifically to the affiliate program.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>16. Governing Law</h2>
+
+            <p style={styles.paragraph}>
+              These Affiliate Terms are governed by the laws of the Republic of
+              South Africa.
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>17. Contact</h2>
+
+            <p style={styles.paragraph}>
+              If you have any questions regarding the RROI Affiliate Program or
+              these Affiliate Terms, please contact us at{" "}
+              <a href="mailto:support@rroi.co.za" style={styles.link}>
+                support@rroi.co.za
+              </a>
+              .
             </p>
           </div>
 
@@ -120,11 +344,13 @@ const styles: Record<string, React.CSSProperties> = {
     minHeight: "100%",
     padding: "40px 16px 56px",
   },
+
   container: {
     maxWidth: 900,
     margin: "0 auto",
     width: "100%",
   },
+
   card: {
     background: CARD_BG,
     border: `1px solid ${BORDER}`,
@@ -132,10 +358,12 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 28,
     boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
   },
+
   topBlock: {
     marginBottom: 24,
     textAlign: "center",
   },
+
   title: {
     margin: 0,
     fontSize: 34,
@@ -143,6 +371,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     color: TEXT,
   },
+
   subtitle: {
     margin: "12px auto 0",
     fontSize: 16,
@@ -150,6 +379,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: MUTED,
     maxWidth: 680,
   },
+
   section: {
     border: `1px solid ${BORDER}`,
     borderRadius: 18,
@@ -157,29 +387,39 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#FFFFFF",
     marginBottom: 18,
   },
+
   sectionTitle: {
     margin: "0 0 10px",
     fontSize: 20,
     fontWeight: 800,
     color: TEXT,
   },
+
   paragraph: {
     margin: 0,
     fontSize: 15,
     lineHeight: 1.7,
     color: MUTED,
   },
+
   paragraphSpaced: {
     margin: "12px 0 0",
     fontSize: 15,
     lineHeight: 1.7,
     color: MUTED,
   },
+
   unorderedList: {
-    margin: "6px 0 0 18px",
+    margin: "12px 0 0 18px",
     padding: 0,
     fontSize: 15,
     lineHeight: 1.9,
     color: MUTED,
+  },
+
+  link: {
+    color: BRAND_GREEN,
+    fontWeight: 700,
+    textDecoration: "none",
   },
 };
