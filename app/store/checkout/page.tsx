@@ -7,9 +7,72 @@ import PageHeader from "@/components/PageHeader";
 import PageBottomNav from "@/components/PageBottomNav";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
+type OrderFormData = {
+  first_name: string;
+  last_name: string;
+  blood_type: string;
+  allergies: string;
+  emergency_contact_name: string;
+  emergency_contact_surname: string;
+  emergency_contact_phone: string;
+  email: string;
+  cellphone: string;
+  shipping_unit: string;
+  shipping_street: string;
+  shipping_city: string;
+  shipping_province: string;
+  shipping_postal_code: string;
+  shipping_country: string;
+};
+
+type ProfileRow = {
+  first_name: string | null;
+  last_name: string | null;
+  blood_type: string | null;
+  allergies: string | null;
+  emergency1_fullname: string | null;
+  emergency1_phone: string | null;
+};
+
 const DOG_TAG_PRICE = 99;
 const QR_CARD_PRICE = 99;
 const DELIVERY_FEE = 99;
+
+const EMPTY_FORM: OrderFormData = {
+  first_name: "",
+  last_name: "",
+  blood_type: "",
+  allergies: "",
+  emergency_contact_name: "",
+  emergency_contact_surname: "",
+  emergency_contact_phone: "",
+  email: "",
+  cellphone: "",
+  shipping_unit: "",
+  shipping_street: "",
+  shipping_city: "",
+  shipping_province: "",
+  shipping_postal_code: "",
+  shipping_country: "South Africa",
+};
+
+const FIELD_LABELS: Record<keyof OrderFormData, string> = {
+  first_name: "First Name",
+  last_name: "Last Name",
+  blood_type: "Blood Type",
+  allergies: "Allergies",
+  emergency_contact_name: "Emergency Contact Name",
+  emergency_contact_surname: "Emergency Contact Surname",
+  emergency_contact_phone: "Emergency Contact Phone Number",
+  email: "Email Address",
+  cellphone: "Cellphone Number",
+  shipping_unit: "Unit / Complex / Building",
+  shipping_street: "Street Address",
+  shipping_city: "City / Town",
+  shipping_province: "Province",
+  shipping_postal_code: "Postal Code",
+  shipping_country: "Country",
+};
 
 function StoreCheckoutInner() {
   const params = useSearchParams();
@@ -19,78 +82,142 @@ function StoreCheckoutInner() {
   const cards = Math.max(0, Number(params.get("cards") || 0));
 
   const subtotal = dogTags * DOG_TAG_PRICE + cards * QR_CARD_PRICE;
-  const total = subtotal > 0 ? subtotal + DELIVERY_FEE : 0;
+  const hasItems = subtotal > 0;
+  const total = hasItems ? subtotal + DELIVERY_FEE : 0;
 
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-
-  const [form, setForm] = useState({
-    customerName: "",
-    email: "",
-    phone: "",
-    unit: "",
-    street: "",
-    city: "",
-    province: "",
-    postalCode: "",
-    country: "South Africa",
-  });
+  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof OrderFormData, string>>
+  >({});
+  const [form, setForm] = useState<OrderFormData>(EMPTY_FORM);
 
   useEffect(() => {
-    async function loadUser() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+    let mounted = true;
 
-      if (!session?.access_token) {
-        const next = `/store/checkout?dogTags=${dogTags}&cards=${cards}`;
-        window.location.href = `/login?next=${encodeURIComponent(next)}`;
-        return;
-      }
+    async function loadData() {
+      try {
+        setLoading(true);
+        setError("");
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
 
-      if (user?.email) {
-        setForm((prev) => ({
-          ...prev,
+        if (sessionError || !session?.user) {
+          const next = `/store/checkout?dogTags=${dogTags}&cards=${cards}`;
+          window.location.href = `/login?next=${encodeURIComponent(next)}`;
+          return;
+        }
+
+        const user = session.user;
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select(`
+            first_name,
+            last_name,
+            blood_type,
+            allergies,
+            emergency1_fullname,
+            emergency1_phone
+          `)
+          .eq("user_id", user.id)
+          .maybeSingle<ProfileRow>();
+
+        const fullName = (profile?.emergency1_fullname || "").trim();
+        const nameParts = fullName ? fullName.split(/\s+/) : [];
+
+        const loadedForm: OrderFormData = {
+          ...EMPTY_FORM,
+          first_name: profile?.first_name || "",
+          last_name: profile?.last_name || "",
+          blood_type: profile?.blood_type || "",
+          allergies: profile?.allergies || "",
+          emergency_contact_name: nameParts[0] || "",
+          emergency_contact_surname: nameParts.slice(1).join(" ") || "",
+          emergency_contact_phone: profile?.emergency1_phone || "",
           email: user.email || "",
-        }));
-      }
+          shipping_country: "South Africa",
+        };
 
-      setLoading(false);
+        if (mounted) {
+          setForm(loadedForm);
+        }
+      } catch {
+        if (mounted) {
+          setError("Could not load your checkout form. Please refresh and try again.");
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
 
-    loadUser();
+    loadData();
+
+    return () => {
+      mounted = false;
+    };
   }, [supabase, dogTags, cards]);
 
-  function updateField(name: string, value: string) {
+  function updateField<K extends keyof OrderFormData>(
+    field: K,
+    value: OrderFormData[K]
+  ) {
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [field]: value,
     }));
+
+    setFieldErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  }
+
+  function sanitizeValue(field: keyof OrderFormData, value: string) {
+    if (field === "cellphone" || field === "emergency_contact_phone") {
+      return value.replace(/[^\d+]/g, "");
+    }
+
+    if (field === "shipping_postal_code") {
+      return value.replace(/[^\d]/g, "");
+    }
+
+    return value;
+  }
+
+  function validateForm() {
+    const errors: Partial<Record<keyof OrderFormData, string>> = {};
+
+    (Object.keys(form) as Array<keyof OrderFormData>).forEach((key) => {
+      if (form[key].trim() === "") {
+        errors[key] = `${FIELD_LABELS[key]} is required.`;
+      }
+    });
+
+    return errors;
   }
 
   async function handlePayment() {
-    setMessage(null);
+    setError("");
 
-    if (subtotal <= 0) {
-      setMessage("Please add at least one item to your order.");
+    if (!hasItems) {
+      setError("Please add at least one item to your order.");
       return;
     }
 
-    if (
-      !form.customerName.trim() ||
-      !form.email.trim() ||
-      !form.phone.trim() ||
-      !form.street.trim() ||
-      !form.city.trim() ||
-      !form.province.trim() ||
-      !form.postalCode.trim()
-    ) {
-      setMessage("Please complete all required delivery fields.");
+    const validationErrors = validateForm();
+    setFieldErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setError("Please complete all required fields before continuing.");
       return;
     }
 
@@ -116,15 +243,7 @@ function StoreCheckoutInner() {
           dogTags,
           cards,
           deliveryFee: DELIVERY_FEE,
-          customerName: form.customerName,
-          email: form.email,
-          phone: form.phone,
-          unit: form.unit,
-          street: form.street,
-          city: form.city,
-          province: form.province,
-          postalCode: form.postalCode,
-          country: form.country,
+          ...form,
         }),
       });
 
@@ -136,7 +255,7 @@ function StoreCheckoutInner() {
 
       window.location.href = json.redirectUrl;
     } catch (err: any) {
-      setMessage(err?.message || "Failed to start store payment.");
+      setError(err?.message || "Failed to start store payment.");
     } finally {
       setPaying(false);
     }
@@ -145,120 +264,184 @@ function StoreCheckoutInner() {
   if (loading) {
     return (
       <main style={styles.page}>
-        <section style={styles.card}>
+        <div style={styles.headerWrap}>
           <PageHeader />
-          <p style={styles.loadingText}>Loading checkout...</p>
-        </section>
+        </div>
+        <div style={styles.container}>
+          <div style={styles.card}>
+            <div style={styles.progress}>Step 1 of 2 — Store Order Details</div>
+            <h1 style={styles.title}>Complete Your Store Order Details</h1>
+            <p style={styles.loadingText}>Loading...</p>
+          </div>
+        </div>
       </main>
     );
   }
 
   return (
     <main style={styles.page}>
-      <section style={styles.container}>
+      <div style={styles.headerWrap}>
+        <PageHeader />
+      </div>
+
+      <div style={styles.container}>
         <div style={styles.card}>
-          <PageHeader />
+          <div style={styles.progress}>Step 1 of 2 — Store Order Details</div>
 
-          <div style={styles.topBlock}>
-            <h1 style={styles.title}>Store Checkout</h1>
-            <p style={styles.subtitle}>
-              Complete your delivery details for your engraved RROI QR code
-              items.
-            </p>
+          <h1 style={styles.title}>Complete Your Store Order Details</h1>
+
+          <p style={styles.subtitle}>
+            This information will be used to engrave your QR code products and
+            deliver your order.
+          </p>
+
+          <div style={styles.summaryBox}>
+            <div style={styles.summaryTitle}>Your store order includes:</div>
+            <ul style={styles.summaryList}>
+              {dogTags > 0 ? <li>Black anodised aluminium dog tag × {dogTags}</li> : null}
+              {cards > 0 ? <li>Black anodised aluminium QR card × {cards}</li> : null}
+              <li>Delivery: R{DELIVERY_FEE}</li>
+              <li>Total: R{total}</li>
+            </ul>
           </div>
 
-          <div style={styles.notice}>
-            Your QR code will link to your existing RROI public profile. The
-            information shown depends on whether your profile is Free or Premium.
+          <div style={styles.noticeBox}>
+            <div style={styles.noticeTitle}>Important</div>
+            <div style={styles.noticeText}>
+              Your QR code will link to your existing RROI public profile. The
+              information shown depends on whether your profile is Free or Premium.
+            </div>
           </div>
 
-          <div style={styles.grid}>
-            <div style={styles.formCard}>
-              <h2 style={styles.h2}>Delivery details</h2>
+          <section style={styles.section}>
+            <h2 style={styles.sectionTitle}>Personal Details</h2>
 
-              <Input label="Full name *" value={form.customerName} onChange={(v) => updateField("customerName", v)} />
-              <Input label="Email *" value={form.email} onChange={(v) => updateField("email", v)} />
-              <Input label="Phone number *" value={form.phone} onChange={(v) => updateField("phone", v)} />
-              <Input label="Unit / Complex / Building" value={form.unit} onChange={(v) => updateField("unit", v)} />
-              <Input label="Street address *" value={form.street} onChange={(v) => updateField("street", v)} />
-              <Input label="City / Town *" value={form.city} onChange={(v) => updateField("city", v)} />
-              <Input label="Province *" value={form.province} onChange={(v) => updateField("province", v)} />
-              <Input label="Postal code *" value={form.postalCode} onChange={(v) => updateField("postalCode", v)} />
-              <Input label="Country *" value={form.country} onChange={(v) => updateField("country", v)} />
+            <Field label="First Name" value={form.first_name} onChange={(v) => updateField("first_name", v)} error={fieldErrors.first_name} />
+            <Field label="Last Name" value={form.last_name} onChange={(v) => updateField("last_name", v)} error={fieldErrors.last_name} />
+            <Field label="Blood Type" value={form.blood_type} onChange={(v) => updateField("blood_type", v)} error={fieldErrors.blood_type} placeholder="Example: O+, A-, AB+" />
+            <Field label="Allergies" value={form.allergies} onChange={(v) => updateField("allergies", v)} error={fieldErrors.allergies} placeholder="List allergies exactly as you want them recorded" multiline />
+          </section>
+
+          <section style={styles.section}>
+            <h2 style={styles.sectionTitle}>Emergency Contact</h2>
+
+            <Field label="Emergency Contact Name" value={form.emergency_contact_name} onChange={(v) => updateField("emergency_contact_name", v)} error={fieldErrors.emergency_contact_name} />
+            <Field label="Emergency Contact Surname" value={form.emergency_contact_surname} onChange={(v) => updateField("emergency_contact_surname", v)} error={fieldErrors.emergency_contact_surname} />
+            <Field
+              label="Emergency Contact Phone Number"
+              value={form.emergency_contact_phone}
+              onChange={(v) => updateField("emergency_contact_phone", sanitizeValue("emergency_contact_phone", v))}
+              error={fieldErrors.emergency_contact_phone}
+              inputMode="tel"
+            />
+          </section>
+
+          <section style={styles.section}>
+            <h2 style={styles.sectionTitle}>Delivery Details</h2>
+
+            <Field label="Email Address" value={form.email} onChange={(v) => updateField("email", v)} error={fieldErrors.email} inputMode="email" />
+            <Field label="Cellphone Number" value={form.cellphone} onChange={(v) => updateField("cellphone", sanitizeValue("cellphone", v))} error={fieldErrors.cellphone} inputMode="tel" />
+            <Field label="Unit / Complex / Building" value={form.shipping_unit} onChange={(v) => updateField("shipping_unit", v)} error={fieldErrors.shipping_unit} />
+            <Field label="Street Address" value={form.shipping_street} onChange={(v) => updateField("shipping_street", v)} error={fieldErrors.shipping_street} />
+            <Field label="City / Town" value={form.shipping_city} onChange={(v) => updateField("shipping_city", v)} error={fieldErrors.shipping_city} />
+            <Field label="Province" value={form.shipping_province} onChange={(v) => updateField("shipping_province", v)} error={fieldErrors.shipping_province} />
+            <Field label="Postal Code" value={form.shipping_postal_code} onChange={(v) => updateField("shipping_postal_code", sanitizeValue("shipping_postal_code", v))} error={fieldErrors.shipping_postal_code} inputMode="numeric" />
+            <Field label="Country" value={form.shipping_country} onChange={() => {}} error={fieldErrors.shipping_country} disabled />
+          </section>
+
+          <div style={styles.stickyFooter}>
+            <div style={styles.securityBox}>
+              • Secure payment via PayFast
+              <br />
+              • Your order details are saved before payment
+              <br />
+              • Your QR code is linked to your existing RROI profile
             </div>
 
-            <div style={styles.summaryCard}>
-              <h2 style={styles.h2}>Order summary</h2>
+            <button
+              type="button"
+              onClick={handlePayment}
+              disabled={paying || !hasItems}
+              style={{
+                ...styles.primaryButton,
+                opacity: paying || !hasItems ? 0.7 : 1,
+                cursor: paying || !hasItems ? "not-allowed" : "pointer",
+              }}
+            >
+              {paying ? "Redirecting..." : "Continue to Secure Payment"}
+            </button>
 
-              {dogTags > 0 ? (
-                <div style={styles.summaryLine}>
-                  <span>Dog Tag x {dogTags}</span>
-                  <strong>R{dogTags * DOG_TAG_PRICE}</strong>
-                </div>
-              ) : null}
+            {error ? <div style={styles.errorBox}>{error}</div> : null}
 
-              {cards > 0 ? (
-                <div style={styles.summaryLine}>
-                  <span>QR Card x {cards}</span>
-                  <strong>R{cards * QR_CARD_PRICE}</strong>
-                </div>
-              ) : null}
-
-              <div style={styles.summaryLine}>
-                <span>Delivery</span>
-                <strong>R{DELIVERY_FEE}</strong>
-              </div>
-
-              <div style={styles.totalLine}>
-                <span>Total</span>
-                <strong>R{total}</strong>
-              </div>
-
-              {message ? <div style={styles.error}>{message}</div> : null}
-
-              <button
-                type="button"
-                onClick={handlePayment}
-                disabled={paying || subtotal <= 0}
-                style={{
-                  ...styles.payBtn,
-                  ...(paying || subtotal <= 0 ? styles.payBtnDisabled : {}),
-                }}
-              >
-                {paying ? "Redirecting..." : "Pay Now"}
-              </button>
-
-              <Link href="/store" style={styles.backLink}>
-                ← Back to Store
-              </Link>
-            </div>
+            <Link href="/store" style={styles.secondaryButton}>
+              Back to Store
+            </Link>
           </div>
 
           <PageBottomNav />
         </div>
-      </section>
+      </div>
     </main>
   );
 }
 
-function Input({
-  label,
-  value,
-  onChange,
-}: {
+type FieldProps = {
   label: string;
   value: string;
   onChange: (value: string) => void;
-}) {
+  placeholder?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  multiline?: boolean;
+  error?: string;
+  disabled?: boolean;
+};
+
+function Field({
+  label,
+  value,
+  onChange,
+  placeholder,
+  inputMode,
+  multiline = false,
+  error,
+  disabled = false,
+}: FieldProps) {
   return (
-    <label style={styles.label}>
-      <span style={styles.labelText}>{label}</span>
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        style={styles.input}
-      />
-    </label>
+    <div style={styles.fieldWrap}>
+      <label style={styles.label}>{label}</label>
+
+      {multiline ? (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder || label}
+          style={{
+            ...styles.input,
+            ...styles.textarea,
+            ...(error ? styles.inputError : {}),
+            ...(disabled ? styles.inputDisabled : {}),
+          }}
+          rows={4}
+          disabled={disabled}
+        />
+      ) : (
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder || label}
+          inputMode={inputMode}
+          style={{
+            ...styles.input,
+            ...(error ? styles.inputError : {}),
+            ...(disabled ? styles.inputDisabled : {}),
+          }}
+          disabled={disabled}
+        />
+      )}
+
+      {error ? <div style={styles.errorText}>{error}</div> : null}
+    </div>
   );
 }
 
@@ -267,7 +450,12 @@ export default function StoreCheckoutPage() {
     <Suspense
       fallback={
         <main style={styles.page}>
-          <section style={styles.card}>Loading checkout...</section>
+          <div style={styles.headerWrap}>
+            <PageHeader />
+          </div>
+          <div style={styles.container}>
+            <div style={styles.card}>Loading checkout...</div>
+          </div>
         </main>
       }
     >
@@ -279,148 +467,192 @@ export default function StoreCheckoutPage() {
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
-    background: "#F8FAFC",
-    padding: "40px 16px 56px",
+    background: "#f6f7f8",
+  },
+  headerWrap: {
+    borderBottom: "1px solid #e5e7eb",
+    background: "#ffffff",
   },
   container: {
-    maxWidth: 1000,
+    maxWidth: 760,
     margin: "0 auto",
-    width: "100%",
+    padding: "32px 16px 48px",
   },
   card: {
-    background: "#FFFFFF",
-    border: "1px solid #E5E7EB",
-    borderRadius: 24,
-    padding: 28,
-    boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    borderRadius: 18,
+    padding: 24,
+    boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
   },
-  topBlock: {
-    textAlign: "center",
-    marginBottom: 24,
+  progress: {
+    fontSize: 13,
+    fontWeight: 700,
+    color: "#64748b",
+    marginBottom: 10,
+    textTransform: "uppercase",
+    letterSpacing: 0.4,
   },
   title: {
-    margin: 0,
     fontSize: 34,
-    fontWeight: 900,
-    color: "#0F172A",
+    lineHeight: 1.1,
+    fontWeight: 800,
+    margin: "0 0 12px",
+    color: "#0f172a",
   },
   subtitle: {
-    margin: "12px auto 0",
-    maxWidth: 680,
     fontSize: 16,
     lineHeight: 1.6,
     color: "#475569",
+    margin: "0 0 18px",
   },
-  notice: {
-    border: "1px solid #A7F3D0",
-    borderRadius: 16,
+  summaryBox: {
+    background: "#f8fafc",
+    border: "1px solid #dbe3ea",
+    borderRadius: 14,
     padding: 16,
-    background: "#ECFDF5",
-    color: "#065F46",
+    marginBottom: 18,
+  },
+  summaryTitle: {
+    fontSize: 15,
+    fontWeight: 800,
+    color: "#0f172a",
+    marginBottom: 8,
+  },
+  summaryList: {
+    margin: 0,
+    paddingLeft: 18,
+    color: "#334155",
+    lineHeight: 1.8,
+    fontSize: 14,
+  },
+  noticeBox: {
+    background: "#f8fafc",
+    border: "1px solid #dbe3ea",
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 20,
+  },
+  noticeTitle: {
+    fontSize: 15,
     fontWeight: 700,
+    color: "#0f172a",
+    marginBottom: 6,
+  },
+  noticeText: {
+    fontSize: 14,
     lineHeight: 1.6,
-    marginBottom: 22,
+    color: "#475569",
   },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "minmax(0, 1.4fr) minmax(280px, 0.8fr)",
-    gap: 20,
-    alignItems: "start",
+  section: {
+    marginBottom: 20,
+    padding: 18,
+    border: "1px solid #e5e7eb",
+    borderRadius: 16,
+    background: "#ffffff",
   },
-  formCard: {
-    border: "1px solid #E5E7EB",
-    borderRadius: 18,
-    padding: 20,
-    background: "#FFFFFF",
-  },
-  summaryCard: {
-    border: "1px solid #E5E7EB",
-    borderRadius: 18,
-    padding: 20,
-    background: "#F8FAFC",
-  },
-  h2: {
+  sectionTitle: {
     margin: "0 0 16px",
-    fontSize: 22,
-    fontWeight: 900,
-    color: "#0F172A",
+    fontSize: 20,
+    fontWeight: 800,
+    color: "#0f172a",
+  },
+  fieldWrap: {
+    marginBottom: 14,
   },
   label: {
     display: "block",
-    marginBottom: 14,
-  },
-  labelText: {
-    display: "block",
-    marginBottom: 6,
+    marginBottom: 8,
     fontSize: 14,
-    fontWeight: 800,
-    color: "#0F172A",
+    fontWeight: 700,
+    color: "#0f172a",
   },
   input: {
     width: "100%",
-    border: "1px solid #D1D5DB",
+    padding: "14px 14px",
     borderRadius: 12,
-    padding: "12px 14px",
+    border: "1px solid #cbd5e1",
     fontSize: 15,
-    color: "#0F172A",
-    background: "#FFFFFF",
+    lineHeight: 1.4,
+    color: "#0f172a",
+    background: "#ffffff",
     outline: "none",
+    boxSizing: "border-box",
   },
-  summaryLine: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: 12,
-    padding: "8px 0",
-    fontSize: 15,
-    color: "#475569",
+  inputError: {
+    border: "1px solid #ef4444",
+    background: "#fef2f2",
   },
-  totalLine: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: 12,
-    borderTop: "1px solid #E5E7EB",
-    marginTop: 10,
-    paddingTop: 16,
-    fontSize: 22,
-    fontWeight: 900,
-    color: "#0F172A",
+  inputDisabled: {
+    background: "#f8fafc",
+    color: "#334155",
   },
-  payBtn: {
+  textarea: {
+    resize: "vertical",
+    minHeight: 100,
+    fontFamily: "inherit",
+  },
+  errorText: {
+    marginTop: 6,
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#b91c1c",
+  },
+  stickyFooter: {
+    position: "sticky",
+    bottom: 0,
+    background: "#ffffff",
+    paddingTop: 12,
+  },
+  securityBox: {
+    marginBottom: 16,
+    fontSize: 14,
+    fontWeight: 600,
+    color: "#166534",
+    background: "#f0fdf4",
+    border: "1px solid #bbf7d0",
+    borderRadius: 12,
+    padding: 14,
+    lineHeight: 1.7,
+  },
+  primaryButton: {
     width: "100%",
-    marginTop: 20,
-    padding: "14px 18px",
+    padding: "15px 16px",
     borderRadius: 12,
     border: "none",
-    background: "#157A55",
-    color: "#FFFFFF",
+    background: "#111827",
+    color: "#ffffff",
     fontSize: 16,
-    fontWeight: 900,
-    cursor: "pointer",
-  },
-  payBtnDisabled: {
-    background: "#94A3B8",
-    cursor: "not-allowed",
-  },
-  backLink: {
-    display: "block",
-    textAlign: "center",
-    marginTop: 14,
-    color: "#157A55",
     fontWeight: 800,
+    marginBottom: 12,
+  },
+  secondaryButton: {
+    display: "block",
+    width: "100%",
+    padding: "15px 16px",
+    borderRadius: 12,
+    border: "1px solid #d1d5db",
+    background: "#ffffff",
+    color: "#111827",
+    fontSize: 16,
+    fontWeight: 700,
+    cursor: "pointer",
+    textAlign: "center",
     textDecoration: "none",
   },
-  error: {
-    marginTop: 14,
-    padding: 12,
-    borderRadius: 10,
-    background: "#FEF2F2",
-    color: "#991B1B",
-    fontWeight: 700,
-    lineHeight: 1.5,
+  errorBox: {
+    marginBottom: 20,
+    background: "#fef2f2",
+    border: "1px solid #fecaca",
+    color: "#b91c1c",
+    borderRadius: 14,
+    padding: 14,
+    fontSize: 14,
+    fontWeight: 600,
   },
   loadingText: {
-    textAlign: "center",
+    fontSize: 15,
     color: "#475569",
-    fontWeight: 700,
+    margin: 0,
   },
 };

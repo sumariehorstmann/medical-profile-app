@@ -65,37 +65,64 @@ export async function POST(req: Request) {
       );
     }
 
-    const customerName = String(body.customerName || "").trim();
-    const email = String(body.email || "").trim();
-    const phone = String(body.phone || "").trim();
-    const unit = String(body.unit || "").trim();
-    const street = String(body.street || "").trim();
-    const city = String(body.city || "").trim();
-    const province = String(body.province || "").trim();
-    const postalCode = String(body.postalCode || "").trim();
-    const country = String(body.country || "South Africa").trim();
+    const firstName = String(body.first_name || "").trim();
+    const lastName = String(body.last_name || "").trim();
+    const bloodType = String(body.blood_type || "").trim();
+    const allergies = String(body.allergies || "").trim();
 
-    if (!customerName || !email || !phone || !street || !city || !province || !postalCode) {
+    const emergencyContactName = String(
+      body.emergency_contact_name || ""
+    ).trim();
+
+    const emergencyContactSurname = String(
+      body.emergency_contact_surname || ""
+    ).trim();
+
+    const emergencyContactPhone = String(
+      body.emergency_contact_phone || ""
+    ).trim();
+
+    const email = String(body.email || "").trim();
+    const cellphone = String(body.cellphone || "").trim();
+
+    const shippingUnit = String(body.shipping_unit || "").trim();
+    const shippingStreet = String(body.shipping_street || "").trim();
+    const shippingCity = String(body.shipping_city || "").trim();
+    const shippingProvince = String(body.shipping_province || "").trim();
+    const shippingPostalCode = String(
+      body.shipping_postal_code || ""
+    ).trim();
+
+    const shippingCountry = String(
+      body.shipping_country || "South Africa"
+    ).trim();
+
+    if (
+      !firstName ||
+      !lastName ||
+      !bloodType ||
+      !allergies ||
+      !emergencyContactName ||
+      !emergencyContactSurname ||
+      !emergencyContactPhone ||
+      !email ||
+      !cellphone ||
+      !shippingUnit ||
+      !shippingStreet ||
+      !shippingCity ||
+      !shippingProvince ||
+      !shippingPostalCode ||
+      !shippingCountry
+    ) {
       return NextResponse.json(
-        { error: "Please complete all required delivery fields." },
+        { error: "Please complete all required fields." },
         { status: 400 }
       );
     }
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select(
-        `
-        public_id,
-        first_name,
-        last_name,
-        blood_type,
-        allergies,
-        emergency_contact_name,
-        emergency_contact_surname,
-        emergency_contact_phone
-      `
-      )
+      .select("public_id")
       .eq("user_id", user.id)
       .single();
 
@@ -112,6 +139,7 @@ export async function POST(req: Request) {
     const qrUrl = `${siteUrl}/e/${profile.public_id}`;
 
     const subtotal = dogTags * DOG_TAG_PRICE + cards * QR_CARD_PRICE;
+
     const total = subtotal + DELIVERY_FEE;
 
     const paymentReference = `store_${Date.now()}_${user.id.slice(0, 8)}`;
@@ -125,6 +153,7 @@ export async function POST(req: Request) {
             total: dogTags * DOG_TAG_PRICE,
           }
         : null,
+
       cards > 0
         ? {
             name: "Black Anodised Aluminium QR Card",
@@ -135,8 +164,11 @@ export async function POST(req: Request) {
         : null,
     ].filter(Boolean);
 
+    const customerName = `${firstName} ${lastName}`.trim();
+
     const { error: orderError } = await supabase.from("orders").insert({
       user_id: user.id,
+
       status: "pending",
       order_type: "store",
       payment_status: "pending",
@@ -144,25 +176,29 @@ export async function POST(req: Request) {
 
       customer_name: customerName,
       email,
-      shipping_phone: phone,
-      shipping_unit: unit,
-      shipping_street: street,
-      shipping_city: city,
-      shipping_province: province,
-      shipping_postal_code: postalCode,
-      shipping_country: country,
+
+      shipping_phone: cellphone,
+      shipping_unit: shippingUnit,
+      shipping_street: shippingStreet,
+      shipping_city: shippingCity,
+      shipping_province: shippingProvince,
+      shipping_postal_code: shippingPostalCode,
+      shipping_country: shippingCountry,
 
       qr_url: qrUrl,
-      first_name: profile.first_name,
-      last_name: profile.last_name,
-      blood_type: profile.blood_type,
-      allergies: profile.allergies,
-      emergency_contact_name: profile.emergency_contact_name,
-      emergency_contact_surname: profile.emergency_contact_surname,
-      emergency_contact_phone: profile.emergency_contact_phone,
+
+      first_name: firstName,
+      last_name: lastName,
+      blood_type: bloodType,
+      allergies,
+
+      emergency_contact_name: emergencyContactName,
+      emergency_contact_surname: emergencyContactSurname,
+      emergency_contact_phone: emergencyContactPhone,
 
       dog_tag_qty: dogTags,
       card_qty: cards,
+
       items,
       subtotal,
       delivery_fee: DELIVERY_FEE,
@@ -171,6 +207,7 @@ export async function POST(req: Request) {
 
     if (orderError) {
       console.error("STORE ORDER INSERT ERROR:", orderError);
+
       return NextResponse.json(
         { error: "Failed to create store order." },
         { status: 500 }
@@ -180,17 +217,22 @@ export async function POST(req: Request) {
     const payfastData: Record<string, string> = {
       merchant_id: process.env.PAYFAST_MERCHANT_ID!,
       merchant_key: process.env.PAYFAST_MERCHANT_KEY!,
+
       return_url: `${siteUrl}/payment/success`,
       cancel_url: `${siteUrl}/payment/cancel`,
       notify_url: `${siteUrl}/api/payfast/store/itn`,
 
       m_payment_id: paymentReference,
+
       amount: total.toFixed(2),
+
       item_name: "RROI Store QR Products",
+
       item_description: `Dog tags: ${dogTags}, QR cards: ${cards}, delivery included`,
 
       name_first: customerName,
       email_address: email,
+
       custom_str1: user.id,
       custom_str2: profile.public_id,
       custom_str3: "store",
@@ -218,6 +260,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ redirectUrl });
   } catch (error) {
     console.error("STORE PAYFAST ERROR:", error);
+
     return NextResponse.json(
       { error: "Failed to start store payment." },
       { status: 500 }
