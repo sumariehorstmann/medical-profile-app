@@ -20,7 +20,7 @@ export default function Footer() {
           </Link>
 
           <Link href="/affiliate" style={styles.link}>
-            Affiliate Program
+            Affiliate
           </Link>
 
           <Link href="/terms" style={styles.link}>
@@ -32,7 +32,7 @@ export default function Footer() {
           </Link>
 
           <Link href="/refund-policy" style={styles.link}>
-            Returns
+            Returns & Refunds
           </Link>
         </nav>
 
@@ -94,29 +94,36 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   links: {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: 8,
-  marginBottom: 32,
-},
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 32,
+  },
 
-link: {
-  width: "100%",
-  maxWidth: 260,
-  padding: "10px 12px",
-  borderRadius: 10,
-  border: "1px solid #E5E7EB",
-  background: "#F8FAFC",
-  textDecoration: "none",
-  color: "#0F172A",
-  WebkitTextFillColor: "#0F172A",
-  fontFamily: "Arial, Helvetica, sans-serif",
-  fontWeight: 600,
-  fontSize: 14,
-  lineHeight: 1.25,
-  textAlign: "center",
-},
+  link: {
+    width: "100%",
+    maxWidth: 260,
+    padding: "11px 14px",
+    borderRadius: 12,
+    border: "1px solid #E5E7EB",
+    background: "#F8FAFC",
+    textDecoration: "none",
+    color: "#0F172A",
+    WebkitTextFillColor: "#0F172A",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontWeight: 500,
+    fontSize: 14,
+    lineHeight: 1.25,
+    letterSpacing: "0",
+    textAlign: "center",
+    display: "block",
+    fontSynthesis: "none",
+    textTransform: "none",
+    WebkitFontSmoothing: "antialiased",
+    MozOsxFontSmoothing: "grayscale",
+    textRendering: "geometricPrecision",
+  },
 
   legalBlock: {
     maxWidth: 680,
@@ -126,7 +133,7 @@ link: {
   disclaimer: {
     margin: "0 0 14px",
     fontSize: 12,
-    lineHeight: 1.75,
+    lineHeight: 1.8,
     color: "#94A3B8",
   },
 
