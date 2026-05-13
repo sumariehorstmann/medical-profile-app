@@ -207,28 +207,28 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: "center",
   },
 
-  title: {
-    margin: 0,
-    fontSize: 34,
-    lineHeight: 1.1,
-    fontWeight: 900,
-    color: TEXT,
-  },
-
   subtitle: {
-    margin: "12px auto 0",
-    fontSize: 16,
-    lineHeight: 1.6,
-    color: MUTED,
-    maxWidth: 680,
-  },
+  margin: "12px auto 0",
+  fontSize: 16,
+  lineHeight: 1.6,
+  color: MUTED,
+  maxWidth: 680,
+},
 
-  noticeText: {
-  margin: "0 0 16px 0",
+notice: {
+  marginBottom: 26,
+  padding: "22px 20px",
+  borderRadius: 18,
+  border: "1px solid #A7F3D0",
+  background: "#ECFDF5",
+},
+
+noticeText: {
+  margin: "0 0 18px 0",
   fontSize: 15,
   lineHeight: 1.7,
   color: "#065F46",
-  fontWeight: 600,
+  fontWeight: 700,
 },
 
 noticeTextLast: {
@@ -236,27 +236,20 @@ noticeTextLast: {
   fontSize: 15,
   lineHeight: 1.7,
   color: "#065F46",
-  fontWeight: 600,
+  fontWeight: 700,
 },
 
-  noticeParagraph: {
-    margin: "0 0 10px",
-    fontSize: 15,
-    lineHeight: 1.7,
-    fontWeight: 700,
-  },
-
-  shippingNotice: {
-    marginBottom: 22,
-    padding: "14px 16px",
-    borderRadius: 14,
-    border: `1px solid ${BORDER}`,
-    background: "#FFFFFF",
-    color: TEXT,
-    fontSize: 14,
-    fontWeight: 700,
-    lineHeight: 1.5,
-  },
+shippingNotice: {
+  marginBottom: 26,
+  padding: "14px 16px",
+  borderRadius: 14,
+  border: `1px solid ${BORDER}`,
+  background: "#FFFFFF",
+  color: TEXT,
+  fontSize: 14,
+  fontWeight: 700,
+  lineHeight: 1.5,
+},
 
   productGrid: {
     display: "grid",
