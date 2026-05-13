@@ -6,27 +6,33 @@ const DOG_TAG_PRICE = 99;
 const QR_CARD_PRICE = 99;
 const DELIVERY_FEE = 99;
 
-function toPayFastString(data: Record<string, string>) {
-  return Object.entries(data)
-    .filter(([, value]) => value !== "")
-    .map(
-      ([key, value]) =>
-        `${key}=${encodeURIComponent(value.trim()).replace(/%20/g, "+")}`
-    )
-    .join("&");
+function payfastProcessUrl() {
+  return process.env.PAYFAST_URL!;
 }
 
-function createSignature(data: Record<string, string>, passphrase?: string) {
-  let pfOutput = toPayFastString(data);
+function encode(value: string) {
+  return encodeURIComponent(value.trim()).replace(/%20/g, "+");
+}
 
-  if (passphrase) {
-    pfOutput += `&passphrase=${encodeURIComponent(passphrase.trim()).replace(
-      /%20/g,
-      "+"
-    )}`;
+function buildSignature(data: Record<string, string>, passphrase?: string) {
+  const pairs: string[] = [];
+
+  for (const [key, value] of Object.entries(data)) {
+    if (
+      key !== "signature" &&
+      value !== undefined &&
+      value !== null &&
+      String(value).trim() !== ""
+    ) {
+      pairs.push(`${key}=${encode(String(value))}`);
+    }
   }
 
-  return crypto.createHash("md5").update(pfOutput).digest("hex");
+  if (passphrase && passphrase.trim() !== "") {
+    pairs.push(`passphrase=${encode(passphrase)}`);
+  }
+
+  return crypto.createHash("md5").update(pairs.join("&")).digest("hex");
 }
 
 export async function POST(req: Request) {
@@ -69,33 +75,17 @@ export async function POST(req: Request) {
     const lastName = String(body.last_name || "").trim();
     const bloodType = String(body.blood_type || "").trim();
     const allergies = String(body.allergies || "").trim();
-
-    const emergencyContactName = String(
-      body.emergency_contact_name || ""
-    ).trim();
-
-    const emergencyContactSurname = String(
-      body.emergency_contact_surname || ""
-    ).trim();
-
-    const emergencyContactPhone = String(
-      body.emergency_contact_phone || ""
-    ).trim();
-
+    const emergencyContactName = String(body.emergency_contact_name || "").trim();
+    const emergencyContactSurname = String(body.emergency_contact_surname || "").trim();
+    const emergencyContactPhone = String(body.emergency_contact_phone || "").trim();
     const email = String(body.email || "").trim();
     const cellphone = String(body.cellphone || "").trim();
-
     const shippingUnit = String(body.shipping_unit || "").trim();
     const shippingStreet = String(body.shipping_street || "").trim();
     const shippingCity = String(body.shipping_city || "").trim();
     const shippingProvince = String(body.shipping_province || "").trim();
-    const shippingPostalCode = String(
-      body.shipping_postal_code || ""
-    ).trim();
-
-    const shippingCountry = String(
-      body.shipping_country || "South Africa"
-    ).trim();
+    const shippingPostalCode = String(body.shipping_postal_code || "").trim();
+    const shippingCountry = String(body.shipping_country || "South Africa").trim();
 
     if (
       !firstName ||
@@ -133,15 +123,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const siteUrl =
-      process.env.NEXT_PUBLIC_SITE_URL || "https://www.rroi.co.za";
-
-    const qrUrl = `${siteUrl}/e/${profile.public_id}`;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!.trim();
+    const qrUrl = `${baseUrl}/e/${profile.public_id}`;
 
     const subtotal = dogTags * DOG_TAG_PRICE + cards * QR_CARD_PRICE;
-
     const total = subtotal + DELIVERY_FEE;
-
     const paymentReference = `store_${Date.now()}_${user.id.slice(0, 8)}`;
 
     const items = [
@@ -153,7 +139,6 @@ export async function POST(req: Request) {
             total: dogTags * DOG_TAG_PRICE,
           }
         : null,
-
       cards > 0
         ? {
             name: "Black Anodised Aluminium QR Card",
@@ -168,7 +153,6 @@ export async function POST(req: Request) {
 
     const { error: orderError } = await supabase.from("orders").insert({
       user_id: user.id,
-
       status: "pending",
       order_type: "store",
       payment_status: "pending",
@@ -176,7 +160,6 @@ export async function POST(req: Request) {
 
       customer_name: customerName,
       email,
-
       shipping_phone: cellphone,
       shipping_unit: shippingUnit,
       shipping_street: shippingStreet,
@@ -186,19 +169,16 @@ export async function POST(req: Request) {
       shipping_country: shippingCountry,
 
       qr_url: qrUrl,
-
       first_name: firstName,
       last_name: lastName,
       blood_type: bloodType,
       allergies,
-
       emergency_contact_name: emergencyContactName,
       emergency_contact_surname: emergencyContactSurname,
       emergency_contact_phone: emergencyContactPhone,
 
       dog_tag_qty: dogTags,
       card_qty: cards,
-
       items,
       subtotal,
       delivery_fee: DELIVERY_FEE,
@@ -217,45 +197,29 @@ export async function POST(req: Request) {
     const payfastData: Record<string, string> = {
       merchant_id: process.env.PAYFAST_MERCHANT_ID!,
       merchant_key: process.env.PAYFAST_MERCHANT_KEY!,
-
-      return_url: `${siteUrl}/payment/success`,
-      cancel_url: `${siteUrl}/payment/cancel`,
-      notify_url: `${siteUrl}/api/payfast/store/itn`,
-
-      m_payment_id: paymentReference,
-
-      amount: total.toFixed(2),
-
-      item_name: "RROI Store QR Products",
-
-      item_description: `Dog tags: ${dogTags}, QR cards: ${cards}, delivery included`,
-
-      name_first: customerName,
+      return_url: `${baseUrl}/payment/success`,
+      cancel_url: `${baseUrl}/payment/cancel`,
+      notify_url: `${baseUrl}/api/payfast/store/itn`,
+      name_first: firstName,
+      name_last: lastName,
       email_address: email,
-
+      m_payment_id: paymentReference,
+      amount: total.toFixed(2),
+      item_name: "RROI Store QR Products",
+      item_description: `Dog tags: ${dogTags}, QR cards: ${cards}, delivery included`,
       custom_str1: user.id,
       custom_str2: profile.public_id,
       custom_str3: "store",
     };
 
-    const signature = createSignature(
+    payfastData.signature = buildSignature(
       payfastData,
       process.env.PAYFAST_PASSPHRASE
     );
 
-    const paymentDataWithSignature = {
-      ...payfastData,
-      signature,
-    };
-
-    const payfastBase =
-      process.env.PAYFAST_SANDBOX === "true"
-        ? "https://sandbox.payfast.co.za/eng/process"
-        : "https://www.payfast.co.za/eng/process";
-
-    const redirectUrl = `${payfastBase}?${toPayFastString(
-      paymentDataWithSignature
-    )}`;
+    const redirectUrl = `${payfastProcessUrl()}?${Object.entries(payfastData)
+      .map(([key, value]) => `${key}=${encode(String(value))}`)
+      .join("&")}`;
 
     return NextResponse.json({ redirectUrl });
   } catch (error) {
