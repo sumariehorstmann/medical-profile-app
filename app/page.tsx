@@ -188,13 +188,15 @@ export default function HomePage() {
         <div style={styles.container}>
           <div style={styles.finalCta}>
             <h2 style={styles.finalTitle}>
-              Be prepared before an emergency happens.
-            </h2>
+  Emergency information when it matters most.
+</h2>
 
-            <p style={styles.finalText}>
-              Start with a free profile today. Upgrade only when you want full
-              public emergency profile visibility.
-            </p>
+<p style={styles.finalText}>
+  Be prepared for any emergency situation. Start with a free profile
+  today and upgrade to Premium anytime for full public medical profile
+  visibility. You choose what information you want visible when your QR
+  code is scanned.
+</p>
 
             <Link href="/login?mode=signup" style={styles.primaryBtn}>
               Create Free Profile
