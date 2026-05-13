@@ -78,19 +78,20 @@ const styles: Record<string, React.CSSProperties> = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  gap: 16,
+  gap: 14,
   marginBottom: 32,
 },
 
 link: {
   textDecoration: "none",
   color: "#0F172A",
-  fontWeight: 700,
-  fontSize: 14,
+  fontWeight: 750,
+  fontSize: 12,
   lineHeight: 1.2,
-  letterSpacing: "-0.01em",
+  letterSpacing: "0.06em",
   textAlign: "center",
   minWidth: 220,
+  textTransform: "uppercase",
 },
 
   legalBlock: {
