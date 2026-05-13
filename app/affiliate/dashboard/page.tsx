@@ -460,16 +460,16 @@ async function reactivateAffiliateAccess() {
 ) : null}
 
 <div style={styles.links}>
-              <Link href="/profile" style={styles.primaryLinkBtn}>
-                Go to Profile
-              </Link>
-              <Link href="/affiliate/terms" style={styles.link}>
-                View Terms
-              </Link>
-              <Link href="/" style={styles.linkMuted}>
-                Home
-              </Link>
-            </div>
+  <Link href="/profile" style={styles.link}>
+    Profile
+  </Link>
+
+  <span style={styles.dot}>•</span>
+
+  <Link href="/affiliate/terms" style={styles.link}>
+    Affiliate Terms
+  </Link>
+</div>
           </div>
         </div>
       </main>
