@@ -144,18 +144,30 @@ useEffect(() => {
     confirmPassword.length > 0 && password !== confirmPassword;
 
   useEffect(() => {
-    const errorCode = params.get("error_code") || params.get("error");
-    const errorDesc = params.get("error_description") || params.get("message");
+  const errorCode = params.get("error_code") || params.get("error");
+  const errorDesc = params.get("error_description") || params.get("message");
 
-    if (errorCode || errorDesc) {
-      setMessageType("error");
-      setMessage(
-        errorDesc
-          ? `Authentication error: ${errorDesc}`
-          : "Authentication error. Please try again."
-      );
-    }
-  }, [params]);
+  const errorText = `${errorCode || ""} ${errorDesc || ""}`.toLowerCase();
+
+  // Ignore harmless Supabase email confirmation redirect errors
+  if (
+    errorText.includes("otp_expired") ||
+    errorText.includes("access_denied") ||
+    errorText.includes("email link is invalid") ||
+    errorText.includes("missing_code")
+  ) {
+    return;
+  }
+
+  if (errorCode || errorDesc) {
+    setMessageType("error");
+    setMessage(
+      errorDesc
+        ? `Authentication error: ${errorDesc}`
+        : "Authentication error. Please try again."
+    );
+  }
+}, [params]);
 
   function clearMessage() {
     setMessage(null);
