@@ -122,8 +122,50 @@ const hasHadPremium =
           </div>
         )}
 
-        <ProfileFormClient initial={profile} showUpgrade={!isPremium} />
+        <ProfileFormClient initial={profile} showUpgrade={false} />
+{!isPremium && (
+  <div style={styles.upgradeOptions}>
+    <h2 style={styles.upgradeOptionsTitle}>Choose your Premium option</h2>
 
+    <p style={styles.upgradeOptionsText}>
+      Upgrade your profile for full public medical profile visibility when your QR code is scanned.
+    </p>
+
+    <div style={styles.upgradeOptionGrid}>
+      <div style={styles.upgradeOptionCard}>
+        <h3 style={styles.upgradeOptionHeading}>Premium Subscription Only</h3>
+        <div style={styles.upgradeOptionPrice}>R99/year</div>
+
+        <p style={styles.upgradeOptionDescription}>
+          Upgrade your profile to Premium visibility. No physical QR products are included.
+          Your free downloadable QR lock screen remains available.
+        </p>
+
+        <Link href="/renew" style={styles.secondaryBtn}>
+          Upgrade to Premium - R99
+        </Link>
+      </div>
+
+      <div style={styles.upgradeOptionCard}>
+        <h3 style={styles.upgradeOptionHeading}>Premium Full Kit</h3>
+        <div style={styles.upgradeOptionPrice}>R399</div>
+
+        <p style={styles.upgradeOptionDescription}>
+          Includes 1 year Premium subscription, 2 engraved physical QR products,
+          and free nationwide delivery.
+        </p>
+
+        <Link href="/subscribe/order" style={styles.upgradeBtn}>
+          Upgrade to Premium Full Kit
+        </Link>
+
+        <Link href="/premium-kit" style={styles.viewKitLink}>
+          View Premium Kit →
+        </Link>
+      </div>
+    </div>
+  </div>
+)}
         {profile?.public_id && (
           <div style={styles.downloadBlock}>
             <DownloadQRWallpaper
@@ -349,4 +391,68 @@ includesList: {
     marginTop: 12,
     flexWrap: "wrap",
   },
+  upgradeOptions: {
+  marginTop: 24,
+  marginBottom: 24,
+  padding: 22,
+  borderRadius: 16,
+  border: "1px solid #E5E7EB",
+  background: "#FFFFFF",
+},
+
+upgradeOptionsTitle: {
+  margin: "0 0 8px",
+  fontSize: 26,
+  fontWeight: 900,
+  color: "#0F172A",
+},
+
+upgradeOptionsText: {
+  margin: "0 0 20px",
+  fontSize: 15,
+  lineHeight: 1.6,
+  color: "#475569",
+},
+
+upgradeOptionGrid: {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  gap: 16,
+},
+
+upgradeOptionCard: {
+  padding: 20,
+  borderRadius: 14,
+  border: "1px solid #D1FAE5",
+  background: "#F0FDF4",
+},
+
+upgradeOptionHeading: {
+  margin: "0 0 8px",
+  fontSize: 20,
+  fontWeight: 900,
+  color: "#0F172A",
+},
+
+upgradeOptionPrice: {
+  marginBottom: 12,
+  fontSize: 30,
+  fontWeight: 900,
+  color: BRAND_GREEN,
+},
+
+upgradeOptionDescription: {
+  margin: "0 0 18px",
+  fontSize: 14,
+  lineHeight: 1.7,
+  color: "#475569",
+},
+
+viewKitLink: {
+  display: "inline-block",
+  marginTop: 12,
+  color: BRAND_GREEN,
+  fontWeight: 700,
+  textDecoration: "none",
+},
 };
