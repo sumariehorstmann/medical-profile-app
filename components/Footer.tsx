@@ -84,6 +84,8 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     color: "#334155",
     lineHeight: 1.5,
+    fontFamily:
+      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   },
 
   email: {
@@ -91,6 +93,8 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 14,
     color: "#64748B",
     lineHeight: 1.5,
+    fontFamily:
+      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   },
 
   links: {
@@ -111,18 +115,18 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
     color: "#0F172A",
     WebkitTextFillColor: "#0F172A",
-    fontFamily: "Arial, Helvetica, sans-serif",
-    fontWeight: 500,
+    fontFamily:
+      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    fontWeight: 450,
     fontSize: 14,
     lineHeight: 1.25,
     letterSpacing: "0",
     textAlign: "center",
     display: "block",
     fontSynthesis: "none",
-    textTransform: "none",
     WebkitFontSmoothing: "antialiased",
     MozOsxFontSmoothing: "grayscale",
-    textRendering: "geometricPrecision",
+    textRendering: "optimizeLegibility",
   },
 
   legalBlock: {
@@ -135,6 +139,8 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 12,
     lineHeight: 1.8,
     color: "#94A3B8",
+    fontFamily:
+      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   },
 
   copy: {
@@ -144,5 +150,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 12,
     color: "#94A3B8",
     fontWeight: 700,
+    fontFamily:
+      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   },
 };
