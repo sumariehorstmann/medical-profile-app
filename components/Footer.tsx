@@ -75,20 +75,23 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   links: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 28,
-  },
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 16,
+  marginBottom: 32,
+},
 
-  link: {
-    textDecoration: "none",
-    color: "#0F172A",
-    fontWeight: 850,
-    fontSize: 15,
-    lineHeight: 1.4,
-  },
+link: {
+  textDecoration: "none",
+  color: "#0F172A",
+  fontWeight: 700,
+  fontSize: 14,
+  lineHeight: 1.2,
+  letterSpacing: "-0.01em",
+  textAlign: "center",
+  minWidth: 220,
+},
 
   legalBlock: {
     maxWidth: 680,
