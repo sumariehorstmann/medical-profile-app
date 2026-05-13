@@ -106,28 +106,32 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   link: {
-    width: "100%",
-    maxWidth: 260,
-    padding: "11px 14px",
-    borderRadius: 12,
-    border: "1px solid #E5E7EB",
-    background: "#F8FAFC",
-    textDecoration: "none",
-    color: "#0F172A",
-    WebkitTextFillColor: "#0F172A",
-    fontFamily:
-      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-    fontWeight: 450,
-    fontSize: 14,
-    lineHeight: 1.25,
-    letterSpacing: "0",
-    textAlign: "center",
-    display: "block",
-    fontSynthesis: "none",
-    WebkitFontSmoothing: "antialiased",
-    MozOsxFontSmoothing: "grayscale",
-    textRendering: "optimizeLegibility",
-  },
+  width: "100%",
+  maxWidth: 260,
+  padding: "10px 12px",
+  borderRadius: 10,
+  border: "1px solid #E5E7EB",
+  background: "#F8FAFC",
+  textDecoration: "none",
+
+  color: "#0F172A",
+  WebkitTextFillColor: "#0F172A",
+
+  fontFamily:
+    'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+
+  fontWeight: 500,
+  fontSize: 14,
+  lineHeight: 1.2,
+  letterSpacing: "0.02em",
+
+  textAlign: "center",
+  display: "block",
+
+  WebkitFontSmoothing: "antialiased",
+  MozOsxFontSmoothing: "grayscale",
+  textRendering: "optimizeLegibility",
+},
 
   legalBlock: {
     maxWidth: 680,
