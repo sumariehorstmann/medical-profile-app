@@ -27,9 +27,11 @@ export default function AffiliatePage() {
           </div>
 
           <div style={styles.notice}>
-            Affiliate applications are only available from inside an active
-            Premium profile.
-          </div>
+  Affiliate applications are only available from inside an active
+  Premium profile. The RROI Affiliate Program is currently operating on
+  an invitation-only basis. Premium members may still apply through
+  their dashboard for affiliate consideration.
+</div>
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>How to apply</h2>
@@ -75,13 +77,7 @@ export default function AffiliatePage() {
               <strong>R29.52</strong>.
             </p>
           </div>
-
-          <div style={styles.notice}>
-  Affiliate applications are only available from inside an active
-  Premium profile. The RROI Affiliate Program is currently operating on
-  an invitation-only basis. Premium members may still apply through
-  their dashboard for affiliate consideration.
-</div>
+         
 
           <div style={styles.ctaWrap}>
             <Link href="/login?mode=signup" style={styles.primaryBtn}>
