@@ -76,13 +76,12 @@ export default function AffiliatePage() {
             </p>
           </div>
 
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Payouts</h2>
-            <p style={styles.paragraph}>
-              Affiliate payouts are processed quarterly, meaning payouts take
-              place four times per year according to RROI’s payout rules.
-            </p>
-          </div>
+          <div style={styles.notice}>
+  Affiliate applications are only available from inside an active
+  Premium profile. The RROI Affiliate Program is currently operating on
+  an invitation-only basis. Premium members may still apply through
+  their dashboard for affiliate consideration.
+</div>
 
           <div style={styles.ctaWrap}>
             <Link href="/login?mode=signup" style={styles.primaryBtn}>
