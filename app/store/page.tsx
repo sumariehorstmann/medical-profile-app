@@ -46,6 +46,7 @@ export default function StorePage() {
 
           <div style={styles.topBlock}>
             <h1 style={styles.title}>Online Store</h1>
+
             <p style={styles.subtitle}>
               Order additional engraved QR code items linked to your existing
               RROI public profile.
@@ -53,9 +54,24 @@ export default function StorePage() {
           </div>
 
           <div style={styles.notice}>
-            Your QR code always opens your RROI public profile. Free profiles
-            show free-tier public details. Premium profiles show full Premium
-            public visibility.
+            <p style={styles.noticeParagraph}>
+              Your QR code links to your RROI public profile.
+            </p>
+
+            <p style={styles.noticeParagraph}>
+              Only information you enter into your profile will be displayed
+              publicly when your QR code is scanned.
+            </p>
+
+            <p style={styles.noticeParagraph}>
+              Free profiles show your basic details.
+              <br />
+              Premium profiles show your full profile details.
+            </p>
+          </div>
+
+          <div style={styles.shippingNotice}>
+            Standard nationwide delivery: R99 delivered directly to your door.
           </div>
 
           <div style={styles.productGrid}>
@@ -139,10 +155,14 @@ function ProductCard({
 }) {
   return (
     <div style={styles.productCard}>
-      <div style={styles.imagePlaceholder}>Product image coming soon</div>
+      <div style={styles.imagePlaceholder}>
+        Product image coming soon
+      </div>
 
       <h2 style={styles.productTitle}>{title}</h2>
+
       <div style={styles.price}>R{price}</div>
+
       <p style={styles.productText}>{description}</p>
 
       <div style={styles.qtyRow}>
@@ -166,11 +186,13 @@ const styles: Record<string, React.CSSProperties> = {
     minHeight: "100%",
     padding: "40px 16px 56px",
   },
+
   container: {
     maxWidth: 900,
     margin: "0 auto",
     width: "100%",
   },
+
   card: {
     background: CARD_BG,
     border: `1px solid ${BORDER}`,
@@ -178,10 +200,12 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 28,
     boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
   },
+
   topBlock: {
     marginBottom: 24,
     textAlign: "center",
   },
+
   title: {
     margin: 0,
     fontSize: 34,
@@ -189,6 +213,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     color: TEXT,
   },
+
   subtitle: {
     margin: "12px auto 0",
     fontSize: 16,
@@ -196,28 +221,49 @@ const styles: Record<string, React.CSSProperties> = {
     color: MUTED,
     maxWidth: 680,
   },
+
   notice: {
     border: "1px solid #A7F3D0",
     borderRadius: 16,
-    padding: 16,
+    padding: 18,
     background: "#ECFDF5",
     color: "#065F46",
-    fontWeight: 700,
-    lineHeight: 1.6,
-    marginBottom: 22,
+    marginBottom: 16,
   },
+
+  noticeParagraph: {
+    margin: "0 0 10px",
+    fontSize: 15,
+    lineHeight: 1.7,
+    fontWeight: 700,
+  },
+
+  shippingNotice: {
+    marginBottom: 22,
+    padding: "14px 16px",
+    borderRadius: 14,
+    border: `1px solid ${BORDER}`,
+    background: "#FFFFFF",
+    color: TEXT,
+    fontSize: 14,
+    fontWeight: 700,
+    lineHeight: 1.5,
+  },
+
   productGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
     gap: 18,
     marginBottom: 22,
   },
+
   productCard: {
     border: `1px solid ${BORDER}`,
     borderRadius: 18,
     padding: 20,
     background: "#FFFFFF",
   },
+
   imagePlaceholder: {
     height: 160,
     borderRadius: 14,
@@ -230,6 +276,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 14,
     marginBottom: 16,
   },
+
   productTitle: {
     margin: "0 0 8px",
     fontSize: 20,
@@ -237,23 +284,27 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     color: TEXT,
   },
+
   price: {
     fontSize: 28,
     fontWeight: 900,
     color: BRAND_GREEN,
     marginBottom: 10,
   },
+
   productText: {
     margin: "0 0 16px",
     fontSize: 14,
     lineHeight: 1.6,
     color: MUTED,
   },
+
   qtyRow: {
     display: "flex",
     alignItems: "center",
     gap: 12,
   },
+
   qtyBtn: {
     width: 42,
     height: 42,
@@ -265,6 +316,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     cursor: "pointer",
   },
+
   qtyValue: {
     minWidth: 30,
     textAlign: "center",
@@ -272,6 +324,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     color: TEXT,
   },
+
   summaryCard: {
     border: `1px solid ${BORDER}`,
     borderRadius: 18,
@@ -279,12 +332,14 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#F8FAFC",
     marginBottom: 24,
   },
+
   summaryTitle: {
     margin: "0 0 16px",
     fontSize: 22,
     fontWeight: 900,
     color: TEXT,
   },
+
   summaryLine: {
     display: "flex",
     justifyContent: "space-between",
@@ -293,6 +348,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 15,
     color: MUTED,
   },
+
   totalLine: {
     display: "flex",
     justifyContent: "space-between",
@@ -304,6 +360,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     color: TEXT,
   },
+
   checkoutBtn: {
     width: "100%",
     marginTop: 18,
@@ -316,10 +373,12 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     cursor: "pointer",
   },
+
   checkoutBtnDisabled: {
     background: "#94A3B8",
     cursor: "not-allowed",
   },
+
   helperText: {
     margin: "10px 0 0",
     textAlign: "center",
