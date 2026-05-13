@@ -27,6 +27,17 @@ export default function StorePage() {
   const hasItems = subtotal > 0;
   const total = hasItems ? subtotal + DELIVERY_FEE : 0;
 
+  function handleCheckout() {
+    if (!hasItems) return;
+
+    const params = new URLSearchParams({
+      dogTags: String(dogTags),
+      cards: String(cards),
+    });
+
+    window.location.href = `/store/checkout?${params.toString()}`;
+  }
+
   return (
     <main style={styles.page}>
       <section style={styles.container}>
@@ -51,16 +62,16 @@ export default function StorePage() {
             <ProductCard
               title="Black Anodised Aluminium Dog Tag"
               price={DOG_TAG_PRICE}
-              description="Engraved with your permanent RROI QR code."
+              description="Black anodised aluminium dog tag engraved with your permanent RROI QR code."
               quantity={dogTags}
               onDecrease={() => setDogTags((value) => Math.max(0, value - 1))}
               onIncrease={() => setDogTags((value) => value + 1)}
             />
 
             <ProductCard
-              title="Anodised Aluminium QR Card"
+              title="Black Anodised Aluminium QR Card"
               price={QR_CARD_PRICE}
-              description="Wallet-style QR card engraved with your RROI QR code."
+              description="Black anodised aluminium wallet card engraved with your permanent RROI QR code."
               quantity={cards}
               onDecrease={() => setCards((value) => Math.max(0, value - 1))}
               onIncrease={() => setCards((value) => value + 1)}
@@ -88,6 +99,7 @@ export default function StorePage() {
             <button
               type="button"
               disabled={!hasItems}
+              onClick={handleCheckout}
               style={{
                 ...styles.checkoutBtn,
                 ...(!hasItems ? styles.checkoutBtnDisabled : {}),
