@@ -550,48 +550,28 @@ and{" "}
         ) : null}
 
         <div style={styles.cardLinks}>
-          {mode === "login" ? (
-            <>
-              <button
-                type="button"
-                onClick={() => {
-                  setMode("signup");
-                  clearMessage();
-                }}
-                style={styles.textButton}
-                disabled={loading}
-              >
-                Create account
-              </button>
+  {mode === "signup" ? (
+    <>
+      <button
+        type="button"
+        onClick={() => {
+          setMode("login");
+          clearMessage();
+        }}
+        style={styles.textButton}
+        disabled={loading}
+      >
+        Back to login
+      </button>
 
-              <span style={styles.dot}>•</span>
+      <span style={styles.dot}>•</span>
+    </>
+  ) : null}
 
-              <Link href="/" style={styles.secondaryLink}>
-                Home
-              </Link>
-            </>
-          ) : (
-            <>
-              <button
-                type="button"
-                onClick={() => {
-                  setMode("login");
-                  clearMessage();
-                }}
-                style={styles.textButton}
-                disabled={loading}
-              >
-                Back to login
-              </button>
-
-              <span style={styles.dot}>•</span>
-
-              <Link href="/" style={styles.secondaryLink}>
-                Home
-              </Link>
-            </>
-          )}
-        </div>
+  <Link href="/" style={styles.secondaryLink}>
+    Home
+  </Link>
+</div>
       </div>
     </main>
   );
