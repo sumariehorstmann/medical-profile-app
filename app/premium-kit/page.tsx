@@ -185,15 +185,15 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   secondaryButton: {
-    display: "inline-block",
-    padding: "12px 18px",
-    borderRadius: 12,
-    textDecoration: "none",
-    fontWeight: 700,
-    background: "#FFFFFF",
-    border: "1px solid #D1D5DB",
-    color: "#111827",
-  },
+  display: "inline-block",
+  padding: "12px 18px",
+  borderRadius: 12,
+  textDecoration: "none",
+  fontWeight: 700,
+  background: "#157A55",
+  border: "1px solid #157A55",
+  color: "#FFFFFF",
+},
  
 
   bottomActions: {
