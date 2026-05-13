@@ -6,10 +6,6 @@ export default function PremiumKitPage() {
   return (
     <div style={styles.page}>
       <div style={styles.container}>
-        <Link href="/profile" style={styles.backLink}>
-          ← Back to Profile
-        </Link>
-
         <div style={styles.badge}>RROI Premium</div>
 
         <h1 style={styles.h1}>Premium Kit</h1>
@@ -53,14 +49,38 @@ export default function PremiumKitPage() {
           </Link>
         </div>
 
+        {/* Signup Flow Info */}
+        <div style={styles.flowCard}>
+          <h2 style={styles.h2}>How to get Premium</h2>
+
+          <p style={styles.flowText}>
+            First create your free RROI profile.
+          </p>
+
+          <p style={styles.flowText}>
+            After signing up and completing your profile, you can upgrade to
+            Premium directly from your profile dashboard.
+          </p>
+        </div>
+
         {/* CTA */}
-        <Link href="/subscribe/order" style={styles.cta}>
-          Get Premium Kit for R399
+        <Link href="/login?mode=signup" style={styles.cta}>
+          Create Free Profile
         </Link>
 
         <p style={styles.smallText}>
-          Includes first-year Premium access and physical QR code items.
+          Premium upgrades are activated from inside your profile after signup.
         </p>
+
+        {/* Bottom Back Button */}
+        <div style={styles.bottomActions}>
+          <button
+            onClick={() => window.history.back()}
+            style={styles.backButton}
+          >
+            ← Back
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -76,15 +96,6 @@ const styles: Record<string, React.CSSProperties> = {
   container: {
     maxWidth: 760,
     margin: "0 auto",
-  },
-
-  backLink: {
-    display: "inline-block",
-    marginBottom: 20,
-    textDecoration: "none",
-    color: "#374151",
-    fontWeight: 600,
-    fontSize: 15,
   },
 
   badge: {
@@ -142,7 +153,15 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid #D1D5DB",
     borderRadius: 18,
     padding: 24,
-    marginBottom: 30,
+    marginBottom: 22,
+  },
+
+  flowCard: {
+    background: "#F9FAFB",
+    border: "1px solid #E5E7EB",
+    borderRadius: 18,
+    padding: 24,
+    marginBottom: 28,
   },
 
   h2: {
@@ -164,6 +183,13 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.6,
     marginBottom: 18,
     fontSize: 15,
+  },
+
+  flowText: {
+    color: "#475569",
+    lineHeight: 1.7,
+    fontSize: 15,
+    marginBottom: 12,
   },
 
   secondaryButton: {
@@ -196,5 +222,22 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 13,
     color: "#6B7280",
     lineHeight: 1.5,
+  },
+
+  bottomActions: {
+    marginTop: 42,
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  backButton: {
+    border: "1px solid #D1D5DB",
+    background: "#FFFFFF",
+    color: "#111827",
+    borderRadius: 12,
+    padding: "12px 18px",
+    fontWeight: 700,
+    cursor: "pointer",
+    fontSize: 15,
   },
 };
