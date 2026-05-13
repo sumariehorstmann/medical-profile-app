@@ -550,24 +550,6 @@ and{" "}
         ) : null}
 
         <div style={styles.cardLinks}>
-  {mode === "signup" ? (
-    <>
-      <button
-        type="button"
-        onClick={() => {
-          setMode("login");
-          clearMessage();
-        }}
-        style={styles.textButton}
-        disabled={loading}
-      >
-        Back to login
-      </button>
-
-      <span style={styles.dot}>•</span>
-    </>
-  ) : null}
-
   <Link href="/" style={styles.secondaryLink}>
     Home
   </Link>
@@ -823,11 +805,11 @@ toggleBtnActive: {
     fontSize: 14,
   },
   secondaryLink: {
-    textDecoration: "none",
-    color: MUTED,
-    fontWeight: 700,
-    fontSize: 14,
-  },
+  textDecoration: "none",
+  color: TEXT,
+  fontWeight: 700,
+  fontSize: 14,
+},
   dot: {
     color: "#94A3B8",
     fontSize: 14,
