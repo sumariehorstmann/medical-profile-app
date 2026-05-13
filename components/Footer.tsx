@@ -5,48 +5,35 @@ export default function Footer() {
     <footer style={styles.footer}>
       <div style={styles.container}>
         <nav style={styles.links} aria-label="Footer navigation">
-          <Link href="/contact" style={styles.link}>
-            Contact
-          </Link>
-
-          <Link href="/affiliate" style={styles.link}>
-            Affiliate Program
-          </Link>
-
-          <Link href="/terms" style={styles.link}>
-            Terms & Conditions
-          </Link>
-
-          <Link href="/privacy" style={styles.link}>
-            Privacy Policy
-          </Link>
-
-          <Link href="/refund-policy" style={styles.link}>
-            Returns
-          </Link>
+          {[
+            ["Contact", "/contact"],
+            ["Affiliate Program", "/affiliate"],
+            ["Terms & Conditions", "/terms"],
+            ["Privacy Policy", "/privacy"],
+            ["Returns", "/refund-policy"],
+          ].map(([label, href]) => (
+            <Link key={href} href={href} style={styles.link}>
+              {label}
+            </Link>
+          ))}
         </nav>
 
         <div style={styles.meta}>
-          <div style={styles.company}>
-            RROI (Pty) Ltd • South Africa
-          </div>
+          <div style={styles.company}>RROI (Pty) Ltd • South Africa</div>
+          <div style={styles.email}>support@rroi.co.za</div>
 
-          <div style={styles.email}>
-            support@rroi.co.za
-          </div>
-
-          <div style={styles.disclaimer}>
+          <p style={styles.disclaimer}>
             RROI is not a medical service, healthcare provider, or emergency
             response service. Information displayed is provided by users and may
             be incomplete or inaccurate. RROI does not verify or guarantee the
             accuracy of any information. In an emergency, always contact your
             local emergency services immediately.
-          </div>
+          </p>
 
-          <div style={styles.disclaimer}>
+          <p style={styles.disclaimer}>
             By using this platform, you agree to our Terms & Conditions and
             Privacy Policy.
-          </div>
+          </p>
 
           <div style={styles.copy}>
             © {new Date().getFullYear()} RROI (Pty) Ltd. All rights reserved.
@@ -74,24 +61,21 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   links: {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  flexWrap: "wrap",
-  gap: 28,
-  marginBottom: 26,
-},
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+    gap: "12px 18px",
+    marginBottom: 26,
+  },
 
-link: {
-  textDecoration: "none",
-  color: "#0F172A",
-  fontWeight: 800,
-  fontSize: 15,
-  lineHeight: 1,
-  letterSpacing: "-0.01em",
-  display: "inline-flex",
-  alignItems: "center",
-},
+  link: {
+    textDecoration: "none",
+    color: "#0F172A",
+    fontWeight: 850,
+    fontSize: 15,
+    lineHeight: 1.2,
+    padding: "10px 8px",
+    borderRadius: 12,
+  },
 
   meta: {
     maxWidth: 760,
@@ -99,10 +83,11 @@ link: {
   },
 
   company: {
-    fontSize: 14,
-    fontWeight: 800,
+    fontSize: 15,
+    fontWeight: 850,
     color: "#334155",
     lineHeight: 1.5,
+    marginTop: 4,
   },
 
   email: {
@@ -113,7 +98,8 @@ link: {
   },
 
   disclaimer: {
-    marginTop: 14,
+    margin: "16px auto 0",
+    maxWidth: 680,
     fontSize: 12,
     lineHeight: 1.75,
     color: "#94A3B8",
