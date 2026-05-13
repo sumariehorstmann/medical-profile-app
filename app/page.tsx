@@ -155,7 +155,7 @@ export default function HomePage() {
 
       <section style={styles.section}>
         <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Useful for everyday emergency risk</h2>
+          <h2 style={styles.sectionTitle}>Useful during everyday emergencies</h2>
 
           <div style={styles.useGrid}>
             <div style={styles.useCard}>Medical emergencies</div>
