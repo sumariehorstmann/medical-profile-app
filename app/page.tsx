@@ -124,8 +124,8 @@ export default function HomePage() {
                 <li>Secure profile you can update anytime</li>
               </ul>
 
-              <Link href="/premium-kit" style={styles.primaryBtnFull}>
-                View Premium Kit
+              <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
+                Get Premium Kit
               </Link>
             </div>
           </div>
