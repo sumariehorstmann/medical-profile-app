@@ -777,18 +777,16 @@ async function reactivateAffiliateAccess() {
   </button>
 </section>
         <div style={styles.links}>
-          <Link href="/profile" style={styles.link}>
-            Profile
-          </Link>
-          <span style={styles.dot}>•</span>
-          <Link href="/affiliate/terms" style={styles.link}>
-            Terms
-          </Link>
-          <span style={styles.dot}>•</span>
-          <Link href="/" style={styles.linkMuted}>
-            Home
-          </Link>
-        </div>
+  <Link href="/profile" style={styles.link}>
+    Profile
+  </Link>
+
+  <span style={styles.dot}>•</span>
+
+  <Link href="/affiliate/terms" style={styles.link}>
+    Affiliate Terms
+  </Link>
+</div>
       </div>
     </main>
   );
