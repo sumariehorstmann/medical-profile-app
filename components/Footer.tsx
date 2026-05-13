@@ -9,29 +9,27 @@ export default function Footer() {
           <div style={styles.email}>support@rroi.co.za</div>
         </div>
 
-        <div style={styles.footerBody}>
-          <nav style={styles.links} aria-label="Footer navigation">
-            <Link href="/contact" style={styles.link}>Contact</Link>
-            <Link href="/affiliate" style={styles.link}>Affiliate Program</Link>
-            <Link href="/terms" style={styles.link}>Terms & Conditions</Link>
-            <Link href="/privacy" style={styles.link}>Privacy Policy</Link>
-            <Link href="/refund-policy" style={styles.link}>Returns</Link>
-          </nav>
+        <nav style={styles.links} aria-label="Footer navigation">
+          <Link href="/contact" style={styles.link}>Contact</Link>
+          <Link href="/affiliate" style={styles.link}>Affiliate Program</Link>
+          <Link href="/terms" style={styles.link}>Terms & Conditions</Link>
+          <Link href="/privacy" style={styles.link}>Privacy Policy</Link>
+          <Link href="/refund-policy" style={styles.link}>Returns</Link>
+        </nav>
 
-          <div style={styles.legalBlock}>
-            <p style={styles.disclaimer}>
-              RROI is not a medical service, healthcare provider, or emergency
-              response service. Information displayed is provided by users and may
-              be incomplete or inaccurate. RROI does not verify or guarantee the
-              accuracy of any information. In an emergency, always contact your
-              local emergency services immediately.
-            </p>
+        <div style={styles.legalBlock}>
+          <p style={styles.disclaimer}>
+            RROI is not a medical service, healthcare provider, or emergency
+            response service. Information displayed is provided by users and may
+            be incomplete or inaccurate. RROI does not verify or guarantee the
+            accuracy of any information. In an emergency, always contact your
+            local emergency services immediately.
+          </p>
 
-            <p style={styles.disclaimer}>
-              By using this platform, you agree to our Terms & Conditions and
-              Privacy Policy.
-            </p>
-          </div>
+          <p style={styles.disclaimer}>
+            By using this platform, you agree to our Terms & Conditions and
+            Privacy Policy.
+          </p>
         </div>
 
         <div style={styles.copy}>
@@ -52,14 +50,14 @@ const styles: Record<string, React.CSSProperties> = {
 
   container: {
     width: "100%",
-    maxWidth: 920,
+    maxWidth: 760,
     margin: "0 auto",
-    padding: "34px 20px 40px",
+    padding: "34px 20px 42px",
+    textAlign: "center",
   },
 
   brandBlock: {
-    textAlign: "center",
-    marginBottom: 28,
+    marginBottom: 26,
   },
 
   company: {
@@ -76,29 +74,25 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.5,
   },
 
-  footerBody: {
-    display: "grid",
-    gridTemplateColumns: "minmax(180px, 260px) 1fr",
-    gap: 34,
-    alignItems: "start",
-  },
-
   links: {
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
     gap: 12,
+    marginBottom: 28,
   },
 
   link: {
     textDecoration: "none",
     color: "#0F172A",
-    fontWeight: 800,
+    fontWeight: 850,
     fontSize: 15,
     lineHeight: 1.4,
   },
 
   legalBlock: {
-    textAlign: "left",
+    maxWidth: 680,
+    margin: "0 auto",
   },
 
   disclaimer: {
@@ -109,10 +103,9 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   copy: {
-    marginTop: 30,
+    marginTop: 26,
     paddingTop: 18,
     borderTop: "1px solid #E5E7EB",
-    textAlign: "center",
     fontSize: 12,
     color: "#94A3B8",
     fontWeight: 700,
