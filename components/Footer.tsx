@@ -74,21 +74,24 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   links: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: 18,
-    marginBottom: 22,
-  },
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  flexWrap: "wrap",
+  gap: 28,
+  marginBottom: 26,
+},
 
-  link: {
-    textDecoration: "none",
-    color: "#0F172A",
-    fontWeight: 800,
-    fontSize: 14,
-    lineHeight: 1.4,
-  },
+link: {
+  textDecoration: "none",
+  color: "#0F172A",
+  fontWeight: 800,
+  fontSize: 15,
+  lineHeight: 1,
+  letterSpacing: "-0.01em",
+  display: "inline-flex",
+  alignItems: "center",
+},
 
   meta: {
     maxWidth: 760,
