@@ -63,15 +63,7 @@ export default function PremiumKitPage() {
           </p>
         </div>
 
-        {/* CTA */}
-        <Link href="/login?mode=signup" style={styles.cta}>
-          Create Free Profile
-        </Link>
-
-        <p style={styles.smallText}>
-          Premium upgrades are activated from inside your profile after signup.
-        </p>
-
+        
         {/* Bottom Back Button */}
         <div style={styles.bottomActions}>
           <button
@@ -202,27 +194,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid #D1D5DB",
     color: "#111827",
   },
-
-  cta: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "#065F46",
-    color: "#FFFFFF",
-    padding: "15px 26px",
-    borderRadius: 14,
-    fontWeight: 800,
-    fontSize: 17,
-    textDecoration: "none",
-    boxShadow: "0 8px 24px rgba(6,95,70,0.18)",
-  },
-
-  smallText: {
-    marginTop: 14,
-    fontSize: 13,
-    color: "#6B7280",
-    lineHeight: 1.5,
-  },
+ 
 
   bottomActions: {
     marginTop: 42,
