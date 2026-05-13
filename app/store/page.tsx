@@ -54,22 +54,23 @@ export default function StorePage() {
           </div>
 
           <div style={styles.notice}>
-            <p style={styles.noticeParagraph}>
-              Your QR code links to your RROI public profile.
-            </p>
+  <p style={styles.noticeText}>
+    Your QR code links to your RROI public profile.
+  </p>
 
-            <p style={styles.noticeParagraph}>
-              Only information you enter into your profile will be displayed
-              publicly when your QR code is scanned.
-            </p>
+  <p style={styles.noticeText}>
+    Only information you enter into your profile will be displayed publicly
+    when your QR code is scanned.
+  </p>
 
-            <p style={styles.noticeParagraph}>
-              Free profiles show your basic details.
-              <br />
-              Premium profiles show your full profile details.
-            </p>
-          </div>
+  <p style={styles.noticeText}>
+    Free profiles show your basic details.
+  </p>
 
+  <p style={styles.noticeTextLast}>
+    Premium profiles show your full profile details.
+  </p>
+</div>
           <div style={styles.shippingNotice}>
             Standard nationwide delivery: R99 delivered directly to your door.
           </div>
@@ -222,14 +223,21 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: 680,
   },
 
-  notice: {
-    border: "1px solid #A7F3D0",
-    borderRadius: 16,
-    padding: 18,
-    background: "#ECFDF5",
-    color: "#065F46",
-    marginBottom: 16,
-  },
+  noticeText: {
+  margin: "0 0 16px 0",
+  fontSize: 15,
+  lineHeight: 1.7,
+  color: "#065F46",
+  fontWeight: 600,
+},
+
+noticeTextLast: {
+  margin: 0,
+  fontSize: 15,
+  lineHeight: 1.7,
+  color: "#065F46",
+  fontWeight: 600,
+},
 
   noticeParagraph: {
     margin: "0 0 10px",
