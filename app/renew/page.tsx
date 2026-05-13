@@ -33,12 +33,12 @@ export default function RenewPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        throw new Error(json?.error || "Failed to start renewal payment.");
+        throw new Error(json?.error || "Failed to start Premium payment.");
       }
 
       window.location.href = json.redirectUrl;
     } catch (err: any) {
-      setMessage(err?.message || "Failed to start renewal payment.");
+      setMessage(err?.message || "Failed to start Premium payment.");
     } finally {
       setLoading(false);
     }
@@ -47,20 +47,21 @@ export default function RenewPage() {
   return (
     <main style={styles.page}>
       <section style={styles.card}>
-        <h1 style={styles.title}>Renew RROI Premium</h1>
+        <h1 style={styles.title}>Activate RROI Premium</h1>
 
         <p style={styles.text}>
-          Renew your RROI Premium visibility for another year.
+          Activate or renew your RROI Premium visibility for 1 year.
         </p>
 
         <div style={styles.priceBox}>
-          <span style={styles.label}>Annual renewal</span>
+          <span style={styles.label}>1 Year Premium Access</span>
           <strong style={styles.price}>R99</strong>
         </div>
 
         <p style={styles.note}>
-          Your profile information stays saved. Renewal keeps your full public
-          emergency profile visible when your QR code is scanned.
+          Premium unlocks full public medical profile visibility when your QR
+          code is scanned. No physical QR products are included with this
+          option.
         </p>
 
         {message ? <div style={styles.error}>{message}</div> : null}
@@ -71,7 +72,7 @@ export default function RenewPage() {
           disabled={loading}
           style={styles.button}
         >
-          {loading ? "Redirecting..." : "Renew Now"}
+          {loading ? "Redirecting..." : "Activate Premium"}
         </button>
       </section>
     </main>
@@ -87,6 +88,7 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: "center",
     padding: 24,
   },
+
   card: {
     width: "100%",
     maxWidth: 520,
@@ -96,18 +98,22 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 28,
     boxShadow: "0 20px 45px rgba(15, 23, 42, 0.08)",
   },
+
   title: {
     margin: "0 0 10px",
     fontSize: 34,
     fontWeight: 900,
+    lineHeight: 1.1,
     color: "#0F172A",
   },
+
   text: {
     margin: "0 0 20px",
     fontSize: 16,
     color: "#475569",
     lineHeight: 1.6,
   },
+
   priceBox: {
     border: "1px solid #D1FAE5",
     background: "#ECFDF5",
@@ -115,21 +121,27 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 18,
     marginBottom: 18,
   },
+
   label: {
     display: "block",
     color: "#475569",
     fontWeight: 700,
     marginBottom: 6,
   },
+
   price: {
     fontSize: 42,
+    fontWeight: 900,
     color: "#0F172A",
+    lineHeight: 1,
   },
+
   note: {
     fontSize: 14,
     color: "#475569",
-    lineHeight: 1.6,
+    lineHeight: 1.7,
   },
+
   error: {
     marginTop: 14,
     padding: 12,
@@ -138,6 +150,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#991B1B",
     fontWeight: 700,
   },
+
   button: {
     width: "100%",
     marginTop: 20,
