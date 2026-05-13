@@ -61,11 +61,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   company: {
-    fontSize: 15,
-    fontWeight: 850,
-    color: "#334155",
-    lineHeight: 1.5,
-  },
+  fontSize: 15,
+  fontWeight: 700,
+  color: "#334155",
+  lineHeight: 1.5,
+},
 
   email: {
     marginTop: 4,
@@ -85,13 +85,15 @@ const styles: Record<string, React.CSSProperties> = {
 link: {
   textDecoration: "none",
   color: "#0F172A",
-  fontWeight: 750,
-  fontSize: 12,
-  lineHeight: 1.2,
-  letterSpacing: "0.06em",
+  WebkitTextFillColor: "#0F172A",
+  fontFamily: "Arial, Helvetica, sans-serif",
+  fontWeight: 700,
+  fontSize: 14,
+  lineHeight: 1.25,
+  letterSpacing: "0",
   textAlign: "center",
   minWidth: 220,
-  textTransform: "uppercase",
+  display: "block",
 },
 
   legalBlock: {
