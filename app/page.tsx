@@ -56,33 +56,54 @@ export default function HomePage() {
           <h2 style={styles.sectionTitle}>How RROI works</h2>
 
           <div style={styles.stepsGrid}>
-            <div style={styles.stepCard}>
-              <div style={styles.stepNum}>1</div>
-              <h3 style={styles.cardTitle}>Create your profile</h3>
-              <p style={styles.cardText}>
-                Add your emergency contact and medical information in your secure
-                online profile.
-              </p>
-            </div>
+  <div style={styles.stepCard}>
+    <div style={styles.stepNum}>1</div>
 
-            <div style={styles.stepCard}>
-              <div style={styles.stepNum}>2</div>
-              <h3 style={styles.cardTitle}>Use your QR code</h3>
-              <p style={styles.cardText}>
-                Download your phone QR lock screen or use physical QR products
-                included with Premium.
-              </p>
-            </div>
+    <h3 style={styles.cardTitle}>
+      Create your free profile
+    </h3>
 
-            <div style={styles.stepCard}>
-              <div style={styles.stepNum}>3</div>
-              <h3 style={styles.cardTitle}>Scan in an emergency</h3>
-              <p style={styles.cardText}>
-                When scanned, your public emergency profile opens instantly in a
-                browser.
-              </p>
-            </div>
-          </div>
+    <p style={styles.cardText}>
+      Sign up and create your emergency profile for free. Upgrade to Premium anytime.
+    </p>
+  </div>
+
+  <div style={styles.stepCard}>
+    <div style={styles.stepNum}>2</div>
+
+    <h3 style={styles.cardTitle}>
+      Complete your profile
+    </h3>
+
+    <p style={styles.cardText}>
+      Add your emergency contact and important medical information.
+    </p>
+  </div>
+
+  <div style={styles.stepCard}>
+    <div style={styles.stepNum}>3</div>
+
+    <h3 style={styles.cardTitle}>
+      Use your QR code
+    </h3>
+
+    <p style={styles.cardText}>
+      Download your phone QR lock screen or use physical QR products included with Premium.
+    </p>
+  </div>
+
+  <div style={styles.stepCard}>
+    <div style={styles.stepNum}>4</div>
+
+    <h3 style={styles.cardTitle}>
+      Scan in an emergency
+    </h3>
+
+    <p style={styles.cardText}>
+      When scanned, your public emergency profile opens instantly in a browser.
+    </p>
+  </div>
+</div>
         </div>
       </section>
 
