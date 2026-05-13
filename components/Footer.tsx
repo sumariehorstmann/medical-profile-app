@@ -5,16 +5,35 @@ export default function Footer() {
     <footer style={styles.footer}>
       <div style={styles.container}>
         <div style={styles.brandBlock}>
-          <div style={styles.company}>RROI (Pty) Ltd • South Africa</div>
-          <div style={styles.email}>support@rroi.co.za</div>
+          <div style={styles.company}>
+            RROI (Pty) Ltd • South Africa
+          </div>
+
+          <div style={styles.email}>
+            support@rroi.co.za
+          </div>
         </div>
 
         <nav style={styles.links} aria-label="Footer navigation">
-          <Link href="/contact" style={styles.link}>Contact</Link>
-          <Link href="/affiliate" style={styles.link}>Affiliate Program</Link>
-          <Link href="/terms" style={styles.link}>Terms & Conditions</Link>
-          <Link href="/privacy" style={styles.link}>Privacy Policy</Link>
-          <Link href="/refund-policy" style={styles.link}>Returns</Link>
+          <Link href="/contact" style={styles.link}>
+            Contact
+          </Link>
+
+          <Link href="/affiliate" style={styles.link}>
+            Affiliate Program
+          </Link>
+
+          <Link href="/terms" style={styles.link}>
+            Terms & Conditions
+          </Link>
+
+          <Link href="/privacy" style={styles.link}>
+            Privacy Policy
+          </Link>
+
+          <Link href="/refund-policy" style={styles.link}>
+            Returns
+          </Link>
         </nav>
 
         <div style={styles.legalBlock}>
@@ -61,11 +80,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   company: {
-  fontSize: 15,
-  fontWeight: 700,
-  color: "#334155",
-  lineHeight: 1.5,
-},
+    fontSize: 15,
+    fontWeight: 700,
+    color: "#334155",
+    lineHeight: 1.5,
+  },
 
   email: {
     marginTop: 4,
@@ -75,26 +94,31 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   links: {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: 14,
-  marginBottom: 32,
-},
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 14,
+    marginBottom: 32,
+  },
 
-link: {
-  textDecoration: "none",
-  color: "#0F172A",
-  WebkitTextFillColor: "#0F172A",
-  fontFamily: "Arial, Helvetica, sans-serif",
-  fontWeight: 700,
-  fontSize: 14,
-  lineHeight: 1.25,
-  letterSpacing: "0",
-  textAlign: "center",
-  minWidth: 220,
-  display: "block",
-},
+  link: {
+    textDecoration: "none",
+    color: "#0F172A",
+    WebkitTextFillColor: "#0F172A",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontWeight: 600,
+    fontSize: 14,
+    lineHeight: 1.25,
+    letterSpacing: "0",
+    textAlign: "center",
+    minWidth: 220,
+    display: "block",
+    fontSynthesis: "none",
+    textTransform: "none",
+    WebkitFontSmoothing: "antialiased",
+    MozOsxFontSmoothing: "grayscale",
+    textRendering: "geometricPrecision",
+  },
 
   legalBlock: {
     maxWidth: 680,
