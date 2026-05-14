@@ -298,7 +298,7 @@ function StoreCheckoutInner() {
           <div style={styles.summaryBox}>
             <div style={styles.summaryTitle}>Your store order includes:</div>
             <ul style={styles.summaryList}>
-              {dogTags > 0 ? <li>Black anodised aluminium dog tag × {dogTags}</li> : null}
+              {dogTags > 0 ? <li>Black Anodised Aluminium QR Tag × {dogTags}</li> : null}
               {cards > 0 ? <li>Black anodised aluminium QR card × {cards}</li> : null}
               <li>Delivery: R{DELIVERY_FEE}</li>
               <li>Total: R{total}</li>

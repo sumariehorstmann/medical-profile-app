@@ -133,7 +133,7 @@ export async function POST(req: Request) {
     const items = [
       dogTags > 0
         ? {
-            name: "Black Anodised Aluminium Dog Tag",
+            name: "Black Anodised Aluminium QR Tag",
             quantity: dogTags,
             unit_price: DOG_TAG_PRICE,
             total: dogTags * DOG_TAG_PRICE,

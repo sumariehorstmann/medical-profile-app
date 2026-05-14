@@ -123,17 +123,33 @@ const hasHadPremium =
         )}
 
         <ProfileFormClient initial={profile} showUpgrade={false} />
-{!isPremium && (
+{true && (
   <div style={styles.upgradeOptions}>
-    <h2 style={styles.upgradeOptionsTitle}>Choose your Premium option</h2>
+    <h2 style={styles.upgradeOptionsTitle}>
+  {isPremium
+    ? "Renew or extend your Premium"
+    : "Choose your Premium option"}
+</h2>
 
     <p style={styles.upgradeOptionsText}>
-      Upgrade your profile for full public medical profile visibility when your QR code is scanned.
-    </p>
+  {isPremium && subscription?.current_period_end
+    ? `Your Premium profile is active until ${new Date(
+        subscription.current_period_end
+      ).toLocaleDateString("en-ZA", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })}. You can renew before expiry to extend your Premium access for another year.`
+    : "Upgrade your profile for full public medical profile visibility when your QR code is scanned."}
+</p>
 
     <div style={styles.upgradeOptionGrid}>
       <div style={styles.upgradeOptionCard}>
-        <h3 style={styles.upgradeOptionHeading}>Premium Subscription Only</h3>
+        <h3 style={styles.upgradeOptionHeading}>
+  {isPremium
+    ? "Renew Premium Subscription Only"
+    : "Premium Subscription Only"}
+</h3>
         <div style={styles.upgradeOptionPrice}>R99/year</div>
 
         <p style={styles.upgradeOptionDescription}>
@@ -142,12 +158,18 @@ const hasHadPremium =
         </p>
 
         <Link href="/renew" style={styles.secondaryBtn}>
-          Upgrade to Premium - R99
+          {isPremium
+  ? "Renew Premium - R99"
+  : "Upgrade to Premium - R99"}
         </Link>
       </div>
 
       <div style={styles.upgradeOptionCard}>
-        <h3 style={styles.upgradeOptionHeading}>Premium Full Kit</h3>
+        <h3 style={styles.upgradeOptionHeading}>
+  {isPremium
+    ? "Renew Premium Full Kit"
+    : "Premium Full Kit"}
+</h3>
         <div style={styles.upgradeOptionPrice}>R399</div>
 
         <p style={styles.upgradeOptionDescription}>
@@ -156,7 +178,9 @@ const hasHadPremium =
         </p>
 
         <Link href="/subscribe/order" style={styles.upgradeBtn}>
-          Upgrade to Premium Full Kit
+          {isPremium
+  ? "Renew Premium Full Kit"
+  : "Upgrade to Premium Full Kit"}
         </Link>
 
         <Link href="/premium-kit" style={styles.viewKitLink}>

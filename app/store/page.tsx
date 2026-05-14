@@ -77,9 +77,9 @@ export default function StorePage() {
 
           <div style={styles.productGrid}>
             <ProductCard
-              title="Black Anodised Aluminium Dog Tag"
+              title="Black Anodised Aluminium QR Tag"
               price={DOG_TAG_PRICE}
-              description="Black anodised aluminium dog tag engraved with your permanent RROI QR code."
+              description="Black Anodised Aluminium QR Tag engraved with your permanent RROI QR code."
               quantity={dogTags}
               onDecrease={() => setDogTags((value) => Math.max(0, value - 1))}
               onIncrease={() => setDogTags((value) => value + 1)}
