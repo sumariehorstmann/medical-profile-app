@@ -1,7 +1,6 @@
 "use client";
 
 import PageHeader from "@/components/PageHeader";
-import PageBottomNav from "@/components/PageBottomNav";
 
 const BRAND_GREEN = "#157A55";
 const TEXT = "#0F172A";
@@ -358,7 +357,14 @@ export default function AffiliateTermsPage() {
             </p>
           </div>
 
-          <PageBottomNav />
+          <div style={styles.bottomNav}>
+  <button
+    onClick={() => window.history.back()}
+    style={styles.backButton}
+  >
+    ← Back
+  </button>
+</div>
         </div>
       </section>
     </main>
@@ -449,4 +455,21 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     textDecoration: "none",
   },
+  bottomNav: {
+  marginTop: 28,
+  display: "flex",
+  justifyContent: "center",
+},
+
+backButton: {
+  border: `1px solid ${BORDER}`,
+  background: "#FFFFFF",
+  color: TEXT,
+  borderRadius: 12,
+  padding: "12px 18px",
+  fontWeight: 700,
+  cursor: "pointer",
+  fontSize: 15,
+  minWidth: 140,
+},
 };
