@@ -134,21 +134,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    const { data: existingSub } = await supabaseAdmin
-      .from("subscriptions")
-      .select("user_id")
-      .eq("user_id", user.id)
-      .eq("status", "approved")
-      .gt("current_period_end", new Date().toISOString())
-      .maybeSingle();
-
-    if (existingSub) {
-      return NextResponse.json(
-        { error: "Already on Premium." },
-        { status: 400 }
-      );
-    }
-
+    
     let finalAmount = BASE_PRICE;
 
     if (affiliateCode) {
