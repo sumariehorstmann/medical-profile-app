@@ -17,35 +17,23 @@ export default function PremiumKitPage() {
 
         {/* Product Photos */}
         <div style={styles.productGrid}>
-          <div style={styles.mainImageWrap}>
-            <Image
-              src="/images/premium-kit/qr-card.png"
-              alt="RROI Premium QR card"
-              fill
-              style={styles.productImage}
-              priority
-            />
-          </div>
+          <ProductPhoto
+            src="/images/premium-kit/qr-card.png"
+            alt="Black Anodised Aluminium QR Card"
+            title="Black Anodised Aluminium QR Card"
+          />
 
-          <div style={styles.smallImageGrid}>
-            <div style={styles.smallImageWrap}>
-              <Image
-                src="/images/premium-kit/qr-tag-front.png"
-                alt="RROI QR tag front"
-                fill
-                style={styles.productImage}
-              />
-            </div>
+          <ProductPhoto
+            src="/images/premium-kit/qr-tag-front.png"
+            alt="Black Anodised Aluminium QR Tag Front"
+            title="Black Anodised Aluminium QR Tag Front"
+          />
 
-            <div style={styles.smallImageWrap}>
-              <Image
-                src="/images/premium-kit/qr-tag-back.png"
-                alt="RROI QR tag back"
-                fill
-                style={styles.productImage}
-              />
-            </div>
-          </div>
+          <ProductPhoto
+            src="/images/premium-kit/qr-tag-back.png"
+            alt="Black Anodised Aluminium QR Tag Back"
+            title="Black Anodised Aluminium QR Tag Back"
+          />
         </div>
 
         {/* Included */}
@@ -100,6 +88,26 @@ export default function PremiumKitPage() {
   );
 }
 
+function ProductPhoto({
+  src,
+  alt,
+  title,
+}: {
+  src: string;
+  alt: string;
+  title: string;
+}) {
+  return (
+    <div style={styles.productCard}>
+      <div style={styles.imageWrap}>
+        <Image src={src} alt={alt} fill style={styles.productImage} />
+      </div>
+
+      <div style={styles.productTitle}>{title}</div>
+    </div>
+  );
+}
+
 const styles: Record<string, React.CSSProperties> = {
   page: {
     padding: "48px 20px",
@@ -143,36 +151,40 @@ const styles: Record<string, React.CSSProperties> = {
 
   productGrid: {
     display: "grid",
-    gridTemplateColumns: "1.5fr 1fr",
-    gap: 16,
-    marginBottom: 26,
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: 18,
+    marginBottom: 28,
   },
 
-  mainImageWrap: {
-    position: "relative",
-    height: 360,
-    borderRadius: 18,
-    overflow: "hidden",
+  productCard: {
+    background: "#FFFFFF",
     border: "1px solid #E5E7EB",
-    background: "#F8FAFC",
-  },
-
-  smallImageGrid: {
-    display: "grid",
-    gap: 16,
-  },
-
-  smallImageWrap: {
-    position: "relative",
-    height: 172,
     borderRadius: 18,
+    padding: 14,
     overflow: "hidden",
-    border: "1px solid #E5E7EB",
+  },
+
+  imageWrap: {
+    position: "relative",
+    width: "100%",
+    height: 220,
     background: "#F8FAFC",
+    borderRadius: 14,
+    overflow: "hidden",
+    marginBottom: 12,
   },
 
   productImage: {
-    objectFit: "cover",
+    objectFit: "contain",
+    padding: 10,
+  },
+
+  productTitle: {
+    fontSize: 14,
+    fontWeight: 800,
+    lineHeight: 1.35,
+    color: "#0F172A",
+    textAlign: "center",
   },
 
   card: {
