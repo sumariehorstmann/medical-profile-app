@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 export default function PremiumKitPage() {
@@ -14,9 +15,37 @@ export default function PremiumKitPage() {
           Everything included when upgrading to RROI Premium.
         </p>
 
-        {/* Product Preview Placeholder */}
-        <div style={styles.imagePlaceholder}>
-          Product image coming soon
+        {/* Product Photos */}
+        <div style={styles.productGrid}>
+          <div style={styles.mainImageWrap}>
+            <Image
+              src="/images/premium-kit/qr-card.png"
+              alt="RROI Premium QR card"
+              fill
+              style={styles.productImage}
+              priority
+            />
+          </div>
+
+          <div style={styles.smallImageGrid}>
+            <div style={styles.smallImageWrap}>
+              <Image
+                src="/images/premium-kit/qr-tag-front.png"
+                alt="RROI QR tag front"
+                fill
+                style={styles.productImage}
+              />
+            </div>
+
+            <div style={styles.smallImageWrap}>
+              <Image
+                src="/images/premium-kit/qr-tag-back.png"
+                alt="RROI QR tag back"
+                fill
+                style={styles.productImage}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Included */}
@@ -53,9 +82,7 @@ export default function PremiumKitPage() {
         <div style={styles.flowCard}>
           <h2 style={styles.h2}>How to get Premium</h2>
 
-          <p style={styles.flowText}>
-            First create your free RROI profile.
-          </p>
+          <p style={styles.flowText}>First create your free RROI profile.</p>
 
           <p style={styles.flowText}>
             After signing up and completing your profile, you can upgrade to
@@ -63,13 +90,8 @@ export default function PremiumKitPage() {
           </p>
         </div>
 
-        
-        {/* Bottom Back Button */}
         <div style={styles.bottomActions}>
-          <button
-            onClick={() => window.history.back()}
-            style={styles.backButton}
-          >
+          <button onClick={() => window.history.back()} style={styles.backButton}>
             ← Back
           </button>
         </div>
@@ -119,17 +141,38 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: 620,
   },
 
-  imagePlaceholder: {
-    height: 280,
-    background: "#F3F4F6",
-    borderRadius: 18,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#9CA3AF",
-    fontSize: 15,
+  productGrid: {
+    display: "grid",
+    gridTemplateColumns: "1.5fr 1fr",
+    gap: 16,
     marginBottom: 26,
+  },
+
+  mainImageWrap: {
+    position: "relative",
+    height: 360,
+    borderRadius: 18,
+    overflow: "hidden",
     border: "1px solid #E5E7EB",
+    background: "#F8FAFC",
+  },
+
+  smallImageGrid: {
+    display: "grid",
+    gap: 16,
+  },
+
+  smallImageWrap: {
+    position: "relative",
+    height: 172,
+    borderRadius: 18,
+    overflow: "hidden",
+    border: "1px solid #E5E7EB",
+    background: "#F8FAFC",
+  },
+
+  productImage: {
+    objectFit: "cover",
   },
 
   card: {
@@ -185,16 +228,15 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   secondaryButton: {
-  display: "inline-block",
-  padding: "12px 18px",
-  borderRadius: 12,
-  textDecoration: "none",
-  fontWeight: 700,
-  background: "#157A55",
-  border: "1px solid #157A55",
-  color: "#FFFFFF",
-},
- 
+    display: "inline-block",
+    padding: "12px 18px",
+    borderRadius: 12,
+    textDecoration: "none",
+    fontWeight: 700,
+    background: "#157A55",
+    border: "1px solid #157A55",
+    color: "#FFFFFF",
+  },
 
   bottomActions: {
     marginTop: 42,
