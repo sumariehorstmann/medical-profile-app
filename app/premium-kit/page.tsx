@@ -2,8 +2,22 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function PremiumKitPage() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    function checkScreen() {
+      setIsMobile(window.innerWidth <= 700);
+    }
+
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
+
   return (
     <div style={styles.page}>
       <div style={styles.container}>
@@ -15,28 +29,34 @@ export default function PremiumKitPage() {
           Everything included when upgrading to RROI Premium.
         </p>
 
-        {/* Product Photos */}
-        <div style={styles.productGrid}>
+        <div
+          style={{
+            ...styles.productGrid,
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+          }}
+        >
           <ProductPhoto
             src="/images/premium-kit/qr-card.png"
             alt="Black Anodised Aluminium QR Card"
             title="Black Anodised Aluminium QR Card"
+            isMobile={isMobile}
           />
 
           <ProductPhoto
             src="/images/premium-kit/qr-tag-front.png"
             alt="Black Anodised Aluminium QR Tag Front"
             title="Black Anodised Aluminium QR Tag Front"
+            isMobile={isMobile}
           />
 
           <ProductPhoto
             src="/images/premium-kit/qr-tag-back.png"
             alt="Black Anodised Aluminium QR Tag Back"
             title="Black Anodised Aluminium QR Tag Back"
+            isMobile={isMobile}
           />
         </div>
 
-        {/* Included */}
         <div style={styles.card}>
           <h2 style={styles.h2}>What is included</h2>
 
@@ -48,7 +68,6 @@ export default function PremiumKitPage() {
           </ul>
         </div>
 
-        {/* Example Profile */}
         <div style={styles.exampleCard}>
           <h2 style={styles.h2}>Example Premium public profile</h2>
 
@@ -66,7 +85,6 @@ export default function PremiumKitPage() {
           </Link>
         </div>
 
-        {/* Signup Flow Info */}
         <div style={styles.flowCard}>
           <h2 style={styles.h2}>How to get Premium</h2>
 
@@ -92,18 +110,41 @@ function ProductPhoto({
   src,
   alt,
   title,
+  isMobile,
 }: {
   src: string;
   alt: string;
   title: string;
+  isMobile: boolean;
 }) {
   return (
-    <div style={styles.productCard}>
-      <div style={styles.imageWrap}>
+    <div
+      style={{
+        ...styles.productCard,
+        display: isMobile ? "grid" : "block",
+        gridTemplateColumns: isMobile ? "120px 1fr" : undefined,
+        alignItems: isMobile ? "center" : undefined,
+        gap: isMobile ? 16 : undefined,
+      }}
+    >
+      <div
+        style={{
+          ...styles.imageWrap,
+          height: isMobile ? 120 : 220,
+          marginBottom: isMobile ? 0 : 12,
+        }}
+      >
         <Image src={src} alt={alt} fill style={styles.productImage} />
       </div>
 
-      <div style={styles.productTitle}>{title}</div>
+      <div
+        style={{
+          ...styles.productTitle,
+          textAlign: isMobile ? "left" : "center",
+        }}
+      >
+        {title}
+      </div>
     </div>
   );
 }
@@ -151,7 +192,6 @@ const styles: Record<string, React.CSSProperties> = {
 
   productGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
     gap: 18,
     marginBottom: 28,
   },
@@ -165,25 +205,22 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   imageWrap: {
-  position: "relative",
-  width: "100%",
-  height: 220,
-  background: "#FFFFFF",
-  borderRadius: 14,
-  overflow: "hidden",
-  marginBottom: 12,
-},
+    position: "relative",
+    width: "100%",
+    background: "#FFFFFF",
+    borderRadius: 14,
+    overflow: "hidden",
+  },
 
   productImage: {
-  objectFit: "contain",
-},
+    objectFit: "contain",
+  },
 
   productTitle: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 800,
     lineHeight: 1.35,
     color: "#0F172A",
-    textAlign: "center",
   },
 
   card: {
