@@ -26,10 +26,9 @@ export default function PremiumKitPage() {
         <h1 style={styles.h1}>Premium Kit</h1>
 
         <p style={styles.subtitle}>
-  The R399 Premium Kit includes your 1-year Premium subscription,
-  2 physical QR code items, full public emergency profile visibility,
-  and a downloadable QR lock screen for your phone.
-</p>
+          The R399 Premium Kit gives you Premium access plus physical QR items
+          that can be scanned in an emergency.
+        </p>
 
         <div
           style={{
@@ -60,34 +59,31 @@ export default function PremiumKitPage() {
         </div>
 
         <div style={styles.card}>
-  <h2 style={styles.h2}>What is included in the R399 Premium Kit</h2>
+          <h2 style={styles.h2}>Included in the R399 Premium Kit</h2>
 
-  <ul style={styles.list}>
-    <li>1-year RROI Premium subscription</li>
-    <li>2 physical black anodised aluminium QR code items</li>
-    <li>Full public emergency profile visibility</li>
-    <li>Downloadable QR phone lock screen</li>
-    <li>Free nationwide delivery within South Africa</li>
-  </ul>
-</div>
+          <ul style={styles.list}>
+            <li>1-year RROI Premium subscription</li>
+            <li>Black anodised aluminium QR card</li>
+            <li>Black anodised aluminium QR tag</li>
+            <li>Full public emergency profile visibility</li>
+            <li>Downloadable QR phone lock screen</li>
+            <li>Free nationwide delivery within South Africa</li>
+          </ul>
+        </div>
 
-<div style={styles.flowCard}>
-  <h2 style={styles.h2}>Premium Upgrade Only Option</h2>
+        <div style={styles.noteCard}>
+          <h2 style={styles.noteTitle}>Digital-only Premium option</h2>
 
-  <p style={styles.flowText}>
-    You can also upgrade to Premium for R99 per year without purchasing the
-    physical Premium Kit.
-  </p>
+          <p style={styles.noteText}>
+            You can also upgrade to Premium for R99 per year without purchasing
+            the physical kit. This gives you full public profile visibility and
+            the downloadable QR phone lock screen only.
+          </p>
 
-  <p style={styles.flowText}>
-    This option unlocks full public emergency profile visibility and includes
-    the downloadable QR phone lock screen only.
-  </p>
-
-  <p style={styles.flowText}>
-    No physical QR items are included with the R99 Premium upgrade option.
-  </p>
-</div>
+          <p style={styles.noteText}>
+            No physical QR card or tag is included with the R99 option.
+          </p>
+        </div>
 
         <div style={styles.exampleCard}>
           <h2 style={styles.h2}>Example Premium public profile</h2>
@@ -252,6 +248,14 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 22,
   },
 
+  noteCard: {
+    background: "#FFFFFF",
+    border: "1px solid #E5E7EB",
+    borderRadius: 18,
+    padding: 20,
+    marginBottom: 22,
+  },
+
   exampleCard: {
     background: "#FFFFFF",
     border: "1px solid #D1D5DB",
@@ -275,6 +279,13 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#0F172A",
   },
 
+  noteTitle: {
+    fontSize: 18,
+    fontWeight: 800,
+    marginBottom: 10,
+    color: "#334155",
+  },
+
   list: {
     paddingLeft: 22,
     lineHeight: 1.9,
@@ -294,6 +305,13 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.7,
     fontSize: 15,
     marginBottom: 12,
+  },
+
+  noteText: {
+    color: "#64748B",
+    lineHeight: 1.6,
+    fontSize: 14,
+    marginBottom: 10,
   },
 
   secondaryButton: {
