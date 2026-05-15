@@ -165,19 +165,18 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   imageWrap: {
-    position: "relative",
-    width: "100%",
-    height: 220,
-    background: "#F8FAFC",
-    borderRadius: 14,
-    overflow: "hidden",
-    marginBottom: 12,
-  },
+  position: "relative",
+  width: "100%",
+  height: 220,
+  background: "#FFFFFF",
+  borderRadius: 14,
+  overflow: "hidden",
+  marginBottom: 12,
+},
 
   productImage: {
-    objectFit: "contain",
-    padding: 10,
-  },
+  objectFit: "contain",
+},
 
   productTitle: {
     fontSize: 14,
