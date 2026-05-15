@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import PageBottomNav from "@/components/PageBottomNav";
@@ -54,23 +55,24 @@ export default function StorePage() {
           </div>
 
           <div style={styles.notice}>
-  <p style={styles.noticeText}>
-    Your QR code links to your RROI public profile.
-  </p>
+            <p style={styles.noticeText}>
+              Your QR code links to your RROI public profile.
+            </p>
 
-  <p style={styles.noticeText}>
-    Only information you enter into your profile will be displayed publicly
-    when your QR code is scanned.
-  </p>
+            <p style={styles.noticeText}>
+              Only information you enter into your profile will be displayed
+              publicly when your QR code is scanned.
+            </p>
 
-  <p style={styles.noticeText}>
-    Free profiles show your basic details.
-  </p>
+            <p style={styles.noticeText}>
+              Free profiles show your basic details.
+            </p>
 
-  <p style={styles.noticeTextLast}>
-    Premium profiles show your full profile details.
-  </p>
-</div>
+            <p style={styles.noticeTextLast}>
+              Premium profiles show your full profile details.
+            </p>
+          </div>
+
           <div style={styles.shippingNotice}>
             Standard nationwide delivery: R99 delivered directly to your door.
           </div>
@@ -79,7 +81,17 @@ export default function StorePage() {
             <ProductCard
               title="Black Anodised Aluminium QR Tag"
               price={DOG_TAG_PRICE}
-              description="Black Anodised Aluminium QR Tag engraved with your permanent RROI QR code."
+              description="Black anodised aluminium QR tag engraved with your permanent RROI QR code."
+              images={[
+                {
+                  src: "/images/premium-kit/qr-tag-front.png",
+                  alt: "Black Anodised Aluminium QR Tag Front",
+                },
+                {
+                  src: "/images/premium-kit/qr-tag-back.png",
+                  alt: "Black Anodised Aluminium QR Tag Back",
+                },
+              ]}
               quantity={dogTags}
               onDecrease={() => setDogTags((value) => Math.max(0, value - 1))}
               onIncrease={() => setDogTags((value) => value + 1)}
@@ -89,6 +101,12 @@ export default function StorePage() {
               title="Black Anodised Aluminium QR Card"
               price={QR_CARD_PRICE}
               description="Black anodised aluminium wallet card engraved with your permanent RROI QR code."
+              images={[
+                {
+                  src: "/images/premium-kit/qr-card.png",
+                  alt: "Black Anodised Aluminium QR Card",
+                },
+              ]}
               quantity={cards}
               onDecrease={() => setCards((value) => Math.max(0, value - 1))}
               onIncrease={() => setCards((value) => value + 1)}
@@ -126,9 +144,7 @@ export default function StorePage() {
             </button>
 
             {!hasItems ? (
-              <p style={styles.helperText}>
-                Add at least one item to continue.
-              </p>
+              <p style={styles.helperText}>Add at least one item to continue.</p>
             ) : null}
           </div>
 
@@ -143,6 +159,7 @@ function ProductCard({
   title,
   price,
   description,
+  images,
   quantity,
   onDecrease,
   onIncrease,
@@ -150,14 +167,29 @@ function ProductCard({
   title: string;
   price: number;
   description: string;
+  images: { src: string; alt: string }[];
   quantity: number;
   onDecrease: () => void;
   onIncrease: () => void;
 }) {
   return (
     <div style={styles.productCard}>
-      <div style={styles.imagePlaceholder}>
-        Product image coming soon
+      <div
+        style={{
+          ...styles.productImageGrid,
+          gridTemplateColumns: images.length > 1 ? "1fr 1fr" : "1fr",
+        }}
+      >
+        {images.map((image) => (
+          <div key={image.src} style={styles.productImageWrap}>
+            <Image
+              src={image.src}
+              alt={image.alt}
+              fill
+              style={styles.productImage}
+            />
+          </div>
+        ))}
       </div>
 
       <h2 style={styles.productTitle}>{title}</h2>
@@ -207,49 +239,57 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: "center",
   },
 
+  title: {
+    margin: 0,
+    fontSize: 42,
+    lineHeight: 1.05,
+    fontWeight: 900,
+    color: TEXT,
+  },
+
   subtitle: {
-  margin: "12px auto 0",
-  fontSize: 16,
-  lineHeight: 1.6,
-  color: MUTED,
-  maxWidth: 680,
-},
+    margin: "12px auto 0",
+    fontSize: 16,
+    lineHeight: 1.6,
+    color: MUTED,
+    maxWidth: 680,
+  },
 
-notice: {
-  marginBottom: 26,
-  padding: "22px 20px",
-  borderRadius: 18,
-  border: "1px solid #A7F3D0",
-  background: "#ECFDF5",
-},
+  notice: {
+    marginBottom: 26,
+    padding: "22px 20px",
+    borderRadius: 18,
+    border: "1px solid #A7F3D0",
+    background: "#ECFDF5",
+  },
 
-noticeText: {
-  margin: "0 0 18px 0",
-  fontSize: 15,
-  lineHeight: 1.7,
-  color: "#065F46",
-  fontWeight: 700,
-},
+  noticeText: {
+    margin: "0 0 18px 0",
+    fontSize: 15,
+    lineHeight: 1.7,
+    color: "#065F46",
+    fontWeight: 700,
+  },
 
-noticeTextLast: {
-  margin: 0,
-  fontSize: 15,
-  lineHeight: 1.7,
-  color: "#065F46",
-  fontWeight: 700,
-},
+  noticeTextLast: {
+    margin: 0,
+    fontSize: 15,
+    lineHeight: 1.7,
+    color: "#065F46",
+    fontWeight: 700,
+  },
 
-shippingNotice: {
-  marginBottom: 26,
-  padding: "14px 16px",
-  borderRadius: 14,
-  border: `1px solid ${BORDER}`,
-  background: "#FFFFFF",
-  color: TEXT,
-  fontSize: 14,
-  fontWeight: 700,
-  lineHeight: 1.5,
-},
+  shippingNotice: {
+    marginBottom: 26,
+    padding: "14px 16px",
+    borderRadius: 14,
+    border: `1px solid ${BORDER}`,
+    background: "#FFFFFF",
+    color: TEXT,
+    fontSize: 14,
+    fontWeight: 700,
+    lineHeight: 1.5,
+  },
 
   productGrid: {
     display: "grid",
@@ -265,17 +305,23 @@ shippingNotice: {
     background: "#FFFFFF",
   },
 
-  imagePlaceholder: {
-    height: 160,
-    borderRadius: 14,
-    background: "#F3F4F6",
-    border: `1px solid ${BORDER}`,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#94A3B8",
-    fontSize: 14,
+  productImageGrid: {
+    display: "grid",
+    gap: 10,
     marginBottom: 16,
+  },
+
+  productImageWrap: {
+    position: "relative",
+    height: 180,
+    borderRadius: 14,
+    background: "#FFFFFF",
+    border: `1px solid ${BORDER}`,
+    overflow: "hidden",
+  },
+
+  productImage: {
+    objectFit: "contain",
   },
 
   productTitle: {
