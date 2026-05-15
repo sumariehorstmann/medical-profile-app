@@ -180,16 +180,24 @@ function ProductCard({
           gridTemplateColumns: images.length > 1 ? "1fr 1fr" : "1fr",
         }}
       >
-        {images.map((image) => (
-          <div key={image.src} style={styles.productImageWrap}>
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              style={styles.productImage}
-            />
-          </div>
-        ))}
+        {images.map((image, index) => (
+  <div key={image.src}>
+    <div style={styles.productImageWrap}>
+      <Image
+        src={image.src}
+        alt={image.alt}
+        fill
+        style={styles.productImage}
+      />
+    </div>
+
+    {images.length > 1 ? (
+      <div style={styles.imageLabel}>
+        {index === 0 ? "Front" : "Back"}
+      </div>
+    ) : null}
+  </div>
+))}
       </div>
 
       <h2 style={styles.productTitle}>{title}</h2>
@@ -312,17 +320,26 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   productImageWrap: {
-    position: "relative",
-    height: 180,
-    borderRadius: 14,
-    background: "#FFFFFF",
-    border: `1px solid ${BORDER}`,
-    overflow: "hidden",
-  },
+  position: "relative",
+  height: 180,
+  borderRadius: 14,
+  background: "#FFFFFF",
+  overflow: "hidden",
+},
 
   productImage: {
-    objectFit: "contain",
-  },
+  objectFit: "contain",
+  pointerEvents: "none",
+  userSelect: "none",
+},
+
+imageLabel: {
+  marginTop: 6,
+  textAlign: "center",
+  fontSize: 12,
+  fontWeight: 700,
+  color: "#64748B",
+},
 
   productTitle: {
     margin: "0 0 8px",
