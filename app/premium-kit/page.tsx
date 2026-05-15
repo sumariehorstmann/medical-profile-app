@@ -26,8 +26,10 @@ export default function PremiumKitPage() {
         <h1 style={styles.h1}>Premium Kit</h1>
 
         <p style={styles.subtitle}>
-          Everything included when upgrading to RROI Premium.
-        </p>
+  The R399 Premium Kit includes your 1-year Premium subscription,
+  2 physical QR code items, full public emergency profile visibility,
+  and a downloadable QR lock screen for your phone.
+</p>
 
         <div
           style={{
@@ -58,15 +60,34 @@ export default function PremiumKitPage() {
         </div>
 
         <div style={styles.card}>
-          <h2 style={styles.h2}>What is included</h2>
+  <h2 style={styles.h2}>What is included in the R399 Premium Kit</h2>
 
-          <ul style={styles.list}>
-            <li>1-year RROI Premium subscription</li>
-            <li>2 physical QR code items</li>
-            <li>Full emergency profile visibility</li>
-            <li>Free nationwide delivery</li>
-          </ul>
-        </div>
+  <ul style={styles.list}>
+    <li>1-year RROI Premium subscription</li>
+    <li>2 physical black anodised aluminium QR code items</li>
+    <li>Full public emergency profile visibility</li>
+    <li>Downloadable QR phone lock screen</li>
+    <li>Free nationwide delivery within South Africa</li>
+  </ul>
+</div>
+
+<div style={styles.flowCard}>
+  <h2 style={styles.h2}>Premium Upgrade Only Option</h2>
+
+  <p style={styles.flowText}>
+    You can also upgrade to Premium for R99 per year without purchasing the
+    physical Premium Kit.
+  </p>
+
+  <p style={styles.flowText}>
+    This option unlocks full public emergency profile visibility and includes
+    the downloadable QR phone lock screen only.
+  </p>
+
+  <p style={styles.flowText}>
+    No physical QR items are included with the R99 Premium upgrade option.
+  </p>
+</div>
 
         <div style={styles.exampleCard}>
           <h2 style={styles.h2}>Example Premium public profile</h2>
