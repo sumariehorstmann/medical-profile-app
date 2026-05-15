@@ -201,26 +201,27 @@ export default function HomePage() {
 
             <Link href="/login?mode=signup" style={styles.primaryBtn}>
               Create Free Profile
-            </Link>
-            <div style={styles.installWrap}>
- 
-  <button
-  type="button"
-  onClick={() => {
-    alert(
-      "To add RROI to your home screen:\n\nAndroid: Tap the 3 dots in your browser, then tap Add to Home screen.\n\niPhone: Open in Safari, tap Share, then tap Add to Home Screen.\n\nLaptop: Use the install icon in your browser address bar if available."
-    );
-  }}
-  style={styles.installBtn}
->
-  Add RROI to Home Screen
-</button>
-</div>
-          </div>
+</Link>
 
-          
-        </div>
-      </section>
+</div>
+
+</div>
+
+<div style={styles.installWrap}>
+  <button
+    type="button"
+    onClick={() => {
+      alert(
+        "To add RROI to your home screen:\n\nAndroid: Tap the 3 dots in your browser, then tap Add to Home screen.\n\niPhone: Open in Safari, tap Share, then tap Add to Home Screen.\n\nLaptop: Use the install icon in your browser address bar if available."
+      );
+    }}
+    style={styles.installBtn}
+  >
+    Add RROI to Home Screen
+  </button>
+</div>
+
+</section>
     </main>
   );
 }
@@ -554,6 +555,8 @@ planCardFeatured: {
   },
   installWrap: {
   marginTop: 18,
+  display: "flex",
+  justifyContent: "center",
 },
 
 installBtn: {
