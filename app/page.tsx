@@ -1,20 +1,33 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 
 export default function HomePage() {
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const ref = params.get("ref");
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
 
-    if (ref) {
-      try {
-        sessionStorage.setItem("rroi_ref", ref.toUpperCase());
-      } catch {}
-    }
-  }, []);
+  useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get("ref");
+
+  if (ref) {
+    try {
+      sessionStorage.setItem("rroi_ref", ref.toUpperCase());
+    } catch {}
+  }
+
+  const handler = (e: any) => {
+    e.preventDefault();
+    setInstallPrompt(e);
+  };
+
+  window.addEventListener("beforeinstallprompt", handler);
+
+  return () => {
+    window.removeEventListener("beforeinstallprompt", handler);
+  };
+}, []);
 
   return (
     <main style={styles.page}>
@@ -201,20 +214,27 @@ export default function HomePage() {
             <Link href="/login?mode=signup" style={styles.primaryBtn}>
               Create Free Profile
             </Link>
-          </div>
-<div style={styles.installWrap}>
+            <div style={styles.installWrap}>
+ 
   <button
-    type="button"
-    onClick={() => {
+  type="button"
+  onClick={async () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+    } else {
       alert(
-        "To install RROI:\n\nAndroid: Tap the 3 dots in your browser, then tap Install app or Add to Home screen.\n\niPhone: Open in Safari, tap Share, then tap Add to Home Screen."
+        "On iPhone: Open in Safari, tap Share, then tap Add to Home Screen."
       );
-    }}
-    style={styles.installBtn}
-  >
-    Install RROI App
-  </button>
+    }
+  }}
+  style={styles.installBtn}
+>
+  Install RROI App
+</button>
 </div>
+          </div>
+
           
         </div>
       </section>
@@ -560,11 +580,12 @@ installBtn: {
   minHeight: 46,
   padding: "12px 18px",
   borderRadius: 12,
-  border: "1px solid #334155",
-  background: "transparent",
-  color: "#FFFFFF",
+  border: "1px solid #CBD5E1",
+  background: "#FFFFFF",
+  color: "#0F172A",
   fontWeight: 800,
   fontSize: 14,
   cursor: "pointer",
+  marginTop: 18,
 },
 };
