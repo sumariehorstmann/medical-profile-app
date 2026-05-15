@@ -202,7 +202,19 @@ export default function HomePage() {
               Create Free Profile
             </Link>
           </div>
-
+<div style={styles.installWrap}>
+  <button
+    type="button"
+    onClick={() => {
+      alert(
+        "To install RROI:\n\nAndroid: Tap the 3 dots in your browser, then tap Install app or Add to Home screen.\n\niPhone: Open in Safari, tap Share, then tap Add to Home Screen."
+      );
+    }}
+    style={styles.installBtn}
+  >
+    Install RROI App
+  </button>
+</div>
           
         </div>
       </section>
@@ -537,4 +549,22 @@ planCardFeatured: {
   dot: {
     color: "#CBD5E1",
   },
+  installWrap: {
+  marginTop: 18,
+},
+
+installBtn: {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: 46,
+  padding: "12px 18px",
+  borderRadius: 12,
+  border: "1px solid #334155",
+  background: "transparent",
+  color: "#FFFFFF",
+  fontWeight: 800,
+  fontSize: 14,
+  cursor: "pointer",
+},
 };
