@@ -6,6 +6,8 @@ import Footer from "@/components/Footer";
 export const metadata: Metadata = {
   title: "RROI",
   description: "Rapid Response Online Information",
+  manifest: "/manifest.json",
+  themeColor: "#157A55",
 };
 
 export default function RootLayout({
@@ -15,6 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      </head>
+
       <body
         style={{
           margin: 0,
