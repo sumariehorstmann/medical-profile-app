@@ -71,11 +71,11 @@ export default function PremiumKitPage() {
           </ul>
         </div>
 <div style={styles.deliveryCard}>
-  <h2 style={styles.deliveryTitle}>Custom Made to Order</h2>
+  <div style={styles.deliveryTitle}>Custom Made to Order</div>
 
   <p style={styles.deliveryText}>
-    Every RROI product is manufactured specifically for your order and
-    delivered to your door within 7–14 working days.
+    Every RROI product is manufactured specifically for your order and delivered
+    to your door within 7–14 working days.
   </p>
 </div>
         <div style={styles.noteCard}>
@@ -256,26 +256,29 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
 deliveryCard: {
-  background: "#EEF7F1",
-  border: "1px solid #A7E3B8",
-  borderRadius: 18,
-  padding: 24,
+  background: "#F0FDF4",
+  border: "1px solid #BBF7D0",
+  borderRadius: 16,
+  padding: "18px 20px",
   marginBottom: 22,
+  display: "flex",
+  gap: 14,
+  alignItems: "flex-start",
 },
 
 deliveryTitle: {
-  fontSize: 22,
+  fontSize: 16,
   fontWeight: 800,
-  marginBottom: 12,
   color: "#166534",
+  margin: 0,
+  minWidth: 180,
 },
 
 deliveryText: {
-  fontSize: 16,
-  lineHeight: 1.8,
+  fontSize: 15,
+  lineHeight: 1.6,
   color: "#166534",
   margin: 0,
-  maxWidth: 620,
 },
 
   noteCard: {
