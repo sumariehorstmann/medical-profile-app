@@ -69,12 +69,7 @@ export default function StorePage() {
           <div style={styles.shippingNotice}>
             Every RROI product is custom made to order and delivered to your door within 7–14 working days.
           </div>
-<div style={styles.storeTrustBox}>
-  <div>✓ Secure PayFast payments</div>
-  <div>✓ Custom-made engraved products</div>
-  <div>✓ Nationwide South African delivery</div>
-  <div>✓ Linked to your permanent RROI QR profile</div>
-</div>
+
           <div style={styles.productGrid}>
             <ProductCard
               title="Black Anodised Aluminium QR Tag"
@@ -118,6 +113,13 @@ export default function StorePage() {
               <span>Items subtotal</span>
               <strong>R{subtotal}</strong>
             </div>
+
+<div style={styles.storeTrustBox}>
+  <div>✓ Secure PayFast payments</div>
+  <div>✓ Custom-made engraved products</div>
+  <div>✓ Nationwide South African delivery</div>
+  <div>✓ Linked to your permanent RROI QR profile</div>
+</div>
 
             <div style={styles.summaryLine}>
               <span>Delivery</span>
@@ -447,7 +449,8 @@ imageLabel: {
     color: MUTED,
   },
   storeTrustBox: {
-  marginTop: 14,
+  marginTop: 24,
+  marginBottom: 24,
   padding: 16,
   borderRadius: 14,
   background: "#F0FDF4",
