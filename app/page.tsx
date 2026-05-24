@@ -229,7 +229,7 @@ export default function HomePage() {
     }}
     style={styles.installBtn}
   >
-    Add RROI to Home Screen
+    Install RROI App
   </button>
 </div>
 
