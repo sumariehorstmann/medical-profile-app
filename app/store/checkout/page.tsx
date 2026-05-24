@@ -312,6 +312,14 @@ function StoreCheckoutInner() {
               information shown depends on whether your profile is Free or Premium.
             </div>
           </div>
+<div style={styles.deliveryBox}>
+  <div style={styles.deliveryTitle}>Custom Made to Order</div>
+
+  <div style={styles.deliveryText}>
+    Every RROI product is manufactured specifically for your order and
+    delivered to your door within 7–14 working days.
+  </div>
+</div>
 
           <section style={styles.section}>
             <h2 style={styles.sectionTitle}>Personal Details</h2>
@@ -352,10 +360,12 @@ function StoreCheckoutInner() {
           <div style={styles.stickyFooter}>
             <div style={styles.securityBox}>
               • Secure payment via PayFast
-              <br />
-              • Your order details are saved before payment
-              <br />
-              • Your QR code is linked to your existing RROI profile
+<br />
+• Your order details are securely saved before payment
+<br />
+• Your QR code is linked to your existing RROI profile
+<br />
+• Custom-made orders are delivered within 7–14 working days
             </div>
 
             <button
@@ -544,6 +554,26 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.6,
     color: "#475569",
   },
+  deliveryBox: {
+  background: "#f0fdf4",
+  border: "1px solid #bbf7d0",
+  borderRadius: 14,
+  padding: 16,
+  marginBottom: 20,
+},
+
+deliveryTitle: {
+  fontSize: 15,
+  fontWeight: 800,
+  color: "#166534",
+  marginBottom: 6,
+},
+
+deliveryText: {
+  fontSize: 14,
+  lineHeight: 1.7,
+  color: "#166534",
+},
   section: {
     marginBottom: 20,
     padding: 18,
