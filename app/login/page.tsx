@@ -314,7 +314,9 @@ const isCheckoutRedirect =
       <div style={styles.card}>
   {isCheckoutRedirect ? (
     <div style={styles.checkoutNotice}>
-      Log in or sign up to continue to your order form and payment.
+      Log in to continue to your order form and payment.
+
+If you do not yet have an account, sign up now to create your free account and continue to checkout.
     </div>
   ) : null}
 
