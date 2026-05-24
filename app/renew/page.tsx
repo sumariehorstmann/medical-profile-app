@@ -47,13 +47,7 @@ export default function RenewPage() {
   return (
     <main style={styles.page}>
       <section style={styles.card}>
-        <button
-  type="button"
-  onClick={() => window.history.back()}
-  style={styles.backButton}
->
-  ← Back
-</button>
+        
         <h1 style={styles.title}>Activate RROI Premium</h1>
 
         <p style={styles.text}>
@@ -74,13 +68,21 @@ export default function RenewPage() {
         {message ? <div style={styles.error}>{message}</div> : null}
 
         <button
-          type="button"
-          onClick={handleRenew}
-          disabled={loading}
-          style={styles.button}
-        >
-          {loading ? "Redirecting..." : "Activate Premium"}
-        </button>
+  type="button"
+  onClick={handleRenew}
+  disabled={loading}
+  style={styles.button}
+>
+  {loading ? "Redirecting..." : "Activate Premium"}
+</button>
+
+<button
+  type="button"
+  onClick={() => window.history.back()}
+  style={styles.backButton}
+>
+  ← Back
+</button>
       </section>
     </main>
   );
@@ -177,10 +179,8 @@ const styles: Record<string, React.CSSProperties> = {
   fontSize: 15,
   fontWeight: 800,
   cursor: "pointer",
-  padding: 0,
-  marginBottom: 18,
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 6,
+  marginTop: 18,
+  width: "100%",
+  textAlign: "center",
 },
 };
