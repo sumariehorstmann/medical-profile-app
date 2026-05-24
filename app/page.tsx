@@ -132,24 +132,36 @@ export default function HomePage() {
             </div>
 
             <div style={styles.planCardFeatured}>
-              <div style={styles.planLabelFeatured}>Premium Kit</div>
-              <h3 style={styles.planTitle}>Full Emergency Profile</h3>
-              <p style={styles.planPrice}>R399 once-off</p>
-              <p style={styles.planSub}>Includes first year subscription</p>
-              <p style={styles.planRenewal}>R99 per year thereafter</p>
+  <div style={styles.planLabelFeatured}>Premium Upgrade</div>
 
-              <ul style={styles.list}>
-                <li>Full medical profile visible when scanned</li>
-                <li>2 physical engraved QR products included</li>
-                <li>Free nationwide delivery in South Africa</li>
-                <li>Downloadable phone QR lock screen</li>
-                <li>Secure profile you can update anytime</li>
-              </ul>
+  <h3 style={styles.planTitle}>Full Emergency Profile</h3>
 
-              <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-                Get Premium Kit
-              </Link>
-            </div>
+  <p style={styles.planPrice}>R399 once-off</p>
+
+  <p style={styles.planSub}>
+    Includes first year Premium subscription
+  </p>
+
+  <p style={styles.planRenewal}>
+    R99 per year thereafter
+  </p>
+
+  <ul style={styles.list}>
+    <li>Full medical profile visible when scanned</li>
+    <li>2 physical engraved QR products included</li>
+    <li>Free nationwide delivery in South Africa</li>
+    <li>Downloadable phone QR lock screen</li>
+    <li>Secure profile you can update anytime</li>
+  </ul>
+
+  <p style={styles.upgradeNote}>
+    Create your free profile first, then upgrade to Premium from your dashboard.
+  </p>
+
+  <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
+    Create Free Profile
+  </Link>
+</div>
           </div>
         </div>
       </section>
@@ -464,6 +476,13 @@ planCardFeatured: {
     color: BRAND_GREEN,
     fontWeight: 900,
   },
+  upgradeNote: {
+  margin: "0 0 18px",
+  fontSize: 14,
+  lineHeight: 1.5,
+  color: "#475569",
+  fontWeight: 700,
+},
   list: {
     margin: "20px 0 22px",
     paddingLeft: 22,
