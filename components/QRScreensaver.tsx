@@ -22,13 +22,12 @@ export default function QRScreensaver({
     <div id="qr-screensaver" style={styles.canvas}>
       <div style={styles.inner}>
         <div style={styles.brandWrap}>
-  <div style={styles.brandIcon}>RROI</div>
-  <div style={styles.brandText}>
-    RAPID RESPONSE
-    <br />
-    ONLINE INFORMATION
-  </div>
-</div>
+          <img
+            src="/logo-full-v2.png"
+            alt="RROI logo"
+            style={styles.realLogo}
+          />
+        </div>
 
         <div style={styles.qrWrap}>
           <QRCodeSVG
@@ -42,16 +41,11 @@ export default function QRScreensaver({
         </div>
 
         <div style={styles.textWrap}>
-  <div style={styles.scanText}>SCAN IN AN EMERGENCY</div>
+          <div style={styles.scanText}>SCAN IN AN EMERGENCY</div>
+          <div style={styles.profileText}>Emergency Medical Profile</div>
 
-  <div style={styles.profileText}>
-    Emergency Medical Profile
-  </div>
-
-  {fullName ? (
-    <div style={styles.nameText}>{fullName}</div>
-  ) : null}
-</div>
+          {fullName ? <div style={styles.nameText}>{fullName}</div> : null}
+        </div>
       </div>
     </div>
   );
@@ -84,54 +78,37 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   brandWrap: {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 18,
-  padding: "18px 28px",
-  borderRadius: 24,
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  backdropFilter: "blur(12px)",
-},
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "26px 42px",
+    borderRadius: 30,
+    background: "rgba(255,255,255,0.04)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    backdropFilter: "blur(18px)",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+  },
 
-brandIcon: {
-  width: 92,
-  height: 92,
-  borderRadius: 22,
-  background: "#22C55E",
-  color: "#07130D",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontSize: 28,
-  fontWeight: 900,
-  letterSpacing: 0.5,
-  boxShadow: "0 10px 30px rgba(34,197,94,0.35)",
-},
-
-brandText: {
-  fontSize: 24,
-  fontWeight: 800,
-  lineHeight: 1.08,
-  letterSpacing: 1.4,
-  color: "#FFFFFF",
-},
+  realLogo: {
+    width: 360,
+    height: "auto",
+    display: "block",
+    objectFit: "contain",
+  },
 
   qrWrap: {
-  width: 920,
-  height: 920,
-  background:
-    "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)",
-  borderRadius: 52,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  boxShadow:
-    "0 40px 120px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08)",
-  padding: 70,
-  position: "relative",
-},
+    width: 920,
+    height: 920,
+    background: "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)",
+    borderRadius: 52,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow:
+      "0 40px 120px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08)",
+    padding: 70,
+    position: "relative",
+  },
 
   textWrap: {
     width: "100%",
