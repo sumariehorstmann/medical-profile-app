@@ -78,39 +78,39 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   brandWrap: {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: "24px",
-  borderRadius: 34,
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  backdropFilter: "blur(18px)",
-  boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
-},
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "18px",
+    borderRadius: 34,
+    background: "rgba(255,255,255,0.04)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    backdropFilter: "blur(18px)",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+  },
 
-realLogo: {
-  width: 360,
-  height: "auto",
-  display: "block",
-  objectFit: "contain",
-  background: "#FFFFFF",
-  padding: 18,
-  borderRadius: 20,
-  boxShadow:
-    "0 10px 40px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.65)",
-},
+  realLogo: {
+    width: 360,
+    height: "auto",
+    display: "block",
+    objectFit: "contain",
+    background: "#FFFFFF",
+    padding: 18,
+    borderRadius: 20,
+    boxShadow:
+      "0 10px 40px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.65)",
+  },
 
   qrWrap: {
-    width: 920,
-    height: 920,
+    width: 860,
+    height: 860,
     background: "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)",
     borderRadius: 52,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     boxShadow:
-      "0 40px 120px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08)",
+      "0 40px 120px rgba(0,0,0,0.55), 0 0 80px rgba(34,197,94,0.08), 0 0 0 1px rgba(255,255,255,0.08)",
     padding: 70,
     position: "relative",
   },
@@ -121,7 +121,7 @@ realLogo: {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: 22,
+    gap: 28,
   },
 
   scanText: {
