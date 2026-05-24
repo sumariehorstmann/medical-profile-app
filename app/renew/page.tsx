@@ -47,6 +47,13 @@ export default function RenewPage() {
   return (
     <main style={styles.page}>
       <section style={styles.card}>
+        <button
+  type="button"
+  onClick={() => window.history.back()}
+  style={styles.backButton}
+>
+  ← Back
+</button>
         <h1 style={styles.title}>Activate RROI Premium</h1>
 
         <p style={styles.text}>
@@ -163,4 +170,17 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     cursor: "pointer",
   },
+  backButton: {
+  background: "transparent",
+  border: "none",
+  color: "#157A55",
+  fontSize: 15,
+  fontWeight: 800,
+  cursor: "pointer",
+  padding: 0,
+  marginBottom: 18,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6,
+},
 };
