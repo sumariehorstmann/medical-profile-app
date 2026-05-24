@@ -281,8 +281,8 @@ const isCheckoutRedirect =
   password,
   options: {
     emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
-      redirectTo
-    )}`,
+  redirectTo
+)}`,
   },
 });
 
