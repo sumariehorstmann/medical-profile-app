@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 
 export default function HomePage() {
-  
+
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
   useEffect(() => {
   const params = new URLSearchParams(window.location.search);
   const ref = params.get("ref");
@@ -15,6 +17,11 @@ export default function HomePage() {
       sessionStorage.setItem("rroi_ref", ref.toUpperCase());
     } catch {}
   }
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    setDeferredPrompt(e);
+  });
 }, []);
 
   return (
@@ -222,11 +229,23 @@ export default function HomePage() {
 <div style={styles.installWrap}>
   <button
     type="button"
-    onClick={() => {
-      alert(
-        "To add RROI to your home screen:\n\nAndroid: Tap the 3 dots in your browser, then tap Add to Home screen.\n\niPhone: Open in Safari, tap Share, then tap Add to Home Screen.\n\nLaptop: Use the install icon in your browser address bar if available."
-      );
-    }}
+    onClick={async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === "accepted") {
+      console.log("RROI app installed");
+    }
+
+    setDeferredPrompt(null);
+  } else {
+    alert(
+      "Install RROI App\n\nAndroid: Tap the menu button in your browser, then select Add to Home screen or Install app.\n\niPhone: Open this website in Safari, tap Share, then select Add to Home Screen.\n\nLaptop/Desktop: Use the install icon in your browser address bar if available."
+    );
+  }
+}}
     style={styles.installBtn}
   >
     Install RROI App
