@@ -71,7 +71,9 @@ export default function PremiumKitPage() {
           </ul>
         </div>
 <div style={styles.deliveryCard}>
-  <div style={styles.deliveryTitle}>Custom Made to Order</div>
+  <div style={styles.deliveryTitle}>
+    Custom Made to Order
+  </div>
 
   <p style={styles.deliveryText}>
     Every RROI product is manufactured specifically for your order and delivered
@@ -259,26 +261,23 @@ deliveryCard: {
   background: "#F0FDF4",
   border: "1px solid #BBF7D0",
   borderRadius: 16,
-  padding: "18px 20px",
+  padding: "18px 22px",
   marginBottom: 22,
-  display: "flex",
-  gap: 14,
-  alignItems: "flex-start",
 },
 
 deliveryTitle: {
-  fontSize: 16,
+  fontSize: 18,
   fontWeight: 800,
   color: "#166534",
-  margin: 0,
-  minWidth: 180,
+  marginBottom: 8,
 },
 
 deliveryText: {
   fontSize: 15,
-  lineHeight: 1.6,
+  lineHeight: 1.7,
   color: "#166534",
   margin: 0,
+  maxWidth: 650,
 },
 
   noteCard: {
