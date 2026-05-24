@@ -131,7 +131,8 @@ useEffect(() => {
   const redirectTo = useMemo(() => {
     return params.get("next") || params.get("redirect") || "/profile";
   }, [params]);
-
+const isCheckoutRedirect =
+  redirectTo.includes("/store/checkout") || redirectTo.includes("/payment");
   const passwordStrength = useMemo(
     () => getPasswordStrength(password),
     [password]
@@ -309,7 +310,13 @@ useEffect(() => {
   return (
     <main style={styles.page}>
       <div style={styles.card}>
-        <PageHeader />
+  {isCheckoutRedirect ? (
+    <div style={styles.checkoutNotice}>
+      Log in or sign up to continue to your order form and payment.
+    </div>
+  ) : null}
+
+  <PageHeader />
 
         <p style={styles.intro}>
           Create your account for free. Upgrade to Premium when you want your
@@ -815,4 +822,16 @@ toggleBtnActive: {
     fontSize: 14,
     lineHeight: 1,
   },
+  checkoutNotice: {
+  marginBottom: 16,
+  padding: "12px 14px",
+  borderRadius: 12,
+  background: "#EAF7F1",
+  border: `1px solid ${BRAND_GREEN}`,
+  color: BRAND_GREEN,
+  fontSize: 14,
+  fontWeight: 800,
+  lineHeight: 1.5,
+  textAlign: "center",
+},
 };
