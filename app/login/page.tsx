@@ -315,8 +315,9 @@ const isCheckoutRedirect =
   {isCheckoutRedirect ? (
     <div style={styles.checkoutNotice}>
       Log in to continue to your order form and payment.
-
-If you do not yet have an account, sign up now to create your free account and continue to checkout.
+  <br />
+  <br />
+  If you do not yet have an account, sign up now to create your free account and continue to checkout.
     </div>
   ) : null}
 
