@@ -136,26 +136,35 @@ export async function POST(req: NextRequest) {
 
     
     let finalAmount = BASE_PRICE;
+const { data: savedOrderForm } = await supabaseAdmin
+  .from("premium_order_forms")
+  .select("discount_code, discount_percent")
+  .eq("user_id", user.id)
+  .maybeSingle();
 
-    if (affiliateCode) {
-      const { data: affiliate } = await supabaseAdmin
-        .from("affiliates")
-        .select("id")
-        .eq("affiliate_code", affiliateCode)
-        .eq("status", "approved")
-        .maybeSingle();
+const adminDiscountPercent = Number(savedOrderForm?.discount_percent || 0);
+    if (adminDiscountPercent > 0) {
+  finalAmount =
+    BASE_PRICE - (BASE_PRICE * adminDiscountPercent) / 100;
+} else if (affiliateCode) {
+  const { data: affiliate } = await supabaseAdmin
+    .from("affiliates")
+    .select("id")
+    .eq("affiliate_code", affiliateCode)
+    .eq("status", "approved")
+    .maybeSingle();
 
-      if (!affiliate) {
-        return NextResponse.json(
-          { error: "Invalid affiliate code." },
-          { status: 400 }
-        );
-      }
+  if (!affiliate) {
+    return NextResponse.json(
+      { error: "Invalid affiliate code." },
+      { status: 400 }
+    );
+  }
 
-      finalAmount = AFFILIATE_PRICE;
-    } else {
-      finalAmount = BASE_PRICE;
-    }
+  finalAmount = AFFILIATE_PRICE;
+} else {
+  finalAmount = BASE_PRICE;
+}
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!.trim();
     const agreedAt = new Date().toISOString();
