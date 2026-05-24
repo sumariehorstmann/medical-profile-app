@@ -17,11 +17,11 @@ export default function PageHeader() {
 
 const styles: Record<string, React.CSSProperties> = {
   wrap: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 24,
-  },
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  marginBottom: 0,
+},
   logo: {
     width: "100%",
     height: "auto",
