@@ -157,14 +157,16 @@ const type = data.custom_str2;
 if (type === "renewal") {
   const { data: sub } = await supabase
     .from("subscriptions")
-    .select("expires_at, renewal_count")
+    .select("expires_at, current_period_end, renewal_count")
     .eq("user_id", userId)
     .single();
 
   const now = new Date();
-  const currentExpiry = sub?.expires_at
-    ? new Date(sub.expires_at)
-    : now;
+  const expiryValue = sub?.current_period_end || sub?.expires_at;
+
+const currentExpiry = expiryValue
+  ? new Date(expiryValue)
+  : now;
 
   const baseDate = currentExpiry > now ? currentExpiry : now;
 
@@ -172,16 +174,18 @@ if (type === "renewal") {
   newExpiry.setFullYear(newExpiry.getFullYear() + 1);
 
   await supabase
-    .from("subscriptions")
-    .update({
-      expires_at: newExpiry.toISOString(),
-      status: "active",
-      renewal_30_email_sent: false,
-      renewal_7_email_sent: false,
-      last_renewal_reminder_sent_at: null,
-      renewal_count: (sub?.renewal_count || 0) + 1,
-    })
-    .eq("user_id", userId);
+  .from("subscriptions")
+  .update({
+    expires_at: newExpiry.toISOString(),
+    current_period_end: newExpiry.toISOString(),
+    status: "active",
+    renewal_30_email_sent: false,
+    renewal_7_email_sent: false,
+    last_renewal_reminder_sent_at: null,
+    renewal_count: (sub?.renewal_count || 0) + 1,
+    updated_at: now.toISOString(),
+  })
+  .eq("user_id", userId);
 
   console.log("RENEWAL SUCCESS:", userId);
 
