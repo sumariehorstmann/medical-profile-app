@@ -47,7 +47,10 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${origin}/login?error=missing_code`);
     }
 
-    return NextResponse.redirect(`${origin}/profile`);
+        const next = url.searchParams.get("next");
+    const safeNext = next && next.startsWith("/") ? next : "/profile";
+
+    return NextResponse.redirect(`${origin}${safeNext}`);
   } catch (e: any) {
     const message = encodeURIComponent(e?.message ?? "auth_failed");
     return NextResponse.redirect(
