@@ -124,9 +124,7 @@ useEffect(() => {
     setMounted(true);
   }, []);
 useEffect(() => {
-  if (params.get("mode") === "signup") {
-    setMode("signup");
-  }
+  setMode(params.get("mode") === "signup" ? "signup" : "login");
 }, [params]);
   const redirectTo = useMemo(() => {
     return params.get("next") || params.get("redirect") || "/profile";
