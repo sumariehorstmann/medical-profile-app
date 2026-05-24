@@ -74,13 +74,18 @@ const hasHadPremium =
         <div style={styles.cardWide}>
           <h2 style={styles.h2}>How RROI works</h2>
           <ul style={styles.list}>
-            <li>Section 1 is visible when your QR is scanned on the Free plan</li>
-            <li>You can complete and save your full profile on the Free plan</li>
-            <li>
-              Premium unlocks full public profile visibility when your QR is
-              scanned
-            </li>
-          </ul>
+  <li>
+    <strong>Free Profile:</strong> Section 1 is visible when your QR code is scanned.
+  </li>
+
+  <li>
+    <strong>Premium Profile:</strong> Sections 1 to 6 are visible on your public emergency profile.
+  </li>
+
+  <li>
+    Only information that you complete in your profile will appear on your public profile.
+  </li>
+</ul>
         </div>
 
         {!isPremium && (
