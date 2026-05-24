@@ -7,6 +7,7 @@ import PageHeader from "@/components/PageHeader";
 export default function HomePage() {
 
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
   const params = new URLSearchParams(window.location.search);
@@ -22,6 +23,10 @@ export default function HomePage() {
     e.preventDefault();
     setDeferredPrompt(e);
   });
+  
+  window.addEventListener("appinstalled", () => {
+  setIsInstalled(true);
+});
 }, []);
 
   return (
@@ -226,6 +231,7 @@ export default function HomePage() {
 
 </div>
 
+{!isInstalled && (
 <div style={styles.installWrap}>
   <button
     type="button"
@@ -251,6 +257,7 @@ export default function HomePage() {
     Install RROI App
   </button>
 </div>
+)}
 
 </section>
     </main>
@@ -592,7 +599,8 @@ planCardFeatured: {
     color: "#CBD5E1",
   },
   installWrap: {
-  marginTop: 18,
+  marginTop: 8,
+  marginBottom: -20,
   display: "flex",
   justifyContent: "center",
 },
