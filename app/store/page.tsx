@@ -55,28 +55,26 @@ export default function StorePage() {
           </div>
 
           <div style={styles.notice}>
-            <p style={styles.noticeText}>
-              Your QR code links to your RROI public profile.
-            </p>
+  <div style={styles.noticeTitle}>
+    How your QR products work
+  </div>
 
-            <p style={styles.noticeText}>
-              Only information you enter into your profile will be displayed
-              publicly when your QR code is scanned.
-            </p>
-
-            <p style={styles.noticeText}>
-              Free profiles show your basic details.
-            </p>
-
-            <p style={styles.noticeTextLast}>
-              Premium profiles show your full profile details.
-            </p>
-          </div>
+  <div style={styles.noticeText}>
+    Your engraved QR products link to your permanent RROI public profile.
+    Free profiles show basic emergency details. Premium profiles show full
+    profile details.
+  </div>
+</div>
 
           <div style={styles.shippingNotice}>
-            Standard nationwide delivery: R99 delivered directly to your door.
+            Every RROI product is custom made to order and delivered to your door within 7–14 working days.
           </div>
-
+<div style={styles.storeTrustBox}>
+  <div>✓ Secure PayFast payments</div>
+  <div>✓ Custom-made engraved products</div>
+  <div>✓ Nationwide South African delivery</div>
+  <div>✓ Linked to your permanent RROI QR profile</div>
+</div>
           <div style={styles.productGrid}>
             <ProductCard
               title="Black Anodised Aluminium QR Tag"
@@ -271,21 +269,20 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#ECFDF5",
   },
 
-  noticeText: {
-    margin: "0 0 18px 0",
-    fontSize: 15,
-    lineHeight: 1.7,
-    color: "#065F46",
-    fontWeight: 700,
-  },
+  noticeTitle: {
+  marginBottom: 8,
+  fontSize: 15,
+  fontWeight: 900,
+  color: "#065F46",
+},
 
-  noticeTextLast: {
-    margin: 0,
-    fontSize: 15,
-    lineHeight: 1.7,
-    color: "#065F46",
-    fontWeight: 700,
-  },
+noticeText: {
+  margin: 0,
+  fontSize: 14,
+  lineHeight: 1.7,
+  color: "#065F46",
+  fontWeight: 700,
+},
 
   shippingNotice: {
     marginBottom: 26,
@@ -449,4 +446,15 @@ imageLabel: {
     fontSize: 13,
     color: MUTED,
   },
+  storeTrustBox: {
+  marginTop: 14,
+  padding: 16,
+  borderRadius: 14,
+  background: "#F0FDF4",
+  border: "1px solid #BBF7D0",
+  color: "#166534",
+  fontSize: 14,
+  fontWeight: 700,
+  lineHeight: 1.8,
+},
 };
