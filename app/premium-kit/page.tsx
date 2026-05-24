@@ -272,9 +272,10 @@ deliveryTitle: {
 
 deliveryText: {
   fontSize: 16,
-  lineHeight: 1.7,
+  lineHeight: 1.8,
   color: "#166534",
   margin: 0,
+  maxWidth: 620,
 },
 
   noteCard: {
