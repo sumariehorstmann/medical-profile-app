@@ -37,6 +37,18 @@ export default function RootLayout({
         <main style={{ flex: 1 }}>{children}</main>
 
         <Footer />
+
+<script
+  dangerouslySetInnerHTML={{
+    __html: `
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/sw.js');
+        });
+      }
+    `,
+  }}
+/>
       </body>
     </html>
   );
