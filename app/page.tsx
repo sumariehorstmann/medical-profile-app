@@ -125,56 +125,101 @@ const [isInstalled, setIsInstalled] = useState(false);
           <h2 style={styles.sectionTitle}>Choose the profile that fits you</h2>
 
           <div style={styles.pricingGrid}>
-            <div style={styles.planCard}>
-              <div style={styles.planLabel}>Free</div>
-              <h3 style={styles.planTitle}>Basic Emergency Profile</h3>
-              <p style={styles.planPrice}>R0</p>
 
-              <ul style={styles.list}>
-                <li>Create and save your full profile</li>
-                <li>Emergency Contact 1 visible when scanned</li>
-                <li>First name and last name visible</li>
-                <li>Downloadable phone QR lock screen</li>
-                <li>Upgrade anytime</li>
-              </ul>
+  {/* FREE */}
+  <div style={styles.planCard}>
+    <div style={styles.planLabel}>Free</div>
 
-              <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-                Create Free Profile
-              </Link>
-            </div>
+    <h3 style={styles.planTitle}>
+      Basic Emergency Profile
+    </h3>
 
-            <div style={styles.planCardFeatured}>
-  <div style={styles.planLabelFeatured}>Premium Upgrade</div>
+    <p style={styles.planPrice}>R0</p>
 
-  <h3 style={styles.planTitle}>Full Emergency Profile</h3>
+    <ul style={styles.list}>
+      <li>Create and save your full profile</li>
+      <li>Emergency Contact 1 visible when scanned</li>
+      <li>First name and last name visible</li>
+      <li>Downloadable phone QR lock screen</li>
+      <li>Upgrade anytime</li>
+    </ul>
 
-  <p style={styles.planPrice}>R399 once-off</p>
+    <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
+      Create Free Profile
+    </Link>
+  </div>
 
-  <p style={styles.planSub}>
-    Includes first year Premium subscription
-  </p>
+  {/* R99 */}
+  <div style={styles.planCard}>
+    <div style={styles.planLabelFeatured}>
+      Premium Subscription
+    </div>
 
-  <p style={styles.planRenewal}>
-    R99 per year thereafter
-  </p>
+    <h3 style={styles.planTitle}>
+      Premium Visibility Only
+    </h3>
 
-  <ul style={styles.list}>
-    <li>Full medical profile visible when scanned</li>
-    <li>2 physical engraved QR products included</li>
-    <li>Free nationwide delivery in South Africa</li>
-    <li>Downloadable phone QR lock screen</li>
-    <li>Secure profile you can update anytime</li>
-  </ul>
+    <p style={styles.planPrice}>R99/year</p>
 
-  <p style={styles.upgradeNote}>
-    Create your free profile first, then upgrade to Premium from your dashboard.
-  </p>
+    <p style={styles.planSub}>
+      No physical QR products included
+    </p>
 
-  <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-    Create Free Profile
-  </Link>
+    <ul style={styles.list}>
+      <li>Full medical profile visible when scanned</li>
+      <li>Downloadable phone QR lock screen</li>
+      <li>Secure profile you can update anytime</li>
+      <li>No physical QR products included</li>
+      <li>Premium visibility access only</li>
+    </ul>
+
+    <p style={styles.upgradeNote}>
+      Create your free profile first, then upgrade from your dashboard.
+    </p>
+
+    <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
+      Create Free Profile
+    </Link>
+  </div>
+
+  {/* R399 */}
+  <div style={styles.planCardFeatured}>
+    <div style={styles.planLabelFeatured}>
+      Premium Full Kit
+    </div>
+
+    <h3 style={styles.planTitle}>
+      Full Emergency Profile
+    </h3>
+
+    <p style={styles.planPrice}>R399 once-off</p>
+
+    <p style={styles.planSub}>
+      Includes first year Premium subscription
+    </p>
+
+    <p style={styles.planRenewal}>
+      R99 per year thereafter
+    </p>
+
+    <ul style={styles.list}>
+      <li>Full medical profile visible when scanned</li>
+      <li>2 physical engraved QR products included</li>
+      <li>Free nationwide delivery in South Africa</li>
+      <li>Downloadable phone QR lock screen</li>
+      <li>Secure profile you can update anytime</li>
+    </ul>
+
+    <p style={styles.upgradeNote}>
+      Create your free profile first, then upgrade to Premium from your dashboard.
+    </p>
+
+    <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
+      Create Free Profile
+    </Link>
+  </div>
+
 </div>
-          </div>
         </div>
       </section>
 
