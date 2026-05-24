@@ -338,7 +338,16 @@ if (error) {
               <li>Free nationwide delivery</li>
             </ul>
           </div>
+<div style={styles.deliveryBox}>
+  <div style={styles.deliveryTitle}>
+    Custom Made to Order
+  </div>
 
+  <div style={styles.deliveryText}>
+    Every RROI product is manufactured specifically for your order and
+    delivered to your door within 7–14 working days.
+  </div>
+</div>
           <div style={styles.noticeBox}>
             <div style={styles.noticeTitle}>Important</div>
             <div style={styles.noticeText}>
@@ -646,6 +655,26 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.8,
     fontSize: 14,
   },
+  deliveryBox: {
+  background: "#EEF7F1",
+  border: "1px solid #A7E3B8",
+  borderRadius: 18,
+  padding: 20,
+  marginBottom: 18,
+},
+
+deliveryTitle: {
+  fontSize: 16,
+  fontWeight: 800,
+  color: "#166534",
+  marginBottom: 10,
+},
+
+deliveryText: {
+  fontSize: 15,
+  lineHeight: 1.7,
+  color: "#166534",
+},
   noticeBox: {
     background: "#f8fafc",
     border: "1px solid #dbe3ea",

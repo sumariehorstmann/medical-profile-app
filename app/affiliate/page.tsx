@@ -29,8 +29,7 @@ export default function AffiliatePage() {
           <div style={styles.notice}>
   Affiliate applications are only available from inside an active
   Premium profile. The RROI Affiliate Program is currently operating on
-  an invitation-only basis. Premium members may still apply through
-  their dashboard for affiliate consideration.
+  an invitation-only basis.
 </div>
 
           <div style={styles.section}>
