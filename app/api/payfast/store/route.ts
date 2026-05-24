@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-
+const discountCode = String(body?.discountCode ?? "").trim().toUpperCase();
     const dogTags = Math.max(0, Number(body.dogTags || 0));
     const cards = Math.max(0, Number(body.cards || 0));
 
@@ -127,7 +127,32 @@ export async function POST(req: Request) {
     const qrUrl = `${baseUrl}/e/${profile.public_id}`;
 
     const subtotal = dogTags * DOG_TAG_PRICE + cards * QR_CARD_PRICE;
-    const total = subtotal + DELIVERY_FEE;
+    const totalBeforeDiscount = subtotal + DELIVERY_FEE;
+
+let discountPercent = 0;
+let discountAmount = 0;
+let appliedDiscountCode: string | null = null;
+
+if (discountCode) {
+  const { data: discount } = await supabase
+    .from("discount_codes")
+    .select("*")
+    .eq("code", discountCode)
+    .eq("active", true)
+    .single();
+
+  if (discount) {
+    discountPercent = Number(discount.discount_percent || 0);
+
+    discountAmount = Math.round(
+      totalBeforeDiscount * (discountPercent / 100)
+    );
+
+    appliedDiscountCode = discount.code;
+  }
+}
+
+const total = Math.max(1, totalBeforeDiscount - discountAmount);
     const paymentReference = `store_${Date.now()}_${user.id.slice(0, 8)}`;
 
     const items = [
@@ -183,6 +208,10 @@ export async function POST(req: Request) {
       subtotal,
       delivery_fee: DELIVERY_FEE,
       total_amount: total,
+
+discount_code: appliedDiscountCode,
+discount_percent: discountPercent,
+discount_amount: discountAmount,
     });
 
     if (orderError) {
