@@ -114,13 +114,6 @@ export default function StorePage() {
               <strong>R{subtotal}</strong>
             </div>
 
-<div style={styles.storeTrustBox}>
-  <div>✓ Secure PayFast payments</div>
-  <div>✓ Custom-made engraved products</div>
-  <div>✓ Nationwide South African delivery</div>
-  <div>✓ Linked to your permanent RROI QR profile</div>
-</div>
-
             <div style={styles.summaryLine}>
               <span>Delivery</span>
               <strong>{hasItems ? `R${DELIVERY_FEE}` : "R0"}</strong>
@@ -147,6 +140,13 @@ export default function StorePage() {
               <p style={styles.helperText}>Add at least one item to continue.</p>
             ) : null}
           </div>
+
+<div style={styles.storeTrustBox}>
+  <div>✓ Secure PayFast payments</div>
+  <div>✓ Custom-made engraved products</div>
+  <div>✓ Nationwide South African delivery</div>
+  <div>✓ Linked to your permanent RROI QR profile</div>
+</div>
 
           <PageBottomNav />
         </div>
