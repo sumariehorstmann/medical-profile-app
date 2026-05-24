@@ -313,13 +313,25 @@ const isCheckoutRedirect =
     <main style={styles.page}>
       <div style={styles.card}>
   {isCheckoutRedirect ? (
-    <div style={styles.checkoutNotice}>
+  <div style={styles.checkoutNotice}>
+    <>
+      <strong>Continue to Checkout</strong>
+
+      <br />
+      <br />
+
       Log in to continue to your order form and payment.
-  <br />
-  <br />
-  If you do not yet have an account, sign up now to create your free account and continue to checkout.
-    </div>
-  ) : null}
+
+      <br />
+      <br />
+
+      New to RROI?
+      <br />
+
+      Create your free account to continue to checkout.
+    </>
+  </div>
+) : null}
 
   <PageHeader />
 
