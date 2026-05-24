@@ -70,7 +70,14 @@ export default function PremiumKitPage() {
             <li>Free nationwide delivery within South Africa</li>
           </ul>
         </div>
+<div style={styles.deliveryCard}>
+  <h2 style={styles.deliveryTitle}>Custom Made to Order</h2>
 
+  <p style={styles.deliveryText}>
+    Every RROI product is manufactured specifically for your order and
+    delivered to your door within 7–14 working days.
+  </p>
+</div>
         <div style={styles.noteCard}>
           <h2 style={styles.noteTitle}>Digital-only Premium option</h2>
 
@@ -247,6 +254,28 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 24,
     marginBottom: 22,
   },
+
+deliveryCard: {
+  background: "#EEF7F1",
+  border: "1px solid #A7E3B8",
+  borderRadius: 18,
+  padding: 24,
+  marginBottom: 22,
+},
+
+deliveryTitle: {
+  fontSize: 22,
+  fontWeight: 800,
+  marginBottom: 12,
+  color: "#166534",
+},
+
+deliveryText: {
+  fontSize: 16,
+  lineHeight: 1.7,
+  color: "#166534",
+  margin: 0,
+},
 
   noteCard: {
     background: "#FFFFFF",
