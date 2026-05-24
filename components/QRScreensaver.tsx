@@ -42,7 +42,9 @@ export default function QRScreensaver({
 
         <div style={styles.textWrap}>
           <div style={styles.scanText}>SCAN IN AN EMERGENCY</div>
-          <div style={styles.profileText}>Medical Profile</div>
+          <div style={styles.profileText}>
+  Emergency Medical Profile
+</div>
 
           {fullName ? (
             <div style={styles.nameText}>{fullName}</div>
@@ -57,13 +59,14 @@ const styles: Record<string, React.CSSProperties> = {
   canvas: {
     width: 1440,
     height: 3040,
-    background: "#F1F5F9",
-    color: "#0F172A",
+    background:
+      "linear-gradient(180deg, #0B0F14 0%, #111827 55%, #0F172A 100%)",
+    color: "#FFFFFF",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
-    padding: "180px 140px",
+    padding: "140px 120px",
     fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
     overflow: "hidden",
   },
@@ -75,7 +78,7 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: 110,
+    gap: 80,
   },
 
   logoWrap: {
@@ -83,24 +86,28 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 10,
   },
 
   logo: {
-    width: 360,
+    width: 300,
     height: "auto",
     objectFit: "contain",
     display: "block",
+    opacity: 0.95,
   },
 
   qrWrap: {
-    width: 860,
-    height: 860,
+    width: 920,
+    height: 920,
     background: "#FFFFFF",
-    borderRadius: 28,
+    borderRadius: 42,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: "0 16px 40px rgba(15, 23, 42, 0.06)",
+    boxShadow: "0 25px 80px rgba(0,0,0,0.45)",
+    padding: 55,
+    border: "2px solid rgba(255,255,255,0.08)",
   },
 
   textWrap: {
@@ -109,31 +116,37 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: 24,
+    gap: 22,
   },
 
   scanText: {
-    fontSize: 82,
+    fontSize: 84,
     fontWeight: 900,
     lineHeight: 1,
     textAlign: "center",
-    color: "#0F172A",
-    letterSpacing: -0.6,
+    color: "#FFFFFF",
+    letterSpacing: -1.2,
+    textTransform: "uppercase",
   },
 
   profileText: {
-    fontSize: 64,
+    fontSize: 48,
     fontWeight: 500,
-    lineHeight: 1.05,
+    lineHeight: 1.1,
     textAlign: "center",
-    color: "#0F172A",
+    color: "#CBD5E1",
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
   },
 
   nameText: {
-    fontSize: 54,
-    fontWeight: 700,
+    fontSize: 64,
+    fontWeight: 800,
     lineHeight: 1.08,
     textAlign: "center",
-    color: "#157A55",
+    color: "#22C55E",
+    letterSpacing: -0.8,
+    textTransform: "uppercase",
+    marginTop: 12,
   },
 };
