@@ -68,48 +68,15 @@ const user_id = data.custom_str1;
 if (!paymentId) {
   return new Response("Missing payment_id", { status: 400 });
 }
-
-const { data: existingOrder, error: existingOrderError } = await supabase
-  .from("orders")
-  .select("id")
-  .eq("payment_id", paymentId)
-  .maybeSingle();
-
-if (existingOrderError) {
-  console.error("EXISTING ORDER LOOKUP ERROR:", existingOrderError);
-  return new Response("Lookup error", { status: 500 });
-}
-
-if (existingOrder) {
-  console.log("ITN ALREADY PROCESSED FOR PAYMENT:", paymentId);
-  return new Response("Already processed", { status: 200 });
-}
-
+const userId = data.custom_str1;
+const type = data.custom_str2;
 const amountGross = parseFloat(data.amount_gross ?? "0");
-const expectedEmail = String(data.custom_str2 || "").trim().toLowerCase();
+const expectedEmail = String(
+  data.email_address || ""
+).trim().toLowerCase();
 const affiliateCode = String(data.custom_str3 || "").trim().toUpperCase();
-const { data: paymentAmountRow, error: paymentAmountLookupError } = await supabase
-  .from("payments")
-  .select("amount")
-  .eq("provider_payment_id", paymentId)
-  .single();
 
-if (paymentAmountLookupError || !paymentAmountRow) {
-  console.error("PAYMENT AMOUNT LOOKUP FAILED:", paymentAmountLookupError, paymentId);
-  return new Response("Payment not found", { status: 400 });
-}
 
-const expectedAmount = Number(paymentAmountRow.amount);
-
-if (expectedEmail && String(data.email_address || "").trim().toLowerCase() !== expectedEmail) {
-  console.error("EMAIL MISMATCH:", data.email_address, expectedEmail);
-  return new Response("Invalid email", { status: 400 });
-}
-
-if (Math.abs(amountGross - expectedAmount) > 0.01) {
-  console.error("INVALID PAYMENT AMOUNT:", amountGross, expectedAmount);
-  return new Response("Invalid payment amount", { status: 400 });
-}
   
     const publicId = String(data.custom_str1 || "").trim();
 
@@ -139,58 +106,102 @@ if (Math.abs(amountGross - expectedAmount) > 0.01) {
       console.log("ITN IGNORED - PAYMENT NOT COMPLETE");
       return new NextResponse("OK", { status: 200 });
     }
+if (type === "renewal") {
+  const now = new Date();
 
- 
-    if (Number(amountGross.toFixed(2)) !== Number(expectedAmount.toFixed(2))) {
-      console.error("INVALID AMOUNT:", amountGross, "EXPECTED:", expectedAmount);
-      return new NextResponse("OK", { status: 200 });
-    }
+  const { data: sub } = await supabase
+    .from("subscriptions")
+    .select("expires_at, current_period_end, renewal_count")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  const expiryValue = sub?.current_period_end || sub?.expires_at;
+
+  const currentExpiry = expiryValue ? new Date(expiryValue) : now;
+  const baseDate = currentExpiry > now ? currentExpiry : now;
+
+  const newExpiry = new Date(baseDate);
+  newExpiry.setFullYear(newExpiry.getFullYear() + 1);
+
+  const { error: subscriptionError } = await supabase
+    .from("subscriptions")
+    .upsert(
+      {
+        user_id: userId,
+        status: "active",
+        plan: "premium_annual",
+        provider: "payfast",
+        provider_subscription_id: paymentId,
+        current_period_start: now.toISOString(),
+        current_period_end: newExpiry.toISOString(),
+        expires_at: newExpiry.toISOString(),
+        auto_renew: false,
+        price: amountGross,
+        price_cents: Math.round(amountGross * 100),
+        renewal_30_email_sent: false,
+        renewal_7_email_sent: false,
+        last_renewal_reminder_sent_at: null,
+        renewal_count: (sub?.renewal_count || 0) + 1,
+        updated_at: now.toISOString(),
+      },
+      { onConflict: "user_id" }
+    );
+
+  if (subscriptionError) {
+    console.error("RENEWAL SUBSCRIPTION UPSERT ERROR:", subscriptionError);
+    return new NextResponse("OK", { status: 200 });
+  }
+
+  const { error: profileError } = await supabase
+    .from("profiles")
+    .update({ is_paid: true })
+    .eq("user_id", userId);
+
+  if (profileError) {
+    console.error("RENEWAL PROFILE UPDATE ERROR:", profileError);
+    return new NextResponse("OK", { status: 200 });
+  }
+
+  console.log("RENEWAL SUCCESS:", userId);
+
+  return new NextResponse("OK", { status: 200 });
+}
+ const { data: paymentAmountRow, error: paymentAmountLookupError } = await supabase
+  .from("payments")
+  .select("amount")
+  .eq("provider_payment_id", paymentId)
+  .single();
+
+if (paymentAmountLookupError || !paymentAmountRow) {
+  console.error("PAYMENT AMOUNT LOOKUP FAILED:", paymentAmountLookupError, paymentId);
+  return new Response("Payment not found", { status: 400 });
+}
+
+const expectedAmount = Number(paymentAmountRow.amount);
+
+const receivedEmail = String(
+  data.email_address || ""
+).trim().toLowerCase();
+
+if (!receivedEmail) {
+  console.error("MISSING EMAIL ADDRESS");
+  return new Response("Missing email", { status: 400 });
+}
+
+if (Math.abs(amountGross - expectedAmount) > 0.01) {
+  console.error("INVALID PAYMENT AMOUNT:", amountGross, expectedAmount);
+  return new Response("Invalid payment amount", { status: 400 });
+}
+  
 
     const { data: paymentRow, error: paymentLookupError } = await supabase
       .from("payments")
       .select("id, user_id, public_id, status")
       .eq("provider_payment_id", paymentId)
       .maybeSingle();
-const userId = data.custom_str1;
-const type = data.custom_str2;
 
-if (type === "renewal") {
-  const { data: sub } = await supabase
-    .from("subscriptions")
-    .select("expires_at, current_period_end, renewal_count")
-    .eq("user_id", userId)
-    .single();
 
-  const now = new Date();
-  const expiryValue = sub?.current_period_end || sub?.expires_at;
 
-const currentExpiry = expiryValue
-  ? new Date(expiryValue)
-  : now;
-
-  const baseDate = currentExpiry > now ? currentExpiry : now;
-
-  const newExpiry = new Date(baseDate);
-  newExpiry.setFullYear(newExpiry.getFullYear() + 1);
-
-  await supabase
-  .from("subscriptions")
-  .update({
-    expires_at: newExpiry.toISOString(),
-    current_period_end: newExpiry.toISOString(),
-    status: "active",
-    renewal_30_email_sent: false,
-    renewal_7_email_sent: false,
-    last_renewal_reminder_sent_at: null,
-    renewal_count: (sub?.renewal_count || 0) + 1,
-    updated_at: now.toISOString(),
-  })
-  .eq("user_id", userId);
-
-  console.log("RENEWAL SUCCESS:", userId);
-
-  return new NextResponse("OK", { status: 200 });
-}
     if (paymentLookupError) {
       console.error("PAYMENT LOOKUP ERROR:", paymentLookupError);
       return new NextResponse("OK", { status: 200 });
