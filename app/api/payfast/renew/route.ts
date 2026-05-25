@@ -78,8 +78,8 @@ if (discountCode) {
     const paymentData: Record<string, string> = {
       merchant_id: MERCHANT_ID,
       merchant_key: MERCHANT_KEY,
-      return_url: `${BASE_URL}/payment/success`,
-      cancel_url: `${BASE_URL}/payment/cancel`,
+      return_url: `${BASE_URL}/billing/success`,
+      cancel_url: `${BASE_URL}/billing/cancel`,
       notify_url: `${BASE_URL}/api/payfast/itn`,
       name_first: user.user_metadata?.first_name || "",
       name_last: user.user_metadata?.last_name || "",
