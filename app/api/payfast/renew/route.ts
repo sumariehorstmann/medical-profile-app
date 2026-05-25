@@ -51,6 +51,29 @@ export async function POST(req: NextRequest) {
     }
 
     const paymentId = `rroi_renew_${user.id}_${Date.now()}`;
+const body = await req.json().catch(() => ({}));
+const discountCode = body?.discountCode?.trim()?.toUpperCase();
+
+let amount = 99;
+let appliedDiscount = 0;
+
+if (discountCode) {
+  const { data: discount } = await supabase
+    .from("discount_codes")
+    .select("*")
+    .eq("code", discountCode)
+    .eq("active", true)
+    .single();
+
+  if (discount) {
+    appliedDiscount = discount.discount_percent || 0;
+
+    amount = Math.max(
+  5,
+  amount * (1 - appliedDiscount / 100)
+);
+  }
+}
 
     const paymentData: Record<string, string> = {
       merchant_id: MERCHANT_ID,
@@ -62,7 +85,7 @@ export async function POST(req: NextRequest) {
       name_last: user.user_metadata?.last_name || "",
       email_address: user.email || "",
       m_payment_id: paymentId,
-      amount: "99.00",
+      amount: amount.toFixed(2),
       item_name: "RROI Premium Annual Renewal",
       custom_str1: user.id,
       custom_str2: "renewal",

@@ -7,6 +7,9 @@ export default function RenewPage() {
   const supabase = useMemo(() => createSupabaseBrowser(), []);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+const [discountCode, setDiscountCode] = useState("");
+const [discountMessage, setDiscountMessage] = useState("");
+const [discountValid, setDiscountValid] = useState(false);
 
   async function handleRenew() {
     try {
@@ -24,11 +27,15 @@ export default function RenewPage() {
       }
 
       const res = await fetch("/api/payfast/renew", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${session.access_token}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    discountCode,
+  }),
+});
 
       const json = await res.json();
 
