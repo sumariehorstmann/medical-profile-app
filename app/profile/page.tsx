@@ -261,18 +261,17 @@ const hasHadPremium =
                 </Link>
               </div>
             </>
-          ) : isPremium ? (
+                    ) : isPremium ? (
             <>
-              <p style={styles.mutedText}>
-                As an active Premium subscriber, you can apply to become an
-                affiliate.
-              </p>
-
               <div style={styles.buttonRow}>
                 <Link href="/affiliate/apply" style={styles.primaryBtn}>
                   Apply to Become an Affiliate
                 </Link>
               </div>
+
+              <p style={styles.mutedText}>
+                Apply to become an affiliate by invitation only.
+              </p>
             </>
           ) : (
             <>
