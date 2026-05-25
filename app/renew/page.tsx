@@ -66,7 +66,15 @@ const [discountValid, setDiscountValid] = useState(false);
           <strong style={styles.price}>R99</strong>
         </div>
 
-        <p style={styles.note}>
+<input
+  type="text"
+  placeholder="Discount code"
+  value={discountCode}
+  onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+  style={styles.input}
+/>
+
+<p style={styles.note}>
           Premium unlocks full public medical profile visibility when your QR
           code is scanned. No physical QR products are included with this
           option.
@@ -151,7 +159,16 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#0F172A",
     lineHeight: 1,
   },
-
+input: {
+  width: "100%",
+  padding: "14px 16px",
+  borderRadius: 12,
+  border: "1px solid #D1D5DB",
+  fontSize: 15,
+  marginBottom: 18,
+  outline: "none",
+  boxSizing: "border-box",
+},
   note: {
     fontSize: 14,
     color: "#475569",
