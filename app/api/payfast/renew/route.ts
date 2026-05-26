@@ -64,7 +64,11 @@ if (discountCode) {
     .eq("code", discountCode)
     .eq("active", true)
     .single();
-
+if (!discount) {
+  return NextResponse.json({
+    invalidDiscount: true,
+  });
+}
   if (discount) {
     appliedDiscount = discount.discount_percent || 0;
 
@@ -90,6 +94,23 @@ if (discountCode) {
       custom_str1: user.id,
       custom_str2: "renewal",
     };
+const { error: paymentInsertError } = await supabase
+  .from("payments")
+  .insert({
+    user_id: user.id,
+    provider: "payfast",
+    provider_payment_id: paymentId,
+    amount: amount.toFixed(2),
+    status: "pending",
+  });
+
+if (paymentInsertError) {
+  console.error("Renewal payment insert error:", paymentInsertError);
+  return NextResponse.json(
+    { error: "Failed to create payment record." },
+    { status: 500 }
+  );
+}
 
     const signature = buildSignature(paymentData);
 const queryString = `${buildQueryString(paymentData)}&signature=${signature}`;
