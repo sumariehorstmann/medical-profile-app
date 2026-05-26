@@ -209,9 +209,7 @@ const total = Math.max(1, totalBeforeDiscount - discountAmount);
       delivery_fee: DELIVERY_FEE,
       total_amount: total,
 
-discount_code: appliedDiscountCode,
-discount_percent: discountPercent,
-discount_amount: discountAmount,
+
     });
 
     if (orderError) {
