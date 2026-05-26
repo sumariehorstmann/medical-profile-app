@@ -283,7 +283,19 @@ const isCheckoutRedirect =
         window.location.href = redirectTo;
         return;
       }
+const { data: existingUser } = await supabase
+  .from("profiles")
+  .select("id")
+  .eq("email", email.trim())
+  .maybeSingle();
 
+if (existingUser) {
+  setMessageType("error");
+  setMessage(
+    "An account with this email address already exists. Please log in instead."
+  );
+  return;
+}
       const { error } = await supabase.auth.signUp({
   email: email.trim(),
   password,
