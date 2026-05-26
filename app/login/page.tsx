@@ -148,7 +148,7 @@ const isCheckoutRedirect =
 
   const errorText = `${errorCode || ""} ${errorDesc || ""}`.toLowerCase();
 
-  // Ignore harmless Supabase email confirmation redirect errors
+  // Ignore harmless Supabase redirect states
   if (
     errorText.includes("otp_expired") ||
     errorText.includes("access_denied") ||
@@ -158,12 +158,22 @@ const isCheckoutRedirect =
     return;
   }
 
+  // Replace ugly Supabase flow-state errors with user-friendly wording
+  if (
+    errorText.includes("flow state has expired") ||
+    errorText.includes("invalid flow state")
+  ) {
+    setMessageType("error");
+    setMessage(
+      "This confirmation link has expired or has already been used. Please try logging in again."
+    );
+    return;
+  }
+
   if (errorCode || errorDesc) {
     setMessageType("error");
     setMessage(
-      errorDesc
-        ? `Authentication error: ${errorDesc}`
-        : "Authentication error. Please try again."
+      "Authentication error. Please try again."
     );
   }
 }, [params]);
