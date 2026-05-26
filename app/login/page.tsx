@@ -283,20 +283,7 @@ const isCheckoutRedirect =
         window.location.href = redirectTo;
         return;
       }
-const { data: existingUser } = await supabase
-  .from("profiles")
-  .select("id")
-  .eq("email", email.trim())
-  .maybeSingle();
-
-if (existingUser) {
-  setMessageType("error");
-  setMessage(
-    "An account with this email address already exists. Please log in instead."
-  );
-  return;
-}
-      const { error } = await supabase.auth.signUp({
+const { data, error } = await supabase.auth.signUp({
   email: email.trim(),
   password,
   options: {
@@ -307,13 +294,21 @@ if (existingUser) {
 });
 
       if (error) {
-        setMessageType("error");
-        setMessage(normaliseAuthMessage(error.message, "signup"));
-        return;
-      }
+  setMessageType("error");
+  setMessage(normaliseAuthMessage(error.message, "signup"));
+  return;
+}
 
-      setMessageType("success");
-      setMessage(
+if (data.user && data.user.identities && data.user.identities.length === 0) {
+  setMessageType("error");
+  setMessage(
+    "An account with this email address already exists. Please log in instead."
+  );
+  return;
+}
+
+setMessageType("success");
+setMessage(
   "Your account has been created successfully. Please check your email and confirm your email address before continuing."
 );
       resetSignupFields();
