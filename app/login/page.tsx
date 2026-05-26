@@ -292,8 +292,8 @@ const isCheckoutRedirect =
 
       setMessageType("success");
       setMessage(
-        "Your account has been created. Please check your email and confirm your address before continuing."
-      );
+  "Your account has been created successfully. Please check your email and confirm your email address before continuing."
+);
       resetSignupFields();
     } catch {
       setMessageType("error");
