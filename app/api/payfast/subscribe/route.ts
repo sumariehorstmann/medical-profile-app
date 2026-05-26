@@ -136,14 +136,29 @@ export async function POST(req: NextRequest) {
 
     
     let finalAmount = BASE_PRICE;
+
 const { data: savedOrderForm } = await supabaseAdmin
   .from("premium_order_forms")
   .select("discount_code, discount_percent")
   .eq("user_id", user.id)
   .maybeSingle();
 
-const adminDiscountPercent = Number(savedOrderForm?.discount_percent || 0);
-    if (adminDiscountPercent > 0) {
+const adminDiscountCode = String(
+  savedOrderForm?.discount_code || ""
+).trim().toUpperCase();
+
+const adminDiscountPercent = Number(
+  savedOrderForm?.discount_percent || 0
+);
+
+if (adminDiscountCode && adminDiscountPercent <= 0) {
+  return NextResponse.json(
+    { error: "Invalid or inactive discount code." },
+    { status: 400 }
+  );
+}
+
+if (adminDiscountPercent > 0) {
   finalAmount =
     BASE_PRICE - (BASE_PRICE * adminDiscountPercent) / 100;
 } else if (affiliateCode) {

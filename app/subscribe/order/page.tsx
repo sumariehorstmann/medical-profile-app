@@ -98,7 +98,9 @@ export default function OrderPage() {
     Partial<Record<keyof OrderFormData, string>>
   >({});
   const [form, setForm] = useState<OrderFormData>(EMPTY_FORM);
-
+const [discountCode, setDiscountCode] = useState("");
+const [discountMessage, setDiscountMessage] = useState("");
+const [discountValid, setDiscountValid] = useState(false);
   useEffect(() => {
     let mounted = true;
 
@@ -266,12 +268,42 @@ export default function OrderPage() {
         window.location.href = "/login?redirect=/subscribe/order";
         return;
       }
+let appliedDiscountPercent = 0;
 
+if (discountCode.trim()) {
+  const { data: discount, error: discountError } = await supabase
+    .from("discount_codes")
+    .select("*")
+    .eq("code", discountCode.trim())
+    .eq("active", true)
+    .maybeSingle();
+setDiscountMessage("");
+setDiscountValid(false);
+  if (
+    discountError ||
+    !discount ||
+    (discount.allowed_email &&
+      discount.allowed_email !== session.user.email)
+  ) {
+    setDiscountMessage("Invalid discount code.");
+setDiscountValid(false);
+setSaving(false);
+return;
+  }
+
+  appliedDiscountPercent = discount.discount_percent;
+  setDiscountMessage(
+  `${discount.discount_percent}% discount code applied successfully.`
+);
+setDiscountValid(true);
+}
       const { error } = await supabase
   .from("premium_order_forms")
   .upsert(
     {
       user_id: session.user.id,
+      discount_code: discountCode.trim() || null,
+      discount_percent: appliedDiscountPercent,
       ...form,
     },
     {
@@ -356,7 +388,29 @@ if (error) {
             </div>
           </div>
 
-          
+          <div style={styles.section}>
+  <h2 style={styles.sectionTitle}>Discount Code</h2>
+
+  <Field
+    label="Discount Code"
+    value={discountCode}
+    onChange={(value) => setDiscountCode(value.toUpperCase())}
+    placeholder="Enter discount code"
+  />
+
+  {discountMessage ? (
+    <div
+      style={{
+        color: discountValid ? "#166534" : "#B91C1C",
+        fontSize: 14,
+        fontWeight: 700,
+        marginTop: 8,
+      }}
+    >
+      {discountMessage}
+    </div>
+  ) : null}
+</div>
           <section style={styles.section}>
             <h2 style={styles.sectionTitle}>Personal Details</h2>
 

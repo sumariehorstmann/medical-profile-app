@@ -15,6 +15,8 @@ const [discountValid, setDiscountValid] = useState(false);
     try {
       setLoading(true);
       setMessage(null);
+      setDiscountMessage("");
+      setDiscountValid(false);
 
       const {
         data: { session },
@@ -73,6 +75,23 @@ const [discountValid, setDiscountValid] = useState(false);
   onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
   style={styles.input}
 />
+
+{discountMessage ? (
+  <div
+    style={{
+      marginTop: -8,
+      marginBottom: 16,
+      padding: "10px 12px",
+      borderRadius: 10,
+      background: discountValid ? "#ECFDF5" : "#FEF2F2",
+      color: discountValid ? "#065F46" : "#991B1B",
+      fontWeight: 700,
+      fontSize: 14,
+    }}
+  >
+    {discountMessage}
+  </div>
+) : null}
 
 <p style={styles.note}>
           Premium unlocks full public medical profile visibility when your QR
