@@ -175,52 +175,58 @@ const total = Math.max(1, totalBeforeDiscount - discountAmount);
     ].filter(Boolean);
 
     const customerName = `${firstName} ${lastName}`.trim();
+    const { error: pendingOrderError } = await supabase
+  .from("store_pending_orders")
+  .insert({
+    user_id: user.id,
+    payment_reference: paymentReference,
+    public_id: profile.public_id,
 
-    const { error: orderError } = await supabase.from("orders").insert({
-      user_id: user.id,
-      status: "pending",
-      order_type: "store",
-      payment_status: "pending",
-      payfast_payment_id: paymentReference,
+    customer_name: customerName,
+    email,
+    shipping_phone: cellphone,
 
-      customer_name: customerName,
-      email,
-      shipping_phone: cellphone,
-      shipping_unit: shippingUnit,
-      shipping_street: shippingStreet,
-      shipping_city: shippingCity,
-      shipping_province: shippingProvince,
-      shipping_postal_code: shippingPostalCode,
-      shipping_country: shippingCountry,
+    shipping_unit: shippingUnit,
+    shipping_street: shippingStreet,
+    shipping_city: shippingCity,
+    shipping_province: shippingProvince,
+    shipping_postal_code: shippingPostalCode,
+    shipping_country: shippingCountry,
 
-      qr_url: qrUrl,
-      first_name: firstName,
-      last_name: lastName,
-      blood_type: bloodType,
-      allergies,
-      emergency_contact_name: emergencyContactName,
-      emergency_contact_surname: emergencyContactSurname,
-      emergency_contact_phone: emergencyContactPhone,
+    qr_url: qrUrl,
 
-      dog_tag_qty: dogTags,
-      card_qty: cards,
-      items,
-      subtotal,
-      delivery_fee: DELIVERY_FEE,
-      total_amount: total,
+    first_name: firstName,
+    last_name: lastName,
 
+    blood_type: bloodType,
+    allergies,
 
-    });
+    emergency_contact_name: emergencyContactName,
+    emergency_contact_surname: emergencyContactSurname,
+    emergency_contact_phone: emergencyContactPhone,
 
-    if (orderError) {
-      console.error("STORE ORDER INSERT ERROR:", orderError);
+    dog_tag_qty: dogTags,
+    card_qty: cards,
 
-      return NextResponse.json(
-        { error: "Failed to create store order." },
-        { status: 500 }
-      );
-    }
+    items,
+    subtotal,
+    delivery_fee: DELIVERY_FEE,
+    total_amount: total,
 
+    status: "pending",
+  });
+
+if (pendingOrderError) {
+  console.error(
+    "STORE PENDING ORDER INSERT ERROR:",
+    pendingOrderError
+  );
+
+  return NextResponse.json(
+    { error: "Failed to create pending order." },
+    { status: 500 }
+  );
+}
     const payfastData: Record<string, string> = {
       merchant_id: process.env.PAYFAST_MERCHANT_ID!,
       merchant_key: process.env.PAYFAST_MERCHANT_KEY!,

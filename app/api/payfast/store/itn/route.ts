@@ -43,59 +43,142 @@ export async function POST(req: Request) {
     }
 
     const paymentId = String(data.m_payment_id || "").trim();
-    const paymentStatus = String(data.payment_status || "").trim();
-    const amountGross = Number(data.amount_gross || 0);
+const paymentStatus = String(data.payment_status || "").trim();
+const amountGross = Number(data.amount_gross || 0);
 
-    if (!paymentId) {
-      return new NextResponse("Missing payment reference", { status: 400 });
-    }
+if (!paymentId) {
+  return new NextResponse("Missing payment reference", { status: 400 });
+}
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+if (paymentStatus.toUpperCase() !== "COMPLETE") {
+  console.log("STORE ITN IGNORED - PAYMENT NOT COMPLETE");
+  return new NextResponse("OK", { status: 200 });
+}
 
-    const { data: order, error: orderLookupError } = await supabase
-      .from("orders")
-      .select("id, total_amount, payment_status")
-      .eq("payfast_payment_id", paymentId)
-      .eq("order_type", "store")
-      .maybeSingle();
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-    if (orderLookupError || !order) {
-      console.error("STORE ITN ORDER NOT FOUND:", orderLookupError);
-      return new NextResponse("OK", { status: 200 });
-    }
+const { data: pendingOrder, error: pendingOrderLookupError } =
+  await supabase
+    .from("store_pending_orders")
+    .select("*")
+    .eq("payment_reference", paymentId)
+    .maybeSingle();
 
-    if (order.payment_status === "paid") {
-      console.log("STORE ORDER ALREADY PAID");
-      return new NextResponse("OK", { status: 200 });
-    }
+if (pendingOrderLookupError || !pendingOrder) {
+  console.error(
+    "STORE PENDING ORDER NOT FOUND:",
+    pendingOrderLookupError
+  );
 
-    const expectedAmount = Number(order.total_amount);
+  return new NextResponse("OK", { status: 200 });
+}
 
-    if (Math.abs(amountGross - expectedAmount) > 0.01) {
-      console.error("STORE ITN INVALID AMOUNT:", amountGross, expectedAmount);
-      return new NextResponse("OK", { status: 200 });
-    }
+if (pendingOrder.status === "paid") {
+  console.log("STORE ORDER ALREADY PROCESSED");
 
-    const isPaid = paymentStatus.toUpperCase() === "COMPLETE";
+  return new NextResponse("OK", { status: 200 });
+}
 
-    const { error: updateError } = await supabase
-      .from("orders")
-      .update({
-        payment_status: isPaid ? "paid" : paymentStatus.toLowerCase(),
-        status: isPaid ? "paid" : "pending",
-        
-      })
-      .eq("id", order.id);
+const expectedAmount = Number(pendingOrder.total_amount);
 
-    if (updateError) {
-      console.error("STORE ITN UPDATE ERROR:", updateError);
-      return new NextResponse("OK", { status: 200 });
-    }
+if (Math.abs(amountGross - expectedAmount) > 0.01) {
+  console.error(
+    "STORE ITN INVALID AMOUNT:",
+    amountGross,
+    expectedAmount
+  );
 
-    return new NextResponse("OK", { status: 200 });
+  return new NextResponse("OK", { status: 200 });
+}
+const { data: existingOrder } = await supabase
+  .from("orders")
+  .select("id")
+  .eq("payfast_payment_id", paymentId)
+  .eq("order_type", "store")
+  .maybeSingle();
+
+if (existingOrder) {
+  await supabase
+    .from("store_pending_orders")
+    .update({ status: "paid" })
+    .eq("id", pendingOrder.id);
+
+  console.log("STORE ORDER ALREADY EXISTS:", paymentId);
+
+  return new NextResponse("OK", { status: 200 });
+}
+const { error: createOrderError } = await supabase
+  .from("orders")
+  .insert({
+    user_id: pendingOrder.user_id,
+
+    status: "paid",
+    payment_status: "paid",
+
+    order_type: "store",
+    payfast_payment_id: paymentId,
+
+    customer_name: pendingOrder.customer_name,
+    email: pendingOrder.email,
+
+    shipping_phone: pendingOrder.shipping_phone,
+
+    shipping_unit: pendingOrder.shipping_unit,
+    shipping_street: pendingOrder.shipping_street,
+    shipping_city: pendingOrder.shipping_city,
+    shipping_province: pendingOrder.shipping_province,
+    shipping_postal_code: pendingOrder.shipping_postal_code,
+    shipping_country: pendingOrder.shipping_country,
+
+    qr_url: pendingOrder.qr_url,
+
+    first_name: pendingOrder.first_name,
+    last_name: pendingOrder.last_name,
+
+    blood_type: pendingOrder.blood_type,
+    allergies: pendingOrder.allergies,
+
+    emergency_contact_name:
+      pendingOrder.emergency_contact_name,
+
+    emergency_contact_surname:
+      pendingOrder.emergency_contact_surname,
+
+    emergency_contact_phone:
+      pendingOrder.emergency_contact_phone,
+
+    dog_tag_qty: pendingOrder.dog_tag_qty,
+    card_qty: pendingOrder.card_qty,
+
+    items: pendingOrder.items,
+
+    subtotal: pendingOrder.subtotal,
+    delivery_fee: pendingOrder.delivery_fee,
+    total_amount: pendingOrder.total_amount,
+  });
+
+if (createOrderError) {
+  console.error(
+    "STORE CREATE ORDER ERROR:",
+    createOrderError
+  );
+
+  return new NextResponse("OK", { status: 200 });
+}
+
+await supabase
+  .from("store_pending_orders")
+  .update({
+    status: "paid",
+  })
+  .eq("id", pendingOrder.id);
+
+console.log("STORE PAYMENT COMPLETE:", paymentId);
+
+return new NextResponse("OK", { status: 200 });
   } catch (error) {
     console.error("STORE ITN ERROR:", error);
     return new NextResponse("OK", { status: 200 });
