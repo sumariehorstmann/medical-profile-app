@@ -42,7 +42,7 @@ export default function QRScreensaver({
 
         <div style={styles.textWrap}>
           <div style={styles.scanText}>SCAN IN AN EMERGENCY</div>
-          <div style={styles.profileText}>Emergency Medical Profile</div>
+          <div style={styles.profileText}>Emergency Profile</div>
 
           {fullName ? <div style={styles.nameText}>{fullName}</div> : null}
         </div>
@@ -102,18 +102,22 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   qrWrap: {
-    width: 860,
-    height: 860,
-    background: "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)",
-    borderRadius: 52,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow:
-      "0 40px 120px rgba(0,0,0,0.55), 0 0 80px rgba(34,197,94,0.08), 0 0 0 1px rgba(255,255,255,0.08)",
-    padding: 70,
-    position: "relative",
-  },
+  width: 860,
+  height: 860,
+  background: "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)",
+  borderRadius: 52,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: 70,
+  position: "relative",
+
+  /* NEW DARK BORDER */
+  border: "18px solid rgba(15,23,42,0.95)",
+
+  boxShadow:
+    "0 40px 120px rgba(0,0,0,0.55), 0 0 80px rgba(34,197,94,0.08), 0 0 0 1px rgba(255,255,255,0.08)",
+},
 
   textWrap: {
     width: "100%",
