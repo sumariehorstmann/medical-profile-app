@@ -147,7 +147,21 @@ export default function StorePage() {
   <div>✓ Nationwide South African delivery</div>
   <div>✓ Linked to your permanent RROI QR profile</div>
 </div>
+<div style={styles.storeDisclaimer}>
+  <p>
+    Product images are for illustrative purposes only.
+    As each item is custom laser engraved and made to order,
+    slight variations in engraving position, finish, shape,
+    and colour tone may occur.
+  </p>
 
+  <p>
+    Actual product appearance may vary slightly from images
+    shown due to lighting, screen settings, and manufacturing
+    processes.
+  </p>
+</div>
+  
           <PageBottomNav />
         </div>
       </section>
@@ -459,5 +473,13 @@ imageLabel: {
   fontSize: 14,
   fontWeight: 700,
   lineHeight: 1.8,
+},
+storeDisclaimer: {
+  marginTop: 12,
+  textAlign: "center",
+  fontSize: 12,
+  lineHeight: 1.7,
+  color: "#64748B",
+  padding: "0 12px",
 },
 };
