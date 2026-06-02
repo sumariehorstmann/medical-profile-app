@@ -27,9 +27,7 @@ export default function AffiliatePage() {
           </div>
 
           <div style={styles.notice}>
-  Affiliate applications are only available from inside an active
-  Premium profile. The RROI Affiliate Program is currently operating on
-  an invitation-only basis.
+  Affiliate applications are only available from inside an active Premium profile. The RROI Affiliate Program currently operates on an invitation-only basis. Submission of an application does not guarantee approval.
 </div>
 
           <div style={styles.section}>
@@ -76,7 +74,20 @@ export default function AffiliatePage() {
               <strong>R29.52</strong>.
             </p>
           </div>
-         
+         <div style={styles.section}>
+  <h2 style={styles.sectionTitle}>Payouts</h2>
+  <p style={styles.paragraph}>
+    Affiliate payouts are made quarterly by EFT, subject to verification,
+    qualifying referrals, and a minimum payout threshold of R500.
+  </p>
+  <p style={styles.paragraph}>
+    Applications, approval, commissions, discounts, and payouts remain subject
+    to the full RROI Affiliate Terms.
+  </p>
+  <Link href="/affiliate/terms" style={styles.link}>
+    View Affiliate Terms
+  </Link>
+</div>
 
           <div style={styles.ctaWrap}>
             <Link href="/login?mode=signup" style={styles.primaryBtn}>
@@ -193,4 +204,9 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     fontSize: 15,
   },
+  link: {
+  color: BRAND_GREEN,
+  fontWeight: 800,
+  textDecoration: "none",
+},
 };

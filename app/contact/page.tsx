@@ -26,42 +26,62 @@ export default function ContactPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Support</h2>
+  <h2 style={styles.sectionTitle}>Support</h2>
 
-            <div style={styles.infoGrid}>
-              <div style={styles.infoItem}>
-                <span style={styles.label}>Email</span>
-                <a href="mailto:support@rroi.co.za" style={styles.link}>
-                  support@rroi.co.za
-                </a>
-              </div>
+  <div style={styles.infoGrid}>
+    <div style={styles.infoItem}>
+      <span style={styles.label}>Company</span>
+      <span style={styles.paragraph}>RROI (Pty) Ltd</span>
+    </div>
 
-              <div style={styles.infoItem}>
-                <span style={styles.label}>Website</span>
-                <a
-                  href="https://www.rroi.co.za"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={styles.link}
-                >
-                  www.rroi.co.za
-                </a>
-              </div>
-            </div>
-          </div>
+    <div style={styles.infoItem}>
+      <span style={styles.label}>Country</span>
+      <span style={styles.paragraph}>South Africa</span>
+    </div>
 
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Important</h2>
-            <p style={styles.paragraph}>
-              RROI is a digital medical information platform. If you are dealing
-              with an emergency, contact your local emergency services
-              immediately.
-            </p>
-            <p style={{ ...styles.paragraph, marginTop: 12 }}>
-              Do not use this page to request urgent emergency or medical
-              assistance.
-            </p>
-          </div>
+    <div style={styles.infoItem}>
+      <span style={styles.label}>Email</span>
+      <a href="mailto:support@rroi.co.za" style={styles.link}>
+        support@rroi.co.za
+      </a>
+    </div>
+
+    <div style={styles.infoItem}>
+      <span style={styles.label}>Website</span>
+      <a
+        href="https://www.rroi.co.za"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={styles.link}
+      >
+        www.rroi.co.za
+      </a>
+    </div>
+
+    <div style={styles.infoItem}>
+      <span style={styles.label}>Business Hours</span>
+      <span style={styles.paragraph}>Monday to Friday, 09:00 – 17:00 SAST</span>
+    </div>
+  </div>
+</div>
+
+<div style={styles.section}>
+  <h2 style={styles.sectionTitle}>Privacy & Data Requests</h2>
+  <p style={styles.paragraph}>
+  For privacy, account deletion, data correction, access to your personal information, or other data protection requests, please contact us at support@rroi.co.za.
+</p>
+</div>
+
+<div style={styles.section}>
+  <h2 style={styles.sectionTitle}>Important</h2>
+  <p style={styles.paragraph}>
+    RROI is a digital medical information platform and is not a medical service, healthcare provider, emergency response service, or emergency dispatch service. If you are dealing with an emergency, contact your local emergency
+    services immediately.
+  </p>
+  <p style={{ ...styles.paragraph, marginTop: 12 }}>
+    Do not use this page to request urgent emergency or medical assistance.
+  </p>
+</div>
 
           <PageBottomNav />
         </div>
