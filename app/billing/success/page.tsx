@@ -55,10 +55,12 @@ export default function BillingSuccessPage() {
         }
 
         const { data: subscription, error: subscriptionError } = await supabase
-          .from("subscriptions")
-          .select("status, current_period_end")
-          .eq("user_id", user.id)
-          .maybeSingle();
+  .from("subscriptions")
+  .select("status, current_period_end")
+  .eq("user_id", user.id)
+  .order("current_period_end", { ascending: false })
+  .limit(1)
+  .single();
 
         if (subscriptionError) {
           throw subscriptionError;
