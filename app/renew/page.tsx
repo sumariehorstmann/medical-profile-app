@@ -40,7 +40,12 @@ const [discountValid, setDiscountValid] = useState(false);
 });
 
       const json = await res.json();
-
+if (json.invalidDiscount) {
+  setDiscountMessage("Invalid or inactive discount code.");
+  setDiscountValid(false);
+  setLoading(false);
+  return;
+}
       if (!res.ok) {
         throw new Error(json?.error || "Failed to start Premium payment.");
       }
@@ -94,12 +99,13 @@ const [discountValid, setDiscountValid] = useState(false);
 ) : null}
 
 <p style={styles.note}>
-          Premium unlocks full public medical profile visibility when your QR
-          code is scanned. No physical QR products are included with this
-          option.
-        </p>
+  Premium unlocks full public medical profile visibility when your QR
+  code is scanned. No physical QR products are included with this option.
+</p>
 
-        {message ? <div style={styles.error}>{message}</div> : null}
+<p style={styles.note}>
+  Affiliate codes are not valid for this Premium Visibility Only option.
+</p>
 
         <button
   type="button"
