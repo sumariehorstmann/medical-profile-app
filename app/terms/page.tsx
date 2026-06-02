@@ -29,10 +29,10 @@ export default function TermsPage() {
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>1. About RROI</h2>
             <p style={styles.paragraph}>
-              RROI is operated by Rooi Veer (Pty) Ltd, South Africa. RROI is a
-              digital emergency information platform that allows users to create
-              a profile linked to a QR code so that important information can be
-              accessed more quickly in an emergency.
+              RROI (Pty) Ltd operates the RROI platform in South Africa. RROI is a
+digital emergency information platform that allows users to create
+a profile linked to a QR code so that important information can be
+accessed more quickly in an emergency.
             </p>
           </div>
 
@@ -100,7 +100,7 @@ export default function TermsPage() {
               stated otherwise at checkout, paid fees are non-refundable except
               where required by law. If a paid subscription is cancelled or
               expires, the account may revert to the applicable free-tier
-              visibility and features.
+              visibility and features. Physical products supplied by RROI are manufactured to order and delivery timeframes are estimates only unless otherwise stated.
             </p>
           </div>
 
@@ -152,8 +152,7 @@ export default function TermsPage() {
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>12. Limitation of Liability</h2>
             <p style={styles.paragraph}>
-              To the fullest extent permitted by law, RROI and Rooi Veer (Pty)
-              Ltd will not be liable for any indirect, consequential, special,
+              To the fullest extent permitted by law, RROI and RROI (Pty) Ltd will not be liable for any indirect, consequential, special,
               incidental, or punitive damages, or for any loss, injury, delay,
               claim, cost, or damage arising from or related to the use of the
               platform, reliance on profile information, inability to access a
@@ -165,8 +164,7 @@ export default function TermsPage() {
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>13. Indemnity</h2>
             <p style={styles.paragraph}>
-              You agree to indemnify and hold harmless RROI and Rooi Veer (Pty)
-              Ltd from claims, losses, damages, liabilities, and costs arising
+              You agree to indemnify and hold harmless RROI and RROI (Pty) Ltd from claims, losses, damages, liabilities, and costs arising
               from your misuse of the platform, your breach of these terms, or
               information that you upload, publish, or make available through
               your profile.
