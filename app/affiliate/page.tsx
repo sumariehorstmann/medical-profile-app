@@ -21,8 +21,7 @@ export default function AffiliatePage() {
           <div style={styles.topBlock}>
             <h1 style={styles.title}>RROI Affiliate Program</h1>
             <p style={styles.subtitle}>
-              Share RROI and earn commission when new users upgrade to Premium
-              using your approved affiliate code.
+              Share RROI and earn commission when new users purchase the Premium Full Kit using your approved affiliate code.
             </p>
           </div>
 
@@ -51,9 +50,12 @@ export default function AffiliatePage() {
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>Affiliate discount</h2>
             <p style={styles.paragraph}>
-              New users who upgrade to Premium using your affiliate code receive
-              a <strong>R30 discount</strong>.
-            </p>
+  Affiliate discounts apply only to the RROI Premium Full Kit (R399), which includes two physical QR products.
+</p>
+
+<p style={styles.paragraph}>
+  Affiliate codes are not valid for Premium Visibility Only subscriptions (R99), renewals, store purchases, or any other products unless expressly stated by RROI.
+</p>
             <p style={styles.paragraph}>
               Normal Premium price: <strong>R399</strong>
               <br />
@@ -66,11 +68,10 @@ export default function AffiliatePage() {
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>Affiliate commission</h2>
             <p style={styles.paragraph}>
-              Affiliates earn <strong>8% commission</strong> on the discounted
-              Premium price of <strong>R369</strong>.
-            </p>
+  Affiliates earn 8% commission only when a customer purchases the Premium Full Kit using their approved affiliate code.
+</p>
             <p style={styles.paragraph}>
-              Commission per qualifying Premium upgrade:{" "}
+              Commission per qualifying Premium Full Kit purchase:{" "}
               <strong>R29.52</strong>.
             </p>
           </div>
