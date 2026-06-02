@@ -144,15 +144,17 @@ if (discountCode) {
   if (discount) {
     discountPercent = Number(discount.discount_percent || 0);
 
-    discountAmount = Math.round(
-      totalBeforeDiscount * (discountPercent / 100)
-    );
+    discountAmount = Number(
+  (totalBeforeDiscount * (discountPercent / 100)).toFixed(2)
+);
 
     appliedDiscountCode = discount.code;
   }
 }
 
-const total = Math.max(1, totalBeforeDiscount - discountAmount);
+const total = Number(
+  Math.max(1, totalBeforeDiscount - discountAmount).toFixed(2)
+);
     const paymentReference = `store_${Date.now()}_${user.id.slice(0, 8)}`;
 
     const items = [

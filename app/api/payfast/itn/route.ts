@@ -107,6 +107,29 @@ const affiliateCode = String(data.custom_str3 || "").trim().toUpperCase();
       return new NextResponse("OK", { status: 200 });
     }
 if (type === "renewal") {
+  const { data: paymentRow, error: paymentLookupError } = await supabase
+    .from("payments")
+    .select("id, user_id, amount, status")
+    .eq("provider_payment_id", paymentId)
+    .maybeSingle();
+
+  if (paymentLookupError || !paymentRow) {
+    console.error("RENEWAL PAYMENT ROW NOT FOUND:", paymentLookupError);
+    return new NextResponse("OK", { status: 200 });
+  }
+
+  if (paymentRow.status === "paid") {
+    console.log("RENEWAL PAYMENT ALREADY PROCESSED");
+    return new NextResponse("OK", { status: 200 });
+  }
+
+  const expectedAmount = Number(paymentRow.amount);
+
+  if (Math.abs(amountGross - expectedAmount) > 0.01) {
+    console.error("RENEWAL INVALID PAYMENT AMOUNT:", amountGross, expectedAmount);
+    return new NextResponse("OK", { status: 200 });
+  }
+
   const now = new Date();
 
   const { data: sub } = await supabase
@@ -116,12 +139,25 @@ if (type === "renewal") {
     .maybeSingle();
 
   const expiryValue = sub?.current_period_end || sub?.expires_at;
-
   const currentExpiry = expiryValue ? new Date(expiryValue) : now;
   const baseDate = currentExpiry > now ? currentExpiry : now;
 
   const newExpiry = new Date(baseDate);
   newExpiry.setFullYear(newExpiry.getFullYear() + 1);
+
+  const { error: paymentUpdateError } = await supabase
+    .from("payments")
+    .update({
+      status: "paid",
+      paid_at: now.toISOString(),
+      raw_payload: data,
+    })
+    .eq("id", paymentRow.id);
+
+  if (paymentUpdateError) {
+    console.error("RENEWAL PAYMENT UPDATE ERROR:", paymentUpdateError);
+    return new NextResponse("OK", { status: 200 });
+  }
 
   const { error: subscriptionError } = await supabase
     .from("subscriptions")
@@ -163,7 +199,6 @@ if (type === "renewal") {
   }
 
   console.log("RENEWAL SUCCESS:", userId);
-
   return new NextResponse("OK", { status: 200 });
 }
  const { data: paymentAmountRow, error: paymentAmountLookupError } = await supabase
@@ -304,7 +339,7 @@ if (Math.abs(amountGross - expectedAmount) > 0.01) {
           auto_renew: false,
           plan: "premium_annual",
           price: expectedAmount,
-          price_cents: expectedAmount * 100,
+          price_cents: Math.round(expectedAmount * 100),
           updated_at: now.toISOString(),
         },
         { onConflict: "user_id" }
@@ -431,7 +466,8 @@ try {
     shipping_postal_code: "",
     shipping_country: "South Africa",
     qr_url: qrUrl,
-    status: "pending",
+    status: "paid",
+    payment_status: "paid",
     first_name: name,
     last_name: surname,
     emergency_contact_name: profile.emergency1_fullname ?? "",
@@ -482,7 +518,8 @@ try {
       shipping_postal_code: orderForm.shipping_postal_code ?? "",
       shipping_country: orderForm.shipping_country ?? "South Africa",
       qr_url: qrUrl,
-      status: "pending",
+      status: "paid",
+      payment_status: "paid",
       first_name: orderForm.first_name ?? "",
       last_name: orderForm.last_name ?? "",
       emergency_contact_name: orderForm.emergency_contact_name ?? "",
