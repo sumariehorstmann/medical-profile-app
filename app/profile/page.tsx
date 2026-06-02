@@ -43,10 +43,12 @@ export default async function ProfilePage() {
     .single();
 
   const { data: subscription } = await supabase
-    .from("subscriptions")
-    .select("status, plan, current_period_start, current_period_end")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  .from("subscriptions")
+  .select("status, plan, current_period_start, current_period_end")
+  .eq("user_id", user.id)
+  .order("current_period_end", { ascending: false })
+  .limit(1)
+  .single();
 
   const { data: affiliate } = await supabase
     .from("affiliates")
@@ -55,9 +57,9 @@ export default async function ProfilePage() {
     .maybeSingle();
 
   const isPremium =
-    subscription?.status === "active" &&
-    !!subscription?.current_period_end &&
-    new Date(subscription.current_period_end).getTime() > Date.now();
+  subscription?.status === "active" &&
+  (!subscription?.current_period_end ||
+    new Date(subscription.current_period_end).getTime() > Date.now());
 const hasHadPremium =
   subscription?.plan === "premium" ||
   (subscription?.current_period_end &&
