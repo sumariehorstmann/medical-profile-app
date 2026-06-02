@@ -92,11 +92,13 @@ export default function BillingSuccessPage() {
             });
           }, 1000);
         }
-      } catch {
-        if (!mounted) return;
-        setChecking(false);
-        setMessage("We could not verify your payment automatically yet.");
-      }
+      } catch (err) {
+  console.error("Billing success error:", err);
+
+  if (!mounted) return;
+  setChecking(false);
+  setMessage("We could not verify your payment automatically yet.");
+}
     }
 
     checkSubscription();
