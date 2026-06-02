@@ -95,4 +95,5 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
     fontWeight: 800,
   },
+
 };
