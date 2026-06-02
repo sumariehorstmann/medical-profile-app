@@ -31,7 +31,7 @@ export default function PrivacyPage() {
 <div style={styles.section}>
   <h2 style={styles.sectionTitle}>1. Responsible Party</h2>
   <p style={styles.paragraph}>
-    RROI (Pty) Ltd is the responsible party for personal information processed through the RROI platform. We collect, use, store, and protect personal information in accordance with applicable data protection laws, including the Protection of Personal Information Act (POPIA).
+    RROI (Pty) Ltd is the responsible party for personal information processed through the RROI platform. Personal information is securely stored using third-party cloud infrastructure and may also be included in secure business backups. We collect, use, store, and protect personal information in accordance with applicable data protection laws, including the Protection of Personal Information Act (POPIA).
   </p>
 </div>
 
