@@ -90,8 +90,12 @@ export default function PremiumKitPage() {
           </p>
 
           <p style={styles.noteText}>
-            No physical QR card or tag is included with the R99 option.
-          </p>
+  No physical QR card or tag is included with the R99 option.
+</p>
+
+<p style={styles.noteText}>
+  Affiliate discount codes are not valid for the R99 Premium Visibility Only option.
+</p>
         </div>
 
         <div style={styles.exampleCard}>
