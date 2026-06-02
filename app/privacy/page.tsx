@@ -31,20 +31,14 @@ export default function PrivacyPage() {
 <div style={styles.section}>
   <h2 style={styles.sectionTitle}>1. Responsible Party</h2>
   <p style={styles.paragraph}>
-    RROI is operated by Rooi Veer (Pty) Ltd, South Africa. We are responsible
-    for the collection, use, and protection of your personal information in
-    accordance with applicable data protection laws, including the Protection
-    of Personal Information Act (POPIA).
+    RROI (Pty) Ltd is the responsible party for personal information processed through the RROI platform. We collect, use, store, and protect personal information in accordance with applicable data protection laws, including the Protection of Personal Information Act (POPIA).
   </p>
 </div>
 
 <div style={styles.section}>
   <h2 style={styles.sectionTitle}>2. Information We Collect</h2>
   <p style={styles.paragraph}>
-    We collect personal and medical information that you voluntarily provide
-    when creating and managing your profile. This may include your name,
-    emergency contact details, and health-related information such as allergies,
-    conditions, and medications.
+    We collect personal, medical, and account information that you voluntarily provide when creating and managing your profile. This may include your name, date of birth, emergency contact details, profile photograph, medical information such as allergies, conditions, medications, medical aid information, language preferences, location information, and subscription or payment-related information.
   </p>
 </div>
 
@@ -75,9 +69,25 @@ export default function PrivacyPage() {
     subscription level and profile settings.
   </p>
 </div>
-
 <div style={styles.section}>
-  <h2 style={styles.sectionTitle}>6. Data Security</h2>
+  <h2 style={styles.sectionTitle}>6. International Data Processing</h2>
+  <p style={styles.paragraph}>
+    RROI may make use of reputable third-party service providers for hosting,
+    authentication, storage, payment processing, email delivery, analytics, and
+    related services. Your information may be processed by these providers only
+    for the purpose of delivering the RROI service.
+  </p>
+</div>
+<div style={styles.section}>
+  <h2 style={styles.sectionTitle}>7. Emergency Contact Information</h2>
+  <p style={styles.paragraph}>
+    By providing emergency contact information, you confirm that you have the
+    authority and permission to provide those contact details for inclusion on
+    your profile.
+  </p>
+</div>
+<div style={styles.section}>
+  <h2 style={styles.sectionTitle}>8. Data Security</h2>
   <p style={styles.paragraph}>
     We implement reasonable technical and organisational safeguards to protect
     your personal information against unauthorised access, loss, or misuse.
@@ -87,16 +97,24 @@ export default function PrivacyPage() {
 </div>
 
 <div style={styles.section}>
-  <h2 style={styles.sectionTitle}>7. Data Retention</h2>
+  <h2 style={styles.sectionTitle}>9. Data Retention</h2>
   <p style={styles.paragraph}>
     Your information is stored for as long as your account remains active. You
     may update or delete your profile at any time. If your subscription is
     cancelled, your profile remains but reverts to limited public visibility.
   </p>
 </div>
-
 <div style={styles.section}>
-  <h2 style={styles.sectionTitle}>8. Your Rights</h2>
+  <h2 style={styles.sectionTitle}>10. Account Deletion</h2>
+  <p style={styles.paragraph}>
+    You may request deletion of your account and associated profile information
+    at any time. Certain information may be retained where required by law,
+    fraud prevention requirements, payment record retention obligations, or
+    legitimate business purposes.
+  </p>
+</div>
+<div style={styles.section}>
+  <h2 style={styles.sectionTitle}>11. Your Rights</h2>
   <p style={styles.paragraph}>
     In terms of POPIA, you have the right to access, correct, or delete your
     personal information, and to object to certain types of processing. You may
@@ -105,15 +123,23 @@ export default function PrivacyPage() {
 </div>
 
 <div style={styles.section}>
-  <h2 style={styles.sectionTitle}>9. Complaints</h2>
+  <h2 style={styles.sectionTitle}>12. Complaints</h2>
   <p style={styles.paragraph}>
     If you believe your personal information has been processed unlawfully, you
     may lodge a complaint with the Information Regulator of South Africa.
   </p>
 </div>
-
 <div style={styles.section}>
-  <h2 style={styles.sectionTitle}>10. Contact</h2>
+  <h2 style={styles.sectionTitle}>13. Technical Information</h2>
+  <p style={styles.paragraph}>
+    RROI may automatically collect limited technical information required for
+    security, authentication, performance monitoring, fraud prevention, and
+    operation of the platform. This may include device information, browser
+    information, IP addresses, and usage data.
+  </p>
+</div>
+<div style={styles.section}>
+  <h2 style={styles.sectionTitle}>14. Contact</h2>
   <p style={styles.paragraph}>
     For any questions regarding this policy, please contact us at{" "}
     <a href="mailto:support@rroi.co.za" style={styles.link}>
