@@ -53,11 +53,17 @@ export async function POST(req: NextRequest) {
     const paymentId = `rroi_renew_${user.id}_${Date.now()}`;
 const body = await req.json().catch(() => ({}));
 const discountCode = body?.discountCode?.trim()?.toUpperCase();
+const isAdminDiscountCode = discountCode?.startsWith("RROI-ADMIN-");
 
 let amount = 99;
 let appliedDiscount = 0;
 
 if (discountCode) {
+    if (!isAdminDiscountCode) {
+    return NextResponse.json({
+      invalidDiscount: true,
+    });
+  }
   const { data: discount } = await supabase
     .from("discount_codes")
     .select("*")
@@ -82,7 +88,7 @@ if (!discount) {
     const paymentData: Record<string, string> = {
       merchant_id: MERCHANT_ID,
       merchant_key: MERCHANT_KEY,
-      return_url: `${BASE_URL}/billing/success`,
+      return_url: `${BASE_URL}/billing/success?payment_id=${encodeURIComponent(paymentId)}`,
       cancel_url: `${BASE_URL}/billing/cancel`,
       notify_url: `${BASE_URL}/api/payfast/itn`,
       name_first: user.user_metadata?.first_name || "",
@@ -97,12 +103,12 @@ if (!discount) {
 const { error: paymentInsertError } = await supabase
   .from("payments")
   .insert({
-    user_id: user.id,
-    provider: "payfast",
-    provider_payment_id: paymentId,
-    amount: amount.toFixed(2),
-    status: "pending",
-  });
+  user_id: user.id,
+  provider: "payfast",
+  provider_payment_id: paymentId,
+  amount: amount,
+  status: "pending",
+});
 
 if (paymentInsertError) {
   console.error("Renewal payment insert error:", paymentInsertError);
