@@ -132,11 +132,17 @@ if (type === "renewal") {
 
   const now = new Date();
 
-  const { data: sub } = await supabase
-    .from("subscriptions")
-    .select("expires_at, current_period_end, renewal_count")
-    .eq("user_id", userId)
-    .maybeSingle();
+  const { data: sub, error: subLookupError } = await supabase
+  .from("subscriptions")
+  .select("expires_at, current_period_end, renewal_count")
+  .eq("user_id", userId)
+  .order("current_period_end", { ascending: false })
+  .limit(1)
+  .maybeSingle();
+
+if (subLookupError) {
+  console.error("RENEWAL SUBSCRIPTION LOOKUP ERROR:", subLookupError);
+}
 
   const expiryValue = sub?.current_period_end || sub?.expires_at;
   const currentExpiry = expiryValue ? new Date(expiryValue) : now;
@@ -194,10 +200,6 @@ if (type === "renewal") {
   .eq("user_id", userId)
   .select("id, user_id, is_paid");
 
-if (profileError) {
-  console.error("RENEWAL PROFILE UPDATE ERROR:", profileError);
-  return new NextResponse("OK", { status: 200 });
-}
 
 if (!updatedProfiles || updatedProfiles.length === 0) {
   console.error("RENEWAL PROFILE UPDATE FOUND NO MATCHING PROFILE:", userId);
