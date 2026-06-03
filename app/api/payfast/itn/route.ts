@@ -107,6 +107,8 @@ const affiliateCode = String(data.custom_str3 || "").trim().toUpperCase();
       return new NextResponse("OK", { status: 200 });
     }
 if (type === "renewal") {
+  console.log("RENEWAL ITN START:", paymentId, userId);
+
   const { data: paymentRow, error: paymentLookupError } = await supabase
     .from("payments")
     .select("id, user_id, amount, status")
@@ -118,11 +120,7 @@ if (type === "renewal") {
     return new NextResponse("OK", { status: 200 });
   }
 
-  if (paymentRow.status === "paid") {
-    console.log("RENEWAL PAYMENT ALREADY PROCESSED");
-    return new NextResponse("OK", { status: 200 });
-  }
-
+  const realUserId = paymentRow.user_id;
   const expectedAmount = Number(paymentRow.amount);
 
   if (Math.abs(amountGross - expectedAmount) > 0.01) {
@@ -133,16 +131,16 @@ if (type === "renewal") {
   const now = new Date();
 
   const { data: sub, error: subLookupError } = await supabase
-  .from("subscriptions")
-  .select("expires_at, current_period_end, renewal_count")
-  .eq("user_id", userId)
-  .order("current_period_end", { ascending: false })
-  .limit(1)
-  .maybeSingle();
+    .from("subscriptions")
+    .select("expires_at, current_period_end, renewal_count")
+    .eq("user_id", realUserId)
+    .order("current_period_end", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-if (subLookupError) {
-  console.error("RENEWAL SUBSCRIPTION LOOKUP ERROR:", subLookupError);
-}
+  if (subLookupError) {
+    console.error("RENEWAL SUBSCRIPTION LOOKUP ERROR:", subLookupError);
+  }
 
   const expiryValue = sub?.current_period_end || sub?.expires_at;
   const currentExpiry = expiryValue ? new Date(expiryValue) : now;
@@ -151,25 +149,11 @@ if (subLookupError) {
   const newExpiry = new Date(baseDate);
   newExpiry.setFullYear(newExpiry.getFullYear() + 1);
 
-  const { error: paymentUpdateError } = await supabase
-    .from("payments")
-    .update({
-      status: "paid",
-      paid_at: now.toISOString(),
-      raw_payload: data,
-    })
-    .eq("id", paymentRow.id);
-
-  if (paymentUpdateError) {
-    console.error("RENEWAL PAYMENT UPDATE ERROR:", paymentUpdateError);
-    return new NextResponse("OK", { status: 200 });
-  }
-
   const { error: subscriptionError } = await supabase
     .from("subscriptions")
     .upsert(
       {
-        user_id: userId,
+        user_id: realUserId,
         status: "active",
         plan: "premium_annual",
         provider: "payfast",
@@ -195,25 +179,36 @@ if (subLookupError) {
   }
 
   const { data: updatedProfiles, error: profileError } = await supabase
-  .from("profiles")
-  .update({ is_paid: true })
-  .eq("user_id", userId)
-  .select("id, user_id, is_paid");
-
-
-if (!updatedProfiles || updatedProfiles.length === 0) {
-  console.error("RENEWAL PROFILE UPDATE FOUND NO MATCHING PROFILE:", userId);
-  return new NextResponse("OK", { status: 200 });
-}
-
-console.log("RENEWAL PROFILE UPDATED:", updatedProfiles);
+    .from("profiles")
+    .update({ is_paid: true })
+    .eq("user_id", realUserId)
+    .select("id, user_id, is_paid");
 
   if (profileError) {
     console.error("RENEWAL PROFILE UPDATE ERROR:", profileError);
     return new NextResponse("OK", { status: 200 });
   }
 
-  console.log("RENEWAL SUCCESS:", userId);
+  if (!updatedProfiles || updatedProfiles.length === 0) {
+    console.error("RENEWAL PROFILE UPDATE FOUND NO MATCHING PROFILE:", realUserId);
+    return new NextResponse("OK", { status: 200 });
+  }
+
+  const { error: paymentUpdateError } = await supabase
+    .from("payments")
+    .update({
+      status: "paid",
+      paid_at: now.toISOString(),
+      raw_payload: data,
+    })
+    .eq("id", paymentRow.id);
+
+  if (paymentUpdateError) {
+    console.error("RENEWAL PAYMENT UPDATE ERROR:", paymentUpdateError);
+    return new NextResponse("OK", { status: 200 });
+  }
+
+  console.log("RENEWAL SUCCESS:", realUserId);
   return new NextResponse("OK", { status: 200 });
 }
  const { data: paymentAmountRow, error: paymentAmountLookupError } = await supabase
