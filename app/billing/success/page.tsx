@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -18,31 +18,15 @@ function BillingSuccessContent() {
     "We are waiting for PayFast to confirm your payment."
   );
   const [checking, setChecking] = useState(true);
-  const [countdown, setCountdown] = useState(3);
-
+  
   useEffect(() => {
     const paymentId = searchParams.get("payment_id");
 
     let mounted = true;
     let pollInterval: ReturnType<typeof setInterval> | null = null;
-    let redirectInterval: ReturnType<typeof setInterval> | null = null;
     let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
 
-    function startRedirect(path: string) {
-      setCountdown(3);
-
-      redirectInterval = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            if (redirectInterval) clearInterval(redirectInterval);
-            router.replace(path);
-            return 0;
-          }
-
-          return prev - 1;
-        });
-      }, 1000);
-    }
+    
 
     async function checkPayment() {
       try {
@@ -50,7 +34,6 @@ function BillingSuccessContent() {
           if (!mounted) return;
           setChecking(false);
           setMessage("Payment submitted. You can go to your profile now.");
-          startRedirect("/profile");
           return;
         }
 
@@ -68,11 +51,13 @@ if (!mounted) return;
 
 if (result.status === "paid") {
           setChecking(false);
-          setMessage("Payment confirmed. Redirecting you to your profile...");
+          setMessage(
+  "Payment successful. Your profile has been upgraded to Premium."
+);
 
           if (pollInterval) clearInterval(pollInterval);
 
-          startRedirect("/profile");
+          
         }
       } catch (err) {
         console.error("Billing success error:", err);
@@ -101,7 +86,6 @@ if (result.status === "paid") {
     return () => {
       mounted = false;
       if (pollInterval) clearInterval(pollInterval);
-      if (redirectInterval) clearInterval(redirectInterval);
       if (timeoutHandle) clearTimeout(timeoutHandle);
     };
   }, [router, searchParams]);
@@ -109,23 +93,21 @@ if (result.status === "paid") {
   return (
     <main style={styles.page}>
       <div style={styles.card}>
-        <h1 style={styles.h1}>Payment submitted</h1>
+        <h1 style={styles.h1}>Payment Successful</h1>
 
         <p style={styles.p}>Thanks. We have received your payment submission.</p>
 
         <p style={styles.p}>
-          Your subscription will activate as soon as PayFast confirms it.
-        </p>
+  Your Premium subscription is now active.
+</p>
 
         <div style={styles.statusBox}>
           <div style={styles.statusTitle}>Status</div>
           <div style={styles.statusText}>{message}</div>
 
-          {!checking && countdown > 0 ? (
-            <div style={styles.countdownText}>Redirecting in {countdown}...</div>
-          ) : checking ? (
-            <div style={styles.checkingText}>Checking payment status...</div>
-          ) : null}
+          {checking && (
+  <div style={styles.checkingText}>Checking payment status...</div>
+)}
         </div>
 
         <div style={styles.actions}>
@@ -212,12 +194,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: BRAND_GREEN,
     fontWeight: 700,
   },
-  countdownText: {
-    marginTop: 10,
-    fontSize: 14,
-    color: MUTED,
-    fontWeight: 700,
-  },
+  
   actions: {
     display: "flex",
     gap: 12,
