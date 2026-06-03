@@ -132,7 +132,7 @@ if (type === "renewal") {
 
   const { data: sub, error: subLookupError } = await supabase
     .from("subscriptions")
-    .select("expires_at, current_period_end, renewal_count")
+    .select("current_period_end, renewal_count")
     .eq("user_id", realUserId)
     .order("current_period_end", { ascending: false })
     .limit(1)
@@ -142,7 +142,7 @@ if (type === "renewal") {
     console.error("RENEWAL SUBSCRIPTION LOOKUP ERROR:", subLookupError);
   }
 
-  const expiryValue = sub?.current_period_end || sub?.expires_at;
+  const expiryValue = sub?.current_period_end;
   const currentExpiry = expiryValue ? new Date(expiryValue) : now;
   const baseDate = currentExpiry > now ? currentExpiry : now;
 
@@ -160,7 +160,6 @@ if (type === "renewal") {
         provider_subscription_id: paymentId,
         current_period_start: now.toISOString(),
         current_period_end: newExpiry.toISOString(),
-        expires_at: newExpiry.toISOString(),
         auto_renew: false,
         price: amountGross,
         price_cents: Math.round(expectedAmount * 100),
