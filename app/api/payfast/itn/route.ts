@@ -173,7 +173,7 @@ if (type === "renewal") {
         expires_at: newExpiry.toISOString(),
         auto_renew: false,
         price: amountGross,
-        price_cents: Math.round(amountGross * 100),
+        price_cents: Math.round(expectedAmount * 100),
         renewal_30_email_sent: false,
         renewal_7_email_sent: false,
         last_renewal_reminder_sent_at: null,
@@ -188,10 +188,23 @@ if (type === "renewal") {
     return new NextResponse("OK", { status: 200 });
   }
 
-  const { error: profileError } = await supabase
-    .from("profiles")
-    .update({ is_paid: true })
-    .eq("user_id", userId);
+  const { data: updatedProfiles, error: profileError } = await supabase
+  .from("profiles")
+  .update({ is_paid: true })
+  .eq("user_id", userId)
+  .select("id, user_id, is_paid");
+
+if (profileError) {
+  console.error("RENEWAL PROFILE UPDATE ERROR:", profileError);
+  return new NextResponse("OK", { status: 200 });
+}
+
+if (!updatedProfiles || updatedProfiles.length === 0) {
+  console.error("RENEWAL PROFILE UPDATE FOUND NO MATCHING PROFILE:", userId);
+  return new NextResponse("OK", { status: 200 });
+}
+
+console.log("RENEWAL PROFILE UPDATED:", updatedProfiles);
 
   if (profileError) {
     console.error("RENEWAL PROFILE UPDATE ERROR:", profileError);
