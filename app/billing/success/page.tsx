@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
@@ -11,7 +11,7 @@ const TEXT = "#0F172A";
 const MUTED = "#475569";
 const BORDER = "#E5E7EB";
 
-export default function BillingSuccessPage() {
+function BillingSuccessContent() {
   const supabase = useMemo(() => createSupabaseBrowser(), []);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -149,7 +149,13 @@ export default function BillingSuccessPage() {
     </main>
   );
 }
-
+export default function BillingSuccessPage() {
+  return (
+    <Suspense fallback={null}>
+      <BillingSuccessContent />
+    </Suspense>
+  );
+}
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
