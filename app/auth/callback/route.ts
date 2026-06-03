@@ -56,19 +56,10 @@ if (type === "signup" || type === "email") {
 const safeNext = next && next.startsWith("/") ? next : "/profile";
 return NextResponse.redirect(`${origin}${safeNext}`);
   } catch (e: any) {
-  const errorMessage = String(e?.message ?? "").toLowerCase();
-
-  if (
-    errorMessage.includes("flow state") ||
-    errorMessage.includes("code verifier") ||
-    errorMessage.includes("auth code")
-  ) {
-    return NextResponse.redirect(`${origin}/login?verified=true`);
-  }
-
   const message = encodeURIComponent(e?.message ?? "auth_failed");
+
   return NextResponse.redirect(
-    `${origin}/login?error=auth_callback&message=${message}`
+    `${origin}/login?error=email_not_confirmed&message=${message}`
   );
 }
 }
