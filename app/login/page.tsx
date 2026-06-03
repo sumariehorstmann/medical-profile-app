@@ -143,6 +143,16 @@ const isCheckoutRedirect =
     confirmPassword.length > 0 && password !== confirmPassword;
 
   useEffect(() => {
+  const verified = params.get("verified");
+
+  if (verified === "true") {
+    setMessageType("success");
+    setMessage(
+      "Your email address has been confirmed successfully. Please log in to continue."
+    );
+    return;
+  }
+
   const errorCode = params.get("error_code") || params.get("error");
   const errorDesc = params.get("error_description") || params.get("message");
 
