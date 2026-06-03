@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +11,6 @@ const MUTED = "#475569";
 const BORDER = "#E5E7EB";
 
 function BillingSuccessContent() {
-  const supabase = useMemo(() => createSupabaseBrowser(), []);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -56,17 +54,19 @@ function BillingSuccessContent() {
           return;
         }
 
-        const { data: payment, error: paymentError } = await supabase
-          .from("payments")
-          .select("status")
-          .eq("provider_payment_id", paymentId)
-          .maybeSingle();
+        const res = await fetch(
+  `/api/payment-status?payment_id=${encodeURIComponent(paymentId)}`
+);
 
-        if (paymentError) throw paymentError;
+const result = await res.json();
 
-        if (!mounted) return;
+if (!res.ok) {
+  throw new Error(result?.status || "payment_status_error");
+}
 
-        if (payment?.status === "paid") {
+if (!mounted) return;
+
+if (result.status === "paid") {
           setChecking(false);
           setMessage("Payment confirmed. Redirecting you to your profile...");
 
@@ -104,7 +104,7 @@ function BillingSuccessContent() {
       if (redirectInterval) clearInterval(redirectInterval);
       if (timeoutHandle) clearTimeout(timeoutHandle);
     };
-  }, [router, searchParams, supabase]);
+  }, [router, searchParams]);
 
   return (
     <main style={styles.page}>
