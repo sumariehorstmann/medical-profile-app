@@ -180,12 +180,18 @@ const isCheckoutRedirect =
     return;
   }
 
-  if (errorCode || errorDesc) {
-    setMessageType("error");
-    setMessage(
-      "Authentication error. Please try again."
-    );
-  }
+  if (errorCode === "email_not_confirmed") {
+  setMessageType("success");
+  setMessage(
+    "Your account has been created and your email address has been verified. Please log in now."
+  );
+  return;
+}
+
+if (errorCode || errorDesc) {
+  setMessageType("error");
+  setMessage("Authentication error. Please try again.");
+}
 }, [params]);
 
   function clearMessage() {
