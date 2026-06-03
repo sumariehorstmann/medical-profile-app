@@ -231,7 +231,7 @@ if (adminDiscountPercent > 0) {
     const data: Record<string, string> = {
       merchant_id: process.env.PAYFAST_MERCHANT_ID!,
       merchant_key: process.env.PAYFAST_MERCHANT_KEY!,
-      return_url: `${baseUrl}/billing/success`,
+      return_url: `${baseUrl}/billing/success?payment_id=${encodeURIComponent(paymentId)}`,
       cancel_url: `${baseUrl}/billing/cancel`,
       notify_url: `${baseUrl}/api/payfast/itn`,
       name_first: firstName || "RROI",
