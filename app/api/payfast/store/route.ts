@@ -134,6 +134,15 @@ let discountAmount = 0;
 let appliedDiscountCode: string | null = null;
 
 if (discountCode) {
+  const isAdminDiscountCode = discountCode.startsWith("RROI-ADMIN-");
+
+  if (!isAdminDiscountCode) {
+    return NextResponse.json({
+      invalidDiscount: true,
+      error: "This discount code is not valid for store purchases.",
+    });
+  }
+
   const { data: discount } = await supabase
     .from("discount_codes")
     .select("*")
@@ -141,15 +150,20 @@ if (discountCode) {
     .eq("active", true)
     .single();
 
-  if (discount) {
-    discountPercent = Number(discount.discount_percent || 0);
-
-    discountAmount = Number(
-  (totalBeforeDiscount * (discountPercent / 100)).toFixed(2)
-);
-
-    appliedDiscountCode = discount.code;
+  if (!discount) {
+    return NextResponse.json({
+      invalidDiscount: true,
+      error: "Invalid discount code.",
+    });
   }
+
+  discountPercent = Number(discount.discount_percent || 0);
+
+  discountAmount = Number(
+    (totalBeforeDiscount * (discountPercent / 100)).toFixed(2)
+  );
+
+  appliedDiscountCode = discount.code;
 }
 
 const total = Number(

@@ -93,6 +93,19 @@ if (Math.abs(amountGross - expectedAmount) > 0.01) {
 
   return new NextResponse("OK", { status: 200 });
 }
+await supabase.from("payments").upsert(
+  {
+    user_id: pendingOrder.user_id,
+    public_id: pendingOrder.public_id ?? null,
+    provider: "payfast",
+    provider_payment_id: paymentId,
+    amount: amountGross,
+    status: "paid",
+    paid_at: new Date().toISOString(),
+    raw_payload: data,
+  },
+  { onConflict: "provider_payment_id" }
+);
 const { data: existingOrder } = await supabase
   .from("orders")
   .select("id")
