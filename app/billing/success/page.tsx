@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +14,7 @@ const BORDER = "#E5E7EB";
 export default function BillingSuccessPage() {
   const supabase = useMemo(() => createSupabaseBrowser(), []);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [message, setMessage] = useState(
     "We are waiting for PayFast to confirm your payment."
@@ -22,89 +23,70 @@ export default function BillingSuccessPage() {
   const [countdown, setCountdown] = useState(3);
 
   useEffect(() => {
+    const paymentId = searchParams.get("payment_id");
+
     let mounted = true;
     let pollInterval: ReturnType<typeof setInterval> | null = null;
     let redirectInterval: ReturnType<typeof setInterval> | null = null;
     let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
 
-    async function checkSubscription() {
-      try {
-        const {
-          data: { user },
-          error: authError,
-        } = await supabase.auth.getUser();
+    function startRedirect(path: string) {
+      setCountdown(3);
 
-        if (authError || !user) {
+      redirectInterval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            if (redirectInterval) clearInterval(redirectInterval);
+            router.replace(path);
+            return 0;
+          }
+
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    async function checkPayment() {
+      try {
+        if (!paymentId) {
           if (!mounted) return;
           setChecking(false);
-          setMessage("Payment received. Redirecting you to log in...");
-          setCountdown(3);
-
-          redirectInterval = setInterval(() => {
-            setCountdown((prev) => {
-              if (prev <= 1) {
-                if (redirectInterval) clearInterval(redirectInterval);
-                router.replace("/login");
-                return 0;
-              }
-              return prev - 1;
-            });
-          }, 1000);
-
+          setMessage("Payment submitted. You can go to your profile now.");
+          startRedirect("/profile");
           return;
         }
 
-        const { data: subscription, error: subscriptionError } = await supabase
-  .from("subscriptions")
-  .select("status, current_period_end")
-  .eq("user_id", user.id)
-  .order("current_period_end", { ascending: false })
-  .limit(1)
-  .single();
+        const { data: payment, error: paymentError } = await supabase
+          .from("payments")
+          .select("status")
+          .eq("provider_payment_id", paymentId)
+          .maybeSingle();
 
-        if (subscriptionError) {
-          throw subscriptionError;
-        }
-
-        const isPremium =
-          !!subscription &&
-          subscription.status === "active" &&
-          (!subscription.current_period_end ||
-            new Date(subscription.current_period_end).getTime() > Date.now());
+        if (paymentError) throw paymentError;
 
         if (!mounted) return;
 
-        if (isPremium) {
+        if (payment?.status === "paid") {
           setChecking(false);
           setMessage("Payment confirmed. Redirecting you to your profile...");
-          setCountdown(3);
 
           if (pollInterval) clearInterval(pollInterval);
 
-          redirectInterval = setInterval(() => {
-            setCountdown((prev) => {
-              if (prev <= 1) {
-                if (redirectInterval) clearInterval(redirectInterval);
-                router.replace("/profile");
-                return 0;
-              }
-              return prev - 1;
-            });
-          }, 1000);
+          startRedirect("/profile");
         }
       } catch (err) {
-  console.error("Billing success error:", err);
+        console.error("Billing success error:", err);
 
-  if (!mounted) return;
-  setChecking(false);
-  setMessage("We could not verify your payment automatically yet.");
-}
+        if (!mounted) return;
+        setChecking(false);
+        setMessage("We could not verify your payment automatically yet.");
+      }
     }
 
-    checkSubscription();
+    checkPayment();
 
     pollInterval = setInterval(() => {
-      checkSubscription();
+      checkPayment();
     }, 4000);
 
     timeoutHandle = setTimeout(() => {
@@ -122,16 +104,14 @@ export default function BillingSuccessPage() {
       if (redirectInterval) clearInterval(redirectInterval);
       if (timeoutHandle) clearTimeout(timeoutHandle);
     };
-  }, [router, supabase]);
+  }, [router, searchParams, supabase]);
 
   return (
     <main style={styles.page}>
       <div style={styles.card}>
         <h1 style={styles.h1}>Payment submitted</h1>
 
-        <p style={styles.p}>
-          Thanks. We have received your payment submission.
-        </p>
+        <p style={styles.p}>Thanks. We have received your payment submission.</p>
 
         <p style={styles.p}>
           Your subscription will activate as soon as PayFast confirms it.
@@ -142,9 +122,7 @@ export default function BillingSuccessPage() {
           <div style={styles.statusText}>{message}</div>
 
           {!checking && countdown > 0 ? (
-            <div style={styles.countdownText}>
-              Redirecting in {countdown}...
-            </div>
+            <div style={styles.countdownText}>Redirecting in {countdown}...</div>
           ) : checking ? (
             <div style={styles.checkingText}>Checking payment status...</div>
           ) : null}
