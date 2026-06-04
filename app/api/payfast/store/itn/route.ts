@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { sendStoreOrderConfirmationEmail } from "@/app/lib/email/sendStoreOrderConfirmationEmail";
 
 function encodePayFastValue(value: string) {
   return encodeURIComponent(value.trim()).replace(/%20/g, "+");
@@ -188,6 +189,16 @@ await supabase
     status: "paid",
   })
   .eq("id", pendingOrder.id);
+
+if (pendingOrder.email) {
+  await sendStoreOrderConfirmationEmail({
+    to: pendingOrder.email,
+    customerName: pendingOrder.customer_name,
+    paymentReference: paymentId,
+    items: pendingOrder.items,
+    totalAmount: Number(pendingOrder.total_amount || 0),
+  });
+}
 
 console.log("STORE PAYMENT COMPLETE:", paymentId);
 
