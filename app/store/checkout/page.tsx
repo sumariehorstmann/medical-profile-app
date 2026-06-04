@@ -92,7 +92,9 @@ function StoreCheckoutInner() {
     Partial<Record<keyof OrderFormData, string>>
   >({});
   const [form, setForm] = useState<OrderFormData>(EMPTY_FORM);
-
+const [discountCode, setDiscountCode] = useState("");
+const [discountMessage, setDiscountMessage] = useState("");
+const [discountValid, setDiscountValid] = useState(false);
   useEffect(() => {
     let mounted = true;
 
@@ -217,12 +219,17 @@ function StoreCheckoutInner() {
     setFieldErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
-      setError("Please complete all required fields before continuing.");
-      return;
-    }
+  setError("Please complete all required fields before continuing.");
+  return;
+}
 
-    try {
-      setPaying(true);
+if (discountCode.trim() && !discountValid) {
+  setError("Please apply the discount code before continuing to payment.");
+  return;
+}
+
+try {
+  setPaying(true);
 
       const {
         data: { session },
@@ -240,11 +247,12 @@ function StoreCheckoutInner() {
           Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
-          dogTags,
-          cards,
-          deliveryFee: DELIVERY_FEE,
-          ...form,
-        }),
+  dogTags,
+  cards,
+  deliveryFee: DELIVERY_FEE,
+  discountCode: discountValid ? discountCode : "",
+  ...form,
+}),
       });
 
       const json = await res.json();
@@ -303,6 +311,59 @@ function StoreCheckoutInner() {
               <li>Delivery: R{DELIVERY_FEE}</li>
               <li>Total: R{total}</li>
             </ul>
+            <div style={{ marginTop: 16 }}>
+  <label style={styles.label}>Discount Code</label>
+
+  <input
+  type="text"
+  value={discountCode}
+  onChange={(e) => {
+    setDiscountCode(e.target.value.toUpperCase());
+    setDiscountMessage("");
+    setDiscountValid(false);
+  }}
+  placeholder="Enter discount code"
+  style={styles.input}
+/>
+
+<button
+  type="button"
+  onClick={() => {
+    const code = discountCode.trim().toUpperCase();
+
+    if (!code) {
+      setDiscountValid(false);
+      setDiscountMessage("Please enter a discount code.");
+      return;
+    }
+
+    if (!code.startsWith("RROI-ADMIN-")) {
+      setDiscountValid(false);
+      setDiscountMessage("This discount code is not valid for store purchases.");
+      return;
+    }
+
+    setDiscountValid(true);
+    setDiscountMessage("Admin discount code applied.");
+  }}
+  style={styles.discountButton}
+>
+  Apply Discount
+</button>
+
+{discountMessage ? (
+    <div
+      style={{
+        marginTop: 8,
+        fontSize: 13,
+        fontWeight: 700,
+        color: discountValid ? "#166534" : "#b91c1c",
+      }}
+    >
+      {discountMessage}
+    </div>
+  ) : null}
+</div>
           </div>
 
           <div style={styles.noticeBox}>
@@ -634,6 +695,16 @@ deliveryText: {
     background: "#ffffff",
     paddingTop: 12,
   },
+  discountButton: {
+  marginTop: 10,
+  padding: "10px 14px",
+  borderRadius: 10,
+  border: "1px solid #157A55",
+  background: "#FFFFFF",
+  color: "#157A55",
+  fontWeight: 800,
+  cursor: "pointer",
+},
   securityBox: {
     marginBottom: 16,
     fontSize: 14,
@@ -680,6 +751,7 @@ deliveryText: {
     fontSize: 14,
     fontWeight: 600,
   },
+  
   loadingText: {
     fontSize: 15,
     color: "#475569",
