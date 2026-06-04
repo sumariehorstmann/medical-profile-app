@@ -77,8 +77,8 @@ if (pendingOrderLookupError || !pendingOrder) {
   return new NextResponse("OK", { status: 200 });
 }
 
-if (pendingOrder.status === "paid") {
-  console.log("STORE ORDER ALREADY PROCESSED");
+if (pendingOrder.status === "paid" && pendingOrder.email_sent === true) {
+  console.log("STORE ORDER ALREADY PROCESSED AND EMAIL SENT");
 
   return new NextResponse("OK", { status: 200 });
 }
@@ -120,10 +120,9 @@ if (existingOrder) {
     .update({ status: "paid" })
     .eq("id", pendingOrder.id);
 
-  console.log("STORE ORDER ALREADY EXISTS:", paymentId);
-
-  return new NextResponse("OK", { status: 200 });
+  console.log("STORE ORDER ALREADY EXISTS - CONTINUING TO EMAIL CHECK:", paymentId);
 }
+if (!existingOrder) {
 const { error: createOrderError } = await supabase
   .from("orders")
   .insert({
@@ -179,6 +178,9 @@ if (createOrderError) {
     "STORE CREATE ORDER ERROR:",
     createOrderError
   );
+
+  return new NextResponse("OK", { status: 200 });
+}
 
   return new NextResponse("OK", { status: 200 });
 }

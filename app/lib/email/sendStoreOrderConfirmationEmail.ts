@@ -1,7 +1,7 @@
 type StoreOrderItem = {
   name?: string;
   quantity?: number;
-  unitPrice?: number;
+  unit_price?: number;
   total?: number;
 };
 
