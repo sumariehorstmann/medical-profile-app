@@ -190,7 +190,14 @@ await supabase
   })
   .eq("id", pendingOrder.id);
 
+console.log("STORE EMAIL CHECK:", {
+  email: pendingOrder.email,
+  paymentId,
+});
+
 if (pendingOrder.email) {
+  console.log("STORE EMAIL SENDING:", pendingOrder.email);
+
   await sendStoreOrderConfirmationEmail({
     to: pendingOrder.email,
     customerName: pendingOrder.customer_name,
@@ -198,6 +205,10 @@ if (pendingOrder.email) {
     items: pendingOrder.items,
     totalAmount: Number(pendingOrder.total_amount || 0),
   });
+
+  console.log("STORE EMAIL FUNCTION FINISHED:", pendingOrder.email);
+} else {
+  console.error("STORE EMAIL NOT SENT - NO EMAIL ON PENDING ORDER");
 }
 
 console.log("STORE PAYMENT COMPLETE:", paymentId);
