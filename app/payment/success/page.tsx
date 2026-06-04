@@ -6,22 +6,24 @@ export default function StorePaymentSuccessPage() {
   return (
     <main style={styles.page}>
       <section style={styles.card}>
-        <h1 style={styles.title}>Store payment submitted</h1>
+        <h1 style={styles.title}>Order Confirmed</h1>
 
         <p style={styles.text}>
-          Thank you. Your store payment has been submitted successfully.
+          Thank you. Your payment was successful and your order has been received.
         </p>
 
         <p style={styles.text}>
-          Your order will be processed after PayFast confirms the payment.
-        </p>
+  Your order is now in our production queue and will be processed as soon as possible.
+</p>
 
         <div style={styles.infoBox}>
-          <strong>Next step:</strong>
-          <br />
-          Your custom RROI QR products will be manufactured and delivered within
-          7–14 working days.
-        </div>
+  <strong>What happens next?</strong>
+  <br />
+  Your order is custom made and will be manufactured and delivered within approximately 7–14 working days.
+  <br />
+  <br />
+  A confirmation email containing your order details has been sent to your email address.
+</div>
 
         <Link href="/profile" style={styles.primaryButton}>
           Go to Profile
