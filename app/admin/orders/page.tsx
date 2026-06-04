@@ -26,6 +26,19 @@ type Order = {
   emergency_contact_name: string | null;
   emergency_contact_surname: string | null;
   emergency_contact_phone: string | null;
+  order_type: string | null;
+payment_status: string | null;
+
+dog_tag_qty: number | null;
+card_qty: number | null;
+
+items: any[] | null;
+
+subtotal: number | null;
+delivery_fee: number | null;
+total_amount: number | null;
+
+email_sent: boolean | null;
 };
 
 const STATUS_OPTIONS = [
@@ -310,7 +323,7 @@ async function recoverMissingOrders() {
             <div id={`print-order-${order.id}`}>
               <div className="print-header" style={styles.printHeader}>
                 <h2 className="print-title" style={styles.printTitle}>
-                  RROI Premium Order
+                  {order.order_type === "store" ? "RROI Store Order" : "RROI Premium Order"}
                 </h2>
                 <div className="print-subtle" style={styles.printSubtle}>
                   Order Date: {formatDate(order.created_at)}
@@ -337,9 +350,56 @@ async function recoverMissingOrders() {
                 </div>
 
                 <div className="section" style={styles.section}>
-                  <h3 className="section-title" style={styles.sectionTitle}>
-                    Delivery Address
-                  </h3>
+  <h3 className="section-title" style={styles.sectionTitle}>
+    Order Details
+  </h3>
+
+  <div className="row" style={styles.row}>
+    <strong>Order Type:</strong> {order.order_type || "-"}
+  </div>
+
+  <div className="row" style={styles.row}>
+    <strong>Payment Status:</strong> {order.payment_status || "-"}
+  </div>
+
+  <div className="row" style={styles.row}>
+    <strong>Amount Paid:</strong> R{Number(order.total_amount || 0).toFixed(2)}
+  </div>
+
+  <div className="row" style={styles.row}>
+    <strong>Delivery Fee:</strong> R{Number(order.delivery_fee || 0).toFixed(2)}
+  </div>
+
+  <div className="row" style={styles.row}>
+    <strong>Dog Tags:</strong> {order.dog_tag_qty || 0}
+  </div>
+
+  <div className="row" style={styles.row}>
+    <strong>QR Cards:</strong> {order.card_qty || 0}
+  </div>
+<div className="row" style={styles.row}>
+  <strong>Products Ordered:</strong>
+  {Array.isArray(order.items) && order.items.length > 0 ? (
+    <ul style={{ margin: "6px 0 0 18px", padding: 0 }}>
+      {order.items.map((item: any, index: number) => (
+        <li key={index}>
+          {item.name || "Product"} × {item.quantity || 0}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <span> -</span>
+  )}
+</div>
+  <div className="row" style={styles.row}>
+    <strong>Email Sent:</strong> {order.email_sent ? "Yes" : "No"}
+  </div>
+</div>
+
+<div className="section" style={styles.section}>
+  <h3 className="section-title" style={styles.sectionTitle}>
+    Delivery Address
+  </h3>
                   <div className="row" style={styles.row}>
                     {order.shipping_unit || "-"}
                   </div>
