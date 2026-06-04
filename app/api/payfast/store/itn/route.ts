@@ -207,6 +207,15 @@ if (pendingOrder.email) {
   });
 
   console.log("STORE EMAIL FUNCTION FINISHED:", pendingOrder.email);
+  await supabase
+  .from("orders")
+  .update({ email_sent: true })
+  .eq("payfast_payment_id", paymentId);
+
+await supabase
+  .from("store_pending_orders")
+  .update({ email_sent: true })
+  .eq("id", pendingOrder.id);
 } else {
   console.error("STORE EMAIL NOT SENT - NO EMAIL ON PENDING ORDER");
 }
