@@ -22,7 +22,7 @@ export async function sendStoreOrderConfirmationEmail({
 
   if (!apiKey) {
     console.error("Missing BREVO_API_KEY");
-    return;
+    return false;
   }
 
   const safeItems = Array.isArray(items) ? items : [];
@@ -127,13 +127,15 @@ export async function sendStoreOrderConfirmationEmail({
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Brevo store order email failed:", errorText);
-      return;
-    }
+  const errorText = await response.text();
+  console.error("Brevo store order email failed:", errorText);
+  return false;
+}
 
-    console.log(`Store order confirmation email sent to ${to}`);
-  } catch (error) {
-    console.error("Store order email send error:", error);
-  }
+console.log(`Store order confirmation email sent to ${to}`);
+return true;
+} catch (error) {
+  console.error("Store order email send error:", error);
+  return false;
+}
 }

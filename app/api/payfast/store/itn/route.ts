@@ -181,9 +181,8 @@ if (createOrderError) {
 
   return new NextResponse("OK", { status: 200 });
 }
-
-  return new NextResponse("OK", { status: 200 });
 }
+ 
 
 await supabase
   .from("store_pending_orders")
@@ -200,24 +199,30 @@ console.log("STORE EMAIL CHECK:", {
 if (pendingOrder.email) {
   console.log("STORE EMAIL SENDING:", pendingOrder.email);
 
-  await sendStoreOrderConfirmationEmail({
-    to: pendingOrder.email,
-    customerName: pendingOrder.customer_name,
-    paymentReference: paymentId,
-    items: pendingOrder.items,
-    totalAmount: Number(pendingOrder.total_amount || 0),
-  });
+  const emailWasSent = await sendStoreOrderConfirmationEmail({
+  to: pendingOrder.email,
+  customerName: pendingOrder.customer_name,
+  paymentReference: paymentId,
+  items: pendingOrder.items,
+  totalAmount: Number(pendingOrder.total_amount || 0),
+});
 
-  console.log("STORE EMAIL FUNCTION FINISHED:", pendingOrder.email);
+console.log("STORE EMAIL FUNCTION FINISHED:", {
+  email: pendingOrder.email,
+  emailWasSent,
+});
+
+if (emailWasSent) {
   await supabase
-  .from("orders")
-  .update({ email_sent: true })
-  .eq("payfast_payment_id", paymentId);
+    .from("orders")
+    .update({ email_sent: true })
+    .eq("payfast_payment_id", paymentId);
 
-await supabase
-  .from("store_pending_orders")
-  .update({ email_sent: true })
-  .eq("id", pendingOrder.id);
+  await supabase
+    .from("store_pending_orders")
+    .update({ email_sent: true })
+    .eq("id", pendingOrder.id);
+}
 } else {
   console.error("STORE EMAIL NOT SENT - NO EMAIL ON PENDING ORDER");
 }
