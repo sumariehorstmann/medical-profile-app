@@ -45,7 +45,7 @@ email_sent: boolean | null;
 
 const STATUS_OPTIONS = [
   { value: "pending", label: "Pending" },
-  { value: "sent_to_manufacturing", label: "Sent to Rooi Veer" },
+  { value: "sent_to_manufacturing", label: "Sent to Manufacturing" },
   { value: "in_production", label: "In Production" },
   { value: "shipped", label: "Shipped" },
   { value: "completed", label: "Completed" },
@@ -56,6 +56,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     let mounted = true;
@@ -282,10 +283,36 @@ async function recoverMissingOrders() {
   Recover Missing Orders
 </button>
 
+<div style={{ marginBottom: 20 }}>
+  <select
+    value={statusFilter}
+    onChange={(e) => setStatusFilter(e.target.value)}
+    style={{
+      padding: "10px",
+      borderRadius: 6,
+      border: "1px solid #d1d5db",
+      minWidth: 220,
+    }}
+  >
+    <option value="all">All Orders</option>
+    <option value="pending">Pending</option>
+    <option value="sent_to_manufacturing">Sent to Manufacturing</option>
+    <option value="in_production">In Production</option>
+    <option value="shipped">Shipped</option>
+    <option value="completed">Completed</option>
+  </select>
+</div>
+
 {loading ? <div>Loading orders...</div> : null}
 {!loading && orders.length === 0 ? <div>No orders yet</div> : null}
 
-{orders.map((order) => (
+{orders
+  .filter(
+    (order) =>
+      statusFilter === "all" ||
+      order.status === statusFilter
+  )
+  .map((order) => (
           <div key={order.id} style={styles.card}>
             <div style={styles.topRow}>
               <div>
@@ -470,7 +497,7 @@ async function recoverMissingOrders() {
 function formatStatus(status: string) {
   switch (status) {
     case "sent_to_manufacturing":
-      return "Sent to Rooi Veer";
+      return "Sent to Manufacturing";
     case "in_production":
       return "In Production";
     case "shipped":
