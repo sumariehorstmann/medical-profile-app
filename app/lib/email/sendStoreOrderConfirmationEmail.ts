@@ -54,7 +54,7 @@ export async function sendStoreOrderConfirmationEmail({
           </tr>
         `;
 
-  const subject = "RROI order confirmation";
+  const subject = "RROI Order Confirmation";
 
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; padding: 20px; color: #0F172A;">
@@ -65,7 +65,7 @@ export async function sendStoreOrderConfirmationEmail({
       </p>
 
       <p style="font-size: 16px; line-height: 1.6;">
-        Thank you. We have received your payment and your RROI order has been confirmed.
+        Thank you. Your payment was successful and your RROI order has been received. Your order is now in our production queue.
       </p>
 
       <p style="font-size: 15px; line-height: 1.6;">
@@ -90,8 +90,8 @@ export async function sendStoreOrderConfirmationEmail({
       </p>
 
       <p style="font-size: 15px; line-height: 1.6;">
-        Your order is custom made. Manufacturing and delivery can take between 
-        <strong>7 and 14 working days</strong>. We will process your order as soon as possible.
+        Your order is custom made. Manufacturing and delivery can take approximately 
+        <strong>7–14 working days</strong>. We will process your order as soon as possible.
       </p>
 
       <p style="font-size: 15px; line-height: 1.6;">
