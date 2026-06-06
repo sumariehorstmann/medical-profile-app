@@ -8,8 +8,8 @@ export const dynamic = "force-dynamic";
 
 // 🔒 LOCKED PRICING
 const BASE_PRICE = 399;
-const AFFILIATE_PRICE = 369;
 const DISCOUNT_AMOUNT = 30;
+const AFFILIATE_PRICE = BASE_PRICE - DISCOUNT_AMOUNT;
 
 function payfastProcessUrl() {
   return process.env.PAYFAST_URL!;
@@ -135,7 +135,9 @@ export async function POST(req: NextRequest) {
     }
 
     
-    let finalAmount = BASE_PRICE;
+let finalAmount = BASE_PRICE;
+let appliedDiscountCode = "";
+let appliedAffiliateCode = "";
 
 const { data: savedOrderForm } = await supabaseAdmin
   .from("premium_order_forms")
@@ -143,24 +145,40 @@ const { data: savedOrderForm } = await supabaseAdmin
   .eq("user_id", user.id)
   .maybeSingle();
 
-const adminDiscountCode = String(
+const savedDiscountCode = String(
   savedOrderForm?.discount_code || ""
 ).trim().toUpperCase();
 
-const adminDiscountPercent = Number(
-  savedOrderForm?.discount_percent || 0
-);
 
-if (adminDiscountCode && adminDiscountPercent <= 0) {
-  return NextResponse.json(
-    { error: "Invalid or inactive discount code." },
-    { status: 400 }
+if (savedDiscountCode) {
+  const { data: discount } = await supabaseAdmin
+    .from("discount_codes")
+    .select("code, discount_percent, active")
+    .eq("code", savedDiscountCode)
+    .eq("active", true)
+    .maybeSingle();
+
+  if (!discount) {
+    return NextResponse.json(
+      { error: "Invalid or inactive discount code." },
+      { status: 400 }
+    );
+  }
+
+  const discountPercent = Number(discount.discount_percent || 0);
+
+  if (discountPercent <= 0 || discountPercent >= 100) {
+    return NextResponse.json(
+      { error: "Invalid discount percentage." },
+      { status: 400 }
+    );
+  }
+
+  finalAmount = Number(
+    (BASE_PRICE - BASE_PRICE * (discountPercent / 100)).toFixed(2)
   );
-}
 
-if (adminDiscountPercent > 0) {
-  finalAmount =
-    BASE_PRICE - (BASE_PRICE * adminDiscountPercent) / 100;
+  appliedDiscountCode = discount.code;
 } else if (affiliateCode) {
   const { data: affiliate } = await supabaseAdmin
     .from("affiliates")
@@ -177,8 +195,7 @@ if (adminDiscountPercent > 0) {
   }
 
   finalAmount = AFFILIATE_PRICE;
-} else {
-  finalAmount = BASE_PRICE;
+  appliedAffiliateCode = affiliateCode;
 }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!.trim();
@@ -243,7 +260,8 @@ if (adminDiscountPercent > 0) {
       item_description: "RROI Premium Kit",
       custom_str1: publicId,
       custom_str2: email,
-      custom_str3: affiliateCode || "",
+      custom_str3: appliedAffiliateCode || "",
+      custom_str4: appliedDiscountCode || "",
     };
 
     data.signature = buildSignature(data, process.env.PAYFAST_PASSPHRASE);
