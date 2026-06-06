@@ -168,9 +168,10 @@ const { error: createOrderError } = await supabase
 
     items: pendingOrder.items,
 
-    subtotal: pendingOrder.subtotal,
-    delivery_fee: pendingOrder.delivery_fee,
-    total_amount: pendingOrder.total_amount,
+subtotal: pendingOrder.subtotal,
+delivery_fee: pendingOrder.delivery_fee,
+total_amount: pendingOrder.total_amount,
+discount_code: pendingOrder.discount_code,
   });
 
 if (createOrderError) {

@@ -38,6 +38,8 @@ subtotal: number | null;
 delivery_fee: number | null;
 total_amount: number | null;
 
+discount_code: string | null;
+
 email_sent: boolean | null;
 };
 
@@ -390,6 +392,9 @@ async function recoverMissingOrders() {
   ) : (
     <span> -</span>
   )}
+</div>
+<div className="row" style={styles.row}>
+  <strong>Discount Code:</strong> {order.discount_code || "-"}
 </div>
   <div className="row" style={styles.row}>
     <strong>Email Sent:</strong> {order.email_sent ? "Yes" : "No"}

@@ -49,10 +49,11 @@ export async function GET() {
   dog_tag_qty,
   card_qty,
   items,
-  subtotal,
-  delivery_fee,
-  total_amount,
-  email_sent
+subtotal,
+delivery_fee,
+total_amount,
+discount_code,
+email_sent
 `)
     .order("created_at", { ascending: false });
 
