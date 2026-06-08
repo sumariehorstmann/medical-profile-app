@@ -25,7 +25,7 @@ export default function DownloadQRWallpaper({
       const dataUrl = await htmlToImage.toPng(ref.current, {
         pixelRatio: 2,
         cacheBust: true,
-        backgroundColor: "#F1F5F9",
+        backgroundColor: "#000000",
       });
 
       const link = document.createElement("a");

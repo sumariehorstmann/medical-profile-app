@@ -23,18 +23,18 @@ export default function QRScreensaver({
       <div style={styles.inner}>
         <div style={styles.brandWrap}>
           <img
-            src="/logo-full-v2.png"
-            alt="RROI logo"
-            style={styles.realLogo}
-          />
+  src="/logo-full-white.png"
+  alt="RROI logo"
+  style={styles.realLogo}
+/>
         </div>
 
         <div style={styles.qrWrap}>
           <QRCodeSVG
             value={qrValue || " "}
             size={720}
-            bgColor="#FFFFFF"
-            fgColor="#000000"
+            bgColor="#000000"
+            fgColor="#FFFFFF"
             level="H"
             includeMargin={true}
           />
@@ -55,8 +55,7 @@ const styles: Record<string, React.CSSProperties> = {
   canvas: {
     width: 1440,
     height: 3040,
-    background:
-      "linear-gradient(180deg, #0B0F14 0%, #111827 55%, #0F172A 100%)",
+    background: "#000000",
     color: "#FFFFFF",
     display: "flex",
     alignItems: "center",
@@ -74,49 +73,32 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: 64,
+    gap: 80,
   },
 
   brandWrap: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "18px",
-    borderRadius: 34,
-    background: "rgba(255,255,255,0.04)",
-    border: "1px solid rgba(255,255,255,0.08)",
-    backdropFilter: "blur(18px)",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
-  },
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+},
 
   realLogo: {
-    width: 360,
-    height: "auto",
-    display: "block",
-    objectFit: "contain",
-    background: "#FFFFFF",
-    padding: 18,
-    borderRadius: 20,
-    boxShadow:
-      "0 10px 40px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.65)",
-  },
+  width: 420,
+  height: "auto",
+  display: "block",
+  objectFit: "contain",
+},
 
   qrWrap: {
   width: 860,
   height: 860,
-  background: "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)",
+  background: "#000000",
   borderRadius: 52,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   padding: 70,
-  position: "relative",
-
-  /* NEW DARK BORDER */
-  border: "18px solid rgba(15,23,42,0.95)",
-
-  boxShadow:
-    "0 40px 120px rgba(0,0,0,0.55), 0 0 80px rgba(34,197,94,0.08), 0 0 0 1px rgba(255,255,255,0.08)",
+  border: "12px solid #FFFFFF",
 },
 
   textWrap: {
@@ -143,7 +125,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 500,
     lineHeight: 1.1,
     textAlign: "center",
-    color: "#CBD5E1",
+    color: "#FFFFFF",
     letterSpacing: 1.5,
     textTransform: "uppercase",
   },
