@@ -26,27 +26,7 @@ export default function SubscribePage() {
 
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [email, setEmail] = useState("");
-  const [affiliateCode, setAffiliateCode] = useState("");
-
-useEffect(() => {
-  const urlRef = new URLSearchParams(window.location.search)
-    .get("ref")
-    ?.trim()
-    .toUpperCase();
-
-  if (urlRef) {
-    localStorage.setItem("rroi_affiliate_ref", urlRef);
-    setAffiliateCode(urlRef);
-    return;
-  }
-
-  const savedRef = localStorage.getItem("rroi_affiliate_ref");
-
-  if (savedRef) {
-    setAffiliateCode(savedRef.toUpperCase());
-  }
-}, []);
-
+  
   useEffect(() => {
     async function loadData() {
       try {
@@ -68,7 +48,7 @@ if (currentRef) {
 }
 
 return;
-  return;
+  
 }
 
         setEmail(user.email ?? "");
@@ -122,7 +102,7 @@ return;
           buyerEmail: email,
           firstName: profile.first_name ?? "",
           lastName: profile.last_name ?? "",
-          affiliateCode: affiliateCode.trim().toUpperCase(),
+          affiliateCode: "",
           agreedToLegal: true,
         }),
       });
@@ -193,62 +173,7 @@ return;
             </p>
           </div>
 
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Affiliate Discount</h2>
-
-{affiliateCode ? (
-  <div
-    style={{
-      background: "#ECFDF5",
-      border: "1px solid #A7F3D0",
-      borderRadius: 12,
-      padding: 14,
-    }}
-  >
-    <p
-      style={{
-        margin: 0,
-        fontSize: 15,
-        fontWeight: 700,
-        color: "#065F46",
-      }}
-    >
-      Affiliate Discount Applied
-    </p>
-
-    <p
-      style={{
-        margin: "6px 0 0",
-        fontSize: 14,
-        color: "#065F46",
-      }}
-    >
-      Code: {affiliateCode}
-    </p>
-
-    <p
-      style={{
-        margin: "6px 0 0",
-        fontSize: 14,
-        color: "#065F46",
-      }}
-    >
-      You save R30 on your Premium upgrade.
-    </p>
-  </div>
-) : (
-  <input
-    type="text"
-    value={affiliateCode}
-    onChange={(e) =>
-      setAffiliateCode(e.target.value.toUpperCase())
-    }
-    placeholder="Enter affiliate code"
-    style={styles.input}
-  />
-)}
-          </div>
-
+          
           <div style={styles.section}>
             <label style={styles.checkboxRow}>
               <input
@@ -348,17 +273,7 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.7,
     color: MUTED,
   },
-  input: {
-    width: "100%",
-    border: `1px solid ${BORDER}`,
-    borderRadius: 12,
-    padding: "12px 14px",
-    fontSize: 15,
-    color: TEXT,
-    outline: "none",
-    background: "#FFFFFF",
-  },
-  checkboxRow: {
+    checkboxRow: {
     display: "flex",
     alignItems: "flex-start",
     gap: 12,
