@@ -67,14 +67,14 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   inner: {
-    width: "100%",
-    maxWidth: 1040,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 80,
-  },
+  width: "100%",
+  maxWidth: 1040,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 60,
+},
 
   brandWrap: {
   display: "flex",
@@ -83,15 +83,15 @@ const styles: Record<string, React.CSSProperties> = {
 },
 
   realLogo: {
-  width: 420,
+  width: 650,
   height: "auto",
   display: "block",
   objectFit: "contain",
 },
 
   qrWrap: {
-  width: 860,
-  height: 860,
+  width: 920,
+  height: 920,
   background: "#000000",
   borderRadius: 52,
   display: "flex",
