@@ -34,8 +34,8 @@ type ProfileRow = {
   emergency1_phone: string | null;
 };
 
-const DOG_TAG_PRICE = 150;
-const QR_CARD_PRICE = 150;
+const DOG_TAG_PRICE = 200;
+const QR_CARD_PRICE = 200;
 const DELIVERY_FEE = 120;
 
 const EMPTY_FORM: OrderFormData = {
