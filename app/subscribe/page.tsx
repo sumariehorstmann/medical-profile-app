@@ -51,9 +51,18 @@ export default function SubscribePage() {
   const [email, setEmail] = useState("");
 
   const discountPercent = Number(orderForm?.discount_percent || 0);
-  const finalAmount = Number(
-    (BASE_PRICE - BASE_PRICE * (discountPercent / 100)).toFixed(2)
-  );
+
+const isAffiliateCode =
+  orderForm?.discount_code?.startsWith("RROI") &&
+  discountPercent === 0;
+
+const discountAmount = isAffiliateCode
+  ? 30
+  : BASE_PRICE * (discountPercent / 100);
+
+const finalAmount = Number(
+  (BASE_PRICE - discountAmount).toFixed(2)
+);
 
   useEffect(() => {
     async function loadData() {
@@ -231,7 +240,8 @@ export default function SubscribePage() {
             <p style={styles.paragraph}>Normal Price: R499.00</p>
             {orderForm?.discount_code ? (
               <p style={styles.paragraph}>
-                Discount Code: {orderForm.discount_code} ({discountPercent}% off)
+                Discount Code: {orderForm.discount_code}{" "}
+{isAffiliateCode ? "(R30 off)" : `(${discountPercent}% off)`}
               </p>
             ) : null}
             <p style={styles.amount}>Amount to Pay: R{finalAmount.toFixed(2)}</p>

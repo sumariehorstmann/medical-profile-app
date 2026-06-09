@@ -158,27 +158,39 @@ if (savedDiscountCode) {
     .eq("active", true)
     .maybeSingle();
 
-  if (!discount) {
-    return NextResponse.json(
-      { error: "Invalid or inactive discount code." },
-      { status: 400 }
+  if (discount) {
+    const discountPercent = Number(discount.discount_percent || 0);
+
+    if (discountPercent <= 0 || discountPercent >= 100) {
+      return NextResponse.json(
+        { error: "Invalid discount percentage." },
+        { status: 400 }
+      );
+    }
+
+    finalAmount = Number(
+      (BASE_PRICE - BASE_PRICE * (discountPercent / 100)).toFixed(2)
     );
+
+    appliedDiscountCode = discount.code;
+  } else {
+    const { data: affiliate } = await supabaseAdmin
+      .from("affiliates")
+      .select("affiliate_code")
+      .eq("affiliate_code", savedDiscountCode)
+      .eq("status", "approved")
+      .maybeSingle();
+
+    if (!affiliate) {
+      return NextResponse.json(
+        { error: "Invalid discount or affiliate code." },
+        { status: 400 }
+      );
+    }
+
+    finalAmount = AFFILIATE_PRICE;
+    appliedAffiliateCode = savedDiscountCode;
   }
-
-  const discountPercent = Number(discount.discount_percent || 0);
-
-  if (discountPercent <= 0 || discountPercent >= 100) {
-    return NextResponse.json(
-      { error: "Invalid discount percentage." },
-      { status: 400 }
-    );
-  }
-
-  finalAmount = Number(
-    (BASE_PRICE - BASE_PRICE * (discountPercent / 100)).toFixed(2)
-  );
-
-  appliedDiscountCode = discount.code;
 } else if (affiliateCode) {
   const { data: affiliate } = await supabaseAdmin
     .from("affiliates")
