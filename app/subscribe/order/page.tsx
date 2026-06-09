@@ -298,12 +298,15 @@ if (discountCode.trim()) {
     );
     setDiscountValid(true);
   } else {
-    const { data: affiliate, error: affiliateError } = await supabase
-      .from("affiliates")
-      .select("affiliate_code, status")
-      .eq("affiliate_code", code)
-      .eq("status", "approved")
-      .maybeSingle();
+    const { data: affiliateRows, error: affiliateError } = await supabase.rpc(
+  "validate_affiliate_code",
+  { input_code: code }
+);
+
+console.log("AFFILIATE RPC RESULT:", affiliateRows);
+console.log("AFFILIATE RPC ERROR:", affiliateError);
+
+const affiliate = affiliateRows?.[0] || null;
 
     if (affiliateError || !affiliate) {
       setDiscountMessage("Invalid discount code.");
