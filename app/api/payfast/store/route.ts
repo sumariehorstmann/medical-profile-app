@@ -2,9 +2,9 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const DOG_TAG_PRICE = 99;
-const QR_CARD_PRICE = 99;
-const DELIVERY_FEE = 99;
+const DOG_TAG_PRICE = 150;
+const QR_CARD_PRICE = 150;
+const DELIVERY_FEE = 120;
 
 function payfastProcessUrl() {
   return process.env.PAYFAST_URL!;
@@ -225,11 +225,12 @@ const total = Number(
     card_qty: cards,
 
     items,
-    subtotal,
-    delivery_fee: DELIVERY_FEE,
-    total_amount: total,
+subtotal,
+delivery_fee: DELIVERY_FEE,
+total_amount: total,
+discount_code: appliedDiscountCode,
 
-    status: "pending",
+status: "pending",
   });
 
 if (pendingOrderError) {

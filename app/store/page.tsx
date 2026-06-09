@@ -12,9 +12,9 @@ const PAGE_BG = "#F8FAFC";
 const CARD_BG = "#FFFFFF";
 const BRAND_GREEN = "#157A55";
 
-const DOG_TAG_PRICE = 99;
-const QR_CARD_PRICE = 99;
-const DELIVERY_FEE = 99;
+const DOG_TAG_PRICE = 150;
+const QR_CARD_PRICE = 150;
+const DELIVERY_FEE = 120;
 
 export default function StorePage() {
   const [dogTags, setDogTags] = useState(0);
