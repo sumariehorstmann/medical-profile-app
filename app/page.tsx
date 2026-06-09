@@ -43,8 +43,7 @@ const [isInstalled, setIsInstalled] = useState(false);
             </h1>
 
             <p style={styles.sub}>
-              RROI helps emergency responders and trusted bystanders access your
-              emergency contact and medical details when you cannot communicate.
+              RROI allows emergency responders, healthcare personnel, and bystanders to access the information you choose to make available when your QR code is scanned.
             </p>
 
             <div style={styles.ctaRow}>
@@ -58,7 +57,7 @@ const [isInstalled, setIsInstalled] = useState(false);
             </div>
 
             <p style={styles.microText}>
-              No app required to scan. Works from any smartphone camera.
+              No app required. Most modern smartphones can scan QR codes using the device camera.
             </p>
           </div>
         </div>
@@ -89,7 +88,7 @@ const [isInstalled, setIsInstalled] = useState(false);
     </h3>
 
     <p style={styles.cardText}>
-      Add your emergency contact and important medical information.
+      Add your emergency contacts and any medical information you choose to provide.
     </p>
   </div>
 
@@ -113,7 +112,7 @@ const [isInstalled, setIsInstalled] = useState(false);
     </h3>
 
     <p style={styles.cardText}>
-      When scanned, your public emergency profile opens instantly in a browser.
+      When scanned, your public emergency profile can be viewed in a web browser, subject to internet connectivity and device compatibility.
     </p>
   </div>
 </div>
@@ -225,7 +224,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 
       <section style={styles.section}>
         <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Useful during everyday emergencies</h2>
+          <h2 style={styles.sectionTitle}>Designed to assist with emergency information sharing</h2>
 
           <div style={styles.useGrid}>
             <div style={styles.useCard}>Medical emergencies</div>
@@ -262,10 +261,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 </h2>
 
 <p style={styles.finalText}>
-  Be prepared for any emergency situation. Start with a free profile
-  today and upgrade to Premium anytime for full public medical profile
-  visibility. You choose what information you want visible when your QR
-  code is scanned.
+  Start with a free profile today and upgrade to Premium anytime for expanded public profile visibility. You choose what information is made available when your QR code is scanned.
 </p>
 
             <Link href="/login?mode=signup" style={styles.primaryBtn}>
@@ -338,11 +334,11 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: "center",
   },
   badge: {
-    display: "inline-flex",
-    padding: "8px 13px",
-    borderRadius: 999,
-    border: `1px solid ${BORDER}`,
-    background: "#FFFFFF",
+  display: "inline-flex",
+  padding: "0",
+  borderRadius: 0,
+  border: "none",
+  background: "transparent",
     color: BRAND_GREEN,
     fontSize: 13,
     fontWeight: 900,
