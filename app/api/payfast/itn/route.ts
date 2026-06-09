@@ -11,7 +11,7 @@ const supabase = createClient(
 
 const BASE_PRICE = 499;
 const AFFILIATE_PRICE = 369;
-const COMMISSION_RATE = 0.08;
+const AFFILIATE_COMMISSION = 30;
 
 function encodePayFastValue(value: string) {
   return encodeURIComponent(value.trim()).replace(/%20/g, "+");
@@ -382,9 +382,7 @@ if (Math.abs(amountGross - expectedAmount) > 0.01) {
         if (existingReferralError) {
           console.error("EXISTING REFERRAL LOOKUP ERROR:", existingReferralError);
         } else if (!existingReferral) {
-          const commission = Number(
-            (AFFILIATE_PRICE * COMMISSION_RATE).toFixed(2)
-          );
+          const commission = 30;
 
           const { error: referralInsertError } = await supabase
             .from("affiliate_referrals")

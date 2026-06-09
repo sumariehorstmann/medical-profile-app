@@ -246,7 +246,7 @@ const hasHadPremium =
                 <strong>Your Code:</strong> {affiliate.affiliate_code}
               </p>
               <p>
-                <strong>Commission:</strong> 8% of base price
+                <strong>Commission:</strong> R30 of base price
               </p>
               <p>
                 <strong>Total Earned:</strong> R

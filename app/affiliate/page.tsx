@@ -72,7 +72,7 @@ export default function AffiliatePage() {
 </p>
             <p style={styles.paragraph}>
               Commission per qualifying Premium Full Kit purchase:{" "}
-              <strong>R29.52</strong>.
+              <strong>R30</strong>.
             </p>
           </div>
          <div style={styles.section}>
