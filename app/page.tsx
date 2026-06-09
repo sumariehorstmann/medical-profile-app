@@ -205,7 +205,7 @@ const [isInstalled, setIsInstalled] = useState(false);
     <ul style={styles.list}>
       <li>Full medical profile visible when scanned</li>
       <li>2 physical engraved QR products included</li>
-      <li>Free nationwide delivery in South Africa</li>
+      <li>Nationwide delivery included</li>
       <li>Downloadable phone QR lock screen</li>
       <li>Secure profile you can update anytime</li>
     </ul>
