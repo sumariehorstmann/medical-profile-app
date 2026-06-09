@@ -35,7 +35,7 @@ const TEXT = "#0F172A";
 const MUTED = "#475569";
 const BORDER = "#E5E7EB";
 const BG = "#F8FAFC";
-const PAYOUT_THRESHOLD = 500;
+const PAYOUT_THRESHOLD = 600;
 
 export default function AffiliateDashboardPage() {
   const router = useRouter();
@@ -580,7 +580,7 @@ async function reactivateAffiliateAccess() {
               in that payout cycle.
             </p>
             <p style={styles.infoText}>
-              Approved balances below R500 roll over to the next payout period.
+              Approved balances below R600 roll over to the next payout period.
             </p>
           </div>
         </section>

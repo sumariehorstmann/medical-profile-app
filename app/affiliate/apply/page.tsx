@@ -624,7 +624,7 @@ useEffect(() => {
                   Affiliate payouts are processed <strong>quarterly</strong>.
                 </p>
                 <p style={styles.infoText}>
-                  Minimum payout threshold: <strong>R500</strong>.
+                  Minimum payout threshold: <strong>R600</strong>.
                 </p>
                 <p style={styles.infoText}>
                   Cut-off dates: <strong>15 March, 15 June, 15 September, 15 December</strong>.

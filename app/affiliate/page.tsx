@@ -79,7 +79,7 @@ export default function AffiliatePage() {
   <h2 style={styles.sectionTitle}>Payouts</h2>
   <p style={styles.paragraph}>
     Affiliate payouts are made quarterly by EFT, subject to verification,
-    qualifying referrals, and a minimum payout threshold of R500.
+    qualifying referrals, and a minimum payout threshold of R600.
   </p>
   <p style={styles.paragraph}>
     Applications, approval, commissions, discounts, and payouts remain subject
