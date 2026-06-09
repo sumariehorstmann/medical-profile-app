@@ -269,40 +269,61 @@ const [discountValid, setDiscountValid] = useState(false);
         return;
       }
 let appliedDiscountPercent = 0;
+let appliedDiscountCode = "";
+let appliedAffiliateCode = "";
 
 if (discountCode.trim()) {
+  const code = discountCode.trim().toUpperCase();
+
+  setDiscountMessage("");
+  setDiscountValid(false);
+
   const { data: discount, error: discountError } = await supabase
     .from("discount_codes")
     .select("*")
-    .eq("code", discountCode.trim())
+    .eq("code", code)
     .eq("active", true)
     .maybeSingle();
-setDiscountMessage("");
-setDiscountValid(false);
-  if (
-    discountError ||
-    !discount ||
-    (discount.allowed_email &&
-      discount.allowed_email !== session.user.email)
-  ) {
-    setDiscountMessage("Invalid discount code.");
-setDiscountValid(false);
-setSaving(false);
-return;
-  }
 
-  appliedDiscountPercent = discount.discount_percent;
-  setDiscountMessage(
-  `${discount.discount_percent}% discount code applied successfully.`
-);
-setDiscountValid(true);
+  if (
+    discount &&
+    !discountError &&
+    (!discount.allowed_email || discount.allowed_email === session.user.email)
+  ) {
+    appliedDiscountPercent = discount.discount_percent;
+    appliedDiscountCode = code;
+
+    setDiscountMessage(
+      `${discount.discount_percent}% discount code applied successfully.`
+    );
+    setDiscountValid(true);
+  } else {
+    const { data: affiliate, error: affiliateError } = await supabase
+      .from("affiliates")
+      .select("affiliate_code, status")
+      .eq("affiliate_code", code)
+      .eq("status", "approved")
+      .maybeSingle();
+
+    if (affiliateError || !affiliate) {
+      setDiscountMessage("Invalid discount code.");
+      setDiscountValid(false);
+      setSaving(false);
+      return;
+    }
+
+    appliedAffiliateCode = code;
+
+    setDiscountMessage("Affiliate code applied successfully. You save R30.");
+    setDiscountValid(true);
+  }
 }
       const { error } = await supabase
   .from("premium_order_forms")
   .upsert(
     {
       user_id: session.user.id,
-      discount_code: discountCode.trim() || null,
+      discount_code: appliedDiscountCode || appliedAffiliateCode || null,
       discount_percent: appliedDiscountPercent,
       ...form,
     },
@@ -367,7 +388,7 @@ if (error) {
             <ul style={styles.summaryList}>
               <li>2 × QR code emergency products</li>
               <li>Premium emergency profile activation</li>
-              <li>Free nationwide delivery</li>
+              <li>Nationwide delivery included</li>
             </ul>
           </div>
 <div style={styles.deliveryBox}>
