@@ -10,23 +10,51 @@ const PAGE_BG = "#F8FAFC";
 const CARD_BG = "#FFFFFF";
 const GREEN = "#157A55";
 
+const BASE_PRICE = 399;
+
 type ProfileRow = {
   public_id: string | null;
   first_name: string | null;
   last_name: string | null;
 };
 
+type OrderFormRow = {
+  first_name: string | null;
+  last_name: string | null;
+  blood_type: string | null;
+  allergies: string | null;
+  emergency_contact_name: string | null;
+  emergency_contact_surname: string | null;
+  emergency_contact_phone: string | null;
+  email: string | null;
+  cellphone: string | null;
+  shipping_unit: string | null;
+  shipping_street: string | null;
+  shipping_city: string | null;
+  shipping_province: string | null;
+  shipping_postal_code: string | null;
+  shipping_country: string | null;
+  discount_code: string | null;
+  discount_percent: number | null;
+};
+
 export default function SubscribePage() {
   const supabase = createSupabaseBrowser();
- 
+
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [agreed, setAgreed] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const [profile, setProfile] = useState<ProfileRow | null>(null);
+  const [orderForm, setOrderForm] = useState<OrderFormRow | null>(null);
   const [email, setEmail] = useState("");
-  
+
+  const discountPercent = Number(orderForm?.discount_percent || 0);
+  const finalAmount = Number(
+    (BASE_PRICE - BASE_PRICE * (discountPercent / 100)).toFixed(2)
+  );
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -39,17 +67,9 @@ export default function SubscribePage() {
         } = await supabase.auth.getUser();
 
         if (userError || !user) {
-  const currentRef = localStorage.getItem("rroi_affiliate_ref");
-
-if (currentRef) {
-  window.location.href = `/login?next=/subscribe?ref=${currentRef}`;
-} else {
-  window.location.href = "/login?next=/subscribe";
-}
-
-return;
-  
-}
+          window.location.href = "/login?next=/subscribe";
+          return;
+        }
 
         setEmail(user.email ?? "");
 
@@ -65,6 +85,21 @@ return;
         }
 
         setProfile(profileData);
+
+        const { data: orderData, error: orderError } = await supabase
+          .from("premium_order_forms")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (orderError || !orderData) {
+          setMessage(
+            "Order details not found. Please complete your order details first."
+          );
+          return;
+        }
+
+        setOrderForm(orderData);
       } catch {
         setMessage("Failed to load subscription details.");
       } finally {
@@ -77,9 +112,7 @@ return;
 
   async function handleSubscribe() {
     if (!agreed) {
-      setMessage(
-        "Please agree to the Terms, Privacy Policy, and Refund Policy."
-      );
+      setMessage("Please agree to the Terms, Privacy Policy, and Refund Policy.");
       return;
     }
 
@@ -109,10 +142,7 @@ return;
 
       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data?.error || "Unable to start payment.");
-      }
-
+      if (!res.ok) throw new Error(data?.error || "Unable to start payment.");
       if (!data?.processUrl || !data?.fields) {
         throw new Error("Invalid payment response.");
       }
@@ -155,25 +185,66 @@ return;
       <section style={styles.container}>
         <div style={styles.card}>
           <div style={styles.topBlock}>
-            <h1 style={styles.title}>Upgrade to Premium</h1>
+            <h1 style={styles.title}>Review Your Premium Order</h1>
             <p style={styles.subtitle}>
-              Unlock full emergency profile visibility and continue to secure
-              checkout with PayFast.
+              Please confirm your details before continuing to secure checkout with PayFast.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Your Details</h2>
+            <h2 style={styles.sectionTitle}>Personal Details</h2>
+            <p style={styles.paragraph}>Name: {orderForm?.first_name || "-"} {orderForm?.last_name || "-"}</p>
+            <p style={styles.paragraph}>Email: {orderForm?.email || email || "-"}</p>
+            <p style={styles.paragraph}>Cellphone: {orderForm?.cellphone || "-"}</p>
+            <p style={styles.paragraph}>Blood Type: {orderForm?.blood_type || "-"}</p>
+            <p style={styles.paragraph}>Allergies: {orderForm?.allergies || "-"}</p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>Emergency Contact</h2>
             <p style={styles.paragraph}>
-              Name: {profile?.first_name || "-"} {profile?.last_name || "-"}
+              Name: {orderForm?.emergency_contact_name || "-"} {orderForm?.emergency_contact_surname || "-"}
             </p>
-            <p style={styles.paragraph}>Email: {email || "-"}</p>
             <p style={styles.paragraph}>
-              Public ID: {profile?.public_id || "-"}
+              Phone: {orderForm?.emergency_contact_phone || "-"}
             </p>
           </div>
 
-          
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>Delivery Address</h2>
+            <p style={styles.paragraph}>{orderForm?.shipping_unit || "-"}</p>
+            <p style={styles.paragraph}>{orderForm?.shipping_street || "-"}</p>
+            <p style={styles.paragraph}>
+              {orderForm?.shipping_city || "-"}, {orderForm?.shipping_province || "-"}
+            </p>
+            <p style={styles.paragraph}>
+              {orderForm?.shipping_postal_code || "-"}, {orderForm?.shipping_country || "South Africa"}
+            </p>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>Order Summary</h2>
+            <p style={styles.paragraph}>Product: RROI Premium Full Kit</p>
+            <p style={styles.paragraph}>Includes: 2 × QR code emergency products</p>
+            <p style={styles.paragraph}>Premium profile activation: Included</p>
+            <p style={styles.paragraph}>Nationwide delivery: Included</p>
+            <p style={styles.paragraph}>Normal Price: R399.00</p>
+            {orderForm?.discount_code ? (
+              <p style={styles.paragraph}>
+                Discount Code: {orderForm.discount_code} ({discountPercent}% off)
+              </p>
+            ) : null}
+            <p style={styles.amount}>Amount to Pay: R{finalAmount.toFixed(2)}</p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => (window.location.href = "/subscribe/order")}
+            style={styles.backButton}
+          >
+            Back to Edit Order Details
+          </button>
+
           <div style={styles.section}>
             <label style={styles.checkboxRow}>
               <input
@@ -184,18 +255,9 @@ return;
               />
               <span style={styles.checkboxText}>
                 I agree to the{" "}
-                <a href="/terms" style={styles.link}>
-                  Terms &amp; Conditions
-                </a>
-                ,{" "}
-                <a href="/privacy" style={styles.link}>
-                  Privacy Policy
-                </a>
-                , and{" "}
-                <a href="/refund-policy" style={styles.link}>
-                  Refund &amp; Returns Policy
-                </a>
-                .
+                <a href="/terms" style={styles.link}>Terms &amp; Conditions</a>,{" "}
+                <a href="/privacy" style={styles.link}>Privacy Policy</a>, and{" "}
+                <a href="/refund-policy" style={styles.link}>Refund &amp; Returns Policy</a>.
               </span>
             </label>
           </div>
@@ -204,11 +266,11 @@ return;
 
           <button
             onClick={handleSubscribe}
-            disabled={loading || !agreed}
+            disabled={loading || !agreed || !orderForm}
             style={{
               ...styles.button,
-              opacity: loading || !agreed ? 0.6 : 1,
-              cursor: loading || !agreed ? "not-allowed" : "pointer",
+              opacity: loading || !agreed || !orderForm ? 0.6 : 1,
+              cursor: loading || !agreed || !orderForm ? "not-allowed" : "pointer",
             }}
           >
             {loading ? "Redirecting..." : "Continue to PayFast"}
@@ -273,7 +335,26 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.7,
     color: MUTED,
   },
-    checkboxRow: {
+  amount: {
+    margin: "14px 0 0",
+    fontSize: 22,
+    lineHeight: 1.4,
+    color: GREEN,
+    fontWeight: 900,
+  },
+  backButton: {
+    width: "100%",
+    border: `1px solid ${BORDER}`,
+    borderRadius: 14,
+    padding: "13px 18px",
+    background: "#FFFFFF",
+    color: TEXT,
+    fontSize: 15,
+    fontWeight: 800,
+    marginBottom: 18,
+    cursor: "pointer",
+  },
+  checkboxRow: {
     display: "flex",
     alignItems: "flex-start",
     gap: 12,
