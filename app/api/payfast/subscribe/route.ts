@@ -7,7 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 export const dynamic = "force-dynamic";
 
 // 🔒 LOCKED PRICING
-const BASE_PRICE = 399;
+const BASE_PRICE = 499;
 const DISCOUNT_AMOUNT = 30;
 const AFFILIATE_PRICE = BASE_PRICE - DISCOUNT_AMOUNT;
 

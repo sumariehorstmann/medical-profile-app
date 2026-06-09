@@ -15,16 +15,17 @@ type Profile = {
   emergency1_phone: string | null;
 };
 
-const BASE_PRICE = 399;
+const BASE_PRICE = 499;
 const DISCOUNT_AMOUNT = 30;
 const AFFILIATE_PRICE = 369;
 
 function PayPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const urlRef = (searchParams.get("ref") || "").trim().toUpperCase();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
 
-  const urlRef = (searchParams.get("ref") || "").trim().toUpperCase();
+  
 
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);

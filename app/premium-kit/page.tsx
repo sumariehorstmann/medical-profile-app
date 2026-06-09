@@ -26,7 +26,7 @@ export default function PremiumKitPage() {
         <h1 style={styles.h1}>Premium Kit</h1>
 
         <p style={styles.subtitle}>
-          The R399 Premium Kit gives you Premium access plus physical QR items
+          The R499 Premium Kit gives you Premium access plus physical QR items
           that can be scanned in an emergency.
         </p>
 
@@ -59,7 +59,7 @@ export default function PremiumKitPage() {
         </div>
 
         <div style={styles.card}>
-          <h2 style={styles.h2}>Included in the R399 Premium Kit</h2>
+          <h2 style={styles.h2}>Included in the R499 Premium Kit</h2>
 
           <ul style={styles.list}>
             <li>1-year RROI Premium subscription</li>

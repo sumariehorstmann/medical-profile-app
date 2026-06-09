@@ -100,7 +100,7 @@ const hasHadPremium =
             </p>
             {!isPremium && !hasHadPremium && (
   <Link href="/subscribe/order" style={styles.upgradeBtn}>
-    Get Premium Kit - R399
+    Get Premium Kit - R499
   </Link>
 )}
 {!hasHadPremium && (
@@ -177,7 +177,7 @@ const hasHadPremium =
     ? "Renew Premium Full Kit"
     : "Premium Full Kit"}
 </h3>
-        <div style={styles.upgradeOptionPrice}>R399</div>
+        <div style={styles.upgradeOptionPrice}>R499</div>
 
         <p style={styles.upgradeOptionDescription}>
           Includes 1 year Premium subscription, 2 engraved physical QR products,

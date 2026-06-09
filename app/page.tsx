@@ -182,7 +182,7 @@ const [isInstalled, setIsInstalled] = useState(false);
     </Link>
   </div>
 
-  {/* R399 */}
+  {/* R499 */}
   <div style={styles.planCardFeatured}>
     <div style={styles.planLabelFeatured}>
       Premium Full Kit
@@ -192,7 +192,7 @@ const [isInstalled, setIsInstalled] = useState(false);
       Full Emergency Profile
     </h3>
 
-    <p style={styles.planPrice}>R399 once-off</p>
+    <p style={styles.planPrice}>R499 once-off</p>
 
     <p style={styles.planSub}>
       Includes first year Premium subscription

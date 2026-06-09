@@ -50,14 +50,14 @@ export default function AffiliatePage() {
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>Affiliate discount</h2>
             <p style={styles.paragraph}>
-  Affiliate discounts apply only to the RROI Premium Full Kit (R399), which includes two physical QR products.
+  Affiliate discounts apply only to the RROI Premium Full Kit (R499), which includes two physical QR products.
 </p>
 
 <p style={styles.paragraph}>
   Affiliate codes are not valid for Premium Visibility Only subscriptions (R99), renewals, store purchases, or any other products unless expressly stated by RROI.
 </p>
             <p style={styles.paragraph}>
-              Normal Premium price: <strong>R399</strong>
+              Normal Premium price: <strong>R499</strong>
               <br />
               Affiliate code discount: <strong>R30</strong>
               <br />

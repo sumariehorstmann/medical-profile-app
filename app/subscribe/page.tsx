@@ -10,7 +10,7 @@ const PAGE_BG = "#F8FAFC";
 const CARD_BG = "#FFFFFF";
 const GREEN = "#157A55";
 
-const BASE_PRICE = 399;
+const BASE_PRICE = 499;
 
 type ProfileRow = {
   public_id: string | null;
@@ -228,7 +228,7 @@ export default function SubscribePage() {
             <p style={styles.paragraph}>Includes: 2 × QR code emergency products</p>
             <p style={styles.paragraph}>Premium profile activation: Included</p>
             <p style={styles.paragraph}>Nationwide delivery: Included</p>
-            <p style={styles.paragraph}>Normal Price: R399.00</p>
+            <p style={styles.paragraph}>Normal Price: R499.00</p>
             {orderForm?.discount_code ? (
               <p style={styles.paragraph}>
                 Discount Code: {orderForm.discount_code} ({discountPercent}% off)

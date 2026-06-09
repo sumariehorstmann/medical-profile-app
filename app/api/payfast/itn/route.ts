@@ -9,7 +9,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const BASE_PRICE = 399;
+const BASE_PRICE = 499;
 const AFFILIATE_PRICE = 369;
 const COMMISSION_RATE = 0.08;
 
