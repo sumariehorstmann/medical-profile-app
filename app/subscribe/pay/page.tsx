@@ -17,7 +17,7 @@ type Profile = {
 
 const BASE_PRICE = 499;
 const DISCOUNT_AMOUNT = 30;
-const AFFILIATE_PRICE = 369;
+const AFFILIATE_PRICE = 469;
 
 function PayPageInner() {
   const router = useRouter();

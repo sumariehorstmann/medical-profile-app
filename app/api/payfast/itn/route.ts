@@ -10,7 +10,7 @@ const supabase = createClient(
 );
 
 const BASE_PRICE = 499;
-const AFFILIATE_PRICE = 369;
+const AFFILIATE_PRICE = 469;
 const AFFILIATE_COMMISSION = 30;
 
 function encodePayFastValue(value: string) {

@@ -61,14 +61,14 @@ export default function AffiliatePage() {
               <br />
               Affiliate code discount: <strong>R30</strong>
               <br />
-              User pays: <strong>R369</strong>
+              User pays: <strong>R469</strong>
             </p>
           </div>
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>Affiliate commission</h2>
             <p style={styles.paragraph}>
-  Affiliates earn 8% commission only when a customer purchases the Premium Full Kit using their approved affiliate code.
+  Affiliates earn R30 commission only when a customer purchases the Premium Full Kit using their approved affiliate code.
 </p>
             <p style={styles.paragraph}>
               Commission per qualifying Premium Full Kit purchase:{" "}
