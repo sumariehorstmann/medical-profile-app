@@ -34,8 +34,8 @@ type ProfileRow = {
   emergency1_phone: string | null;
 };
 
-const DOG_TAG_PRICE = 200;
-const QR_CARD_PRICE = 200;
+const DOG_TAG_PRICE = 150;
+const QR_CARD_PRICE = 150;
 const DELIVERY_FEE = 120;
 
 const EMPTY_FORM: OrderFormData = {
@@ -95,6 +95,14 @@ function StoreCheckoutInner() {
 const [discountCode, setDiscountCode] = useState("");
 const [discountMessage, setDiscountMessage] = useState("");
 const [discountValid, setDiscountValid] = useState(false);
+const [confirming, setConfirming] = useState(false);
+const discountAmount =
+  discountValid && discountCode.trim().toUpperCase().startsWith("RROI-ADMIN-")
+    ? Number((total * 0.85).toFixed(2))
+    : 0;
+
+const totalToPay = Number((total - discountAmount).toFixed(2));
+const money = (amount: number) => `R${amount.toFixed(2)}`;
   useEffect(() => {
     let mounted = true;
 
@@ -228,6 +236,12 @@ if (discountCode.trim() && !discountValid) {
   return;
 }
 
+if (!confirming) {
+  setConfirming(true);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  return;
+}
+
 try {
   setPaying(true);
 
@@ -268,8 +282,116 @@ try {
       setPaying(false);
     }
   }
+if (confirming) {
+  return (
+    <main style={styles.page}>
+      <div style={styles.headerWrap}>
+        <PageHeader />
+      </div>
 
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <div style={styles.progress}>Step 3 of 3 — Confirm Order</div>
+
+          <h1 style={styles.title}>Confirm Your Order</h1>
+
+          <div style={styles.summaryBox}>
+            <div style={styles.summaryTitle}>Products</div>
+
+            {dogTags > 0 ? (
+              <p>Black Anodised Aluminium QR Tag × {dogTags}: R{dogTags * DOG_TAG_PRICE}</p>
+            ) : null}
+
+            {cards > 0 ? (
+              <p>Black Anodised Aluminium QR Card × {cards}: R{cards * QR_CARD_PRICE}</p>
+            ) : null}
+
+            <p>Items subtotal: R{subtotal}</p>
+            <p>Delivery: R{DELIVERY_FEE}</p>
+
+{discountAmount > 0 && (
+  <p style={{ color: "#157A55", fontWeight: 700 }}>
+    Discount: -R{discountAmount}
+  </p>
+)}
+
+            {discountValid ? (
+              <p style={{ color: "#157A55", fontWeight: 800 }}>
+                Admin discount code applied.
+              </p>
+            ) : null}
+
+            <h2>Amount to Pay: R{totalToPay}</h2>
+            <hr style={{ margin: "20px 0" }} />
+
+<div style={styles.summaryTitle}>Customer Details</div>
+
+<p>
+  <strong>Name:</strong> {form.first_name} {form.last_name}
+</p>
+
+<p>
+  <strong>Email:</strong> {form.email}
+</p>
+
+<p>
+  <strong>Cellphone:</strong> {form.cellphone}
+</p>
+
+<p>
+  <strong>Blood Type:</strong> {form.blood_type}
+</p>
+
+<p>
+  <strong>Allergies:</strong> {form.allergies}
+</p>
+
+<p>
+  <strong>Emergency Contact:</strong>{" "}
+  {form.emergency_contact_name} {form.emergency_contact_surname}
+</p>
+
+<p>
+  <strong>Emergency Contact Number:</strong>{" "}
+  {form.emergency_contact_phone}
+</p>
+
+<hr style={{ margin: "20px 0" }} />
+
+<div style={styles.summaryTitle}>Delivery Address</div>
+
+<p>{form.shipping_unit}</p>
+<p>{form.shipping_street}</p>
+<p>
+  {form.shipping_city}, {form.shipping_province}
+</p>
+<p>{form.shipping_postal_code}</p>
+<p>{form.shipping_country}</p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setConfirming(false)}
+            style={styles.secondaryButton}
+          >
+            Back to Edit Details
+          </button>
+
+          <button
+            type="button"
+            onClick={handlePayment}
+            disabled={paying}
+            style={styles.primaryButton}
+          >
+            {paying ? "Redirecting..." : "Confirm Details & Pay Securely"}
+          </button>
+        </div>
+      </div>
+    </main>
+  );
+}
   if (loading) {
+   
     return (
       <main style={styles.page}>
         <div style={styles.headerWrap}>
@@ -294,7 +416,7 @@ try {
 
       <div style={styles.container}>
         <div style={styles.card}>
-          <div style={styles.progress}>Step 1 of 2 — Store Order Details</div>
+          <div style={styles.progress}>Step 2 of 3 — Complete Details</div>
 
           <h1 style={styles.title}>Complete Your Store Order Details</h1>
 
@@ -439,7 +561,7 @@ try {
                 cursor: paying || !hasItems ? "not-allowed" : "pointer",
               }}
             >
-              {paying ? "Redirecting..." : "Continue to Secure Payment"}
+              {paying ? "Redirecting..." : "Continue to Confirm Order"}
             </button>
 
             {error ? <div style={styles.errorBox}>{error}</div> : null}
