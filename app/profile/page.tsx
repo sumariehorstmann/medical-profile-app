@@ -109,7 +109,7 @@ const hasHadPremium =
     <ul style={styles.includesList}>
       <li>1-year RROI Premium subscription</li>
       <li>2 physical QR code items</li>
-      <li>Free nationwide delivery</li>
+      <li>Nationwide delivery included</li>
     </ul>
 
     <Link
@@ -180,8 +180,8 @@ const hasHadPremium =
         <div style={styles.upgradeOptionPrice}>R499</div>
 
         <p style={styles.upgradeOptionDescription}>
-          Includes 1 year Premium subscription, 2 engraved physical QR products,
-          and free nationwide delivery.
+          Includes 1 year Premium subscription, 2 engraved physical QR products, downloadable QR lock screen,
+          and nationwide delivery.
         </p>
 
         <Link href="/subscribe/order" style={styles.upgradeBtn}>
@@ -197,14 +197,11 @@ const hasHadPremium =
     </div>
   </div>
 )}
-        {profile?.public_id && (
-          <div style={styles.downloadBlock}>
-            <DownloadQRWallpaper
-              publicId={profile.public_id}
-              firstName={profile.first_name}
-            />
-          </div>
-        )}
+        <div style={styles.downloadBlock}>
+  <Link href="/store" style={styles.upgradeBtn}>
+    Online Store
+  </Link>
+</div>
 
         <div style={styles.card}>
           <h2 style={styles.h2}>Subscription Status</h2>
