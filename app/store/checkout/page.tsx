@@ -428,10 +428,21 @@ if (confirming) {
           <div style={styles.summaryBox}>
             <div style={styles.summaryTitle}>Your store order includes:</div>
             <ul style={styles.summaryList}>
-              {dogTags > 0 ? <li>Black Anodised Aluminium QR Tag × {dogTags}</li> : null}
-              {cards > 0 ? <li>Black anodised aluminium QR card × {cards}</li> : null}
-              <li>Delivery: R{DELIVERY_FEE}</li>
-              <li>Total: R{total}</li>
+              {dogTags > 0 ? (
+  <li>
+    Black Anodised Aluminium QR Tag × {dogTags}: R{dogTags * DOG_TAG_PRICE}
+  </li>
+) : null}
+
+{cards > 0 ? (
+  <li>
+    Black Anodised Aluminium QR Card × {cards}: R{cards * QR_CARD_PRICE}
+  </li>
+) : null}
+
+<li>Items subtotal: R{subtotal}</li>
+<li>Delivery: R{DELIVERY_FEE}</li>
+<li>Total: R{total}</li>
             </ul>
             <div style={{ marginTop: 16 }}>
   <label style={styles.label}>Discount Code</label>
