@@ -67,7 +67,7 @@ export default function PremiumKitPage() {
             <li>Black anodised aluminium QR tag</li>
             <li>Full public emergency profile visibility</li>
             <li>Downloadable QR phone lock screen</li>
-            <li>Free nationwide delivery within South Africa</li>
+            <li>Nationwide delivery</li>
           </ul>
         </div>
 <div style={styles.deliveryCard}>
