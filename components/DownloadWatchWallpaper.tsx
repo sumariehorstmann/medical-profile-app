@@ -25,7 +25,7 @@ export default function DownloadWatchWallpaper({
 
     const dataUrl = await htmlToImage.toPng(ref.current, {
       cacheBust: true,
-      pixelRatio: 2,
+      pixelRatio: 3,
       backgroundColor: "#050B08",
     });
 
@@ -73,70 +73,44 @@ export default function DownloadWatchWallpaper({
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          fontFamily: "Arial, sans-serif",
+          fontFamily: "Arial, Helvetica, sans-serif",
           boxSizing: "border-box",
           pointerEvents: "none",
-          padding: 120,
+          padding: 100,
         }}
       >
-        {/* TOP TEXT */}
+        {/* TITLE */}
         <div
           style={{
-            fontSize: 84,
+            fontSize: 64,
             fontWeight: 900,
-            letterSpacing: 2,
-            lineHeight: 1,
-            marginBottom: 40,
+            color: "#4ADE80",
             textAlign: "center",
-            color: "#FFFFFF",
+            marginBottom: 50,
+            lineHeight: 1,
+            letterSpacing: 1,
           }}
         >
-          SCAN
+          EMERGENCY PROFILE
         </div>
 
         {/* QR CODE */}
         <div
           style={{
             background: "#FFFFFF",
-            padding: 24,
-            borderRadius: 28,
+            padding: 28,
+            borderRadius: 32,
+            boxShadow: "0 0 40px rgba(255,255,255,0.08)",
           }}
         >
           <QRCodeSVG
             value={publicUrl}
-            size={500}
+            size={600}
             level="H"
             includeMargin
+            bgColor="#FFFFFF"
+            fgColor="#000000"
           />
-        </div>
-
-        {/* BOTTOM TEXT */}
-        <div
-          style={{
-            marginTop: 36,
-            textAlign: "center",
-            lineHeight: 1.1,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 48,
-              fontWeight: 900,
-              color: "#FFFFFF",
-            }}
-          >
-            EMERGENCY
-          </div>
-
-          <div
-            style={{
-              fontSize: 48,
-              fontWeight: 900,
-              color: "#4ADE80",
-            }}
-          >
-            PROFILE
-          </div>
         </div>
       </div>
     </>
