@@ -59,10 +59,10 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
       <div
         ref={ref}
         style={{
-          position: "fixed",
-          left: 0,
-          top: 0,
-          zIndex: -9999,
+          position: "absolute",
+          left: "-10000px",
+          top: "-10000px",
+          zIndex: 0,
           width: 1024,
           height: 1024,
           background: "#050B08",
