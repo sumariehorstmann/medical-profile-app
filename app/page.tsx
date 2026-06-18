@@ -224,7 +224,9 @@ const [isInstalled, setIsInstalled] = useState(false);
 
       <section style={styles.section}>
         <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Designed to assist with emergency information sharing</h2>
+          <h2 style={styles.sectionTitle}>
+  Designed for everyday emergency readiness
+</h2>
 
           <div style={styles.useGrid}>
             <div style={styles.useCard}>Medical emergencies</div>
@@ -403,23 +405,23 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
   },
   section: {
-    padding: "46px 0",
-    background: "#FFFFFF",
-  },
+  padding: "36px 0",
+  background: "#FFFFFF",
+},
   sectionMuted: {
     padding: "46px 0",
     background: SOFT,
   },
   sectionTitle: {
-    margin: "0 auto 24px",
-    maxWidth: 760,
-    textAlign: "center",
-    fontSize: "clamp(26px, 4vw, 36px)",
-    lineHeight: 1.12,
-    letterSpacing: "-0.03em",
-    fontWeight: 950,
-    color: TEXT,
-  },
+  margin: "0 auto 20px",
+  maxWidth: 720,
+  textAlign: "center",
+  fontSize: "clamp(24px, 3.5vw, 34px)",
+  lineHeight: 1.15,
+  letterSpacing: "-0.03em",
+  fontWeight: 950,
+  color: TEXT,
+},
   sectionTitleLeft: {
     margin: "0 0 10px",
     fontSize: "clamp(24px, 4vw, 34px)",
@@ -574,18 +576,23 @@ planCardFeatured: {
   marginTop: "auto",
 },
   useGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: 14,
-  },
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: 34,
+  flexWrap: "wrap",
+  maxWidth: 980,
+  margin: "0 auto",
+},
   useCard: {
-  padding: "18px 16px",
   background: "transparent",
+  padding: 0,
   fontSize: 16,
-  lineHeight: 1.4,
+  lineHeight: 1.35,
   fontWeight: 900,
-  color: TEXT,
+  color: "#0F172A",
   textAlign: "center",
+  maxWidth: 210,
 },
   splitCard: {
     border: `1px solid ${BORDER}`,
