@@ -1,6 +1,7 @@
 "use client";
 
 import DownloadQRWallpaper from "@/components/DownloadQRWallpaper";
+import DownloadWatchWallpaper from "@/components/DownloadWatchWallpaper";
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
@@ -712,14 +713,20 @@ async function handlePermanentDelete() {
               </div>
 
               {publicId ? (
-                <div style={{ marginTop: 12 }}>
-                  <DownloadQRWallpaper
+  <div style={{ marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap" }}>
+    <DownloadQRWallpaper
+      publicId={publicId}
+      firstName={firstName}
+      lastName={lastName}
+    />
+
+    <DownloadWatchWallpaper
   publicId={publicId}
   firstName={firstName}
   lastName={lastName}
 />
-                </div>
-              ) : null}
+  </div>
+) : null}
             </div>
           </div>
         </div>
