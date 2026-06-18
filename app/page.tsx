@@ -140,6 +140,7 @@ const [isInstalled, setIsInstalled] = useState(false);
       <li>Emergency Contact 1 visible when scanned</li>
       <li>First name and last name visible</li>
       <li>Downloadable phone QR lock screen</li>
+      <li>Downloadable smartwatch QR wallpaper</li>
       <li>Upgrade anytime</li>
     </ul>
 
@@ -167,6 +168,7 @@ const [isInstalled, setIsInstalled] = useState(false);
     <ul style={styles.list}>
       <li>Full medical profile visible when scanned</li>
       <li>Downloadable phone QR lock screen</li>
+      <li>Downloadable smartwatch QR wallpaper</li>
       <li>Secure profile you can update anytime</li>
       <li>No physical QR products included</li>
       <li>Premium visibility access only</li>
@@ -206,6 +208,7 @@ const [isInstalled, setIsInstalled] = useState(false);
       <li>2 physical engraved QR products included</li>
       <li>Nationwide delivery included</li>
       <li>Downloadable phone QR lock screen</li>
+      <li>Downloadable smartwatch QR wallpaper</li>
       <li>Secure profile you can update anytime</li>
     </ul>
 
