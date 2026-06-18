@@ -46,7 +46,9 @@ export default function DownloadWatchWallpaper({
         style={{
           border: "none",
           borderRadius: 12,
-          padding: "14px 20px",
+          padding: "16px 24px",
+          minHeight: 52,
+          width: 310,
           fontWeight: 800,
           cursor: "pointer",
           background: "#157A55",
@@ -70,9 +72,12 @@ export default function DownloadWatchWallpaper({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           fontFamily: "Arial, sans-serif",
-          padding: 70,
+          paddingTop: 180,
+          paddingLeft: 70,
+          paddingRight: 70,
+          paddingBottom: 70,
           boxSizing: "border-box",
         }}
       >
@@ -94,7 +99,7 @@ export default function DownloadWatchWallpaper({
             borderRadius: 44,
           }}
         >
-          <QRCodeSVG value={publicUrl} size={650} />
+          <QRCodeSVG value={publicUrl} size={560} />
         </div>
 
         <div

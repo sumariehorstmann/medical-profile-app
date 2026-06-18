@@ -82,15 +82,16 @@ export default function DownloadQRWallpaper({
 const styles: Record<string, React.CSSProperties> = {
   button: {
     marginTop: 20,
-    padding: "14px 18px",
+    padding: "16px 24px",
+    minHeight: 52,
+    width: 310,
     borderRadius: 12,
     background: "#157A55",
     color: "#FFFFFF",
     fontWeight: 800,
     border: "none",
     cursor: "pointer",
-    width: "auto",
     display: "inline-block",
-    boxShadow: "0 8px 20px rgba(21, 122, 85, 0.16)",
+    boxShadow: "0 10px 24px rgba(21,122,85,0.22)",
   },
 };
