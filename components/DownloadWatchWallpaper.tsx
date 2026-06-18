@@ -10,9 +10,7 @@ type Props = {
   lastName?: string;
 };
 
-export default function DownloadWatchWallpaper({
-  publicId,
-}: Props) {
+export default function DownloadWatchWallpaper({ publicId }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   const publicUrl =
@@ -79,33 +77,32 @@ export default function DownloadWatchWallpaper({
           padding: 100,
         }}
       >
-        {/* TITLE */}
         <div
           style={{
-            fontSize: 64,
+            fontSize: 48,
             fontWeight: 900,
             color: "#4ADE80",
             textAlign: "center",
-            marginBottom: 50,
+            marginBottom: 24,
             lineHeight: 1,
             letterSpacing: 1,
+            whiteSpace: "nowrap",
           }}
         >
           EMERGENCY PROFILE
         </div>
 
-        {/* QR CODE */}
         <div
           style={{
             background: "#FFFFFF",
-            padding: 28,
-            borderRadius: 32,
-            boxShadow: "0 0 40px rgba(255,255,255,0.08)",
+            padding: 12,
+            borderRadius: 24,
+            boxShadow: "0 0 36px rgba(255,255,255,0.08)",
           }}
         >
           <QRCodeSVG
             value={publicUrl}
-            size={600}
+            size={650}
             level="H"
             includeMargin
             bgColor="#FFFFFF"
