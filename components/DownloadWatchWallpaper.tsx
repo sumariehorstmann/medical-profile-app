@@ -12,8 +12,6 @@ type Props = {
 
 export default function DownloadWatchWallpaper({
   publicId,
-  firstName,
-  lastName,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -21,8 +19,6 @@ export default function DownloadWatchWallpaper({
     typeof window !== "undefined"
       ? `${window.location.origin}/e/${publicId}`
       : "";
-
-  const fullName = `${firstName || ""} ${lastName || ""}`.trim();
 
   async function downloadWatchWallpaper() {
     if (!ref.current) return;
@@ -76,61 +72,72 @@ export default function DownloadWatchWallpaper({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "flex-start",
+          justifyContent: "center",
           fontFamily: "Arial, sans-serif",
-          paddingTop: 180,
-          paddingLeft: 70,
-          paddingRight: 70,
-          paddingBottom: 70,
           boxSizing: "border-box",
           pointerEvents: "none",
+          padding: 120,
         }}
       >
+        {/* TOP TEXT */}
         <div
           style={{
-            fontSize: 54,
+            fontSize: 84,
             fontWeight: 900,
             letterSpacing: 2,
-            marginBottom: 48,
+            lineHeight: 1,
+            marginBottom: 40,
             textAlign: "center",
+            color: "#FFFFFF",
           }}
         >
-          SCAN IN AN EMERGENCY
+          SCAN
         </div>
 
+        {/* QR CODE */}
         <div
           style={{
             background: "#FFFFFF",
-            padding: 42,
-            borderRadius: 44,
+            padding: 24,
+            borderRadius: 28,
           }}
         >
-          <QRCodeSVG value={publicUrl} size={560} />
+          <QRCodeSVG
+            value={publicUrl}
+            size={500}
+            level="H"
+            includeMargin
+          />
         </div>
 
+        {/* BOTTOM TEXT */}
         <div
           style={{
-            fontSize: 46,
-            fontWeight: 900,
-            marginTop: 42,
-            color: "#4ADE80",
+            marginTop: 36,
+            textAlign: "center",
+            lineHeight: 1.1,
           }}
         >
-          RROI
-        </div>
-
-        {fullName ? (
           <div
             style={{
-              fontSize: 34,
-              fontWeight: 700,
-              marginTop: 16,
-              textAlign: "center",
+              fontSize: 48,
+              fontWeight: 900,
+              color: "#FFFFFF",
             }}
           >
-            {fullName}
+            EMERGENCY
           </div>
-        ) : null}
+
+          <div
+            style={{
+              fontSize: 48,
+              fontWeight: 900,
+              color: "#4ADE80",
+            }}
+          >
+            PROFILE
+          </div>
+        </div>
       </div>
     </>
   );
