@@ -74,7 +74,7 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
           fontFamily: "Arial, Helvetica, sans-serif",
           boxSizing: "border-box",
           pointerEvents: "none",
-          padding: 110,
+          padding: 120,
         }}
       >
         <div
@@ -102,7 +102,7 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
         >
           <QRCodeSVG
             value={publicUrl}
-            size={580}
+            size={500}
             level="H"
             includeMargin
             bgColor="#FFFFFF"
