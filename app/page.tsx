@@ -36,7 +36,7 @@ const [isInstalled, setIsInstalled] = useState(false);
           <PageHeader />
 
           <div style={styles.heroContent}>
-            <div style={styles.badge}>Emergency QR medical profile</div>
+            <div style={styles.badge}>South African emergency QR profile</div>
 
             <h1 style={styles.h1}>
               Critical medical information, accessible by QR code.
