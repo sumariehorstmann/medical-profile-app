@@ -101,13 +101,13 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
           }}
         >
           <QRCodeSVG
-            value={publicUrl}
-            size={500}
-            level="H"
-            includeMargin
-            bgColor="#FFFFFF"
-            fgColor="#000000"
-          />
+  value={publicUrl}
+  size={450}
+  level="H"
+  includeMargin
+  bgColor="#FFFFFF"
+  fgColor="#000000"
+/>
         </div>
       </div>
     </>
