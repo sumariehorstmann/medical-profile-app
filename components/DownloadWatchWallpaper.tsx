@@ -29,7 +29,8 @@ export default function DownloadWatchWallpaper({
 
     const dataUrl = await htmlToImage.toPng(ref.current, {
       cacheBust: true,
-      pixelRatio: 1,
+      pixelRatio: 2,
+      backgroundColor: "#050B08",
     });
 
     const link = document.createElement("a");
@@ -44,15 +45,17 @@ export default function DownloadWatchWallpaper({
         type="button"
         onClick={downloadWatchWallpaper}
         style={{
-          border: "none",
-          borderRadius: 12,
+          marginTop: 20,
           padding: "16px 24px",
           minHeight: 52,
           width: 310,
-          fontWeight: 800,
-          cursor: "pointer",
+          borderRadius: 12,
           background: "#157A55",
           color: "#FFFFFF",
+          fontWeight: 800,
+          border: "none",
+          cursor: "pointer",
+          display: "inline-block",
           boxShadow: "0 10px 24px rgba(21,122,85,0.22)",
         }}
       >
@@ -63,8 +66,9 @@ export default function DownloadWatchWallpaper({
         ref={ref}
         style={{
           position: "fixed",
-          left: "-99999px",
+          left: 0,
           top: 0,
+          zIndex: -9999,
           width: 1024,
           height: 1024,
           background: "#050B08",
@@ -79,6 +83,7 @@ export default function DownloadWatchWallpaper({
           paddingRight: 70,
           paddingBottom: 70,
           boxSizing: "border-box",
+          pointerEvents: "none",
         }}
       >
         <div
@@ -87,6 +92,7 @@ export default function DownloadWatchWallpaper({
             fontWeight: 900,
             letterSpacing: 2,
             marginBottom: 48,
+            textAlign: "center",
           }}
         >
           SCAN IN AN EMERGENCY
