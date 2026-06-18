@@ -74,16 +74,16 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
           fontFamily: "Arial, Helvetica, sans-serif",
           boxSizing: "border-box",
           pointerEvents: "none",
-          padding: 100,
+          padding: 110,
         }}
       >
         <div
           style={{
-            fontSize: 48,
+            fontSize: 42,
             fontWeight: 900,
             color: "#4ADE80",
             textAlign: "center",
-            marginBottom: 24,
+            marginBottom: 20,
             lineHeight: 1,
             letterSpacing: 1,
             whiteSpace: "nowrap",
@@ -96,13 +96,13 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
           style={{
             background: "#FFFFFF",
             padding: 12,
-            borderRadius: 24,
-            boxShadow: "0 0 36px rgba(255,255,255,0.08)",
+            borderRadius: 22,
+            boxShadow: "0 0 32px rgba(255,255,255,0.08)",
           }}
         >
           <QRCodeSVG
             value={publicUrl}
-            size={650}
+            size={580}
             level="H"
             includeMargin
             bgColor="#FFFFFF"
