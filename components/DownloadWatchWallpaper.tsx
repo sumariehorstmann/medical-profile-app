@@ -89,7 +89,7 @@ export default function DownloadWatchWallpaper({
             alignItems: "center",
             justifyContent: "flex-start",
             fontFamily: "Arial, sans-serif",
-            paddingTop: 180,
+            paddingTop: 220,
             paddingLeft: 70,
             paddingRight: 70,
             paddingBottom: 70,
@@ -98,40 +98,30 @@ export default function DownloadWatchWallpaper({
         >
           <div
             style={{
-              fontSize: 54,
+              fontSize: 56,
               fontWeight: 900,
               letterSpacing: 2,
-              marginBottom: 48,
+              marginBottom: 52,
               textAlign: "center",
+              color: "#4ADE80",
             }}
           >
-            SCAN IN AN EMERGENCY
+            EMERGENCY PROFILE
           </div>
 
           <div
             style={{
               background: "#FFFFFF",
-              padding: 42,
-              borderRadius: 44,
+              padding: 34,
+              borderRadius: 38,
             }}
           >
             <QRCodeSVG
               value={publicUrl}
-              size={560}
+              size={420}
               bgColor="#FFFFFF"
               fgColor="#000000"
             />
-          </div>
-
-          <div
-            style={{
-              fontSize: 46,
-              fontWeight: 900,
-              marginTop: 42,
-              color: "#4ADE80",
-            }}
-          >
-            RROI
           </div>
 
           {fullName ? (
@@ -139,7 +129,7 @@ export default function DownloadWatchWallpaper({
               style={{
                 fontSize: 34,
                 fontWeight: 700,
-                marginTop: 16,
+                marginTop: 34,
                 textAlign: "center",
               }}
             >
