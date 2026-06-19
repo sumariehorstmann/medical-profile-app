@@ -31,7 +31,6 @@ type FullProfileRow = {
   medical_aid_policy_number: string | null;
 
   gp_name: string | null;
-  gp_practice: string | null;
   gp_phone: string | null;
 
   religion: string | null;
@@ -43,6 +42,17 @@ type FullProfileRow = {
   hair_color: string | null;
   identifying_marks: string | null;
   skin_tone: string | null;
+  emergency_button1_name: string | null;
+emergency_button1_number: string | null;
+emergency_button1_description: string | null;
+
+emergency_button2_name: string | null;
+emergency_button2_number: string | null;
+emergency_button2_description: string | null;
+
+emergency_button3_name: string | null;
+emergency_button3_number: string | null;
+emergency_button3_description: string | null;
 };
 
 export async function GET(req: NextRequest) {
@@ -93,7 +103,6 @@ export async function GET(req: NextRequest) {
           "medical_aid_provider",
           "medical_aid_policy_number",
           "gp_name",
-          "gp_practice",
           "gp_phone",
           "religion",
           "additional_notes",
@@ -103,6 +112,17 @@ export async function GET(req: NextRequest) {
           "hair_color",
           "identifying_marks",
           "skin_tone",
+          "emergency_button1_name",
+"emergency_button1_number",
+"emergency_button1_description",
+
+"emergency_button2_name",
+"emergency_button2_number",
+"emergency_button2_description",
+
+"emergency_button3_name",
+"emergency_button3_number",
+"emergency_button3_description",
         ].join(",")
       )
       .eq("public_id", publicId)
