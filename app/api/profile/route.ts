@@ -43,14 +43,12 @@ type ProfileRow = {
   nationality: string | null;
   province: string | null;
   city: string | null;
-  id_number: string | null;
-
+  
   medical_aid_provider: string | null;
   medical_aid_policy_number: string | null;
   medical_aid_plan: string | null;
 
   gp_name: string | null;
-  gp_practice: string | null;
   gp_phone: string | null;
   specialist_name: string | null;
   specialist_phone: string | null;
@@ -65,15 +63,21 @@ type ProfileRow = {
   hair_color: string | null;
   identifying_marks: string | null;
   skin_tone: string | null;
+  emergency_button1_name: string | null;
+emergency_button1_number: string | null;
+emergency_button1_description: string | null;
+
+emergency_button2_name: string | null;
+emergency_button2_number: string | null;
+emergency_button2_description: string | null;
+
+emergency_button3_name: string | null;
+emergency_button3_number: string | null;
+emergency_button3_description: string | null;
 };
 
 const SELECT_FIELDS = `
-  id,
-  user_id,
-  public_id,
-  first_name,
-  last_name,
-  profile_photo_url
+  *
 `;
 
 async function getAuth() {
@@ -160,14 +164,12 @@ export async function PUT(req: NextRequest) {
     nationality: toNull(body.nationality),
     province: toNull(body.province),
     city: toNull(body.city),
-    id_number: toNull(body.id_number),
-
+    
     medical_aid_provider: toNull(body.medical_aid_provider),
     medical_aid_policy_number: toNull(body.medical_aid_policy_number),
     medical_aid_plan: toNull(body.medical_aid_plan),
 
     gp_name: toNull(body.gp_name),
-    gp_practice: toNull(body.gp_practice),
     gp_phone: toNull(body.gp_phone),
 
     specialist_name: toNull(body.specialist_name),
@@ -183,6 +185,17 @@ export async function PUT(req: NextRequest) {
     hair_color: toNull(body.hair_color),
     identifying_marks: toNull(body.identifying_marks),
     skin_tone: toNull(body.skin_tone),
+    emergency_button1_name: toNull(body.emergency_button1_name),
+emergency_button1_number: toNull(body.emergency_button1_number),
+emergency_button1_description: toNull(body.emergency_button1_description),
+
+emergency_button2_name: toNull(body.emergency_button2_name),
+emergency_button2_number: toNull(body.emergency_button2_number),
+emergency_button2_description: toNull(body.emergency_button2_description),
+
+emergency_button3_name: toNull(body.emergency_button3_name),
+emergency_button3_number: toNull(body.emergency_button3_number),
+emergency_button3_description: toNull(body.emergency_button3_description),
   };
 
   const { data: existing, error: existingError } = await supabase
