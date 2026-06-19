@@ -12,8 +12,6 @@ type Props = {
 
 export default function DownloadWatchWallpaper({
   publicId,
-  firstName,
-  lastName,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -21,8 +19,6 @@ export default function DownloadWatchWallpaper({
     typeof window !== "undefined"
       ? `${window.location.origin}/e/${publicId}`
       : "";
-
-  const fullName = `${firstName || ""} ${lastName || ""}`.trim();
 
   async function downloadWatchWallpaper() {
     if (!ref.current) return;
@@ -98,12 +94,14 @@ export default function DownloadWatchWallpaper({
         >
           <div
             style={{
-              fontSize: 56,
+              width: 488,
+              fontSize: 50,
               fontWeight: 900,
-              letterSpacing: 2,
-              marginBottom: 52,
+              letterSpacing: 1,
+              marginBottom: 40,
               textAlign: "center",
               color: "#4ADE80",
+              lineHeight: 1,
             }}
           >
             EMERGENCY PROFILE
@@ -119,23 +117,12 @@ export default function DownloadWatchWallpaper({
             <QRCodeSVG
               value={publicUrl}
               size={420}
+              level="H"
+              includeMargin
               bgColor="#FFFFFF"
               fgColor="#000000"
             />
           </div>
-
-          {fullName ? (
-            <div
-              style={{
-                fontSize: 34,
-                fontWeight: 700,
-                marginTop: 34,
-                textAlign: "center",
-              }}
-            >
-              {fullName}
-            </div>
-          ) : null}
         </div>
       </div>
     </>
