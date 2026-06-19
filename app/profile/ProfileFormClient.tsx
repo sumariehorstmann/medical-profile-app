@@ -66,7 +66,17 @@ type ProfileRow = {
   hair_color: string | null;
   identifying_marks: string | null;
   skin_tone: string | null;
-  
+  emergency_button1_name: string | null;
+emergency_button1_number: string | null;
+emergency_button1_description: string | null;
+
+emergency_button2_name: string | null;
+emergency_button2_number: string | null;
+emergency_button2_description: string | null;
+
+emergency_button3_name: string | null;
+emergency_button3_number: string | null;
+emergency_button3_description: string | null;
 };
 
 function calcAge(dob: string | null): number | null {
@@ -268,7 +278,41 @@ export default function ProfileFormClient({
   const [additionalNotes, setAdditionalNotes] = useState(
     initial?.additional_notes ?? ""
   );
+const [emergencyButton1Name, setEmergencyButton1Name] = useState(
+  initial?.emergency_button1_name ?? ""
+);
 
+const [emergencyButton1Number, setEmergencyButton1Number] = useState(
+  initial?.emergency_button1_number ?? ""
+);
+
+const [emergencyButton1Description, setEmergencyButton1Description] = useState(
+  initial?.emergency_button1_description ?? ""
+);
+
+const [emergencyButton2Name, setEmergencyButton2Name] = useState(
+  initial?.emergency_button2_name ?? ""
+);
+
+const [emergencyButton2Number, setEmergencyButton2Number] = useState(
+  initial?.emergency_button2_number ?? ""
+);
+
+const [emergencyButton2Description, setEmergencyButton2Description] = useState(
+  initial?.emergency_button2_description ?? ""
+);
+
+const [emergencyButton3Name, setEmergencyButton3Name] = useState(
+  initial?.emergency_button3_name ?? ""
+);
+
+const [emergencyButton3Number, setEmergencyButton3Number] = useState(
+  initial?.emergency_button3_number ?? ""
+);
+
+const [emergencyButton3Description, setEmergencyButton3Description] = useState(
+  initial?.emergency_button3_description ?? ""
+);
   const [consent, setConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -503,7 +547,17 @@ async function handlePermanentDelete() {
         religion: religion || null,
 
         additional_notes: additionalNotes || null,
-        
+        emergency_button1_name: emergencyButton1Name || null,
+emergency_button1_number: emergencyButton1Number || null,
+emergency_button1_description: emergencyButton1Description || null,
+
+emergency_button2_name: emergencyButton2Name || null,
+emergency_button2_number: emergencyButton2Number || null,
+emergency_button2_description: emergencyButton2Description || null,
+
+emergency_button3_name: emergencyButton3Name || null,
+emergency_button3_number: emergencyButton3Number || null,
+emergency_button3_description: emergencyButton3Description || null,
       };
 
       const res = await fetch("/api/profile", {
@@ -1134,7 +1188,94 @@ async function handlePermanentDelete() {
             
         
       </Section>
+<Section
+  title="Section 7 — Emergency Response"
+  subtitle="These custom emergency contacts are only publicly visible when Premium is active."
+>
+  <Field label="Button 1 Name">
+    <input
+      style={inputStyle}
+      value={emergencyButton1Name}
+      onChange={(e) => setEmergencyButton1Name(e.target.value)}
+      placeholder="e.g. Family Doctor"
+    />
+  </Field>
 
+  <Field label="Button 1 Number">
+    <input
+      style={inputStyle}
+      value={emergencyButton1Number}
+      onChange={(e) => setEmergencyButton1Number(e.target.value)}
+      placeholder="e.g. 0821234567"
+      inputMode="numeric"
+    />
+  </Field>
+
+  <Field label="Button 1 Description">
+    <input
+      style={inputStyle}
+      value={emergencyButton1Description}
+      onChange={(e) => setEmergencyButton1Description(e.target.value)}
+      placeholder="e.g. General Practitioner"
+    />
+  </Field>
+
+  <Field label="Button 2 Name">
+    <input
+      style={inputStyle}
+      value={emergencyButton2Name}
+      onChange={(e) => setEmergencyButton2Name(e.target.value)}
+      placeholder="e.g. Medical Aid Emergency"
+    />
+  </Field>
+
+  <Field label="Button 2 Number">
+    <input
+      style={inputStyle}
+      value={emergencyButton2Number}
+      onChange={(e) => setEmergencyButton2Number(e.target.value)}
+      placeholder="e.g. 0860123456"
+      inputMode="numeric"
+    />
+  </Field>
+
+  <Field label="Button 2 Description">
+    <input
+      style={inputStyle}
+      value={emergencyButton2Description}
+      onChange={(e) => setEmergencyButton2Description(e.target.value)}
+      placeholder="Optional"
+    />
+  </Field>
+
+  <Field label="Button 3 Name">
+    <input
+      style={inputStyle}
+      value={emergencyButton3Name}
+      onChange={(e) => setEmergencyButton3Name(e.target.value)}
+      placeholder="e.g. Cardiologist"
+    />
+  </Field>
+
+  <Field label="Button 3 Number">
+    <input
+      style={inputStyle}
+      value={emergencyButton3Number}
+      onChange={(e) => setEmergencyButton3Number(e.target.value)}
+      placeholder="e.g. 0411234567"
+      inputMode="numeric"
+    />
+  </Field>
+
+  <Field label="Button 3 Description">
+    <input
+      style={inputStyle}
+      value={emergencyButton3Description}
+      onChange={(e) => setEmergencyButton3Description(e.target.value)}
+      placeholder="Optional"
+    />
+  </Field>
+</Section>
       <div style={{ marginTop: 20, marginBottom: 16 }}>
         <label
           style={{
