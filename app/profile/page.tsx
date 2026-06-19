@@ -109,7 +109,7 @@ const hasHadPremium =
     <ul style={styles.includesList}>
       <li>1-year RROI Premium subscription</li>
       <li>2 physical QR code items</li>
-      <li>Nationwide delivery included</li>
+      <li>Nationwide delivery</li>
     </ul>
 
     <Link
@@ -161,7 +161,7 @@ const hasHadPremium =
 
         <p style={styles.upgradeOptionDescription}>
           Upgrade your profile to Premium visibility. No physical QR products are included.
-          Your free downloadable QR lock screen remains available.
+          Free downloadable QR lock screen. Free downloadable QR smartwatch wallpaper.
         </p>
 
         <Link href="/renew" style={styles.secondaryBtn}>
@@ -180,7 +180,7 @@ const hasHadPremium =
         <div style={styles.upgradeOptionPrice}>R499</div>
 
         <p style={styles.upgradeOptionDescription}>
-          Includes 1 year Premium subscription, 2 engraved physical QR products, downloadable QR lock screen,
+          Includes 1 year Premium subscription, 2 engraved physical QR products, downloadable QR lock screen, downloadable QR smartwatch wallpaper,
           and nationwide delivery.
         </p>
 

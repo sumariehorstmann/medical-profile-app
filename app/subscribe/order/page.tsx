@@ -391,7 +391,7 @@ if (error) {
             <ul style={styles.summaryList}>
               <li>2 × QR code emergency products</li>
               <li>Premium emergency profile activation</li>
-              <li>Nationwide delivery included</li>
+              <li>Nationwide delivery</li>
             </ul>
           </div>
 <div style={styles.deliveryBox}>
