@@ -10,7 +10,11 @@ type Props = {
   lastName?: string;
 };
 
-export default function DownloadWatchWallpaper({ publicId }: Props) {
+export default function DownloadWatchWallpaper({
+  publicId,
+  firstName,
+  lastName,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   const publicUrl =
@@ -18,19 +22,26 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
       ? `${window.location.origin}/e/${publicId}`
       : "";
 
+  const fullName = `${firstName || ""} ${lastName || ""}`.trim();
+
   async function downloadWatchWallpaper() {
     if (!ref.current) return;
 
-    const dataUrl = await htmlToImage.toPng(ref.current, {
-      cacheBust: true,
-      pixelRatio: 3,
-      backgroundColor: "#050B08",
-    });
+    try {
+      const dataUrl = await htmlToImage.toPng(ref.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: "#050B08",
+      });
 
-    const link = document.createElement("a");
-    link.download = "rroi-smartwatch-qr-wallpaper.png";
-    link.href = dataUrl;
-    link.click();
+      const link = document.createElement("a");
+      link.download = "rroi-smartwatch-qr-wallpaper.png";
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Smartwatch wallpaper download failed", err);
+      alert("Download failed. Please try again.");
+    }
   }
 
   return (
@@ -57,57 +68,84 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
       </button>
 
       <div
-        ref={ref}
         style={{
-          position: "absolute",
-          left: "-10000px",
-          top: "-10000px",
-          zIndex: 0,
+          position: "fixed",
+          top: "-1200px",
+          left: "-1200px",
           width: 1024,
           height: 1024,
-          background: "#050B08",
-          color: "#FFFFFF",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "Arial, Helvetica, sans-serif",
-          boxSizing: "border-box",
           pointerEvents: "none",
-          padding: 120,
         }}
       >
         <div
+          ref={ref}
           style={{
-            fontSize: 42,
-            fontWeight: 900,
-            color: "#4ADE80",
-            textAlign: "center",
-            marginBottom: 20,
-            lineHeight: 1,
-            letterSpacing: 1,
-            whiteSpace: "nowrap",
+            width: 1024,
+            height: 1024,
+            background: "#050B08",
+            color: "#FFFFFF",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            fontFamily: "Arial, sans-serif",
+            paddingTop: 180,
+            paddingLeft: 70,
+            paddingRight: 70,
+            paddingBottom: 70,
+            boxSizing: "border-box",
           }}
         >
-          EMERGENCY PROFILE
-        </div>
+          <div
+            style={{
+              fontSize: 54,
+              fontWeight: 900,
+              letterSpacing: 2,
+              marginBottom: 48,
+              textAlign: "center",
+            }}
+          >
+            SCAN IN AN EMERGENCY
+          </div>
 
-        <div
-          style={{
-            background: "#FFFFFF",
-            padding: 12,
-            borderRadius: 22,
-            boxShadow: "0 0 32px rgba(255,255,255,0.08)",
-          }}
-        >
-          <QRCodeSVG
-  value={publicUrl}
-  size={450}
-  level="H"
-  includeMargin
-  bgColor="#FFFFFF"
-  fgColor="#000000"
-/>
+          <div
+            style={{
+              background: "#FFFFFF",
+              padding: 42,
+              borderRadius: 44,
+            }}
+          >
+            <QRCodeSVG
+              value={publicUrl}
+              size={560}
+              bgColor="#FFFFFF"
+              fgColor="#000000"
+            />
+          </div>
+
+          <div
+            style={{
+              fontSize: 46,
+              fontWeight: 900,
+              marginTop: 42,
+              color: "#4ADE80",
+            }}
+          >
+            RROI
+          </div>
+
+          {fullName ? (
+            <div
+              style={{
+                fontSize: 34,
+                fontWeight: 700,
+                marginTop: 16,
+                textAlign: "center",
+              }}
+            >
+              {fullName}
+            </div>
+          ) : null}
         </div>
       </div>
     </>
