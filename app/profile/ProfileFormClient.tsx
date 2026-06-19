@@ -1375,8 +1375,7 @@ emergency_button3_description: emergencyButton3Description || null,
 </button>
 
 {showDeleteBox ? (
-  <form
-    autoComplete="off"
+  <div
     style={{
       marginTop: 16,
       border: "1px solid #fecaca",
@@ -1475,7 +1474,7 @@ emergency_button3_description: emergencyButton3Description || null,
         Cancel
       </button>
     </div>
-  </form>
+  </div>
 ) : null}
       </div>
 
