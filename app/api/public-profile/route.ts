@@ -67,7 +67,17 @@ export async function GET(req: Request) {
   emergency2_first_name,
   emergency2_last_name,
   emergency2_relationship,
-  emergency2_phone
+  emergency2_phone,
+emergency_button1_name,
+emergency_button1_number,
+emergency_button1_description,
+emergency_button2_name,
+emergency_button2_number,
+emergency_button2_description,
+emergency_button3_name,
+emergency_button3_number,
+emergency_button3_description
+  
 `)
       .eq("public_id", publicId)
       .maybeSingle();
@@ -205,7 +215,23 @@ export async function GET(req: Request) {
           city: isPremium ? profile.city : null,
           nationality: isPremium ? profile.nationality : null,
 
-          
+          emergency_button1_name: isPremium ? profile.emergency_button1_name : null,
+emergency_button1_number: isPremium ? profile.emergency_button1_number : null,
+emergency_button1_description: isPremium
+  ? profile.emergency_button1_description
+  : null,
+
+emergency_button2_name: isPremium ? profile.emergency_button2_name : null,
+emergency_button2_number: isPremium ? profile.emergency_button2_number : null,
+emergency_button2_description: isPremium
+  ? profile.emergency_button2_description
+  : null,
+
+emergency_button3_name: isPremium ? profile.emergency_button3_name : null,
+emergency_button3_number: isPremium ? profile.emergency_button3_number : null,
+emergency_button3_description: isPremium
+  ? profile.emergency_button3_description
+  : null,
           emergency_contacts: isPremium
             ? emergency_contacts
             : emergency_contacts.slice(0, 1),
