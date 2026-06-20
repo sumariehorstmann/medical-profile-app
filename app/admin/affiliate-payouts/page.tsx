@@ -13,7 +13,7 @@ const GREEN = "#157A55";
 const RED = "#B91C1C";
 const AMBER = "#B45309";
 
-const MIN_PAYOUT = 500;
+const MIN_PAYOUT = 600;
 
 type AffiliateRow = {
   id: string;
@@ -42,7 +42,12 @@ type ReferralRow = {
   created_at?: string | null;
   paid?: boolean | null;
 };
-
+type CustomerProfileRow = {
+  user_id: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  email?: string | null;
+};
 type PayoutRow = {
   affiliateId: string;
   affiliateCode: string;
@@ -130,6 +135,7 @@ export default function AdminAffiliatePayoutsPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [affiliates, setAffiliates] = useState<AffiliateRow[]>([]);
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
+  const [customerProfiles, setCustomerProfiles] = useState<CustomerProfileRow[]>([]);
   const [payoutHistory, setPayoutHistory] = useState<
     AffiliatePayoutHistoryRow[]
   >([]);
@@ -190,7 +196,26 @@ const [showEligibleOnly, setShowEligibleOnly] = useState(false);
             .order("paid_at", { ascending: false });
 
         if (payoutHistoryError) throw payoutHistoryError;
+const referralUserIds = Array.from(
+  new Set(
+    (referralData ?? [])
+      .map((referral) => referral.user_id)
+      .filter(Boolean)
+  )
+);
 
+let customerProfileData: CustomerProfileRow[] = [];
+
+if (referralUserIds.length > 0) {
+  const { data: profilesData, error: profilesError } = await supabase
+    .from("profiles")
+    .select("user_id, first_name, last_name")
+    .in("user_id", referralUserIds);
+
+  if (profilesError) throw profilesError;
+
+  customerProfileData = (profilesData ?? []) as CustomerProfileRow[];
+}
         if (!mounted) return;
 
         setAffiliates((affiliateData ?? []) as AffiliateRow[]);
@@ -198,6 +223,7 @@ const [showEligibleOnly, setShowEligibleOnly] = useState(false);
         setPayoutHistory(
           (payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]
         );
+        setCustomerProfiles(customerProfileData);
       } catch (err: any) {
         if (!mounted) return;
         setMessage(err?.message || "Failed to load affiliate payout data.");
@@ -269,12 +295,7 @@ function downloadEligiblePayoutsCsv() {
   URL.revokeObjectURL(url);
 }
   async function handleMarkPaid(affiliateId: string) {
-  const eftRef = prompt("Enter EFT reference for this payment:");
-
-  if (!eftRef || !eftRef.trim()) {
-    alert("EFT reference is required.");
-    return;
-  }
+  
 
     const confirmed = window.confirm("Confirm manual EFT payment?");
 if (!confirmed) return;
@@ -700,7 +721,71 @@ if (!eftReference || eftReference.trim().length < 3) {
               </tbody>
             </table>
           </div>
+<h2 style={styles.sectionTitle}>Affiliate Referral History</h2>
 
+<div style={styles.tableWrap}>
+  <table style={styles.historyTable}>
+    <thead>
+      <tr>
+        <th style={styles.th}>Affiliate</th>
+        <th style={styles.th}>Customer</th>
+        <th style={styles.th}>Sale Amount</th>
+        <th style={styles.th}>Commission</th>
+        <th style={styles.th}>Status</th>
+        <th style={styles.th}>Paid</th>
+        <th style={styles.th}>Date</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {referrals.map((referral) => {
+        const customer = customerProfiles.find(
+          (profile) => profile.user_id === referral.user_id
+        );
+
+        return (
+          <tr key={referral.id}>
+            <td style={styles.td}>
+  {(() => {
+    const affiliate = affiliates.find(
+      (a) => a.id === referral.affiliate_id
+    );
+
+    return affiliate
+      ? `${affiliate.full_name || "-"} (${affiliate.affiliate_code || "-"})`
+      : referral.affiliate_id;
+  })()}
+</td>
+
+            <td style={styles.td}>
+              {customer
+                ? `${customer.first_name || ""} ${customer.last_name || ""}`.trim()
+                : referral.user_id}
+            </td>
+
+            <td style={styles.tdStrong}>
+              {formatMoney(Number(referral.amount ?? 0))}
+            </td>
+
+            <td style={styles.tdStrong}>
+              {formatMoney(Number(referral.commission ?? 0))}
+            </td>
+
+            <td style={styles.td}>{referral.status || "-"}</td>
+
+            <td style={styles.td}>
+              {referral.paid ? "Yes" : "No"}
+            </td>
+
+            <td style={styles.td}>
+              {formatDate(referral.created_at)}
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>
           <h2 style={styles.sectionTitle}>Payout History</h2>
 
           <div style={styles.tableWrap}>
