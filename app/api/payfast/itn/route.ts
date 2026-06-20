@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { createClient } from "@supabase/supabase-js";
+import { sendStoreOrderConfirmationEmail } from "@/app/lib/email/sendStoreOrderConfirmationEmail";
 
 export const dynamic = "force-dynamic";
 
@@ -539,10 +540,39 @@ try {
     });
 
     if (orderInsertError) {
-      console.error("ORDER INSERT ERROR:", orderInsertError);
-    } else {
-      console.log("ORDER CREATED SUCCESSFULLY");
-    }
+  console.error("ORDER INSERT ERROR:", orderInsertError);
+} else {
+  console.log("ORDER CREATED SUCCESSFULLY");
+
+  const emailWasSent = await sendStoreOrderConfirmationEmail({
+    to: orderForm.email ?? data.email_address ?? "",
+    customerName: shippingName,
+    paymentReference: paymentId,
+    items: [
+      {
+        name: "RROI Premium Kit - QR Card",
+        quantity: 1,
+        unit_price: 150,
+        total: 150,
+      },
+      {
+        name: "RROI Premium Kit - QR Tag",
+        quantity: 1,
+        unit_price: 150,
+        total: 150,
+      },
+      {
+        name: "Premium Profile Visibility - 1 Year",
+        quantity: 1,
+        unit_price: Number(expectedAmount) - 300,
+        total: Number(expectedAmount) - 300,
+      },
+    ],
+    totalAmount: Number(expectedAmount),
+  });
+
+  console.log("PREMIUM KIT EMAIL SENT:", emailWasSent);
+}
   }
 } catch (orderErr) {
   console.error("ORDER CREATION ERROR:", orderErr);
