@@ -746,15 +746,11 @@ if (!eftReference || eftReference.trim().length < 3) {
         return (
           <tr key={referral.id}>
             <td style={styles.td}>
-  {(() => {
-    const affiliate = affiliates.find(
+  {JSON.stringify(
+    affiliates.find(
       (a) => a.id === referral.affiliate_id
-    );
-
-    return affiliate
-      ? `${affiliate.full_name || "-"} (${affiliate.affiliate_code || "-"})`
-      : referral.affiliate_id;
-  })()}
+    )
+  )}
 </td>
 
             <td style={styles.td}>
