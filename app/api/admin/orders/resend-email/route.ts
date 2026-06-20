@@ -29,12 +29,13 @@ export async function POST(req: NextRequest) {
     }
 
     const emailSent = await sendStoreOrderConfirmationEmail({
-      to: order.email,
-      customerName: order.customer_name,
-      paymentReference: order.payfast_payment_id || order.id,
-      items: order.items || [],
-      totalAmount: Number(order.total_amount || 0),
-    });
+  to: order.email,
+  customerName: order.customer_name,
+  paymentReference: order.payfast_payment_id || order.id,
+  items: order.items || [],
+  totalAmount: Number(order.total_amount || 0),
+  hideItemTotals: order.order_type === "premium_kit",
+});
 
     if (!emailSent) {
       return NextResponse.json(
