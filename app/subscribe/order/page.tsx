@@ -324,12 +324,20 @@ const affiliate = affiliateRows?.[0] || null;
       const { error } = await supabase
   .from("premium_order_forms")
   .upsert(
-    {
-      user_id: session.user.id,
-      discount_code: appliedDiscountCode || appliedAffiliateCode || null,
-      discount_percent: appliedDiscountPercent,
-      ...form,
-    },
+  {
+    user_id: session.user.id,
+    discount_code: appliedDiscountCode || appliedAffiliateCode || null,
+    discount_percent: appliedDiscountPercent,
+
+    product_name: "Premium Full Kit",
+    qr_card_qty: 1,
+    qr_tag_qty: 1,
+    amount_before_discount: 499,
+    discount_amount: appliedDiscountCode || appliedAffiliateCode ? 30 : 0,
+    amount_payable: appliedDiscountCode || appliedAffiliateCode ? 469 : 499,
+
+    ...form,
+  },
     {
       onConflict: "user_id",
     }
@@ -389,10 +397,43 @@ if (error) {
           <div style={styles.summaryBox}>
             <div style={styles.summaryTitle}>Your Premium Kit includes:</div>
             <ul style={styles.summaryList}>
-              <li>2 × QR code emergency products</li>
-              <li>Premium emergency profile activation</li>
-              <li>Nationwide delivery</li>
-            </ul>
+  <li>1 × Black anodised aluminium QR card</li>
+  <li>1 × Black anodised aluminium QR tag</li>
+  <li>1-Year RROI Premium subscription</li>
+  <li>Full public emergency profile visibility</li>
+  <li>Downloadable QR phone lock screen</li>
+  <li>Downloadable QR smartwatch wallpaper</li>
+  <li>Nationwide delivery</li>
+</ul>
+
+<div
+  style={{
+    marginTop: 16,
+    paddingTop: 16,
+    borderTop: "1px solid #dbe3ea",
+  }}
+>
+  <div style={{ marginBottom: 6 }}>
+    Premium Full Kit: <strong>R499</strong>
+  </div>
+
+  {discountValid && (
+    <div style={{ marginBottom: 6, color: "#166534" }}>
+      Discount Applied ({discountCode}): <strong>-R30</strong>
+    </div>
+  )}
+
+  <div
+    style={{
+      fontSize: 20,
+      fontWeight: 800,
+      color: "#166534",
+      marginTop: 10,
+    }}
+  >
+    Total: R{discountValid ? "469" : "499"}
+  </div>
+</div>
           </div>
 <div style={styles.deliveryBox}>
   <div style={styles.deliveryTitle}>
