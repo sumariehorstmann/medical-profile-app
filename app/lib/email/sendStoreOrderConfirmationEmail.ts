@@ -11,12 +11,14 @@ export async function sendStoreOrderConfirmationEmail({
   paymentReference,
   items,
   totalAmount,
+  hideItemTotals = false,
 }: {
   to: string;
   customerName?: string;
   paymentReference: string;
   items?: StoreOrderItem[];
   totalAmount: number;
+  hideItemTotals?: boolean;
 }) {
   const apiKey = process.env.BREVO_API_KEY;
 
@@ -39,17 +41,21 @@ export async function sendStoreOrderConfirmationEmail({
                 <td style="padding: 10px; border-bottom: 1px solid #E5E7EB; text-align: center;">
                   ${item.quantity || 0}
                 </td>
-                <td style="padding: 10px; border-bottom: 1px solid #E5E7EB; text-align: right;">
-                  R${Number(item.total || 0).toFixed(2)}
-                </td>
+                ${
+                  hideItemTotals
+                    ? ""
+                    : `<td style="padding: 10px; border-bottom: 1px solid #E5E7EB; text-align: right;">
+                        R${Number(item.total || 0).toFixed(2)}
+                      </td>`
+                }
               </tr>
             `
           )
           .join("")
       : `
           <tr>
-            <td colspan="3" style="padding: 10px; border-bottom: 1px solid #E5E7EB;">
-              RROI store order
+            <td colspan="${hideItemTotals ? 2 : 3}" style="padding: 10px; border-bottom: 1px solid #E5E7EB;">
+              RROI order
             </td>
           </tr>
         `;
@@ -77,7 +83,11 @@ export async function sendStoreOrderConfirmationEmail({
           <tr>
             <th style="text-align: left; padding: 10px; border-bottom: 2px solid #E5E7EB;">Product</th>
             <th style="text-align: center; padding: 10px; border-bottom: 2px solid #E5E7EB;">Qty</th>
-            <th style="text-align: right; padding: 10px; border-bottom: 2px solid #E5E7EB;">Total</th>
+            ${
+              hideItemTotals
+                ? ""
+                : `<th style="text-align: right; padding: 10px; border-bottom: 2px solid #E5E7EB;">Total</th>`
+            }
           </tr>
         </thead>
         <tbody>
@@ -127,15 +137,15 @@ export async function sendStoreOrderConfirmationEmail({
     });
 
     if (!response.ok) {
-  const errorText = await response.text();
-  console.error("Brevo store order email failed:", errorText);
-  return false;
-}
+      const errorText = await response.text();
+      console.error("Brevo store order email failed:", errorText);
+      return false;
+    }
 
-console.log(`Store order confirmation email sent to ${to}`);
-return true;
-} catch (error) {
-  console.error("Store order email send error:", error);
-  return false;
-}
+    console.log(`Store order confirmation email sent to ${to}`);
+    return true;
+  } catch (error) {
+    console.error("Store order email send error:", error);
+    return false;
+  }
 }

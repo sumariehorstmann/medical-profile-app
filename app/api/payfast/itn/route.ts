@@ -549,26 +549,33 @@ try {
     customerName: shippingName,
     paymentReference: paymentId,
     items: [
-      {
-        name: "RROI Premium Kit - QR Card",
-        quantity: 1,
-        unit_price: 150,
-        total: 150,
-      },
-      {
-        name: "RROI Premium Kit - QR Tag",
-        quantity: 1,
-        unit_price: 150,
-        total: 150,
-      },
-      {
-        name: "Premium Profile Visibility - 1 Year",
-        quantity: 1,
-        unit_price: Number(expectedAmount) - 300,
-        total: Number(expectedAmount) - 300,
-      },
-    ],
-    totalAmount: Number(expectedAmount),
+  {
+    name: "Premium Kit QR Card",
+    quantity: 1,
+    unit_price: 0,
+    total: 0,
+  },
+  {
+    name: "Premium Kit QR Tag",
+    quantity: 1,
+    unit_price: 0,
+    total: 0,
+  },
+  {
+    name: "1 Year Premium Subscription",
+    quantity: 1,
+    unit_price: 0,
+    total: 0,
+  },
+  {
+    name: "Nationwide Delivery",
+    quantity: 1,
+    unit_price: 0,
+    total: 0,
+  },
+],
+totalAmount: Number(expectedAmount),
+hideItemTotals: true,
   });
 
   console.log("PREMIUM KIT EMAIL SENT:", emailWasSent);
