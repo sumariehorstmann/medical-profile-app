@@ -61,7 +61,17 @@ type PublicProfile = {
   province?: string | null;
   city?: string | null;
   nationality?: string | null;
+emergency_button1_name?: string | null;
+emergency_button1_number?: string | null;
+emergency_button1_description?: string | null;
 
+emergency_button2_name?: string | null;
+emergency_button2_number?: string | null;
+emergency_button2_description?: string | null;
+
+emergency_button3_name?: string | null;
+emergency_button3_number?: string | null;
+emergency_button3_description?: string | null;
   emergency_contacts?: EmergencyContact[];
 };
 
@@ -166,10 +176,21 @@ export default async function PublicEmergencyPage({
     religion: profile.religion ?? null,
 
     additional_notes: profile.additional_notes ?? null,
+emergency_button1_name: profile.emergency_button1_name ?? null,
+emergency_button1_number: profile.emergency_button1_number ?? null,
+emergency_button1_description: profile.emergency_button1_description ?? null,
 
+emergency_button2_name: profile.emergency_button2_name ?? null,
+emergency_button2_number: profile.emergency_button2_number ?? null,
+emergency_button2_description: profile.emergency_button2_description ?? null,
+
+emergency_button3_name: profile.emergency_button3_name ?? null,
+emergency_button3_number: profile.emergency_button3_number ?? null,
+emergency_button3_description: profile.emergency_button3_description ?? null,
     is_premium: isPremium,
   };
-
+console.log("PROFILE", profile);
+console.log("MAPPED", mappedProfile);
   return <PublicPageClient profile={mappedProfile} />;
 }
 
