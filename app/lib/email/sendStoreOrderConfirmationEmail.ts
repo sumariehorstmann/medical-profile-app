@@ -5,6 +5,8 @@ type StoreOrderItem = {
   total?: number;
 };
 
+type EmailType = "store" | "premium_kit";
+
 export async function sendStoreOrderConfirmationEmail({
   to,
   customerName,
@@ -12,6 +14,7 @@ export async function sendStoreOrderConfirmationEmail({
   items,
   totalAmount,
   hideItemTotals = false,
+  emailType = "store",
 }: {
   to: string;
   customerName?: string;
@@ -19,6 +22,7 @@ export async function sendStoreOrderConfirmationEmail({
   items?: StoreOrderItem[];
   totalAmount: number;
   hideItemTotals?: boolean;
+  emailType?: EmailType;
 }) {
   const apiKey = process.env.BREVO_API_KEY;
 
@@ -28,8 +32,13 @@ export async function sendStoreOrderConfirmationEmail({
   }
 
   const safeItems = Array.isArray(items) ? items : [];
+  const isPremiumKit = emailType === "premium_kit";
 
-  const itemsHtml =
+  const subject = isPremiumKit
+    ? "Your RROI Premium Kit Order Has Been Confirmed"
+    : "RROI Order Confirmation";
+
+  const storeItemsHtml =
     safeItems.length > 0
       ? safeItems
           .map(
@@ -60,44 +69,80 @@ export async function sendStoreOrderConfirmationEmail({
           </tr>
         `;
 
-  const subject = "RROI Order Confirmation";
+  const premiumKitContent = `
+    <div style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 12px; padding: 14px 16px; margin: 20px 0;">
+      <strong style="color: #157A55;">✓ Payment received</strong>
+      <div style="font-size: 14px; color: #334155; margin-top: 4px;">
+        Your RROI Premium Kit is now in our production queue.
+      </div>
+    </div>
+
+    <h3 style="margin: 24px 0 10px; font-size: 18px;">Your Premium Kit Includes</h3>
+
+    <ul style="padding-left: 20px; line-height: 1.8; font-size: 15px;">
+      <li>Premium QR Card × 1</li>
+      <li>Premium QR Tag × 1</li>
+      <li>Premium Profile Visibility – 1 Year</li>
+      <li>Nationwide Delivery</li>
+    </ul>
+
+    <p style="font-size: 16px; line-height: 1.6; margin-top: 20px;">
+      <strong>Total paid:</strong> R${Number(totalAmount || 0).toFixed(2)}
+    </p>
+
+    <h3 style="margin: 24px 0 10px; font-size: 18px;">What Happens Next?</h3>
+
+    <ol style="padding-left: 20px; line-height: 1.8; font-size: 15px;">
+      <li>We manufacture your QR Card and QR Tag.</li>
+      <li>Your order is quality checked.</li>
+      <li>Your parcel is packaged and dispatched.</li>
+      <li>You will receive tracking information once shipped.</li>
+    </ol>
+  `;
+
+  const storeOrderContent = `
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;">
+      <thead>
+        <tr>
+          <th style="text-align: left; padding: 10px; border-bottom: 2px solid #E5E7EB;">Product</th>
+          <th style="text-align: center; padding: 10px; border-bottom: 2px solid #E5E7EB;">Qty</th>
+          ${
+            hideItemTotals
+              ? ""
+              : `<th style="text-align: right; padding: 10px; border-bottom: 2px solid #E5E7EB;">Total</th>`
+          }
+        </tr>
+      </thead>
+      <tbody>
+        ${storeItemsHtml}
+      </tbody>
+    </table>
+
+    <p style="font-size: 16px; line-height: 1.6;">
+      <strong>Total paid:</strong> R${Number(totalAmount || 0).toFixed(2)}
+    </p>
+  `;
 
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; padding: 20px; color: #0F172A;">
-      <h2 style="margin-bottom: 16px;">Order Confirmation</h2>
+      <h2 style="margin-bottom: 16px;">
+        ${isPremiumKit ? "Order Confirmed" : "Order Confirmation"}
+      </h2>
 
       <p style="font-size: 16px; line-height: 1.6;">
         Hi ${customerName || "there"},
       </p>
 
       <p style="font-size: 16px; line-height: 1.6;">
-        Thank you. Your payment was successful and your RROI order has been received. Your order is now in our production queue.
+        Thank you. Your payment was successful and your RROI order has been received.
+        ${isPremiumKit ? " Your Premium Kit is now in production." : " Your order is now in our production queue."}
       </p>
 
       <p style="font-size: 15px; line-height: 1.6;">
         <strong>Order reference:</strong> ${paymentReference}
       </p>
 
-      <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;">
-        <thead>
-          <tr>
-            <th style="text-align: left; padding: 10px; border-bottom: 2px solid #E5E7EB;">Product</th>
-            <th style="text-align: center; padding: 10px; border-bottom: 2px solid #E5E7EB;">Qty</th>
-            ${
-              hideItemTotals
-                ? ""
-                : `<th style="text-align: right; padding: 10px; border-bottom: 2px solid #E5E7EB;">Total</th>`
-            }
-          </tr>
-        </thead>
-        <tbody>
-          ${itemsHtml}
-        </tbody>
-      </table>
-
-      <p style="font-size: 16px; line-height: 1.6;">
-        <strong>Total paid:</strong> R${Number(totalAmount || 0).toFixed(2)}
-      </p>
+      ${isPremiumKit ? premiumKitContent : storeOrderContent}
 
       <p style="font-size: 15px; line-height: 1.6;">
         Your order is custom made. Manufacturing and delivery can take approximately 
@@ -113,6 +158,7 @@ export async function sendStoreOrderConfirmationEmail({
 
       <p style="font-size: 12px; color: #64748B; line-height: 1.6;">
         RROI (Rapid Response Online Information)<br />
+        Emergency information when it matters most.<br />
         www.rroi.co.za
       </p>
     </div>

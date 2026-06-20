@@ -545,38 +545,39 @@ try {
   console.log("ORDER CREATED SUCCESSFULLY");
 
   const emailWasSent = await sendStoreOrderConfirmationEmail({
-    to: orderForm.email ?? data.email_address ?? "",
-    customerName: shippingName,
-    paymentReference: paymentId,
-    items: [
-  {
-    name: "Premium Kit QR Card",
-    quantity: 1,
-    unit_price: 0,
-    total: 0,
-  },
-  {
-    name: "Premium Kit QR Tag",
-    quantity: 1,
-    unit_price: 0,
-    total: 0,
-  },
-  {
-    name: "1 Year Premium Subscription",
-    quantity: 1,
-    unit_price: 0,
-    total: 0,
-  },
-  {
-    name: "Nationwide Delivery",
-    quantity: 1,
-    unit_price: 0,
-    total: 0,
-  },
-],
-totalAmount: Number(expectedAmount),
-hideItemTotals: true,
-  });
+  to: orderForm.email ?? data.email_address ?? "",
+  customerName: shippingName,
+  paymentReference: paymentId,
+  items: [
+    {
+      name: "Premium Kit QR Card",
+      quantity: 1,
+      unit_price: 0,
+      total: 0,
+    },
+    {
+      name: "Premium Kit QR Tag",
+      quantity: 1,
+      unit_price: 0,
+      total: 0,
+    },
+    {
+      name: "1 Year Premium Subscription",
+      quantity: 1,
+      unit_price: 0,
+      total: 0,
+    },
+    {
+      name: "Nationwide Delivery",
+      quantity: 1,
+      unit_price: 0,
+      total: 0,
+    },
+  ],
+  totalAmount: Number(expectedAmount),
+  hideItemTotals: true,
+  emailType: "premium_kit",
+});
 
   console.log("PREMIUM KIT EMAIL SENT:", emailWasSent);
 }
