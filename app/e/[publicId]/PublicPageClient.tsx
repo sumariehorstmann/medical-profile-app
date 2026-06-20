@@ -292,18 +292,25 @@ export default function PublicPageClient({ profile }: Props) {
             <Row label="Additional Notes" value={valueOrDash(profile.additional_notes)} />
           </Section>
           <Section title="Section 7 — Emergency Response">
-  <Row label="Button 1 Name" value={valueOrDash(profile.emergency_button1_name)} />
-  <Row label="Button 1 Number" value={valueOrDash(profile.emergency_button1_number)} />
-  <Row
-    label="Button 1 Description"
-    value={valueOrDash(profile.emergency_button1_description)}
-  />
 
   {profile.emergency_button1_number ? (
     <a href={`tel:${profile.emergency_button1_number}`} style={callButtonStyle}>
-      📞 Call {profile.emergency_button1_name || "Emergency Contact"}
+      📞 {profile.emergency_button1_name || "Emergency Contact"}
     </a>
   ) : null}
+
+  {profile.emergency_button2_number ? (
+    <a href={`tel:${profile.emergency_button2_number}`} style={callButtonStyle}>
+      📞 {profile.emergency_button2_name || "Emergency Contact"}
+    </a>
+  ) : null}
+
+  {profile.emergency_button3_number ? (
+    <a href={`tel:${profile.emergency_button3_number}`} style={callButtonStyle}>
+      📞 {profile.emergency_button3_name || "Emergency Contact"}
+    </a>
+  ) : null}
+
 </Section>
         </>
       ) : null}
