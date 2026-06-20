@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
   items: order.items || [],
   totalAmount: Number(order.total_amount || 0),
   hideItemTotals: order.order_type === "premium_kit",
+  emailType: order.order_type === "premium_kit" ? "premium_kit" : "store",
 });
 
     if (!emailSent) {
