@@ -55,7 +55,17 @@ type Profile = {
   emergency2_relationship?: string | null;
   emergency2_phone?: string | null;
   additional_notes?: string | null;
+emergency_button1_name?: string | null;
+emergency_button1_number?: string | null;
+emergency_button1_description?: string | null;
 
+emergency_button2_name?: string | null;
+emergency_button2_number?: string | null;
+emergency_button2_description?: string | null;
+
+emergency_button3_name?: string | null;
+emergency_button3_number?: string | null;
+emergency_button3_description?: string | null;
   is_premium?: boolean | null;
 
   // legacy fallback fields
@@ -129,7 +139,12 @@ function Row({
 
 export default function PublicPageClient({ profile }: Props) {
   const isPremium = profile.is_premium === true;
-
+console.log("PUBLIC PROFILE SECTION 7", {
+  isPremium,
+  button1Name: profile.emergency_button1_name,
+  button1Number: profile.emergency_button1_number,
+  button1Description: profile.emergency_button1_description,
+});
   const firstName =
     profile.first_name?.trim() ||
     profile.full_name?.split(" ").slice(0, -1).join(" ").trim() ||
@@ -281,6 +296,73 @@ export default function PublicPageClient({ profile }: Props) {
             />
             <Row label="Additional Notes" value={valueOrDash(profile.additional_notes)} />
           </Section>
+          <Section title="Section 7 — Emergency Response">
+  {profile.emergency_button1_name &&
+   profile.emergency_button1_number ? (
+    <>
+      <a
+        href={`tel:${profile.emergency_button1_number}`}
+        style={callButtonStyle}
+      >
+        📞 {profile.emergency_button1_name}
+      </a>
+
+      {profile.emergency_button1_description ? (
+        <div style={{ marginBottom: 12, color: "#475569" }}>
+          {profile.emergency_button1_description}
+        </div>
+      ) : null}
+    </>
+  ) : null}
+
+  {profile.emergency_button2_name &&
+   profile.emergency_button2_number ? (
+    <>
+      <a
+        href={`tel:${profile.emergency_button2_number}`}
+        style={callButtonStyle}
+      >
+        📞 {profile.emergency_button2_name}
+      </a>
+
+      {profile.emergency_button2_description ? (
+        <div style={{ marginBottom: 12, color: "#475569" }}>
+          {profile.emergency_button2_description}
+        </div>
+      ) : null}
+    </>
+  ) : null}
+
+  {profile.emergency_button3_name &&
+   profile.emergency_button3_number ? (
+    <>
+      <a
+        href={`tel:${profile.emergency_button3_number}`}
+        style={callButtonStyle}
+      >
+        📞 {profile.emergency_button3_name}
+      </a>
+
+      {profile.emergency_button3_description ? (
+        <div style={{ marginBottom: 12, color: "#475569" }}>
+          {profile.emergency_button3_description}
+        </div>
+      ) : null}
+    </>
+  ) : null}
+
+  <a href="tel:112" style={callButtonStyle}>
+    📞 Emergency 112
+  </a>
+
+  <a href="tel:10177" style={callButtonStyle}>
+    🚑 Ambulance 10177
+  </a>
+
+  <a href="tel:10111" style={callButtonStyle}>
+    🚔 Police 10111
+  </a>
+</Section>
         </>
       ) : null}
     </main>
