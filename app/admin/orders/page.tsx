@@ -121,6 +121,49 @@ setLoading(false);
       setUpdatingId(null);
     }
   }
+  async function resendEmail(orderId: string) {
+  const confirmed = window.confirm(
+    "Resend this order confirmation email?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    setUpdatingId(orderId);
+
+    const res = await fetch("/api/admin/orders/resend-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        orderId,
+      }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      alert(json.error || "Failed to resend email.");
+      return;
+    }
+
+    setOrders((prev) =>
+      prev.map((order) =>
+        order.id === orderId
+          ? { ...order, email_sent: true }
+          : order
+      )
+    );
+
+    alert("Email sent successfully.");
+  } catch (error) {
+    console.error(error);
+    alert("Failed to resend email.");
+  } finally {
+    setUpdatingId(null);
+  }
+}
 async function recoverMissingOrders() {
   const confirmed = window.confirm(
     "Recover missing orders from paid payments without orders?"
@@ -340,12 +383,21 @@ async function recoverMissingOrders() {
                 </select>
 
                 <button
-                  type="button"
-                  onClick={() => handlePrint(order.id)}
-                  style={styles.printButton}
-                >
-                  Print Order to PDF
-                </button>
+  type="button"
+  onClick={() => handlePrint(order.id)}
+  style={styles.printButton}
+>
+  Print Order to PDF
+</button>
+
+<button
+  type="button"
+  onClick={() => resendEmail(order.id)}
+  disabled={updatingId === order.id}
+  style={styles.resendButton}
+>
+  Resend Email
+</button>
               </div>
             </div>
 
@@ -593,6 +645,16 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     cursor: "pointer",
   },
+  resendButton: {
+  padding: "10px 14px",
+  borderRadius: 10,
+  border: "1px solid #157A55",
+  background: "#157A55",
+  color: "#ffffff",
+  fontSize: 14,
+  fontWeight: 700,
+  cursor: "pointer",
+},
   printHeader: {
     marginBottom: 10,
   },
