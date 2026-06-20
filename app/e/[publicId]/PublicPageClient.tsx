@@ -292,61 +292,18 @@ export default function PublicPageClient({ profile }: Props) {
             <Row label="Additional Notes" value={valueOrDash(profile.additional_notes)} />
           </Section>
           <Section title="Section 7 — Emergency Response">
-  {profile.emergency_button1_name &&
-   profile.emergency_button1_number ? (
-    <>
-      <a
-        href={`tel:${profile.emergency_button1_number}`}
-        style={callButtonStyle}
-      >
-        📞 {profile.emergency_button1_name}
-      </a>
+  <Row label="Button 1 Name" value={valueOrDash(profile.emergency_button1_name)} />
+  <Row label="Button 1 Number" value={valueOrDash(profile.emergency_button1_number)} />
+  <Row
+    label="Button 1 Description"
+    value={valueOrDash(profile.emergency_button1_description)}
+  />
 
-      {profile.emergency_button1_description ? (
-        <div style={{ marginBottom: 12, color: "#475569" }}>
-          {profile.emergency_button1_description}
-        </div>
-      ) : null}
-    </>
+  {profile.emergency_button1_number ? (
+    <a href={`tel:${profile.emergency_button1_number}`} style={callButtonStyle}>
+      📞 Call {profile.emergency_button1_name || "Emergency Contact"}
+    </a>
   ) : null}
-
-  {profile.emergency_button2_name &&
-   profile.emergency_button2_number ? (
-    <>
-      <a
-        href={`tel:${profile.emergency_button2_number}`}
-        style={callButtonStyle}
-      >
-        📞 {profile.emergency_button2_name}
-      </a>
-
-      {profile.emergency_button2_description ? (
-        <div style={{ marginBottom: 12, color: "#475569" }}>
-          {profile.emergency_button2_description}
-        </div>
-      ) : null}
-    </>
-  ) : null}
-
-  {profile.emergency_button3_name &&
-   profile.emergency_button3_number ? (
-    <>
-      <a
-        href={`tel:${profile.emergency_button3_number}`}
-        style={callButtonStyle}
-      >
-        📞 {profile.emergency_button3_name}
-      </a>
-
-      {profile.emergency_button3_description ? (
-        <div style={{ marginBottom: 12, color: "#475569" }}>
-          {profile.emergency_button3_description}
-        </div>
-      ) : null}
-    </>
-  ) : null}
-
-
 </Section>
         </>
       ) : null}
