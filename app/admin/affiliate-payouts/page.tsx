@@ -175,55 +175,22 @@ const [showEligibleOnly, setShowEligibleOnly] = useState(false);
           return;
         }
 
-        const { data: affiliateData, error: affiliateError } = await supabase
-          .from("affiliates")
-          .select("*")
-          .order("created_at", { ascending: true });
+       const res = await fetch("/api/admin/affiliate-payouts", {
+  cache: "no-store",
+});
 
-        if (affiliateError) throw affiliateError;
+const json = await res.json();
 
-        const { data: referralData, error: referralError } = await supabase
-          .from("affiliate_referrals")
-          .select("*")
-          .order("created_at", { ascending: false });
-
-        if (referralError) throw referralError;
-
-        const { data: payoutHistoryData, error: payoutHistoryError } =
-          await supabase
-            .from("affiliate_payouts")
-            .select("*")
-            .order("paid_at", { ascending: false });
-
-        if (payoutHistoryError) throw payoutHistoryError;
-const referralUserIds = Array.from(
-  new Set(
-    (referralData ?? [])
-      .map((referral) => referral.user_id)
-      .filter(Boolean)
-  )
-);
-
-let customerProfileData: CustomerProfileRow[] = [];
-
-if (referralUserIds.length > 0) {
-  const { data: profilesData, error: profilesError } = await supabase
-    .from("profiles")
-    .select("user_id, first_name, last_name")
-    .in("user_id", referralUserIds);
-
-  if (profilesError) throw profilesError;
-
-  customerProfileData = (profilesData ?? []) as CustomerProfileRow[];
+if (!res.ok) {
+  throw new Error(json?.error || "Failed to load affiliate payout data.");
 }
-        if (!mounted) return;
 
-        setAffiliates((affiliateData ?? []) as AffiliateRow[]);
-        setReferrals((referralData ?? []) as ReferralRow[]);
-        setPayoutHistory(
-          (payoutHistoryData ?? []) as AffiliatePayoutHistoryRow[]
-        );
-        setCustomerProfiles(customerProfileData);
+if (!mounted) return;
+
+setAffiliates((json.affiliates ?? []) as AffiliateRow[]);
+setReferrals((json.referrals ?? []) as ReferralRow[]);
+setPayoutHistory((json.payoutHistory ?? []) as AffiliatePayoutHistoryRow[]);
+setCustomerProfiles((json.customerProfiles ?? []) as CustomerProfileRow[]);
       } catch (err: any) {
         if (!mounted) return;
         setMessage(err?.message || "Failed to load affiliate payout data.");
@@ -746,11 +713,27 @@ if (!eftReference || eftReference.trim().length < 3) {
         return (
           <tr key={referral.id}>
             <td style={styles.td}>
-  {JSON.stringify(
-    affiliates.find(
+  {(() => {
+    const affiliate = affiliates.find(
       (a) => a.id === referral.affiliate_id
-    )
-  )}
+    );
+
+    if (!affiliate) return "-";
+
+    return (
+      <>
+        <div>{affiliate.full_name}</div>
+        <div
+          style={{
+            fontSize: 12,
+            color: "#64748B",
+          }}
+        >
+          {affiliate.affiliate_code}
+        </div>
+      </>
+    );
+  })()}
 </td>
 
             <td style={styles.td}>
