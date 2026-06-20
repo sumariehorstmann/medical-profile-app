@@ -139,12 +139,7 @@ function Row({
 
 export default function PublicPageClient({ profile }: Props) {
   const isPremium = profile.is_premium === true;
-console.log("PUBLIC PROFILE SECTION 7", {
-  isPremium,
-  button1Name: profile.emergency_button1_name,
-  button1Number: profile.emergency_button1_number,
-  button1Description: profile.emergency_button1_description,
-});
+
   const firstName =
     profile.first_name?.trim() ||
     profile.full_name?.split(" ").slice(0, -1).join(" ").trim() ||
@@ -351,17 +346,7 @@ console.log("PUBLIC PROFILE SECTION 7", {
     </>
   ) : null}
 
-  <a href="tel:112" style={callButtonStyle}>
-    📞 Emergency 112
-  </a>
 
-  <a href="tel:10177" style={callButtonStyle}>
-    🚑 Ambulance 10177
-  </a>
-
-  <a href="tel:10111" style={callButtonStyle}>
-    🚔 Police 10111
-  </a>
 </Section>
         </>
       ) : null}
