@@ -473,7 +473,7 @@ async function handlePermanentDelete() {
     }
   }
 
-  async function handleSave(e: React.FormEvent) {
+  async function handleSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setMessage(null);
 
@@ -493,7 +493,9 @@ async function handlePermanentDelete() {
     try {
       const em1Full = joinName(em1FirstName, em1LastName);
       const em2Full = joinName(em2FirstName, em2LastName);
-
+const formData = new FormData(e.currentTarget);
+const getText = (name: string) =>
+  String(formData.get(name) ?? "").trim() || null;
       const payload = {
         first_name: firstName.trim(),
         last_name: lastName.trim(),
@@ -547,17 +549,17 @@ async function handlePermanentDelete() {
         religion: religion || null,
 
         additional_notes: additionalNotes || null,
-        emergency_button1_name: emergencyButton1Name || null,
-emergency_button1_number: emergencyButton1Number || null,
-emergency_button1_description: emergencyButton1Description || null,
+        emergency_button1_name: getText("emergency_button1_name"),
+emergency_button1_number: getText("emergency_button1_number"),
+emergency_button1_description: getText("emergency_button1_description"),
 
-emergency_button2_name: emergencyButton2Name || null,
-emergency_button2_number: emergencyButton2Number || null,
-emergency_button2_description: emergencyButton2Description || null,
+emergency_button2_name: getText("emergency_button2_name"),
+emergency_button2_number: getText("emergency_button2_number"),
+emergency_button2_description: getText("emergency_button2_description"),
 
-emergency_button3_name: emergencyButton3Name || null,
-emergency_button3_number: emergencyButton3Number || null,
-emergency_button3_description: emergencyButton3Description || null,
+emergency_button3_name: getText("emergency_button3_name"),
+emergency_button3_number: getText("emergency_button3_number"),
+emergency_button3_description: getText("emergency_button3_description"),
       };
 
       const res = await fetch("/api/profile", {
@@ -1190,11 +1192,12 @@ emergency_button3_description: emergencyButton3Description || null,
       </Section>
 <Section
   title="Section 7 — Emergency Response"
-  subtitle="These custom emergency contacts are only publicly visible when Premium is active."
+  subtitle="Add your preferred ambulance, security company, roadside assistance, medical aid emergency line, family doctor, or any emergency service you personally use."
 >
   <Field label="Button 1 Name">
     <input
-      style={inputStyle}
+  name="emergency_button1_name"
+  style={inputStyle}
       value={emergencyButton1Name}
       onChange={(e) => setEmergencyButton1Name(e.target.value)}
       placeholder="e.g. Family Doctor"
@@ -1203,8 +1206,9 @@ emergency_button3_description: emergencyButton3Description || null,
 
   <Field label="Button 1 Number">
     <input
-      style={inputStyle}
-      value={emergencyButton1Number}
+  name="emergency_button1_number"
+  style={inputStyle}
+  value={emergencyButton1Number}
       onChange={(e) => setEmergencyButton1Number(e.target.value)}
       placeholder="e.g. 0821234567"
       inputMode="numeric"
@@ -1213,8 +1217,9 @@ emergency_button3_description: emergencyButton3Description || null,
 
   <Field label="Button 1 Description">
     <input
-      style={inputStyle}
-      value={emergencyButton1Description}
+  name="emergency_button1_description"
+  style={inputStyle}
+  value={emergencyButton1Description}
       onChange={(e) => setEmergencyButton1Description(e.target.value)}
       placeholder="e.g. General Practitioner"
     />
@@ -1222,17 +1227,19 @@ emergency_button3_description: emergencyButton3Description || null,
 
   <Field label="Button 2 Name">
     <input
-      style={inputStyle}
-      value={emergencyButton2Name}
+  name="emergency_button2_name"
+  style={inputStyle}
+  value={emergencyButton2Name}
       onChange={(e) => setEmergencyButton2Name(e.target.value)}
       placeholder="e.g. Medical Aid Emergency"
     />
   </Field>
 
   <Field label="Button 2 Number">
-    <input
-      style={inputStyle}
-      value={emergencyButton2Number}
+   <input
+  name="emergency_button2_number"
+  style={inputStyle}
+  value={emergencyButton2Number}
       onChange={(e) => setEmergencyButton2Number(e.target.value)}
       placeholder="e.g. 0860123456"
       inputMode="numeric"
@@ -1241,8 +1248,9 @@ emergency_button3_description: emergencyButton3Description || null,
 
   <Field label="Button 2 Description">
     <input
-      style={inputStyle}
-      value={emergencyButton2Description}
+  name="emergency_button2_description"
+  style={inputStyle}
+  value={emergencyButton2Description}
       onChange={(e) => setEmergencyButton2Description(e.target.value)}
       placeholder="Optional"
     />
@@ -1250,8 +1258,9 @@ emergency_button3_description: emergencyButton3Description || null,
 
   <Field label="Button 3 Name">
     <input
-      style={inputStyle}
-      value={emergencyButton3Name}
+  name="emergency_button3_name"
+  style={inputStyle}
+  value={emergencyButton3Name}
       onChange={(e) => setEmergencyButton3Name(e.target.value)}
       placeholder="e.g. Cardiologist"
     />
@@ -1259,8 +1268,9 @@ emergency_button3_description: emergencyButton3Description || null,
 
   <Field label="Button 3 Number">
     <input
-      style={inputStyle}
-      value={emergencyButton3Number}
+  name="emergency_button3_number"
+  style={inputStyle}
+  value={emergencyButton3Number}
       onChange={(e) => setEmergencyButton3Number(e.target.value)}
       placeholder="e.g. 0411234567"
       inputMode="numeric"
@@ -1269,8 +1279,9 @@ emergency_button3_description: emergencyButton3Description || null,
 
   <Field label="Button 3 Description">
     <input
-      style={inputStyle}
-      value={emergencyButton3Description}
+  name="emergency_button3_description"
+  style={inputStyle}
+  value={emergencyButton3Description}
       onChange={(e) => setEmergencyButton3Description(e.target.value)}
       placeholder="Optional"
     />

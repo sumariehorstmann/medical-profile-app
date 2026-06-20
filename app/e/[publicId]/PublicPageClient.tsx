@@ -329,6 +329,32 @@ export default function PublicPageClient({ profile }: Props) {
 </Section>
         </>
       ) : null}
+
+      <div
+        style={{
+          marginTop: 12,
+          marginBottom: 24,
+        }}
+      >
+        <a
+          href="https://www.rroi.co.za"
+          style={{
+            display: "block",
+            width: "100%",
+            textAlign: "center",
+            background: "#157A55",
+            color: "#FFFFFF",
+            padding: "16px",
+            borderRadius: "12px",
+            textDecoration: "none",
+            fontWeight: 900,
+            fontSize: "18px",
+          }}
+        >
+          Create Your Own RROI Emergency Profile
+        </a>
+      </div>
+
     </main>
   );
 }
