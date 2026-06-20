@@ -67,6 +67,7 @@ export default function PremiumKitPage() {
             <li>Black anodised aluminium QR tag</li>
             <li>Full public emergency profile visibility</li>
             <li>Downloadable QR phone lock screen</li>
+            <li>Downloadable QR smartwatch wallpaper</li>
             <li>Nationwide delivery</li>
           </ul>
         </div>
@@ -86,7 +87,7 @@ export default function PremiumKitPage() {
           <p style={styles.noteText}>
             You can also upgrade to Premium for R99 per year without purchasing
             the physical kit. This gives you full public profile visibility and
-            the downloadable QR phone lock screen only.
+            the downloadable QR phone lock screen and downloadable QR smartwatch wallpaper only.
           </p>
 
           <p style={styles.noteText}>
