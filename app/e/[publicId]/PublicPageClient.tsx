@@ -294,22 +294,37 @@ export default function PublicPageClient({ profile }: Props) {
           <Section title="Section 7 — Emergency Response">
 
   {profile.emergency_button1_number ? (
-    <a href={`tel:${profile.emergency_button1_number}`} style={callButtonStyle}>
-      📞 {profile.emergency_button1_name || "Emergency Contact"}
-    </a>
-  ) : null}
+  <a href={`tel:${profile.emergency_button1_number}`} style={callButtonStyle}>
+    📞 {[
+      profile.emergency_button1_name,
+      profile.emergency_button1_description,
+    ]
+      .filter(Boolean)
+      .join(" - ")}
+  </a>
+) : null}
 
   {profile.emergency_button2_number ? (
-    <a href={`tel:${profile.emergency_button2_number}`} style={callButtonStyle}>
-      📞 {profile.emergency_button2_name || "Emergency Contact"}
-    </a>
-  ) : null}
+  <a href={`tel:${profile.emergency_button2_number}`} style={callButtonStyle}>
+    📞 {[
+      profile.emergency_button2_name,
+      profile.emergency_button2_description,
+    ]
+      .filter(Boolean)
+      .join(" - ")}
+  </a>
+) : null}
 
   {profile.emergency_button3_number ? (
-    <a href={`tel:${profile.emergency_button3_number}`} style={callButtonStyle}>
-      📞 {profile.emergency_button3_name || "Emergency Contact"}
-    </a>
-  ) : null}
+  <a href={`tel:${profile.emergency_button3_number}`} style={callButtonStyle}>
+    📞 {[
+      profile.emergency_button3_name,
+      profile.emergency_button3_description,
+    ]
+      .filter(Boolean)
+      .join(" - ")}
+  </a>
+) : null}
 
 </Section>
         </>
