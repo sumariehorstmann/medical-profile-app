@@ -505,7 +505,7 @@ planCardFeatured: {
   boxShadow: "0 16px 34px rgba(21, 122, 85, 0.12)",
 
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "column"
 },
   planLabel: {
     display: "inline-flex",
@@ -628,7 +628,7 @@ planCardFeatured: {
     fontSize: 16,
   },
   finalSection: {
-  padding: "36px 0 50px",
+  padding: "36px 0 34px",
   background: "#FFFFFF",
 },
   finalCta: {
@@ -657,18 +657,20 @@ planCardFeatured: {
     color: "#CBD5E1",
   },
  installWrap: {
-  marginTop: 40,
-  marginBottom: 40,
+  marginTop: 28,
+  marginBottom: 28,
   display: "flex",
+  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
+  gap: 14,
 },
 installText: {
-  margin: "0 0 12px",
+  margin: 0,
   textAlign: "center",
   fontSize: 15,
-  fontWeight: 700,
-  color: "#475569",
+  fontWeight: 800,
+  color: "#334155",
 },
 installBtn: {
   display: "inline-flex",
