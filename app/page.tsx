@@ -134,8 +134,8 @@ const [isInstalled, setIsInstalled] = useState(false);
   <p style={styles.planPrice}>R0</p>
 
   <p style={styles.planSub}>
-    Start protecting yourself today
-  </p>
+  Essential emergency information
+</p>
 
   <ul style={styles.list}>
   <li>Create and save your emergency profile</li>
@@ -177,11 +177,11 @@ const [isInstalled, setIsInstalled] = useState(false);
 </ul>
 
   <p style={styles.upgradeNote}>
-    Recommended for anyone who wants more than basic contact information available in an emergency.
-  </p>
+  Create your free profile first, then upgrade from your dashboard.
+</p>
 
   <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-  Upgrade To Premium
+  Create Free Profile
 </Link>
 </div>
 
@@ -215,8 +215,8 @@ const [isInstalled, setIsInstalled] = useState(false);
 </ul>
 
   <p style={styles.upgradeNote}>
-    Best option if you want a physical QR card and tag to carry with you.
-  </p>
+  Create your free profile first, then order your Premium Kit from your dashboard.
+</p>
 
   <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
     Get My Emergency Kit
