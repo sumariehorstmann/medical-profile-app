@@ -140,7 +140,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   <ul style={styles.list}>
   <li>Create and save your emergency profile</li>
   <li>First name and surname visible when scanned</li>
-  <li>1 emergency contact visible when scanned</li>
+  <li>One emergency contact visible when scanned</li>
   <li>QR phone wallpaper included</li>
   <li>QR smartwatch wallpaper included</li>
   <li>Access your profile online anytime</li>
