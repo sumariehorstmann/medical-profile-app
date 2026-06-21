@@ -260,7 +260,7 @@ const [isInstalled, setIsInstalled] = useState(false);
         </div>
       </section>
 
-      <section style={styles.section}>
+      <section style={styles.finalSection}>
         <div style={styles.container}>
           <div style={styles.finalCta}>
             <h2 style={styles.finalTitle}>
@@ -413,7 +413,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
   },
   section: {
-  padding: "36px 0",
+  padding: "50px 0",
   background: "#FFFFFF",
 },
   sectionMuted: {
@@ -627,6 +627,10 @@ planCardFeatured: {
     fontWeight: 950,
     fontSize: 16,
   },
+  finalSection: {
+  padding: "36px 0 50px",
+  background: "#FFFFFF",
+},
   finalCta: {
     borderRadius: 26,
     padding: "34px 22px",
@@ -653,10 +657,10 @@ planCardFeatured: {
     color: "#CBD5E1",
   },
  installWrap: {
-  marginTop: 28,
-  marginBottom: 10,
+  marginTop: 40,
+  marginBottom: 40,
   display: "flex",
-  flexDirection: "column",
+  justifyContent: "center",
   alignItems: "center",
 },
 installText: {
