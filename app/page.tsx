@@ -281,6 +281,9 @@ const [isInstalled, setIsInstalled] = useState(false);
 
 {!isInstalled && (
 <div style={styles.installWrap}>
+  <p style={styles.installText}>
+    Install RROI for fast access to your emergency profile on any compatible device.
+  </p>
   <button
     type="button"
     onClick={async () => {
@@ -650,25 +653,33 @@ planCardFeatured: {
     color: "#CBD5E1",
   },
   installWrap: {
-  marginTop: 8,
+  marginTop: 12,
   marginBottom: -20,
   display: "flex",
-  justifyContent: "center",
+  flexDirection: "column",
+  alignItems: "center",
 },
-
+installText: {
+  margin: "0 0 12px",
+  textAlign: "center",
+  fontSize: 15,
+  fontWeight: 700,
+  color: "#475569",
+},
 installBtn: {
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  minHeight: 46,
-  padding: "12px 18px",
-  borderRadius: 12,
-  border: "1px solid #CBD5E1",
-  background: "#FFFFFF",
-  color: "#0F172A",
-  fontWeight: 800,
-  fontSize: 14,
+  minHeight: 58,
+  padding: "16px 28px",
+  borderRadius: 15,
+  border: "none",
+  background: BRAND_GREEN,
+  color: "#FFFFFF",
+  fontWeight: 900,
+  fontSize: 18,
   cursor: "pointer",
   marginTop: 18,
+  boxShadow: "0 12px 24px rgba(21,122,85,0.25)",
 },
 };
