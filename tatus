@@ -1,0 +1,12 @@
+[35mapp/affiliate/page.tsx[m[36m:[m  Affiliate codes are not valid for Premium Visibility Only subscriptions ([1;31mR99[m), renewals, store purchases, or any other products unless expressly stated by RROI.
+[35mapp/lib/email/sendRenewalEmail.ts[m[36m:[m          Renew Premium — [1;31mR99[m/year
+[35mapp/page.tsx[m[36m:[m{/* [1;31mR99[m */}
+[35mapp/page.tsx[m[36m:[m  <p style={styles.planPrice}>[1;31mR99[m/year</p>
+[35mapp/page.tsx[m[36m:[m    [1;31mR99[m per year thereafter
+[35mapp/premium-kit/page.tsx[m[36m:[m            You can also upgrade to Premium for [1;31mR99[m per year without purchasing
+[35mapp/premium-kit/page.tsx[m[36m:[m  No physical QR card or tag is included with the [1;31mR99[m option.
+[35mapp/premium-kit/page.tsx[m[36m:[m  Affiliate discount codes are not valid for the [1;31mR99[m Premium Visibility Only option.
+[35mapp/profile/page.tsx[m[36m:[m        <div style={styles.upgradeOptionPrice}>[1;31mR99[m/year</div>
+[35mpackage-lock.json[m[36m:[m      "integrity": "sha512-+W6cISkXFa1jXsDEdYA8HeevQT/FULhxz[1;31mR99[mpxphltZcVaugps53THCeiWA8SguxxpSp3gKPiuYfSWopkLQ4hw==",
+Binary file [35mpublic/logo-full-v2.png[m matches
+Binary file [35mpublic/logo-header.png[m matches
