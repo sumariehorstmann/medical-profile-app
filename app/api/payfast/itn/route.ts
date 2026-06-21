@@ -307,11 +307,26 @@ if (Math.abs(amountGross - expectedAmount) > 0.01) {
       console.error("SHIPPING DETAILS LOOKUP ERROR:", shippingDetailsError);
       return new NextResponse("OK", { status: 200 });
     }
+const { data: existingSub } = await supabase
+  .from("subscriptions")
+  .select("current_period_end")
+  .eq("user_id", profile.user_id)
+  .maybeSingle();
 
-    const now = new Date();
-    const endDate = new Date();
-    endDate.setFullYear(endDate.getFullYear() + 1);
+const now = new Date();
 
+const currentExpiry = existingSub?.current_period_end
+  ? new Date(existingSub.current_period_end)
+  : null;
+
+const baseDate =
+  currentExpiry && currentExpiry > now
+    ? currentExpiry
+    : now;
+
+const endDate = new Date(baseDate);
+endDate.setFullYear(endDate.getFullYear() + 1);
+    
     const { error: paymentUpdateError } = await supabase
       .from("payments")
       .update({
