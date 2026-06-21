@@ -53,7 +53,12 @@ subtotal,
 delivery_fee,
 total_amount,
 discount_code,
-email_sent
+email_sent,
+courier_name,
+tracking_number,
+tracking_url,
+tracking_email_sent,
+tracking_email_sent_at
 `)
     .order("created_at", { ascending: false });
 
