@@ -35,6 +35,11 @@ export default function FAQPage() {
         />
 
         <FAQ
+          q="How do the downloadable QR phone and smartwatch wallpapers work?"
+          a="After creating your profile, you can download your QR phone lock screen image and QR smartwatch wallpaper from your dashboard. Save the image to your device. On your phone, open the image from your gallery or photos app and set it as your lock screen image so your QR code can be viewed and scanned without unlocking your phone. Smartwatch setup depends on your watch model and app, but the downloaded smartwatch image can be used where custom watch faces or wallpapers are supported."
+        />
+
+        <FAQ
           q="What information is shown when a Basic Profile QR code is scanned?"
           a="Only the profile photo, first name, surname, and one emergency contact are displayed."
         />
@@ -91,9 +96,13 @@ export default function FAQPage() {
 
         <FAQ
           q="How long does delivery take?"
-          a="RROI products are custom made to order and are typically manufactured and delivered within 7–14 working days."
+          a="RROI products are custom made to order and are typically manufactured and delivered within 7–14 working days in South Africa."
         />
 
+        <FAQ
+          q="Are physical RROI products available outside South Africa?"
+          a="No. Physical RROI products, including QR cards and QR tags, are currently only manufactured and delivered within South Africa. Online RROI profiles may be accessed through the website, but physical product delivery is limited to South Africa only."
+/>
         <FAQ
           q="Can I permanently delete my account and information?"
           a="Yes. You may request permanent deletion of your account and profile information. Once deleted, your information will no longer be accessible through your QR code."
