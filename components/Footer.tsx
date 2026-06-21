@@ -23,12 +23,16 @@ export default function Footer() {
           </Link>
 
           <Link href="/affiliate" style={styles.link}>
-            Affiliate
-          </Link>
+  Affiliate
+</Link>
 
-          <Link href="/terms" style={styles.link}>
-            Terms & Conditions
-          </Link>
+<Link href="/faq" style={styles.link}>
+  Frequently Asked Questions
+</Link>
+
+<Link href="/terms" style={styles.link}>
+  Terms & Conditions
+</Link>
 
           <Link href="/privacy" style={styles.link}>
             Privacy Policy
