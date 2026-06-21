@@ -159,7 +159,7 @@ const hasHadPremium =
     ? "Renew Premium Subscription Only"
     : "Premium Subscription Only"}
 </h3>
-        <div style={styles.upgradeOptionPrice}>R99/year</div>
+        <div style={styles.upgradeOptionPrice}>R129/year</div>
 
         <p style={styles.upgradeOptionDescription}>
           Upgrade your profile to Premium visibility. No physical QR products are included.
