@@ -219,7 +219,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 </p>
 
   <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-    Get My Emergency Kit
+    Create Free Profile
   </Link>
 </div>
 
