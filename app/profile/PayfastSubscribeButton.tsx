@@ -76,3 +76,4 @@ export default function PayfastSubscribeButton({ publicId, buyerEmail }: Props) 
     </div>
   );
 }
+

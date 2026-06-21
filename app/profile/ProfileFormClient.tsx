@@ -1667,3 +1667,4 @@ const photoPlaceholderStyle: React.CSSProperties = {
   textAlign: "center",
   padding: 12,
 };
+

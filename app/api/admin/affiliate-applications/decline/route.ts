@@ -112,26 +112,31 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
-try {
-  await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/email/send`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      to: application.email,
-      subject: "RROI Affiliate Application Update",
-      html: `
-        <h2>Application Update</h2>
-        <p>Hi ${application.full_name},</p>
-        <p>Thank you for applying to the RROI affiliate program.</p>
-        <p>Unfortunately, your application was not approved at this time.</p>
-        <p>You are welcome to contact us if you would like feedback.</p>
-        <br/>
-        <p>— RROI Team</p>
-      `,
-    }),
-  });
-} catch (emailError) {
-  console.error("EMAIL SEND ERROR (DECLINED):", emailError);
+  
+if (!application?.email) {
+  console.error("Missing email on application:", application?.id);
+} else {
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/email/send`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to: application.email,
+        subject: "RROI Affiliate Application Update",
+        html: `
+          <h2>Application Update</h2>
+          <p>Hi ${application.full_name},</p>
+          <p>Thank you for applying to the RROI affiliate program.</p>
+          <p>Unfortunately, your application was not approved at this time.</p>
+          <p>You are welcome to contact us if you would like feedback.</p>
+          <br/>
+          <p>— RROI Team</p>
+        `,
+      }),
+    });
+  } catch (emailError) {
+    console.error("EMAIL SEND ERROR (DECLINED):", emailError);
+  }
 }
     return NextResponse.json({
       success: true,

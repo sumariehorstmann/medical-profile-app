@@ -85,17 +85,17 @@ export default function PremiumKitPage() {
           <h2 style={styles.noteTitle}>Digital-only Premium option</h2>
 
           <p style={styles.noteText}>
-            You can also upgrade to Premium for R99 per year without purchasing
+            You can also upgrade to Premium for R129 per year without purchasing
             the physical kit. This gives you full public profile visibility and
             the downloadable QR phone lock screen and downloadable QR smartwatch wallpaper only.
           </p>
 
           <p style={styles.noteText}>
-  No physical QR card or tag is included with the R99 option.
+  No physical QR card or tag is included with the 129 option.
 </p>
 
 <p style={styles.noteText}>
-  Affiliate discount codes are not valid for the R99 Premium Visibility Only option.
+  Affiliate discount codes are not valid for the R129 Premium Visibility Only option.
 </p>
         </div>
 

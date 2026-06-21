@@ -55,7 +55,7 @@ const body = await req.json().catch(() => ({}));
 const discountCode = body?.discountCode?.trim()?.toUpperCase();
 const isAdminDiscountCode = discountCode?.startsWith("RROI-ADMIN-");
 
-let amount = 99;
+let amount = 129;
 let appliedDiscount = 0;
 
 if (discountCode) {

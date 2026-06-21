@@ -8,9 +8,10 @@ import PageHeader from "@/components/PageHeader";
 function ShippingPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const ref = (searchParams.get("ref") || "").trim().toUpperCase();
   const supabase = useMemo(() => createSupabaseBrowser(), []);
 
-  const ref = (searchParams.get("ref") || "").trim().toUpperCase();
+  
 
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [loading, setLoading] = useState(false);

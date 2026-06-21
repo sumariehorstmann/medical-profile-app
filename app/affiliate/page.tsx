@@ -54,7 +54,7 @@ export default function AffiliatePage() {
 </p>
 
 <p style={styles.paragraph}>
-  Affiliate codes are not valid for Premium Visibility Only subscriptions (R99), renewals, store purchases, or any other products unless expressly stated by RROI.
+  Affiliate codes are not valid for Premium Visibility Only subscriptions (R129), renewals, store purchases, or any other products unless expressly stated by RROI.
 </p>
             <p style={styles.paragraph}>
               Normal Premium price: <strong>R499</strong>

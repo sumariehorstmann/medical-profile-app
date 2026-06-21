@@ -26,21 +26,26 @@ export default function AffiliateTermsPage() {
               Conditions and Privacy Policy.
             </p>
           </div>
+<div style={styles.section}>
+  <h2 style={styles.sectionTitle}>1. Responsible Party</h2>
 
+  <p style={styles.paragraph}>
+    The RROI Affiliate Program is operated by RROI (Pty) Ltd, South Africa.
+  </p>
+</div>
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>1. Overview</h2>
+            <h2 style={styles.sectionTitle}>2. Overview</h2>
 
             <p style={styles.paragraph}>
               The RROI Affiliate Program allows approved affiliates to promote
               RROI using an assigned affiliate code and approved marketing
               material. Subject to these terms, affiliates may earn commission
-              on qualifying paid Premium upgrades completed through their
-              approved affiliate code.
+              on qualifying Premium Full Kit purchases completed through their approved affiliate code.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>2. Eligibility</h2>
+            <h2 style={styles.sectionTitle}>3. Eligibility</h2>
 
             <p style={styles.paragraph}>
               To apply to become an affiliate, you must have an active RROI
@@ -57,7 +62,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>3. Application and Approval</h2>
+            <h2 style={styles.sectionTitle}>4. Application and Approval</h2>
 
             <p style={styles.paragraph}>
               After submitting an affiliate application, your application will
@@ -72,7 +77,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>4. Affiliate Code</h2>
+            <h2 style={styles.sectionTitle}>5. Affiliate Code</h2>
 
             <p style={styles.paragraph}>
               Approved affiliates receive a unique affiliate code and referral
@@ -88,12 +93,10 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>5. Qualifying Commissions</h2>
+            <h2 style={styles.sectionTitle}>6. Qualifying Commissions</h2>
 
             <p style={styles.paragraph}>
-              Commission is earned only on qualifying paid Premium upgrades
-              successfully completed using an approved affiliate code and
-              recorded by RROI systems as attributable to that affiliate.
+              Commission is earned only on qualifying Premium Full Kit purchases successfully completed using an approved affiliate code and recorded by RROI systems as attributable to that affiliate.
             </p>
 
             <p style={styles.paragraphSpaced}>
@@ -106,13 +109,16 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>6. Discounts and Commission Structure</h2>
+            <h2 style={styles.sectionTitle}>7. Discounts and Commission Structure</h2>
 
             <p style={styles.paragraph}>
               Customers using an approved affiliate code may receive the
               discount applicable at the time of purchase, if any.
             </p>
-
+            
+<p style={styles.paragraphSpaced}>
+  Affiliate codes are valid only for Premium Full Kit purchases and do not apply to Premium Visibility Only subscriptions, renewals, store purchases, or any other products unless expressly stated by RROI.
+</p>
             <p style={styles.paragraphSpaced}>
               RROI may change pricing, discount structures, commission rates,
               referral mechanics, payout thresholds, promotional campaigns, or
@@ -121,7 +127,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>7. Payouts</h2>
+            <h2 style={styles.sectionTitle}>8. Payouts</h2>
 
             <p style={styles.paragraph}>
               Affiliate commissions are paid subject to the official payout
@@ -138,12 +144,12 @@ export default function AffiliateTermsPage() {
 
             <p style={styles.paragraphSpaced}>
               Affiliates are responsible for ensuring that payout banking
-              details provided to RROI are complete and accurate.
+              details provided to RROI are complete and accurate. Payouts are made via EFT to a South African bank account nominated by the affiliate.
             </p>
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>8. Affiliate Conduct</h2>
+            <h2 style={styles.sectionTitle}>9. Affiliate Conduct</h2>
 
             <p style={styles.paragraph}>
               Affiliates must promote RROI honestly, lawfully,
@@ -187,7 +193,7 @@ export default function AffiliateTermsPage() {
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>
-              9. Official Marketing Material and Brand Use
+              10. Official Marketing Material and Brand Use
             </h2>
 
             <p style={styles.paragraph}>
@@ -213,7 +219,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>10. Tax Responsibility</h2>
+            <h2 style={styles.sectionTitle}>11. Tax Responsibility</h2>
 
             <p style={styles.paragraph}>
               Affiliates are solely responsible for complying with their own
@@ -224,7 +230,7 @@ export default function AffiliateTermsPage() {
           </div>
 
 <div style={styles.section}>
-  <h2 style={styles.sectionTitle}>11. Affiliate Deactivation</h2>
+  <h2 style={styles.sectionTitle}>12. Affiliate Deactivation</h2>
 
   <p style={styles.paragraph}>
     Affiliates may request or use available platform tools to deactivate their
@@ -251,7 +257,7 @@ export default function AffiliateTermsPage() {
 </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>12. Suspension and Termination</h2>
+            <h2 style={styles.sectionTitle}>13. Suspension and Termination</h2>
 
             <p style={styles.paragraph}>
               RROI may suspend or terminate affiliate access immediately if
@@ -272,7 +278,7 @@ export default function AffiliateTermsPage() {
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>
-              13. No Employment or Partnership
+              14. No Employment or Partnership
             </h2>
 
             <p style={styles.paragraph}>
@@ -287,7 +293,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>14. No Guaranteed Earnings</h2>
+            <h2 style={styles.sectionTitle}>15. No Guaranteed Earnings</h2>
 
             <p style={styles.paragraph}>
               RROI does not guarantee any level of referrals, conversions,
@@ -303,7 +309,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>15. Changes to the Program</h2>
+            <h2 style={styles.sectionTitle}>16. Changes to the Program</h2>
 
             <p style={styles.paragraph}>
               RROI may change, pause, restrict, or discontinue the affiliate
@@ -320,7 +326,7 @@ export default function AffiliateTermsPage() {
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>
-              16. Main Terms and Privacy Policy
+              17. Main Terms and Privacy Policy
             </h2>
 
             <p style={styles.paragraph}>
@@ -336,7 +342,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>17. Governing Law</h2>
+            <h2 style={styles.sectionTitle}>18. Governing Law</h2>
 
             <p style={styles.paragraph}>
               These Affiliate Terms are governed by the laws of the Republic of
@@ -345,7 +351,7 @@ export default function AffiliateTermsPage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>18. Contact</h2>
+            <h2 style={styles.sectionTitle}>19. Contact</h2>
 
             <p style={styles.paragraph}>
               If you have any questions regarding the RROI Affiliate Program or

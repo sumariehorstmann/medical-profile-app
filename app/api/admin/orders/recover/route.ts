@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
     const rawPayload = (payment.raw_payload || {}) as Record<string, any>;
     const paymentType = String(rawPayload.custom_str2 || "").toLowerCase();
 
-    if (paymentType === "renewal" || Number(payment.amount ?? 0) === 99) {
+    if (paymentType === "renewal" || Number(payment.amount ?? 0) === 129) {
       skipped += 1;
       continue;
     }

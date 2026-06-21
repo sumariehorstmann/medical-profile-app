@@ -10,11 +10,11 @@ export async function GET() {
       {
         name: "Black Anodised Aluminium QR Tag",
         quantity: 1,
-        unit_price: 99,
-        total: 99,
+        unit_price: 150,
+        total: 150,
       },
     ],
-    totalAmount: 29.7,
+    totalAmount: 150,
   });
 
   return NextResponse.json({

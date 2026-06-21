@@ -53,7 +53,7 @@ export async function sendRenewalEmail({
             font-size: 15px;
           "
         >
-          Renew Premium — R99/year
+          Renew Premium — R129/year
         </a>
       </div>
 

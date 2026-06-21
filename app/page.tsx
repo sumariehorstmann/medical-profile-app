@@ -151,7 +151,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   </Link>
 </div>
 
-{/* R99 */}
+{/* R129 */}
 <div style={styles.planCardFeatured}>
   <div style={styles.planLabelFeatured}>
   ⭐ MOST POPULAR
@@ -159,7 +159,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 
   <h3 style={styles.planTitle}>Premium Emergency Profile</h3>
 
-  <p style={styles.planPrice}>R99/year</p>
+  <p style={styles.planPrice}>R129/year</p>
 
   <p style={styles.planSub}>
   More emergency information available when your QR code is scanned
@@ -200,7 +200,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   </p>
 
   <p style={styles.planRenewal}>
-    R99 per year thereafter
+    R129 per year thereafter
   </p>
 
   <ul style={styles.list}>
