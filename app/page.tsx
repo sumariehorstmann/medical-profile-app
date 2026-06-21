@@ -126,100 +126,102 @@ const [isInstalled, setIsInstalled] = useState(false);
           <div style={styles.pricingGrid}>
 
   {/* FREE */}
-  <div style={styles.planCard}>
-    <div style={styles.planLabel}>Free</div>
+<div style={styles.planCard}>
+  <div style={styles.planLabel}>Free</div>
 
-    <h3 style={styles.planTitle}>
-      Basic Emergency Profile
-    </h3>
+  <h3 style={styles.planTitle}>Basic Emergency Profile</h3>
 
-    <p style={styles.planPrice}>R0</p>
+  <p style={styles.planPrice}>R0</p>
 
-    <ul style={styles.list}>
-      <li>Create and save your full profile</li>
-      <li>Emergency Contact 1 visible when scanned</li>
-      <li>First name and last name visible</li>
-      <li>Downloadable phone QR lock screen</li>
-      <li>Downloadable smartwatch QR wallpaper</li>
-      <li>Upgrade anytime</li>
-    </ul>
+  <p style={styles.planSub}>
+    Start protecting yourself today
+  </p>
 
-    <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-      Create Free Profile
-    </Link>
+  <ul style={styles.list}>
+  <li>Create and save your emergency profile</li>
+  <li>First name and surname visible when scanned</li>
+  <li>1 emergency contact visible when scanned</li>
+  <li>QR phone wallpaper included</li>
+  <li>QR smartwatch wallpaper included</li>
+  <li>Access your profile online anytime</li>
+</ul>
+
+  <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
+    Create Free Profile
+  </Link>
+</div>
+
+{/* R129 */}
+<div style={styles.planCardFeatured}>
+  <div style={styles.planLabelFeatured}>
+  ⭐ MOST POPULAR
+</div>
+
+  <h3 style={styles.planTitle}>Premium Emergency Profile</h3>
+
+  <p style={styles.planPrice}>R129/year</p>
+
+  <p style={styles.planSub}>
+  More emergency information available when your QR code is scanned
+</p>
+
+  <ul style={styles.list}>
+  <li>Expanded emergency information available when scanned</li>
+  <li>Multiple emergency contacts</li>
+  <li>Allergies visible when scanned</li>
+  <li>Medical conditions visible when scanned</li>
+  <li>Medications visible when scanned</li>
+  <li>QR phone wallpaper included</li>
+  <li>QR smartwatch wallpaper included</li>
+  <li>Update your profile anytime</li>
+</ul>
+
+  <p style={styles.upgradeNote}>
+    Recommended for anyone who wants more than basic contact information available in an emergency.
+  </p>
+
+  <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
+  Upgrade To Premium
+</Link>
+</div>
+
+{/* R499 */}
+<div style={styles.planCard}>
+  <div style={styles.planLabelFeatured}>
+    Premium Kit
   </div>
 
-  {/* R99 */}
-  <div style={styles.planCard}>
-    <div style={styles.planLabelFeatured}>
-      Premium Subscription
-    </div>
+  <h3 style={styles.planTitle}>Premium Emergency Kit</h3>
 
-    <h3 style={styles.planTitle}>
-      Premium Visibility Only
-    </h3>
+  <p style={styles.planPrice}>R499 once-off</p>
 
-    <p style={styles.planPrice}>R99/year</p>
+  <p style={styles.planSub}>
+    Includes first year Premium subscription
+  </p>
 
-    <p style={styles.planSub}>
-      No physical QR products included
-    </p>
+  <p style={styles.planRenewal}>
+    R129 per year thereafter
+  </p>
 
-    <ul style={styles.list}>
-      <li>Full medical profile visible when scanned</li>
-      <li>Downloadable phone QR lock screen</li>
-      <li>Downloadable smartwatch QR wallpaper</li>
-      <li>Secure profile you can update anytime</li>
-      <li>No physical QR products included</li>
-      <li>Premium visibility access only</li>
-    </ul>
+  <ul style={styles.list}>
+  <li>Everything in Premium Emergency Profile</li>
+  <li>Engraved QR emergency card included</li>
+  <li>Engraved QR emergency tag included</li>
+  <li>First year Premium subscription included</li>
+  <li>Nationwide delivery included</li>
+  <li>QR phone wallpaper included</li>
+  <li>QR smartwatch wallpaper included</li>
+  <li>Update your profile anytime</li>
+</ul>
 
-    <p style={styles.upgradeNote}>
-      Create your free profile first, then upgrade from your dashboard.
-    </p>
+  <p style={styles.upgradeNote}>
+    Best option if you want a physical QR card and tag to carry with you.
+  </p>
 
-    <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-      Create Free Profile
-    </Link>
-  </div>
-
-  {/* R499 */}
-  <div style={styles.planCardFeatured}>
-    <div style={styles.planLabelFeatured}>
-      Premium Full Kit
-    </div>
-
-    <h3 style={styles.planTitle}>
-      Full Emergency Profile
-    </h3>
-
-    <p style={styles.planPrice}>R499 once-off</p>
-
-    <p style={styles.planSub}>
-      Includes first year Premium subscription
-    </p>
-
-    <p style={styles.planRenewal}>
-      R99 per year thereafter
-    </p>
-
-    <ul style={styles.list}>
-      <li>Full medical profile visible when scanned</li>
-      <li>2 physical engraved QR products included</li>
-      <li>Nationwide delivery included</li>
-      <li>Downloadable phone QR lock screen</li>
-      <li>Downloadable smartwatch QR wallpaper</li>
-      <li>Secure profile you can update anytime</li>
-    </ul>
-
-    <p style={styles.upgradeNote}>
-      Create your free profile first, then upgrade to Premium from your dashboard.
-    </p>
-
-    <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-      Create Free Profile
-    </Link>
-  </div>
+  <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
+    Get My Emergency Kit
+  </Link>
+</div>
 
 </div>
         </div>
