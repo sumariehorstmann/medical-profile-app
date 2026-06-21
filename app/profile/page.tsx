@@ -109,6 +109,8 @@ const hasHadPremium =
     <ul style={styles.includesList}>
       <li>1-year RROI Premium subscription</li>
       <li>2 physical QR code items</li>
+      <li>Downloadable QR phone lock screen</li>
+      <li>Downloadable QR smartwatch wallpaper</li>
       <li>Nationwide delivery</li>
     </ul>
 
@@ -123,7 +125,7 @@ const hasHadPremium =
 
 {!isPremium && hasHadPremium && (
   <Link href="/renew" style={styles.upgradeBtn}>
-    Renew Premium - R99/year
+    Renew Premium - R129/year
   </Link>
 )}
           </div>
@@ -166,8 +168,8 @@ const hasHadPremium =
 
         <Link href="/renew" style={styles.secondaryBtn}>
           {isPremium
-  ? "Renew Premium - R99"
-  : "Upgrade to Premium - R99"}
+  ? "Renew Premium - R129"
+  : "Upgrade to Premium - R129"}
         </Link>
       </div>
 

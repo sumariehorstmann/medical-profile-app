@@ -70,7 +70,7 @@ if (json.invalidDiscount) {
 
         <div style={styles.priceBox}>
           <span style={styles.label}>1 Year Premium Access</span>
-          <strong style={styles.price}>R129</strong>
+          <strong style={styles.price}>R99</strong>
         </div>
 
 <input
