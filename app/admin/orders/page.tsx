@@ -41,6 +41,11 @@ total_amount: number | null;
 discount_code: string | null;
 
 email_sent: boolean | null;
+courier_name: string | null;
+tracking_number: string | null;
+tracking_url: string | null;
+tracking_email_sent: boolean | null;
+tracking_email_sent_at: string | null;
 };
 
 const STATUS_OPTIONS = [
@@ -57,7 +62,16 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState("all");
-
+const [trackingInputs, setTrackingInputs] = useState<
+  Record<
+    string,
+    {
+      courierName: string;
+      trackingNumber: string;
+      trackingUrl: string;
+    }
+  >
+>({});
   useEffect(() => {
     let mounted = true;
 
@@ -160,6 +174,61 @@ setLoading(false);
   } catch (error) {
     console.error(error);
     alert("Failed to resend email.");
+  } finally {
+    setUpdatingId(null);
+  }
+}
+async function sendTrackingEmail(orderId: string) {
+  const input = trackingInputs[orderId];
+
+  if (!input?.courierName || !input?.trackingNumber) {
+    alert("Please enter courier name and tracking number.");
+    return;
+  }
+
+  try {
+    setUpdatingId(orderId);
+
+    const res = await fetch("/api/admin/orders/send-tracking-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        orderId,
+        courierName: input.courierName,
+        trackingNumber: input.trackingNumber,
+        trackingUrl: input.trackingUrl,
+      }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      alert(json.error || "Failed to send tracking email.");
+      return;
+    }
+
+    setOrders((prev) =>
+      prev.map((order) =>
+        order.id === orderId
+          ? {
+              ...order,
+              courier_name: input.courierName,
+              tracking_number: input.trackingNumber,
+              tracking_url: input.trackingUrl,
+              tracking_email_sent: true,
+              tracking_email_sent_at: new Date().toISOString(),
+              status: "shipped",
+            }
+          : order
+      )
+    );
+
+    alert("Tracking email sent successfully.");
+  } catch (error) {
+    console.error(error);
+    alert("Failed to send tracking email.");
   } finally {
     setUpdatingId(null);
   }
@@ -478,6 +547,75 @@ async function recoverMissingOrders() {
   <div className="row" style={styles.row}>
     <strong>Email Sent:</strong> {order.email_sent ? "Yes" : "No"}
   </div>
+  <div style={styles.trackingBox}>
+  <h3 style={styles.sectionTitle}>Tracking</h3>
+
+  <input
+    placeholder="Courier name, e.g. The Courier Guy"
+    value={trackingInputs[order.id]?.courierName ?? order.courier_name ?? ""}
+    onChange={(e) =>
+      setTrackingInputs((prev) => ({
+        ...prev,
+        [order.id]: {
+          courierName: e.target.value,
+          trackingNumber:
+            prev[order.id]?.trackingNumber ?? order.tracking_number ?? "",
+          trackingUrl: prev[order.id]?.trackingUrl ?? order.tracking_url ?? "",
+        },
+      }))
+    }
+    style={styles.input}
+  />
+
+  <input
+    placeholder="Tracking number"
+    value={
+      trackingInputs[order.id]?.trackingNumber ?? order.tracking_number ?? ""
+    }
+    onChange={(e) =>
+      setTrackingInputs((prev) => ({
+        ...prev,
+        [order.id]: {
+          courierName: prev[order.id]?.courierName ?? order.courier_name ?? "",
+          trackingNumber: e.target.value,
+          trackingUrl: prev[order.id]?.trackingUrl ?? order.tracking_url ?? "",
+        },
+      }))
+    }
+    style={styles.input}
+  />
+
+  <input
+    placeholder="Tracking link optional"
+    value={trackingInputs[order.id]?.trackingUrl ?? order.tracking_url ?? ""}
+    onChange={(e) =>
+      setTrackingInputs((prev) => ({
+        ...prev,
+        [order.id]: {
+          courierName: prev[order.id]?.courierName ?? order.courier_name ?? "",
+          trackingNumber:
+            prev[order.id]?.trackingNumber ?? order.tracking_number ?? "",
+          trackingUrl: e.target.value,
+        },
+      }))
+    }
+    style={styles.input}
+  />
+
+  <button
+    type="button"
+    onClick={() => sendTrackingEmail(order.id)}
+    disabled={updatingId === order.id}
+    style={styles.resendButton}
+  >
+    Send Tracking Email
+  </button>
+
+  <div style={styles.row}>
+    <strong>Tracking Email Sent:</strong>{" "}
+    {order.tracking_email_sent ? "Yes" : "No"}
+  </div>
+</div>
 </div>
 
 <div className="section" style={styles.section}>
@@ -654,6 +792,23 @@ const styles: Record<string, React.CSSProperties> = {
   fontSize: 14,
   fontWeight: 700,
   cursor: "pointer",
+},
+trackingBox: {
+  marginTop: 14,
+  padding: 14,
+  border: "1px solid #E5E7EB",
+  borderRadius: 12,
+  background: "#F8FAFC",
+  display: "grid",
+  gap: 10,
+},
+
+input: {
+  width: "100%",
+  padding: "10px 12px",
+  borderRadius: 10,
+  border: "1px solid #CBD5E1",
+  fontSize: 14,
 },
   printHeader: {
     marginBottom: 10,
