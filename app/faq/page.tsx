@@ -11,47 +11,107 @@ export default function FAQPage() {
 
         <FAQ
           q="What is RROI?"
-          a="RROI is an information-sharing platform that lets you create an emergency profile linked to a QR code."
+          a="RROI is an information-sharing platform that allows you to create an emergency profile linked to a QR code. Important information can be accessed when your QR code is scanned."
         />
 
         <FAQ
           q="Is RROI a medical device or emergency service?"
-          a="No. RROI is not a medical device, healthcare provider, emergency response service, or substitute for professional medical advice or emergency assistance."
+          a="No. RROI is an information-sharing platform only. RROI is not a medical device, healthcare provider, emergency response service, or substitute for professional medical advice, diagnosis, treatment, or emergency assistance."
         />
 
         <FAQ
-          q="What information is shown when my QR code is scanned?"
-          a="You choose what information is added to your profile. Free profiles show limited information. Premium profiles allow expanded public emergency profile visibility."
+          q="How does the RROI QR code work?"
+          a="When your QR code is scanned using a smartphone camera or QR scanner, your public RROI profile opens in a web browser. No app installation is required for the person scanning the QR code."
         />
 
         <FAQ
-          q="Do I need the app to scan a QR code?"
-          a="No. Most modern smartphones can scan QR codes using the device camera."
+          q="What information can I add to my RROI profile?"
+          a="You can add a profile photo, personal details, emergency contacts, blood type, allergies, medical conditions, medications, implanted devices, mobility notes, organ donor status, medical aid information, doctor and specialist details, preferred hospital, languages, identifying information, additional notes, and emergency call buttons."
         />
 
         <FAQ
-          q="What is included in Premium?"
-          a="Premium allows expanded public emergency profile visibility and includes downloadable QR phone and smartwatch wallpapers."
+          q="What is included in the Basic Profile?"
+          a="The Basic Profile is free and includes a profile photo, first name, surname, one emergency contact, an emergency call button, a downloadable QR phone lock screen wallpaper, and a downloadable QR smartwatch wallpaper."
         />
 
         <FAQ
-          q="What is included in the Premium Kit?"
-          a="The Premium Kit includes the first year Premium subscription, two engraved physical QR products, downloadable QR wallpapers, and nationwide delivery."
+          q="What information is shown when a Basic Profile QR code is scanned?"
+          a="Only the profile photo, first name, surname, and one emergency contact are displayed."
         />
 
         <FAQ
-          q="Can I update my information?"
-          a="Yes. You can log in and update your profile information anytime."
+          q="What is included in the R129 Premium Subscription?"
+          a="The R129 Premium Subscription provides full public profile visibility when your QR code is scanned."
         />
 
         <FAQ
-          q="Does RROI guarantee that my QR code will be scanned in an emergency?"
-          a="No. RROI cannot guarantee that any person will scan, access, use, or rely on a QR profile in an emergency."
+          q="What is included in the R499 Premium Kit?"
+          a="The Premium Kit includes a 1-year Premium Subscription, full public profile visibility, one black anodised aluminium QR card, one black anodised aluminium QR tag, a downloadable QR phone lock screen wallpaper, and a downloadable QR smartwatch wallpaper."
+        />
+
+        <FAQ
+          q="What happens if I upgrade from Premium (R129) to the Premium Kit (R499)?"
+          a="The Premium Kit includes a full 1-year Premium subscription. If you already have an active Premium subscription and later purchase the Premium Kit, your current subscription period is extended by an additional year."
+        />
+
+        <FAQ
+          q="Can affiliate discount codes be used on all purchases?"
+          a="No. Affiliate discount codes are only valid on the RROI Premium Kit where stated."
+        />
+
+        <FAQ
+          q="How much discount does an affiliate code provide?"
+          a="Approved affiliate codes provide a R30 discount on the RROI Premium Kit. Premium Kit price: R499. Affiliate discount: R30. Discounted price: R469."
+        />
+
+        <FAQ
+          q="Can I update my information after creating my profile?"
+          a="Yes. You can log in to your account and update your profile information at any time."
+        />
+
+        <FAQ
+          q="Can I renew my Premium subscription before it expires?"
+          a="Yes. You can renew your Premium subscription at any time before expiry."
+        />
+
+        <FAQ
+          q="What happens if my Premium subscription expires?"
+          a="Your profile is not deleted. Your public profile automatically reverts to the Basic Profile view, displaying only your profile photo, first name, surname, and one emergency contact. You can renew your Premium subscription at any time."
+        />
+
+        <FAQ
+          q="Do I need the RROI app installed to use my QR code?"
+          a="No. Any modern smartphone can scan an RROI QR code using its camera or QR scanner. The person scanning your QR code does not need an RROI account or the RROI app installed."
+        />
+
+        <FAQ
+          q="What happens if I lose my QR card or QR tag?"
+          a="Replacement QR cards and QR tags can be purchased through the RROI Online Store. Your profile information remains linked to your account."
+        />
+
+        <FAQ
+          q="How long does delivery take?"
+          a="RROI products are custom made to order and are typically manufactured and delivered within 7–14 working days."
+        />
+
+        <FAQ
+          q="Can I permanently delete my account and information?"
+          a="Yes. You may request permanent deletion of your account and profile information. Once deleted, your information will no longer be accessible through your QR code."
+        />
+
+        <FAQ
+          q="Does RROI guarantee that someone will scan my QR code in an emergency?"
+          a="No. RROI cannot guarantee that emergency responders, healthcare personnel, bystanders, or any other person will scan, access, use, or rely on your QR profile."
+        />
+
+        <FAQ
+          q="Who should use RROI?"
+          a="RROI can be used by children, adults, elderly individuals, people with allergies, chronic medical conditions, implanted medical devices, those taking regular medication, athletes, travelers, and anyone who wants important information available through a QR code in an emergency."
         />
 
         <FAQ
           q="What should I do in a real emergency?"
-          a="Contact local emergency services immediately."
+          a="In a real emergency, contact local emergency services immediately."
         />
 
         <PageBottomNav />
