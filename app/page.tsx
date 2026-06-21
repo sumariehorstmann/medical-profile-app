@@ -653,8 +653,8 @@ planCardFeatured: {
     color: "#CBD5E1",
   },
  installWrap: {
-  marginTop: 50,
-  marginBottom: -140,
+  marginTop: 28,
+  marginBottom: 28,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -679,7 +679,7 @@ installBtn: {
   fontWeight: 900,
   fontSize: 18,
   cursor: "pointer",
-  marginTop: 18,
+  marginTop: 0,
   boxShadow: "0 12px 24px rgba(21,122,85,0.25)",
 },
 };
