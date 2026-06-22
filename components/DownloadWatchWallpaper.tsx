@@ -85,15 +85,14 @@ export default function DownloadWatchWallpaper({
     forcedColorAdjust: "none",
 
     display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    fontFamily: "Arial, sans-serif",
+flexDirection: "column",
+alignItems: "center",
+justifyContent: "center",
 
-    paddingTop: 100,
-    paddingLeft: 70,
-    paddingRight: 70,
-    paddingBottom: 70,
+paddingTop: 0,
+paddingLeft: 70,
+paddingRight: 70,
+paddingBottom: 0,
 
     boxSizing: "border-box",
   }}
@@ -104,7 +103,7 @@ export default function DownloadWatchWallpaper({
 fontSize: 42,
 fontWeight: 900,
 letterSpacing: 1,
-marginBottom: 30,
+marginBottom: 40,
               textAlign: "center",
               color: "#4ADE80",
               lineHeight: 1,
