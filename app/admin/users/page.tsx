@@ -7,6 +7,7 @@ type AdminUser = {
   public_id: string | null;
   first_name: string | null;
   last_name: string | null;
+  email: string | null;
   is_paid: boolean | null;
   subscription_status: string | null;
   plan: string | null;
@@ -179,6 +180,7 @@ export default function AdminUsersPage() {
             <thead>
               <tr>
                 <th style={styles.th}>Name</th>
+                <th style={styles.th}>Email</th>
                 <th style={styles.th}>Profile Type</th>
                 <th style={styles.th}>Status</th>
                 <th style={styles.th}>Start</th>
@@ -199,6 +201,7 @@ export default function AdminUsersPage() {
                     <td style={styles.td}>
                       {[user.first_name, user.last_name].filter(Boolean).join(" ") || "-"}
                     </td>
+                    <td style={styles.td}>{user.email || "-"}</td>
                     <td style={styles.td}>{isPremium ? "Premium" : "Free"}</td>
                     <td style={styles.td}>{user.subscription_status || "-"}</td>
                     <td style={styles.td}>{formatDate(user.current_period_start)}</td>
