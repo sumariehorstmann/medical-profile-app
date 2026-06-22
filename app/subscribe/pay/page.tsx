@@ -34,6 +34,7 @@ function PayPageInner() {
   const [error, setError] = useState("");
   const [affiliateCode, setAffiliateCode] = useState("");
   const [affiliateMessage, setAffiliateMessage] = useState("");
+  
 
   useEffect(() => {
     let mounted = true;
@@ -95,7 +96,8 @@ function PayPageInner() {
 
         if (finalRef) {
           setAffiliateCode(finalRef.toUpperCase());
-          setAffiliateMessage("Affiliate code detected. Your R30 discount will be applied if the code is valid.");
+          setAffiliateMessage("Affiliate code detected. It will be checked before payment.");
+
         }
       } catch {
         setError("Something went wrong loading your payment page.");
@@ -135,12 +137,13 @@ function PayPageInner() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          publicId: profile.public_id,
-          buyerEmail: userEmail,
-          firstName: profile.first_name || "",
-          lastName: profile.last_name || "",
-          affiliateCode: cleanCode || "",
-        }),
+  publicId: profile.public_id,
+  buyerEmail: userEmail,
+  firstName: profile.first_name || "",
+  lastName: profile.last_name || "",
+  affiliateCode: hasAffiliateCode ? cleanCode : "",
+  agreedToLegal: true,
+}),
       });
 
       const data = await res.json();
@@ -222,14 +225,15 @@ function PayPageInner() {
               value={affiliateCode}
               onChange={(e) => {
                 setAffiliateCode(e.target.value.toUpperCase());
-                setAffiliateMessage("");
+
+setAffiliateMessage("");
               }}
               placeholder="Enter affiliate code"
               className="w-full rounded border px-3 py-2"
               disabled={loading}
             />
             <p className="mt-2 text-sm text-gray-600">
-              Enter a valid affiliate code to get <strong>R30 off</strong>.
+              Enter an approved affiliate code to get <strong>R30 off</strong>. Invalid codes will be rejected before payment.
             </p>
             {affiliateMessage ? (
               <p className="mt-2 text-sm text-green-700">{affiliateMessage}</p>
