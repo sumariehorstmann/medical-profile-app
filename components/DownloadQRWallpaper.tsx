@@ -49,15 +49,16 @@ export default function DownloadQRWallpaper({
   return (
     <>
       <div
-        aria-hidden="true"
-        style={{
-          position: "fixed",
-          top: "-10000px",
-          left: "-10000px",
-          pointerEvents: "none",
-          opacity: 0,
-        }}
-      >
+  aria-hidden="true"
+  style={{
+    position: "fixed",
+    top: "-10000px",
+    left: "-10000px",
+    pointerEvents: "none",
+    colorScheme: "light",
+    forcedColorAdjust: "none",
+  }}
+>
         <div ref={ref}>
           <QRScreensaver
             qrValue={qrUrl}
