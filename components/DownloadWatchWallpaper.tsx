@@ -10,9 +10,7 @@ type Props = {
   lastName?: string;
 };
 
-export default function DownloadWatchWallpaper({
-  publicId,
-}: Props) {
+export default function DownloadWatchWallpaper({ publicId }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   const publicUrl =
@@ -21,7 +19,7 @@ export default function DownloadWatchWallpaper({
       : "";
 
   async function downloadWatchWallpaper() {
-    if (!ref.current) return;
+    if (!ref.current || !publicId) return;
 
     try {
       const dataUrl = await htmlToImage.toPng(ref.current, {
@@ -45,97 +43,108 @@ export default function DownloadWatchWallpaper({
       <button
         type="button"
         onClick={downloadWatchWallpaper}
-        style={{
-          marginTop: 20,
-          padding: "16px 24px",
-          minHeight: 52,
-          width: 310,
-          borderRadius: 12,
-          background: "#157A55",
-          color: "#FFFFFF",
-          fontWeight: 800,
-          border: "none",
-          cursor: "pointer",
-          display: "inline-block",
-          boxShadow: "0 10px 24px rgba(21,122,85,0.22)",
-        }}
+        style={styles.button}
+        disabled={!publicId}
       >
         Download Smartwatch Wallpaper
       </button>
 
-      <div
-        style={{
-          position: "fixed",
-          top: "-1200px",
-          left: "-1200px",
-          width: 1024,
-          height: 1024,
-          pointerEvents: "none",
-        }}
-      >
-        <div
-  ref={ref}
-  style={{
-    width: 1024,
-    height: 1024,
-    background: "#050B08",
-    color: "#FFFFFF",
+      <div style={styles.hiddenWrap} aria-hidden="true">
+        <div ref={ref} style={styles.canvas}>
+          <div style={styles.rroiText}>RROI</div>
 
-    colorScheme: "light",
-    forcedColorAdjust: "none",
-
-    display: "flex",
-flexDirection: "column",
-alignItems: "center",
-justifyContent: "center",
-
-paddingTop: 0,
-paddingLeft: 70,
-paddingRight: 70,
-paddingBottom: 0,
-
-    boxSizing: "border-box",
-  }}
->
-          <div
-            style={{
-              width: 420,
-fontSize: 42,
-fontWeight: 900,
-letterSpacing: 1,
-marginBottom: 40,
-              textAlign: "center",
-              color: "#4ADE80",
-              lineHeight: 1,
-            }}
-          >
-            EMERGENCY PROFILE
-          </div>
-
-          <div
-  style={{
-  background: "#FFFFFF",
-  padding: 24,
-  borderRadius: 32,
-  colorScheme: "light",
-  forcedColorAdjust: "none",
-}}
->
+          <div style={styles.qrBox}>
             <QRCodeSVG
-  value={publicUrl}
-  size={300}
-  level="H"
-  includeMargin
-  bgColor="#FFFFFF"
-  fgColor="#000000"
-  style={{
-    backgroundColor: "#FFFFFF",
-    colorScheme: "light",
-  }}
-/>
+              value={publicUrl || " "}
+              size={260}
+              level="H"
+              includeMargin
+              bgColor="#FFFFFF"
+              fgColor="#000000"
+              style={{
+                display: "block",
+                backgroundColor: "#FFFFFF",
+                colorScheme: "light",
+              }}
+            />
           </div>
+
+          <div style={styles.emergencyText}>EMERGENCY PROFILE</div>
         </div>
       </div>
     </>
   );
 }
+
+const styles: Record<string, React.CSSProperties> = {
+  button: {
+    marginTop: 20,
+    padding: "16px 24px",
+    minHeight: 52,
+    width: 310,
+    borderRadius: 12,
+    background: "#157A55",
+    color: "#FFFFFF",
+    fontWeight: 800,
+    border: "none",
+    cursor: "pointer",
+    display: "inline-block",
+    boxShadow: "0 10px 24px rgba(21,122,85,0.22)",
+  },
+
+  hiddenWrap: {
+    position: "fixed",
+    top: "-1200px",
+    left: "-1200px",
+    width: 1024,
+    height: 1024,
+    pointerEvents: "none",
+    colorScheme: "light",
+    forcedColorAdjust: "none",
+  },
+
+  canvas: {
+    width: 1024,
+    height: 1024,
+    background: "#050B08",
+    color: "#FFFFFF",
+    colorScheme: "light",
+    forcedColorAdjust: "none",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    fontFamily: "Arial, sans-serif",
+    boxSizing: "border-box",
+    padding: "0 90px",
+  },
+
+  rroiText: {
+    fontSize: 58,
+    fontWeight: 900,
+    letterSpacing: 4,
+    lineHeight: 1,
+    textAlign: "center",
+    color: "#4ADE80",
+    marginBottom: 36,
+  },
+
+  qrBox: {
+    background: "#FFFFFF",
+    padding: 20,
+    borderRadius: 28,
+    colorScheme: "light",
+    forcedColorAdjust: "none",
+  },
+
+  emergencyText: {
+    width: 520,
+    fontSize: 34,
+    fontWeight: 900,
+    letterSpacing: 1,
+    lineHeight: 1,
+    textAlign: "center",
+    color: "#4ADE80",
+    marginTop: 36,
+  },
+};
