@@ -115,10 +115,12 @@ marginBottom: 30,
 
           <div
   style={{
-    background: "#FFFFFF",
-    padding: 24,
-    borderRadius: 32,
-  }}
+  background: "#FFFFFF",
+  padding: 24,
+  borderRadius: 32,
+  colorScheme: "light",
+  forcedColorAdjust: "none",
+}}
 >
             <QRCodeSVG
   value={publicUrl}
