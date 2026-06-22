@@ -31,13 +31,18 @@ export default function QRScreensaver({
 
         <div style={styles.qrWrap}>
           <QRCodeSVG
-            value={qrValue || " "}
-            size={720}
-            bgColor="#000000"
-            fgColor="#FFFFFF"
-            level="H"
-            includeMargin={true}
-          />
+  value={qrValue || " "}
+  size={720}
+  bgColor="#000000"
+  fgColor="#FFFFFF"
+  level="H"
+  includeMargin={true}
+  style={{
+    display: "block",
+    backgroundColor: "#000000",
+    color: "#FFFFFF",
+  }}
+/>
         </div>
 
         <div style={styles.textWrap}>
@@ -64,6 +69,8 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "140px 120px",
     fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
     overflow: "hidden",
+    colorScheme: "light",
+forcedColorAdjust: "none",
   },
 
   inner: {
@@ -87,6 +94,7 @@ const styles: Record<string, React.CSSProperties> = {
   height: "auto",
   display: "block",
   objectFit: "contain",
+  forcedColorAdjust: "none",
 },
 
   qrWrap: {
@@ -99,6 +107,8 @@ const styles: Record<string, React.CSSProperties> = {
   justifyContent: "center",
   padding: 70,
   border: "12px solid #FFFFFF",
+  colorScheme: "light",
+forcedColorAdjust: "none",
 },
 
   textWrap: {
