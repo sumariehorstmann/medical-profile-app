@@ -72,9 +72,6 @@ if (!paymentId) {
 const userId = data.custom_str1;
 const type = data.custom_str2;
 const amountGross = parseFloat(data.amount_gross ?? "0");
-const expectedEmail = String(
-  data.email_address || ""
-).trim().toLowerCase();
 const affiliateCode = String(data.custom_str3 || "").trim().toUpperCase();
 
 
