@@ -359,9 +359,19 @@ async function reactivateAffiliateAccess() {
       ? `${origin}/subscribe?ref=${affiliate.affiliate_code}`
       : "";
 
-  const totalEarned = Number(affiliate.total_earned ?? 0);
-  const totalPaid = Number(affiliate.total_paid ?? 0);
-  const totalReferrals = referrals.length;
+  const confirmedReferrals = referrals.filter(
+  (item) => normalizeStatus(item.status) === "confirmed"
+);
+
+const totalEarned = confirmedReferrals.reduce(
+  (sum, item) => sum + Number(item.commission ?? 0),
+  0
+);
+
+const totalPaid = confirmedReferrals
+  .filter((item) => item.paid === true)
+  .reduce((sum, item) => sum + Number(item.commission ?? 0), 0);
+  const totalReferrals = confirmedReferrals.length;
   const confirmedUnpaid = referrals
     .filter(
       (item) =>
@@ -373,10 +383,7 @@ async function reactivateAffiliateAccess() {
     .filter((item) => normalizeStatus(item.status) === "pending")
     .reduce((sum, item) => sum + Number(item.commission ?? 0), 0);
 
-  const paidCommissions = referrals
-    .filter((item) => item.paid === true)
-    .reduce((sum, item) => sum + Number(item.commission ?? 0), 0);
-
+  
   const currentEligiblePayout = Number(confirmedUnpaid.toFixed(2));
   const thresholdRemaining = Math.max(
     0,
@@ -554,14 +561,14 @@ async function reactivateAffiliateAccess() {
 
           <div style={styles.grid}>
             <div style={styles.statCard}>
-              <div style={styles.statLabel}>Next Cut-Off Date</div>
-              <div style={styles.statValue}>{formatDate(nextCycle.cutoff)}</div>
-            </div>
+  <div style={styles.statLabel}>Current Cycle Cut-Off</div>
+  <div style={styles.statValue}>{formatDate(nextCycle.cutoff)}</div>
+</div>
 
-            <div style={styles.statCard}>
-              <div style={styles.statLabel}>Next Payout Date</div>
-              <div style={styles.statValue}>{formatDate(nextCycle.payout)}</div>
-            </div>
+<div style={styles.statCard}>
+  <div style={styles.statLabel}>Current Cycle Payout</div>
+  <div style={styles.statValue}>{formatDate(nextCycle.payout)}</div>
+</div>
 
             <div style={styles.statCard}>
               <div style={styles.statLabel}>Minimum Payout</div>
@@ -716,7 +723,7 @@ async function reactivateAffiliateAccess() {
         </section>
 
         <section style={styles.section}>
-          <h2 style={styles.h2}>Recent Referrals</h2>
+          <h2 style={styles.h2}>Referral History</h2>
 
           {referrals.length === 0 ? (
             <div style={styles.emptyBox}>
@@ -732,6 +739,7 @@ async function reactivateAffiliateAccess() {
                     <th style={styles.th}>Amount</th>
                     <th style={styles.th}>Commission</th>
                     <th style={styles.th}>Status</th>
+                    <th style={styles.th}>Paid</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -745,11 +753,8 @@ async function reactivateAffiliateAccess() {
                       <td style={styles.td}>
                         R{Number(referral.commission ?? 0).toFixed(2)}
                       </td>
-                      <td style={styles.td}>
-                        {referral.paid
-                          ? "Paid"
-                          : titleCaseStatus(referral.status)}
-                      </td>
+                      <td style={styles.td}>{titleCaseStatus(referral.status)}</td>
+<td style={styles.td}>{referral.paid ? "Yes" : "No"}</td>
                     </tr>
                   ))}
                 </tbody>
