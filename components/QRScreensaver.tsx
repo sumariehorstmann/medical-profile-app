@@ -38,10 +38,11 @@ export default function QRScreensaver({
   level="H"
   includeMargin={true}
   style={{
-    display: "block",
-    backgroundColor: "#000000",
-    color: "#FFFFFF",
-  }}
+  display: "block",
+  backgroundColor: "#000000",
+  color: "#FFFFFF",
+  colorScheme: "light",
+}}
 />
         </div>
 
