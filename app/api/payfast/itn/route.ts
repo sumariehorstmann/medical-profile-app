@@ -398,7 +398,7 @@ endDate.setFullYear(endDate.getFullYear() + 1);
         if (existingReferralError) {
           console.error("EXISTING REFERRAL LOOKUP ERROR:", existingReferralError);
         } else if (!existingReferral) {
-          const commission = 30;
+          const commission = AFFILIATE_COMMISSION;
 
           const { error: referralInsertError } = await supabase
             .from("affiliate_referrals")
