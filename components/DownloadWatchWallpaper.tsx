@@ -74,31 +74,37 @@ export default function DownloadWatchWallpaper({
         }}
       >
         <div
-          ref={ref}
-          style={{
-            width: 1024,
-            height: 1024,
-            background: "#050B08",
-            color: "#FFFFFF",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            fontFamily: "Arial, sans-serif",
-            paddingTop: 220,
-            paddingLeft: 70,
-            paddingRight: 70,
-            paddingBottom: 70,
-            boxSizing: "border-box",
-          }}
-        >
+  ref={ref}
+  style={{
+    width: 1024,
+    height: 1024,
+    background: "#050B08",
+    color: "#FFFFFF",
+
+    colorScheme: "light",
+    forcedColorAdjust: "none",
+
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    fontFamily: "Arial, sans-serif",
+
+    paddingTop: 100,
+    paddingLeft: 70,
+    paddingRight: 70,
+    paddingBottom: 70,
+
+    boxSizing: "border-box",
+  }}
+>
           <div
             style={{
-              width: 488,
-              fontSize: 50,
-              fontWeight: 900,
-              letterSpacing: 1,
-              marginBottom: 40,
+              width: 420,
+fontSize: 42,
+fontWeight: 900,
+letterSpacing: 1,
+marginBottom: 30,
               textAlign: "center",
               color: "#4ADE80",
               lineHeight: 1,
@@ -108,20 +114,24 @@ export default function DownloadWatchWallpaper({
           </div>
 
           <div
-            style={{
-              background: "#FFFFFF",
-              padding: 34,
-              borderRadius: 38,
-            }}
-          >
+  style={{
+    background: "#FFFFFF",
+    padding: 24,
+    borderRadius: 32,
+  }}
+>
             <QRCodeSVG
-              value={publicUrl}
-              size={420}
-              level="H"
-              includeMargin
-              bgColor="#FFFFFF"
-              fgColor="#000000"
-            />
+  value={publicUrl}
+  size={300}
+  level="H"
+  includeMargin
+  bgColor="#FFFFFF"
+  fgColor="#000000"
+  style={{
+    backgroundColor: "#FFFFFF",
+    colorScheme: "light",
+  }}
+/>
           </div>
         </div>
       </div>
