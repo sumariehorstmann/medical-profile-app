@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 type AdminUser = {
   user_id: string;
@@ -49,9 +50,21 @@ export default function AdminUsersPage() {
         setLoading(true);
         setError("");
 
-        const res = await fetch("/api/admin/users", {
-          cache: "no-store",
-        });
+        const {
+  data: { session },
+  error: sessionError,
+} = await createSupabaseBrowser().auth.getSession();
+
+if (sessionError || !session?.access_token) {
+  throw new Error("You must be logged in as admin.");
+}
+
+const res = await fetch("/api/admin/users", {
+  cache: "no-store",
+  headers: {
+    Authorization: `Bearer ${session.access_token}`,
+  },
+});
 
         const data = await res.json();
 
