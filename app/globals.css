@@ -3,12 +3,7 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+
 
 html,
 body {
@@ -17,7 +12,7 @@ body {
 }
 
 html {
-  color-scheme: light dark;
+  color-scheme: light;
 }
 
 body {
@@ -44,14 +39,3 @@ a:active {
   font-weight: inherit;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-
-  a {
-    font-weight: inherit !important;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: geometricPrecision;
-  }
-}
