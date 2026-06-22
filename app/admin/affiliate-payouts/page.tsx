@@ -175,8 +175,20 @@ const [showEligibleOnly, setShowEligibleOnly] = useState(false);
           return;
         }
 
-       const res = await fetch("/api/admin/affiliate-payouts", {
+       const {
+  data: { session },
+  error: sessionError,
+} = await supabase.auth.getSession();
+
+if (sessionError || !session?.access_token) {
+  throw new Error("You must be logged in as admin.");
+}
+
+const res = await fetch("/api/admin/affiliate-payouts", {
   cache: "no-store",
+  headers: {
+    Authorization: `Bearer ${session.access_token}`,
+  },
 });
 
 const json = await res.json();
@@ -310,8 +322,10 @@ if (!eftReference || eftReference.trim().length < 3) {
       setReferrals((prev) =>
         prev.map((referral) =>
           referral.affiliate_id === affiliateId &&
-          String(referral.status || "").toLowerCase() === "confirmed" &&
-          referral.paid !== true
+String(referral.status || "").toLowerCase() === "confirmed" &&
+referral.paid !== true &&
+referral.created_at &&
+new Date(referral.created_at) <= payoutCycle.cutoff
             ? { ...referral, paid: true }
             : referral
         )
@@ -363,8 +377,14 @@ if (!eftReference || eftReference.trim().length < 3) {
         0
       );
 
-      const totalEarned = Number(affiliate.total_earned ?? 0);
-      const totalPaid = Number(affiliate.total_paid ?? 0);
+      const totalEarned = confirmedReferrals.reduce(
+  (sum, referral) => sum + Number(referral.commission ?? 0),
+  0
+);
+
+const totalPaid = confirmedReferrals
+  .filter((referral) => referral.paid === true)
+  .reduce((sum, referral) => sum + Number(referral.commission ?? 0), 0);
       const thresholdRemaining = Math.max(0, MIN_PAYOUT - unpaidConfirmed);
 
       const latestReferralDate =
@@ -383,7 +403,7 @@ if (!eftReference || eftReference.trim().length < 3) {
         thresholdRemaining,
         eligibleNow:
   unpaidConfirmed >= MIN_PAYOUT &&
-  new Date() >= payoutCycle.cutoff &&
+  new Date() >= payoutCycle.payout &&
   Boolean(
     affiliate.bank_name &&
       affiliate.account_holder &&
@@ -400,7 +420,7 @@ if (!eftReference || eftReference.trim().length < 3) {
         branchCode: String(affiliate.branch_code || "-"),
       };
     });
-  }, [affiliates, referrals, payoutCycle.cutoff]);
+  }, [affiliates, referrals, payoutCycle.cutoff, payoutCycle.payout]);
 
   const totals = useMemo(() => {
     const totalPaidHistory = payoutHistory.reduce(
@@ -619,20 +639,11 @@ if (!eftReference || eftReference.trim().length < 3) {
                       <td style={styles.tdStrong}>
                         {formatMoney(row.unpaidConfirmed)}
                       </td>
-                      <td style={styles.td}>
-  {row.eligibleNow ? (
-    <button
-      onClick={() => handleMarkPaid(row.affiliateId)}
-      disabled={workingAffiliateId === row.affiliateId}
-      style={styles.actionButton}
-    >
-      {workingAffiliateId === row.affiliateId ? "Processing..." : "Mark as Paid"}
-    </button>
-  ) : (
-    <span style={styles.notEligibleText}>Not eligible</span>
-  )}
+                      <td style={styles.tdStrong}>
+  {formatMoney(row.thresholdRemaining)} left
 </td>
-                      <td style={styles.td}>
+
+<td style={styles.td}>
   {row.bankName === "-" ||
   row.accountHolder === "-" ||
   row.accountNumber === "-" ||
@@ -643,9 +654,7 @@ if (!eftReference || eftReference.trim().length < 3) {
     </span>
   ) : row.unpaidConfirmed >= MIN_PAYOUT ? (
     row.eligibleNow ? (
-      <span style={{ ...styles.badge, ...styles.badgeGreen }}>
-        Ready
-      </span>
+      <span style={{ ...styles.badge, ...styles.badgeGreen }}>Ready</span>
     ) : (
       <span style={{ ...styles.badge, ...styles.badgeAmber }}>
         Waiting for cutoff
