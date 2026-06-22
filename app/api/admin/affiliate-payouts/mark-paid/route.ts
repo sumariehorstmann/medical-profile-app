@@ -5,6 +5,7 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const MIN_PAYOUT = 600;
 function getCurrentCutoffDate() {
   const now = new Date();
   const year = now.getFullYear();
@@ -22,6 +23,17 @@ function getCurrentCutoffDate() {
 
   // if after Dec cutoff → use last cutoff
   return cutoffs[3];
+}
+
+function getPayoutDateForCutoff(cutoffDate: Date) {
+  const year = cutoffDate.getFullYear();
+  const month = cutoffDate.getMonth();
+
+  if (month === 2) return new Date(year, 2, 31, 23, 59, 59);
+  if (month === 5) return new Date(year, 5, 30, 23, 59, 59);
+  if (month === 8) return new Date(year, 8, 30, 23, 59, 59);
+
+  return new Date(year, 11, 31, 23, 59, 59);
 }
 export async function POST(req: NextRequest) {
   try {
@@ -100,6 +112,15 @@ if (!eftReference || eftReference.length < 3) {
     }
 
     const cutoffDate = getCurrentCutoffDate();
+const payoutDate = getPayoutDateForCutoff(cutoffDate);
+
+if (new Date() < payoutDate) {
+  return NextResponse.json(
+    { error: "This payout cycle is not payable yet." },
+    { status: 400 }
+  );
+}
+
 const payoutCycle = `Q${Math.floor(cutoffDate.getMonth() / 3) + 1} ${cutoffDate.getFullYear()}`;
 const { data: referrals, error: referralsError } = await supabase
   .from("affiliate_referrals")
@@ -127,7 +148,12 @@ const { data: referrals, error: referralsError } = await supabase
         { status: 400 }
       );
     }
-
+if (payoutAmount < MIN_PAYOUT) {
+  return NextResponse.json(
+    { error: "Affiliate has not reached the minimum R600 payout threshold." },
+    { status: 400 }
+  );
+}
     const referralIds = unpaidReferrals.map((row) => row.id);
 
     const { error: markPaidError } = await supabase
