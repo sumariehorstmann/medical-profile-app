@@ -419,11 +419,15 @@ async function recoverMissingOrders() {
 {!loading && orders.length === 0 ? <div>No orders yet</div> : null}
 
 {orders
-  .filter(
-    (order) =>
+  .filter((order) => {
+    const displayStatus =
+      order.status === "paid" ? "pending" : order.status;
+
+    return (
       statusFilter === "all" ||
-      order.status === statusFilter
-  )
+      displayStatus === statusFilter
+    );
+  })
   .map((order) => (
           <div key={order.id} style={styles.card}>
             <div style={styles.topRow}>
