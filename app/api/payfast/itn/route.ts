@@ -73,7 +73,8 @@ const userId = data.custom_str1;
 const type = data.custom_str2;
 const amountGross = parseFloat(data.amount_gross ?? "0");
 const affiliateCode = String(data.custom_str3 || "").trim().toUpperCase();
-
+const discountCode = String(data.custom_str4 || "").trim().toUpperCase();
+const orderDiscountCode = affiliateCode || discountCode || null;
 
   
     const publicId = String(data.custom_str1 || "").trim();
@@ -516,7 +517,7 @@ try {
   delivery_fee: 0,
   total_amount: Number(expectedAmount),
 
-  discount_code: affiliateCode || null,
+  discount_code: orderDiscountCode,
   email_sent: false,
 
   product_type: "premium_bundle",
@@ -586,7 +587,7 @@ items: [
 subtotal: Number(expectedAmount),
 delivery_fee: 0,
 total_amount: Number(expectedAmount),
-discount_code: affiliateCode || null,
+discount_code: orderDiscountCode,
 email_sent: false,
       product_type: "premium_bundle",
       layout_type: "standard_v1",
@@ -633,6 +634,14 @@ email_sent: false,
 });
 
   console.log("PREMIUM KIT EMAIL SENT:", emailWasSent);
+  const { error: emailSentUpdateError } = await supabase
+  .from("orders")
+  .update({ email_sent: emailWasSent === true })
+  .eq("payment_id", paymentId);
+
+if (emailSentUpdateError) {
+  console.error("EMAIL SENT STATUS UPDATE ERROR:", emailSentUpdateError);
+}
 }
   }
 } catch (orderErr) {
