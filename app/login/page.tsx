@@ -94,6 +94,7 @@ function LoginPageInner() {
   params.get("mode") === "signup" ? "signup" : "login"
 );
 const [email, setEmail] = useState("");
+const [confirmEmail, setConfirmEmail] = useState("");
 const [password, setPassword] = useState("");
 const [confirmPassword, setConfirmPassword] = useState("");
 const [acceptTerms, setAcceptTerms] = useState(false);
@@ -141,6 +142,16 @@ const isCheckoutRedirect =
 
   const passwordsDoNotMatch =
     confirmPassword.length > 0 && password !== confirmPassword;
+    
+    const emailsMatch =
+  mode === "signup" &&
+  confirmEmail.length > 0 &&
+  email.trim().toLowerCase() === confirmEmail.trim().toLowerCase();
+
+const emailsDoNotMatch =
+  mode === "signup" &&
+  confirmEmail.length > 0 &&
+  email.trim().toLowerCase() !== confirmEmail.trim().toLowerCase();
 
   useEffect(() => {
   const verified = params.get("verified");
@@ -245,6 +256,20 @@ if (errorCode || errorDesc) {
     }
 
     if (mode === "signup") {
+      if (!confirmEmail.trim()) {
+  setMessageType("error");
+  setMessage("Please confirm your email address.");
+  return false;
+}
+
+if (
+  email.trim().toLowerCase() !==
+  confirmEmail.trim().toLowerCase()
+) {
+  setMessageType("error");
+  setMessage("Your email addresses do not match.");
+  return false;
+}
       if (password.length < 8) {
         setMessageType("error");
         setMessage("Your password must be at least 8 characters long.");
@@ -430,7 +455,38 @@ setMessage(
               disabled={loading}
             />
           </label>
+{mode === "signup" ? (
+  <>
+    <label htmlFor="confirmEmail" style={styles.label}>
+      <div style={styles.labelText}>Confirm email address</div>
 
+      <input
+        id="confirmEmail"
+        name="confirmEmail"
+        type="email"
+        value={confirmEmail}
+        onChange={(e) => setConfirmEmail(e.target.value)}
+        style={{
+          ...styles.input,
+          ...(emailsDoNotMatch
+            ? styles.inputError
+            : emailsMatch
+            ? styles.inputSuccess
+            : {}),
+        }}
+        autoComplete="email"
+        inputMode="email"
+        disabled={loading}
+      />
+    </label>
+
+    {emailsMatch ? (
+      <div style={styles.matchSuccess}>Email addresses match.</div>
+    ) : emailsDoNotMatch ? (
+      <div style={styles.matchError}>Email addresses do not match.</div>
+    ) : null}
+  </>
+) : null}
           <label htmlFor="password" style={styles.label}>
             <div style={styles.labelText}>Password</div>
 
