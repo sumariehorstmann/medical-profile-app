@@ -471,33 +471,57 @@ try {
   const fallbackName = `${name} ${surname}`.trim();
 
   const { error: orderInsertError } = await supabase.from("orders").insert({
-    user_id: profile.user_id,
-    public_id: String(profile.public_id),
-    payment_id: paymentId,
-    customer_name: fallbackName,
-    email: data.email_address ?? "",
-    shipping_name: fallbackName,
-    shipping_phone: "",
-    shipping_address: "",
-    shipping_unit: "",
-    shipping_street: "",
-    shipping_city: "",
-    shipping_province: "",
-    shipping_postal_code: "",
-    shipping_country: "South Africa",
-    qr_url: qrUrl,
-    status: "paid",
-    payment_status: "paid",
-    first_name: name,
-    last_name: surname,
-    emergency_contact_name: profile.emergency1_fullname ?? "",
-    emergency_contact_surname: "",
-    emergency_contact_phone: profile.emergency1_phone ?? "",
-    blood_type: profile.blood_type ?? "",
-    allergies: profile.allergies ?? "",
-    product_type: "premium_bundle",
-    layout_type: "fallback_missing_form",
-  });
+  user_id: profile.user_id,
+  public_id: String(profile.public_id),
+  payment_id: paymentId,
+
+  order_type: "premium_kit",
+  payfast_payment_id: data.pf_payment_id ?? "",
+
+  customer_name: fallbackName,
+  email: data.email_address ?? "",
+
+  shipping_name: fallbackName,
+  shipping_phone: "",
+  shipping_address: "",
+  shipping_unit: "",
+  shipping_street: "",
+  shipping_city: "",
+  shipping_province: "",
+  shipping_postal_code: "",
+  shipping_country: "South Africa",
+
+  qr_url: qrUrl,
+  status: "paid",
+  payment_status: "paid",
+
+  first_name: name,
+  last_name: surname,
+  emergency_contact_name: profile.emergency1_fullname ?? "",
+  emergency_contact_surname: "",
+  emergency_contact_phone: profile.emergency1_phone ?? "",
+  blood_type: profile.blood_type ?? "",
+  allergies: profile.allergies ?? "",
+
+  dog_tag_qty: 1,
+  card_qty: 1,
+  items: [
+    { name: "Black anodised aluminium QR card", quantity: 1 },
+    { name: "Black anodised aluminium QR tag", quantity: 1 },
+    { name: "1-year RROI Premium subscription", quantity: 1 },
+    { name: "Nationwide delivery", quantity: 1 },
+  ],
+
+  subtotal: Number(expectedAmount),
+  delivery_fee: 0,
+  total_amount: Number(expectedAmount),
+
+  discount_code: affiliateCode || null,
+  email_sent: false,
+
+  product_type: "premium_bundle",
+  layout_type: "fallback_missing_form",
+});
 
   if (orderInsertError) {
     console.error("FALLBACK ORDER FAILED:", orderInsertError);
@@ -547,6 +571,23 @@ try {
       emergency_contact_phone: orderForm.emergency_contact_phone ?? "",
       blood_type: orderForm.blood_type ?? "",
       allergies: orderForm.allergies ?? "",
+      order_type: "premium_kit",
+payfast_payment_id: data.pf_payment_id ?? "",
+
+dog_tag_qty: 1,
+card_qty: 1,
+items: [
+  { name: "Black anodised aluminium QR card", quantity: 1 },
+  { name: "Black anodised aluminium QR tag", quantity: 1 },
+  { name: "1-year RROI Premium subscription", quantity: 1 },
+  { name: "Nationwide delivery", quantity: 1 },
+],
+
+subtotal: Number(expectedAmount),
+delivery_fee: 0,
+total_amount: Number(expectedAmount),
+discount_code: affiliateCode || null,
+email_sent: false,
       product_type: "premium_bundle",
       layout_type: "standard_v1",
     });
