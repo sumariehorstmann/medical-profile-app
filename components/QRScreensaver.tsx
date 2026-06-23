@@ -23,35 +23,36 @@ export default function QRScreensaver({
       <div style={styles.inner}>
         <div style={styles.brandWrap}>
           <img
-  src="/logo-full-white.png"
-  alt="RROI logo"
-  style={styles.realLogo}
-/>
+            src="/logo-full-white.png"
+            alt="RROI logo"
+            style={styles.realLogo}
+          />
         </div>
+
+        <div style={styles.scanText}>SCAN QR</div>
 
         <div style={styles.qrWrap}>
           <QRCodeSVG
-  value={qrValue || " "}
-  size={720}
-  bgColor="#000000"
-  fgColor="#FFFFFF"
-  level="H"
-  includeMargin={true}
-  style={{
-  display: "block",
-  backgroundColor: "#000000",
-  color: "#FFFFFF",
-  colorScheme: "light",
-}}
-/>
+            value={qrValue || " "}
+            size={390}
+            bgColor="#000000"
+            fgColor="#FFFFFF"
+            level="H"
+            includeMargin={true}
+            style={{
+              display: "block",
+              backgroundColor: "#000000",
+              color: "#FFFFFF",
+              colorScheme: "light",
+            }}
+          />
         </div>
 
-        <div style={styles.textWrap}>
-          <div style={styles.scanText}>SCAN IN AN EMERGENCY</div>
-          <div style={styles.profileText}>Emergency Profile</div>
+        <div style={styles.profileText}>EMERGENCY PROFILE</div>
 
-          {fullName ? <div style={styles.nameText}>{fullName}</div> : null}
-        </div>
+        {fullName ? (
+          <div style={styles.nameText}>{fullName}</div>
+        ) : null}
       </div>
     </div>
   );
@@ -67,88 +68,74 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
-    padding: "140px 120px",
+    padding: "560px 160px",
     fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
     overflow: "hidden",
     colorScheme: "light",
-forcedColorAdjust: "none",
+    forcedColorAdjust: "none",
   },
 
   inner: {
-  width: "100%",
-  maxWidth: 1040,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 60,
-},
-
-  brandWrap: {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-},
-
-  realLogo: {
-  width: 650,
-  height: "auto",
-  display: "block",
-  objectFit: "contain",
-  forcedColorAdjust: "none",
-},
-
-  qrWrap: {
-  width: 920,
-  height: 920,
-  background: "#000000",
-  borderRadius: 52,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: 70,
-  border: "12px solid #FFFFFF",
-  colorScheme: "light",
-forcedColorAdjust: "none",
-},
-
-  textWrap: {
     width: "100%",
+    maxWidth: 620,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: 28,
+    gap: 48,
+  },
+
+  brandWrap: {
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  realLogo: {
+    width: 500,
+    height: "auto",
+    display: "block",
+    objectFit: "contain",
+    forcedColorAdjust: "none",
+  },
+
+  qrWrap: {
+    width: 500,
+    height: 500,
+    background: "#000000",
+    borderRadius: 30,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 42,
+    border: "7px solid #FFFFFF",
+    colorScheme: "light",
+    forcedColorAdjust: "none",
   },
 
   scanText: {
-    fontSize: 76,
+    fontSize: 50,
     fontWeight: 900,
     lineHeight: 1,
     textAlign: "center",
     color: "#FFFFFF",
-    letterSpacing: -1.2,
     textTransform: "uppercase",
   },
 
   profileText: {
-    fontSize: 42,
-    fontWeight: 500,
-    lineHeight: 1.1,
+    fontSize: 38,
+    fontWeight: 800,
+    lineHeight: 1,
     textAlign: "center",
     color: "#FFFFFF",
-    letterSpacing: 1.5,
     textTransform: "uppercase",
   },
 
   nameText: {
-    fontSize: 64,
-    fontWeight: 800,
-    lineHeight: 1.08,
+    fontSize: 42,
+    fontWeight: 900,
+    lineHeight: 1,
     textAlign: "center",
     color: "#22C55E",
-    letterSpacing: -0.8,
     textTransform: "uppercase",
-    marginTop: 12,
   },
 };
