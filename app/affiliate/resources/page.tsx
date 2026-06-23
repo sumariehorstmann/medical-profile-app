@@ -32,6 +32,18 @@ const ads = [
     file: "/affiliate-ads/ad-premium-kit.png",
     downloadName: "rroi-premium-emergency-kit-ad.png",
   },
+  {
+    title: "Scan QR to RROI Ad",
+    description: "General RROI awareness ad with QR code and website.",
+    file: "/affiliate-ads/6.png",
+    downloadName: "rroi-scan-qr-to-rroi-ad.png",
+  },
+  {
+    title: "Example RROI Profile Ad",
+    description: "Promote the example RROI profile QR code.",
+    file: "/affiliate-ads/7.png",
+    downloadName: "rroi-example-profile-ad.png",
+  },
 ];
 
 export default function AffiliateResourcesPage() {
