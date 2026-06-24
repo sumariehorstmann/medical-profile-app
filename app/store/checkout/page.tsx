@@ -520,13 +520,13 @@ if (confirming) {
 
             <Field label="First Name" value={form.first_name} onChange={(v) => updateField("first_name", v)} error={fieldErrors.first_name} />
             <Field label="Last Name" value={form.last_name} onChange={(v) => updateField("last_name", v)} error={fieldErrors.last_name} />
-            <Field label="Blood Type" value={form.blood_type} onChange={(v) => updateField("blood_type", v)} error={fieldErrors.blood_type} placeholder="Example: A+, O-, AB+, B- or Unknown" />
+            <Field label="Blood Type" value={form.blood_type} onChange={(v) => updateField("blood_type", v)} error={fieldErrors.blood_type} placeholder="Example: A+, O-, AB+ or Unknown" />
             <Field
   label="Allergy"
   value={form.allergies}
   onChange={(v) => updateField("allergies", v)}
   error={fieldErrors.allergies}
-  placeholder="Example: Penicillin or Unknown"
+  placeholder="Example: Penicillin, Nuts or Unknown"
 />
           </section>
 
