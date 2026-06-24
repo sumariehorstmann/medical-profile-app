@@ -96,6 +96,7 @@ const [discountCode, setDiscountCode] = useState("");
 const [discountMessage, setDiscountMessage] = useState("");
 const [discountValid, setDiscountValid] = useState(false);
 const [confirming, setConfirming] = useState(false);
+const [userEmail, setUserEmail] = useState("");
 const discountAmount =
   discountValid && discountCode.trim().toUpperCase().startsWith("RROI-ADMIN-")
     ? Number((total * 0.85).toFixed(2))
@@ -123,6 +124,10 @@ const money = (amount: number) => `R${amount.toFixed(2)}`;
         }
 
         const user = session.user;
+
+        if (mounted) {
+  setUserEmail(user.email || "");
+}
 
         const { data: profile } = await supabase
           .from("profiles")
@@ -420,10 +425,14 @@ if (confirming) {
 
           <h1 style={styles.title}>Complete Your Store Order Details</h1>
 
-          <p style={styles.subtitle}>
-            This information will be used to engrave your QR code products and
-            deliver your order.
-          </p>
+<p style={styles.loggedInText}>
+  Logged in as: {userEmail}
+</p>
+
+<p style={styles.subtitle}>
+  This information will be used to engrave your QR code products and
+  deliver your order.
+</p>
 
           <div style={styles.summaryBox}>
             <div style={styles.summaryTitle}>Your store order includes:</div>
@@ -710,6 +719,12 @@ const styles: Record<string, React.CSSProperties> = {
     margin: "0 0 12px",
     color: "#0f172a",
   },
+  loggedInText: {
+  fontSize: 14,
+  fontWeight: 700,
+  color: "#157A55",
+  margin: "0 0 12px",
+},
   subtitle: {
     fontSize: 16,
     lineHeight: 1.6,
