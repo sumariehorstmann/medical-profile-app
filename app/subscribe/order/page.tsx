@@ -498,17 +498,16 @@ if (error) {
               value={form.blood_type}
               onChange={(value) => updateField("blood_type", value)}
               error={fieldErrors.blood_type}
-              placeholder="Example: O+, A-, AB+"
+              placeholder="Example: A+, O-, AB+ or Unknown"
             />
 
             <Field
-              label="Allergies"
-              value={form.allergies}
-              onChange={(value) => updateField("allergies", value)}
-              error={fieldErrors.allergies}
-              placeholder="List allergies exactly as you want them recorded"
-              multiline
-            />
+  label="Allergy"
+  value={form.allergies}
+  onChange={(value) => updateField("allergies", value)}
+  error={fieldErrors.allergies}
+  placeholder="Example: Penicillin, Nuts or Unknown"
+/>
           </section>
 
           <section style={styles.section}>
