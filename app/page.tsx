@@ -50,6 +50,7 @@ const [isInstalled, setIsInstalled] = useState(false);
               <Link href="/login?mode=signup" style={styles.primaryBtn}>
                 Create Free Profile
               </Link>
+              
 
               <Link href="/premium-kit" style={styles.secondaryBtn}>
                 View Premium Kit
@@ -153,8 +154,15 @@ const [isInstalled, setIsInstalled] = useState(false);
 </ul>
 
   <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-    Create Free Profile
-  </Link>
+  Create Free Profile
+</Link>
+
+<Link
+  href="/e/9bde720b-fd11-4206-833b-9b8978d2a339"
+  style={styles.outlineBtnFull}
+>
+  View Example Public Free Profile
+</Link>
 </div>
 
 {/* R129 */}
@@ -188,6 +196,13 @@ const [isInstalled, setIsInstalled] = useState(false);
 
   <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
   Create Free Profile
+</Link>
+
+<Link
+  href="/e/891729a6-9f88-49b8-b14d-9d702bde2c6b"
+  style={styles.outlineBtnFull}
+>
+  View Example Premium Profile
 </Link>
 </div>
 
@@ -227,6 +242,12 @@ const [isInstalled, setIsInstalled] = useState(false);
   <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
     Create Free Profile
   </Link>
+  <Link
+  href="/premium-kit"
+  style={styles.outlineBtnFull}
+>
+  View Premium Kit
+</Link>
 </div>
 
 </div>
@@ -704,5 +725,21 @@ sectionIntro: {
   fontSize: 17,
   lineHeight: 1.6,
   color: "#334155",
+},
+outlineBtnFull: {
+  display: "inline-flex",
+  width: "100%",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: 46,
+  marginTop: 12,
+  padding: "12px 18px",
+  borderRadius: 14,
+  border: `1px solid ${BRAND_GREEN}`,
+  background: "#FFFFFF",
+  color: BRAND_GREEN,
+  textDecoration: "none",
+  fontWeight: 800,
+  fontSize: 14,
 },
 };
