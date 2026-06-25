@@ -45,23 +45,19 @@ export default function Footer() {
 
         <div style={styles.legalBlock}>
   <p style={styles.disclaimer}>
-    RROI is an information-sharing platform only. RROI is not a medical
-    device, healthcare provider, emergency response service, or substitute for
+    RROI is an information-sharing platform only. RROI is not a medical device,
+    healthcare provider, emergency response service, or substitute for
     professional medical advice, diagnosis, treatment, or emergency assistance.
   </p>
 
   <p style={styles.disclaimer}>
-    Information displayed on RROI profiles is provided and maintained by users.
-RROI does not verify, certify, or guarantee the accuracy, completeness,
-availability, or suitability of any information. Access may depend on internet
-connectivity, device compatibility, QR code condition, user settings, and
-third-party services.
+    Information displayed on RROI profiles is provided by users. RROI does not
+    verify or guarantee the accuracy, completeness, or availability of any
+    information. Access depends on internet connectivity and compatible devices.
   </p>
 
   <p style={styles.disclaimer}>
-    RROI does not guarantee that emergency responders, healthcare personnel, or
-    bystanders will scan, access, use, or rely on a QR profile in an emergency.
-    In an emergency, contact local emergency services immediately.
+    In an emergency, always contact your local emergency services immediately.
   </p>
 
   <p style={styles.disclaimer}>
