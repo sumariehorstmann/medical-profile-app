@@ -3,6 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
+import {
+  UserRound,
+  PencilLine,
+  Smartphone,
+  Star,
+} from "lucide-react";
 
 export default function HomePage() {
 
@@ -60,7 +66,9 @@ const [isInstalled, setIsInstalled] = useState(false);
 
 <div style={styles.stepsGrid}>
   <div style={styles.stepCard}>
-    <div style={styles.stepNum}>1</div>
+    <div style={styles.stepNum}>
+  <UserRound size={28} />
+</div>
     <h3 style={styles.cardTitle}>Create your free profile</h3>
     <p style={styles.cardText}>
       Sign up for a free RROI account and verify your email address to get started.
@@ -68,7 +76,9 @@ const [isInstalled, setIsInstalled] = useState(false);
   </div>
 
   <div style={styles.stepCard}>
-    <div style={styles.stepNum}>2</div>
+    <div style={styles.stepNum}>
+  <PencilLine size={28} />
+</div>
     <h3 style={styles.cardTitle}>Complete your profile</h3>
     <div style={styles.cardText}>
   <p style={styles.shortLine}>Add your name, surname and profile photo.</p>
@@ -80,7 +90,9 @@ const [isInstalled, setIsInstalled] = useState(false);
   </div>
 
   <div style={styles.stepCard}>
-    <div style={styles.stepNum}>3</div>
+    <div style={styles.stepNum}>
+  <Smartphone size={28} />
+</div>
     <h3 style={styles.cardTitle}>Download your QR wallpapers</h3>
     <div style={styles.cardText}>
   <p style={styles.shortLine}>Download your QR code wallpapers.</p>
@@ -92,7 +104,9 @@ const [isInstalled, setIsInstalled] = useState(false);
   </div>
 
   <div style={styles.stepCard}>
-  <div style={styles.stepNum}>4</div>
+  <div style={styles.stepNum}>
+  <Star size={28} />
+</div>
 
   <h3 style={styles.cardTitle}>
     Upgrade to Premium
@@ -463,18 +477,16 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#FFFFFF",
   },
   stepNum: {
-    width: 38,
-    height: 38,
-    borderRadius: 999,
-    background: BRAND_GREEN,
-    color: "#FFFFFF",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontWeight: 950,
-    fontSize: 16,
-    marginBottom: 16,
-  },
+  width: 56,
+  height: 56,
+  borderRadius: "50%",
+  background: "#E8F5EE",
+  color: BRAND_GREEN,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  margin: "0 auto 14px",
+},
   cardTitle: {
     margin: "0 0 8px",
     fontSize: 19,
