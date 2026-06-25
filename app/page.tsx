@@ -310,18 +310,9 @@ const [isInstalled, setIsInstalled] = useState(false);
       <section style={styles.finalSection}>
         <div style={styles.container}>
           <div style={styles.finalCta}>
-            <h2 style={styles.finalTitle}>
-  Emergency information when it matters most.
-</h2>
-
-<p style={styles.finalText}>
-  Start with a free profile today and upgrade to Premium anytime for expanded public profile visibility. You choose what information is made available when your QR code is scanned.
-</p>
-
-            <Link href="/login?mode=signup" style={styles.primaryBtn}>
-              Create Free Profile
-</Link>
-
+  <h2 style={styles.finalTitle}>
+    Emergency information when it matters most.
+  </h2>
 </div>
 
 </div>
