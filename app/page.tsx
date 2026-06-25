@@ -311,7 +311,7 @@ const [isInstalled, setIsInstalled] = useState(false);
         <div style={styles.container}>
           <div style={styles.finalCta}>
   <h2 style={styles.finalTitle}>
-    Emergency information when it matters most.
+    Your emergency information when it matters most.
   </h2>
 </div>
 
