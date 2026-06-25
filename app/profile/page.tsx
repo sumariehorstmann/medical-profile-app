@@ -81,7 +81,7 @@ const hasHadPremium =
   </li>
 
   <li>
-    <strong>Premium Profile:</strong> Sections 1 to 6 are visible on your public emergency profile.
+    <strong>Premium Profile:</strong> All Sections (1–7) are visible on your public emergency profile.
   </li>
 
   <li>
