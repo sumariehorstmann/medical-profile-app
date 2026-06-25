@@ -45,21 +45,7 @@ const [isInstalled, setIsInstalled] = useState(false);
             <p style={styles.sub}>
               RROI allows emergency responders, healthcare personnel, and bystanders to access the information you choose to make available when your QR code is scanned.
             </p>
-
-            <div style={styles.ctaRow}>
-              <Link href="/login?mode=signup" style={styles.primaryBtn}>
-                Create Free Profile
-              </Link>
-              
-
-              <Link href="/premium-kit" style={styles.secondaryBtn}>
-                View Premium Kit
-              </Link>
-            </div>
-
-            <p style={styles.microText}>
-              No app required. Most modern smartphones can scan QR codes using the device camera.
-            </p>
+                        
           </div>
         </div>
       </section>
