@@ -8,6 +8,10 @@ import {
   PencilLine,
   Smartphone,
   Star,
+  Ambulance,
+  Pill,
+  UsersRound,
+  Dumbbell,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -281,11 +285,34 @@ const [isInstalled, setIsInstalled] = useState(false);
 </h2>
 
           <div style={styles.useGrid}>
-            <div style={styles.useCard}>Medical emergencies</div>
-            <div style={styles.useCard}>Allergies and medication</div>
-            <div style={styles.useCard}>Children and elderly family members</div>
-            <div style={styles.useCard}>Travel, sport and outdoor activities</div>
-          </div>
+  <div style={styles.useCard}>
+    <div style={styles.useIcon}>
+      <Ambulance size={30} />
+    </div>
+    Medical emergencies
+  </div>
+
+  <div style={styles.useCard}>
+    <div style={styles.useIcon}>
+      <Pill size={30} />
+    </div>
+    Allergies & medication
+  </div>
+
+  <div style={styles.useCard}>
+    <div style={styles.useIcon}>
+      <UsersRound size={30} />
+    </div>
+    Children & elderly
+  </div>
+
+  <div style={styles.useCard}>
+    <div style={styles.useIcon}>
+      <Dumbbell size={30} />
+    </div>
+    Travel, sport & outdoor activities
+  </div>
+</div>
         </div>
       </section>
 
@@ -652,6 +679,17 @@ planCardFeatured: {
   maxWidth: 980,
   margin: "0 auto",
 },
+useIcon: {
+  width: 64,
+  height: 64,
+  borderRadius: "50%",
+  background: "#E8F5EE",
+  color: BRAND_GREEN,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  margin: "0 auto 14px",
+},
   useCard: {
   background: "transparent",
   padding: 0,
@@ -660,7 +698,7 @@ planCardFeatured: {
   fontWeight: 900,
   color: "#0F172A",
   textAlign: "center",
-  maxWidth: 210,
+  maxWidth: 220,
 },
   splitCard: {
     border: `1px solid ${BORDER}`,
