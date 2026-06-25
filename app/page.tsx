@@ -308,7 +308,10 @@ const [isInstalled, setIsInstalled] = useState(false);
 
   <div style={styles.useCard}>
     <div style={styles.useIcon}>
-      <Dumbbell size={30} />
+      <Dumbbell
+  size={30}
+  style={{ transform: "translateY(2px)" }}
+/>
     </div>
     Travel, sport & outdoor activities
   </div>
