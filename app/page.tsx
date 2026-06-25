@@ -43,7 +43,7 @@ const [isInstalled, setIsInstalled] = useState(false);
             </h1>
 
             <p style={styles.sub}>
-              RROI allows emergency responders, healthcare personnel, and bystanders to access the information you choose to make available when your QR code is scanned.
+              When your unique RROI QR code is scanned, emergency responders, healthcare personnel, and bystanders can access the emergency information you choose to share.
             </p>
                         
           </div>
