@@ -76,7 +76,7 @@ const [isInstalled, setIsInstalled] = useState(false);
     <div style={styles.stepNum}>1</div>
     <h3 style={styles.cardTitle}>Create your free profile</h3>
     <p style={styles.cardText}>
-      Sign up for a free RROI account.
+      Sign up for a free RROI account and verify your email address to get started.
     </p>
   </div>
 
