@@ -66,8 +66,12 @@ const [isInstalled, setIsInstalled] = useState(false);
 
 <div style={styles.stepsGrid}>
   <div style={styles.stepCard}>
-    <div style={styles.stepNum}>
-  <UserRound size={28} />
+    <div style={styles.stepWrap}>
+  <div style={styles.stepBadge}>1</div>
+
+  <div style={styles.stepNum}>
+    <UserRound size={28} />
+  </div>
 </div>
     <h3 style={styles.cardTitle}>Create your free profile</h3>
     <p style={styles.cardText}>
@@ -76,8 +80,12 @@ const [isInstalled, setIsInstalled] = useState(false);
   </div>
 
   <div style={styles.stepCard}>
-    <div style={styles.stepNum}>
-  <PencilLine size={28} />
+    <div style={styles.stepWrap}>
+  <div style={styles.stepBadge}>2</div>
+
+  <div style={styles.stepNum}>
+    <PencilLine size={28} />
+  </div>
 </div>
     <h3 style={styles.cardTitle}>Complete your profile</h3>
     <div style={styles.cardText}>
@@ -90,8 +98,12 @@ const [isInstalled, setIsInstalled] = useState(false);
   </div>
 
   <div style={styles.stepCard}>
-    <div style={styles.stepNum}>
-  <Smartphone size={28} />
+    <div style={styles.stepWrap}>
+  <div style={styles.stepBadge}>3</div>
+
+  <div style={styles.stepNum}>
+    <Smartphone size={28} />
+  </div>
 </div>
     <h3 style={styles.cardTitle}>Download your QR wallpapers</h3>
     <div style={styles.cardText}>
@@ -104,8 +116,12 @@ const [isInstalled, setIsInstalled] = useState(false);
   </div>
 
   <div style={styles.stepCard}>
+  <div style={styles.stepWrap}>
+  <div style={styles.stepBadge}>4</div>
+
   <div style={styles.stepNum}>
-  <Star size={28} />
+    <Star size={28} />
+  </div>
 </div>
 
   <h3 style={styles.cardTitle}>
@@ -476,6 +492,26 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 22,
     background: "#FFFFFF",
   },
+  stepWrap: {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  marginBottom: 14,
+},
+
+stepBadge: {
+  width: 34,
+  height: 34,
+  borderRadius: "50%",
+  background: BRAND_GREEN,
+  color: "#FFFFFF",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: 18,
+  fontWeight: 900,
+  marginBottom: 10,
+},
   stepNum: {
   width: 56,
   height: 56,
