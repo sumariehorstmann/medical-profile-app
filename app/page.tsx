@@ -58,7 +58,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 
       <section style={styles.section}>
         <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>How RROI works</h2>
+          <h2 style={styles.sectionTitle}>HOW RROI WORKS</h2>
 
          <p style={styles.sectionIntro}>
   When someone scans your QR code, your RROI emergency profile opens instantly in their web browser.
@@ -144,7 +144,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 
       <section style={styles.sectionMuted}>
         <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Choose the profile that fits you</h2>
+          <h2 style={styles.sectionTitle}>CHOOSE YOUR PROFILE</h2>
 
           <div style={styles.pricingGrid}>
 
