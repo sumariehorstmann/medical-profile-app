@@ -289,32 +289,43 @@ const [isInstalled, setIsInstalled] = useState(false);
     <div style={styles.useIcon}>
       <Ambulance size={30} />
     </div>
-    Medical emergencies
+    <div style={styles.useLabel}>
+  Medical emergencies
+</div>
   </div>
 
   <div style={styles.useCard}>
-    <div style={styles.useIcon}>
-      <Pill size={30} />
-    </div>
+  <div style={styles.useIcon}>
+    <Pill size={30} />
+  </div>
+
+  <div style={styles.useLabel}>
     Allergies & medication
   </div>
+</div>
 
   <div style={styles.useCard}>
-    <div style={styles.useIcon}>
-      <UsersRound size={30} />
-    </div>
+  <div style={styles.useIcon}>
+    <UsersRound size={30} />
+  </div>
+
+  <div style={styles.useLabel}>
     Children & elderly
   </div>
+</div>
 
   <div style={styles.useCard}>
-    <div style={styles.useIcon}>
-      <Dumbbell
-  size={30}
-  style={{ transform: "translateY(2px)" }}
-/>
-    </div>
+  <div style={styles.useIcon}>
+    <Dumbbell
+      size={30}
+      style={{ transform: "translateY(2px)" }}
+    />
+  </div>
+
+  <div style={styles.useLabel}>
     Travel, sport & outdoor activities
   </div>
+</div>
 </div>
         </div>
       </section>
@@ -674,13 +685,12 @@ planCardFeatured: {
   marginTop: "auto",
 },
   useGrid: {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: 34,
-  flexWrap: "wrap",
+  display: "grid",
+  gridTemplateColumns: "repeat(4, 1fr)",
+  gap: 28,
   maxWidth: 980,
   margin: "0 auto",
+  alignItems: "start",
 },
 useIcon: {
   width: 64,
@@ -691,7 +701,16 @@ useIcon: {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  margin: "0 auto 14px",
+  margin: "0 auto 10px",
+  boxSizing: "border-box",
+},
+useLabel: {
+  fontSize: 16,
+  fontWeight: 900,
+  color: "#0F172A",
+  lineHeight: 1.3,
+  minHeight: 44,
+  textAlign: "center",
 },
   useCard: {
   background: "transparent",
@@ -701,7 +720,11 @@ useIcon: {
   fontWeight: 900,
   color: "#0F172A",
   textAlign: "center",
-  maxWidth: 220,
+  minHeight: 118,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "flex-start",
 },
   splitCard: {
     border: `1px solid ${BORDER}`,
