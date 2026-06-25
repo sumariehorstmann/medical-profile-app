@@ -82,7 +82,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 
   <div style={styles.stepCard}>
     <div style={styles.stepNum}>2</div>
-    <h3 style={styles.cardTitle}>Add your emergency information</h3>
+    <h3 style={styles.cardTitle}>Complete your free profile</h3>
     <p style={styles.cardText}>
       Add your name, surname, and one emergency contact. This information is visible on your free profile when your QR code is scanned.
     </p>
@@ -92,7 +92,7 @@ const [isInstalled, setIsInstalled] = useState(false);
     <div style={styles.stepNum}>3</div>
     <h3 style={styles.cardTitle}>Download your QR wallpapers</h3>
     <p style={styles.cardText}>
-      Download your unique QR code phone lock screen and smartwatch wallpapers. Save them to your phone and/or smartwatch.
+      Download your unique QR code wallpapers for your phone lock screen and smartwatch. Save them to your phone and/or smartwatch.
     </p>
   </div>
 
@@ -100,7 +100,7 @@ const [isInstalled, setIsInstalled] = useState(false);
     <div style={styles.stepNum}>4</div>
     <h3 style={styles.cardTitle}>Upgrade for full visibility</h3>
     <p style={styles.cardText}>
-      Upgrade to Premium to make your full emergency profile visible when your QR code is scanned.
+      Upgrade to Premium anytime to make your complete emergency profile, including your medical information, visible when your QR code is scanned.
     </p>
   </div>
 </div>
