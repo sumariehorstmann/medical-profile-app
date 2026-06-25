@@ -42,15 +42,19 @@ const [isInstalled, setIsInstalled] = useState(false);
           <PageHeader />
 
           <div style={styles.heroContent}>
-            <div style={styles.badge}>South African Emergency QR Profile</div>
-
             <h1 style={styles.h1}>
-              Critical medical information, accessible by QR code.
-            </h1>
+  Critical medical information, accessible by QR code.
+</h1>
 
-            <p style={styles.sub}>
-              When your unique RROI QR code is scanned, emergency responders, healthcare personnel, and bystanders can access the emergency information you choose to share.
-            </p>
+<div style={styles.badge}>
+  South African Emergency QR Profile
+</div>
+
+<p style={styles.sub}>
+  When your unique RROI QR code is scanned, emergency responders,
+  healthcare personnel, and bystanders can access the emergency
+  information you choose to share.
+</p>
                         
           </div>
         </div>
