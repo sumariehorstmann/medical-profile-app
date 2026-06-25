@@ -323,7 +323,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   </div>
 
   <div style={styles.useLabel}>
-    Travel, sport & outdoor activities
+    Travel, sport & outdoor
   </div>
 </div>
 </div>
@@ -686,7 +686,7 @@ planCardFeatured: {
 },
   useGrid: {
   display: "grid",
-  gridTemplateColumns: "repeat(4, 1fr)",
+  gridTemplateColumns: "repeat(auto-fit, minmax(135px, 1fr))",
   gap: 28,
   maxWidth: 980,
   margin: "0 auto",
