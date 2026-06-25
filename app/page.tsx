@@ -84,7 +84,7 @@ const [isInstalled, setIsInstalled] = useState(false);
     <div style={styles.stepNum}>2</div>
     <h3 style={styles.cardTitle}>Complete your free profile</h3>
     <p style={styles.cardText}>
-      Add your name, surname, and one emergency contact. This information is visible on your free profile when your QR code is scanned.
+      Add your name, surname, profile photo, and one emergency contact. This information is visible on your free profile when your QR code is scanned.
     </p>
   </div>
 
@@ -92,7 +92,7 @@ const [isInstalled, setIsInstalled] = useState(false);
     <div style={styles.stepNum}>3</div>
     <h3 style={styles.cardTitle}>Download your QR wallpapers</h3>
     <p style={styles.cardText}>
-      Download your unique QR code wallpapers for your phone lock screen and smartwatch. Save them to your phone and/or smartwatch.
+      Download your unique QR code wallpapers. Save them to your phone, then set them as your phone lock screen and smartwatch wallpaper.
     </p>
   </div>
 
