@@ -82,13 +82,11 @@ const [isInstalled, setIsInstalled] = useState(false);
 
   <div style={styles.stepCard}>
     <div style={styles.stepNum}>2</div>
-    <h3 style={styles.cardTitle}>Complete your free profile</h3>
+    <h3 style={styles.cardTitle}>Complete your profile</h3>
     <div style={styles.cardText}>
-  <div>✅ Name & surname</div>
-  <div>✅ Profile photo</div>
-  <div>✅ One emergency contact</div>
-
-  <p style={{ marginTop: 12 }}>
+  <p style={styles.shortLine}>Add your name, surname and profile photo.</p>
+  <p style={styles.shortLine}>Add one emergency contact.</p>
+  <p style={styles.shortLine}>
     Visible on your free profile when your QR code is scanned.
   </p>
 </div>
@@ -98,21 +96,31 @@ const [isInstalled, setIsInstalled] = useState(false);
     <div style={styles.stepNum}>3</div>
     <h3 style={styles.cardTitle}>Download your QR wallpapers</h3>
     <div style={styles.cardText}>
-  <div>✅ Download your QR wallpapers</div>
-  <div>✅ Save them to your phone</div>
-  <div>✅ Set them as your phone lock screen and smartwatch wallpaper</div>
+  <p style={styles.shortLine}>Download your QR code wallpapers.</p>
+  <p style={styles.shortLine}>Save them to your phone.</p>
+  <p style={styles.shortLine}>
+    Set them as your phone lock screen and your smartwatch wallpaper.
+  </p>
 </div>
   </div>
 
   <div style={styles.stepCard}>
-    <div style={styles.stepNum}>4</div>
-    <h3 style={styles.cardTitle}>Upgrade for full visibility</h3>
-    <div style={styles.cardText}>
-  <div>✅ Upgrade anytime</div>
-  <div>✅ Complete full emergency online profile</div>
-  <div>✅ Medical information visible when scanned</div>
-</div>
+  <div style={styles.stepNum}>4</div>
+
+  <h3 style={styles.cardTitle}>
+    Upgrade to Premium
+  </h3>
+
+  <div style={styles.cardText}>
+    <p style={styles.shortLine}>Upgrade anytime.</p>
+    <p style={styles.shortLine}>
+      Make your complete emergency profile visible.
+    </p>
+    <p style={styles.shortLine}>
+      Includes your medical information when your QR code is scanned.
+    </p>
   </div>
+</div>
 </div>
         </div>
       </section>
@@ -473,6 +481,9 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.65,
     color: "#334155",
   },
+  shortLine: {
+  margin: "0 0 8px",
+},
   cardTextLarge: {
     margin: 0,
     maxWidth: 660,
