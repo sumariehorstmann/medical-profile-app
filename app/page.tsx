@@ -67,52 +67,40 @@ const [isInstalled, setIsInstalled] = useState(false);
         <div style={styles.container}>
           <h2 style={styles.sectionTitle}>How RROI works</h2>
 
-          <div style={styles.stepsGrid}>
+         <p style={styles.sectionIntro}>
+  When someone scans your QR code, your RROI emergency profile opens instantly in their web browser.
+</p> 
+
+<div style={styles.stepsGrid}>
   <div style={styles.stepCard}>
     <div style={styles.stepNum}>1</div>
-
-    <h3 style={styles.cardTitle}>
-      Create your free profile
-    </h3>
-
+    <h3 style={styles.cardTitle}>Create your free profile</h3>
     <p style={styles.cardText}>
-      Sign up and create your emergency profile for free. Upgrade to Premium anytime.
+      Sign up for a free RROI account.
     </p>
   </div>
 
   <div style={styles.stepCard}>
     <div style={styles.stepNum}>2</div>
-
-    <h3 style={styles.cardTitle}>
-      Complete your profile
-    </h3>
-
+    <h3 style={styles.cardTitle}>Add your emergency information</h3>
     <p style={styles.cardText}>
-      Add your emergency contacts and any medical information you choose to provide.
+      Add your name, surname, and one emergency contact. This information is visible on your free profile when your QR code is scanned.
     </p>
   </div>
 
   <div style={styles.stepCard}>
     <div style={styles.stepNum}>3</div>
-
-    <h3 style={styles.cardTitle}>
-      Use your QR code
-    </h3>
-
+    <h3 style={styles.cardTitle}>Download your QR wallpapers</h3>
     <p style={styles.cardText}>
-      Download your phone QR lock screen or use physical QR products included with Premium.
+      Download your unique QR code phone lock screen and smartwatch wallpapers. Save them to your phone and/or smartwatch.
     </p>
   </div>
 
   <div style={styles.stepCard}>
     <div style={styles.stepNum}>4</div>
-
-    <h3 style={styles.cardTitle}>
-      Scan in an emergency
-    </h3>
-
+    <h3 style={styles.cardTitle}>Upgrade for full visibility</h3>
     <p style={styles.cardText}>
-      When scanned, your public emergency profile can be viewed in a web browser, subject to internet connectivity and device compatibility.
+      Upgrade to Premium to make your full emergency profile visible when your QR code is scanned.
     </p>
   </div>
 </div>
@@ -687,5 +675,13 @@ installBtn: {
   cursor: "pointer",
   marginTop: 0,
   boxShadow: "0 12px 24px rgba(21,122,85,0.25)",
+},
+sectionIntro: {
+  margin: "-6px auto 26px",
+  maxWidth: 680,
+  textAlign: "center",
+  fontSize: 17,
+  lineHeight: 1.6,
+  color: "#334155",
 },
 };
