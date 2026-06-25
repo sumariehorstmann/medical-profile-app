@@ -391,7 +391,9 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: "center",
   },
   badge: {
-  display: "inline-flex",
+  display: "flex",
+  width: "fit-content",
+  margin: "0 auto 28px",
   padding: "0",
   borderRadius: 0,
   border: "none",
@@ -399,11 +401,9 @@ const styles: Record<string, React.CSSProperties> = {
   color: BRAND_GREEN,
   fontSize: 13,
   fontWeight: 900,
-  marginTop: 12,
-  marginBottom: 22,
 },
   h1: {
-    margin: 0,
+  margin: "0 0 16px",
     fontSize: "clamp(34px, 6vw, 58px)",
     lineHeight: 1.04,
     letterSpacing: "-0.045em",
@@ -411,7 +411,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: TEXT,
   },
   sub: {
-    margin: "18px auto 0",
+  margin: "0 auto",
     maxWidth: 680,
     fontSize: 18,
     lineHeight: 1.65,
