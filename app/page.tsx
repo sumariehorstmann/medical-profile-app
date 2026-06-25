@@ -334,11 +334,14 @@ const [isInstalled, setIsInstalled] = useState(false);
         <div style={styles.container}>
           <div style={styles.splitCard}>
             <div>
-              <h2 style={styles.sectionTitleLeft}>Physical QR products</h2>
-              <p style={styles.cardTextLarge}>
-                Premium includes 2 physical engraved QR products. Additional QR
-                items will be available through the RROI online store.
-              </p>
+              <h2 style={styles.sectionTitleLeft}>
+  RROI Online Store
+</h2>
+
+<p style={styles.cardTextLarge}>
+  Order additional engraved QR products, replacement items, and
+  accessories from the RROI Online Store.
+</p>
             </div>
 
             <Link href="/store" style={styles.secondaryBtnLarge}>
