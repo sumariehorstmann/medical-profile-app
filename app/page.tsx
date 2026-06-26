@@ -828,7 +828,7 @@ outlineBtnFull: {
   width: "100%",
   justifyContent: "center",
   alignItems: "center",
-  minHeight: 46,
+  minHeight: 64,
   marginTop: 12,
   padding: "12px 18px",
   borderRadius: 14,
@@ -838,5 +838,8 @@ outlineBtnFull: {
   textDecoration: "none",
   fontWeight: 800,
   fontSize: 14,
+  textAlign: "center",
+  lineHeight: 1.25,
+  boxSizing: "border-box",
 },
 };
