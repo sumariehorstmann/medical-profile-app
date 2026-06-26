@@ -33,30 +33,41 @@ export default function PremiumKitPage() {
         <div
           style={{
             ...styles.productGrid,
-            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
           }}
         >
           <ProductPhoto
-            src="/images/premium-kit/qr-card.png"
-            alt="Black Anodised Aluminium QR Card"
-            title="Black Anodised Aluminium QR Card"
-            isMobile={isMobile}
-          />
+  src="/images/premium-kit/qr-card.png"
+  alt="Black Anodised Aluminium QR Card"
+  title="Black Anodised Aluminium QR Card"
+  isMobile={isMobile}
+/>
 
-          <ProductPhoto
-            src="/images/premium-kit/qr-tag-front.png"
-            alt="Black Anodised Aluminium QR Tag Front"
-            title="Black Anodised Aluminium QR Tag Front"
-            isMobile={isMobile}
-          />
+<ProductPhoto
+  src="/images/premium-kit/qr-tag-front-back.png"
+  alt="Black Anodised Aluminium QR Tag Front and Back"
+  title="Black Anodised Aluminium QR Tag"
+  isMobile={isMobile}
+/>
 
-          <ProductPhoto
-            src="/images/premium-kit/qr-tag-back.png"
-            alt="Black Anodised Aluminium QR Tag Back"
-            title="Black Anodised Aluminium QR Tag Back"
-            isMobile={isMobile}
-          />
+<ProductPhoto
+  src="/images/premium-kit/phone-lock-screen.png"
+  alt="Downloadable QR phone lock screen"
+  title="Downloadable QR Phone Lock Screen"
+  isMobile={isMobile}
+/>
+
+<ProductPhoto
+  src="/images/premium-kit/smartwatch-wallpaper.png"
+  alt="Downloadable QR smartwatch wallpaper"
+  title="Downloadable QR Smartwatch Wallpaper"
+  isMobile={isMobile}
+/>
         </div>
+
+<p style={styles.deviceNote}>
+  Phone and smartwatch not included. Images shown for illustration purposes only.
+</p>
 
         <div style={styles.card}>
           <h2 style={styles.h2}>Included in the R499 Premium Kit</h2>
@@ -253,7 +264,14 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.35,
     color: "#0F172A",
   },
-
+deviceNote: {
+  fontSize: 13,
+  lineHeight: 1.5,
+  color: "#64748B",
+  textAlign: "center",
+  marginTop: -12,
+  marginBottom: 28,
+},
   card: {
     background: "#F8FAFC",
     border: "1px solid #E5E7EB",
