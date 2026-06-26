@@ -174,7 +174,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   <li>One emergency contact visible when scanned</li>
   <li>QR phone wallpaper included</li>
   <li>QR smartwatch wallpaper included</li>
-  <li>Access and update your profile anytime</li>
+  <li>Update your profile anytime</li>
 </ul>
 
   <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
