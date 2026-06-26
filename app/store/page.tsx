@@ -90,20 +90,7 @@ export default function StorePage() {
               onIncrease={() => setDogTags((value) => value + 1)}
             />
 
-            <ProductCard
-  title="Black Anodised Aluminium QR Tag"
-  price={DOG_TAG_PRICE}
-  description="Durable black anodised aluminium QR tag engraved with your permanent RROI QR code. Can be attached to keys, bags, backpacks, sports bags, or lanyards."
-  images={[
-    {
-      src: "/images/premium-kit/qr-tag-front-back.png",
-      alt: "Black Anodised Aluminium QR Tag Front and Back",
-    },
-  ]}
-  quantity={dogTags}
-  onDecrease={() => setDogTags((value) => Math.max(0, value - 1))}
-  onIncrease={() => setDogTags((value) => value + 1)}
-/>
+            
           </div>
 
           <div style={styles.summaryCard}>
