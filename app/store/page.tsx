@@ -89,7 +89,20 @@ export default function StorePage() {
               onDecrease={() => setDogTags((value) => Math.max(0, value - 1))}
               onIncrease={() => setDogTags((value) => value + 1)}
             />
-
+<ProductCard
+  title="Black Anodised Aluminium QR Card"
+  price={QR_CARD_PRICE}
+  description="Wallet-sized black anodised aluminium QR card engraved with your permanent RROI QR code."
+  images={[
+    {
+      src: "/images/premium-kit/qr-card.png",
+      alt: "Black Anodised Aluminium QR Card",
+    },
+  ]}
+  quantity={cards}
+  onDecrease={() => setCards((value) => Math.max(0, value - 1))}
+  onIncrease={() => setCards((value) => value + 1)}
+/>
             
           </div>
 
