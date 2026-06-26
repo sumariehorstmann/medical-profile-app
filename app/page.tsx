@@ -169,7 +169,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 </p>
 
   <ul style={styles.list}>
-  <li>Create and save your emergency profile</li>
+  <li>Create your emergency profile</li>
   <li>First name and surname visible when scanned</li>
   <li>One emergency contact visible when scanned</li>
   <li>QR phone wallpaper included</li>
@@ -185,7 +185,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   href="/e/9bde720b-fd11-4206-833b-9b8978d2a339"
   style={styles.outlineBtnFull}
 >
-  View Example Public Free Profile
+  View Example Free Public Profile
 </Link>
 </div>
 
@@ -200,7 +200,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   <p style={styles.planPrice}>R129/year</p>
 
   <p style={styles.planSub}>
-  More emergency information available when your QR code is scanned
+  More emergency information is available when your QR code is scanned
 </p>
 
   <ul style={styles.list}>
@@ -241,7 +241,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   <p style={styles.planPrice}>R499 once-off</p>
 
   <p style={styles.planSub}>
-    Includes first year Premium subscription
+    Includes first-year Premium subscription
   </p>
 
   <p style={styles.planRenewal}>
@@ -252,7 +252,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   <li>Everything in Premium Emergency Profile</li>
   <li>Engraved QR emergency card included</li>
   <li>Engraved QR emergency tag included</li>
-  <li>First year Premium subscription included</li>
+  <li>First-year Premium subscription included</li>
   <li>Nationwide delivery included</li>
   <li>QR phone wallpaper included</li>
   <li>QR smartwatch wallpaper included</li>
