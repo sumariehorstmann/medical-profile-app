@@ -58,20 +58,20 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
 </div>
 
           <div style={styles.qrBox}>
-            <QRCodeSVG
-              value={publicUrl || " "}
-              size={260}
-              level="H"
-              includeMargin
-              bgColor="#FFFFFF"
-              fgColor="#000000"
-              style={{
-                display: "block",
-                backgroundColor: "#FFFFFF",
-                colorScheme: "light",
-              }}
-            />
-          </div>
+  <QRCodeSVG
+    value={publicUrl || " "}
+    size={260}
+    level="H"
+    includeMargin
+    bgColor="#000000"
+    fgColor="#FFFFFF"
+    style={{
+      display: "block",
+      backgroundColor: "#000000",
+      colorScheme: "light",
+    }}
+  />
+</div>
 
           <div style={styles.emergencyText}>
   EMERGENCY PROFILE
@@ -126,12 +126,13 @@ const styles: Record<string, React.CSSProperties> = {
   },
   
   qrBox: {
-    background: "#FFFFFF",
-    padding: 20,
-    borderRadius: 28,
-    colorScheme: "light",
-    forcedColorAdjust: "none",
-  },
+  background: "#000000",
+  padding: 20,
+  borderRadius: 28,
+  border: "6px solid #FFFFFF",
+  colorScheme: "light",
+  forcedColorAdjust: "none",
+},
 
 rroiText: {
   fontSize: 62,
