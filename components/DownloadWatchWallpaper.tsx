@@ -159,15 +159,17 @@ scanTopText: {
 },
 rroiSide: {
   color: "#157A55",
-  fontSize: 70,
+  fontSize: 66,
   fontWeight: 900,
   letterSpacing: 8,
   lineHeight: 1,
+  writingMode: "vertical-rl",
+  transform: "rotate(180deg)",
 },
 middleRow: {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: 30,
+  gap: 24,
 },
  };
