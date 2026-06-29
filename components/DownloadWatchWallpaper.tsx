@@ -51,32 +51,34 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
 
       <div style={styles.hiddenWrap} aria-hidden="true">
         <div ref={ref} style={styles.canvas}>
-          <div style={styles.rroiText}>RROI</div>
+  <div style={styles.scanTopText}>
+    SCAN TO VIEW MY
+  </div>
 
-<div style={styles.scanTopText}>
-  SCAN TO VIEW MY
-</div>
+  <div style={styles.middleRow}>
+    <div style={styles.rroiSide}>RROI</div>
 
-          <div style={styles.qrBox}>
-  <QRCodeSVG
-    value={publicUrl || " "}
-    size={260}
-    level="H"
-    includeMargin
-    bgColor="#000000"
-    fgColor="#FFFFFF"
-    style={{
-      display: "block",
-      backgroundColor: "#000000",
-      colorScheme: "light",
-    }}
-  />
-</div>
+    <div style={styles.qrBox}>
+      <QRCodeSVG
+        value={publicUrl || " "}
+        size={320}
+        level="H"
+        includeMargin
+        bgColor="#000000"
+        fgColor="#FFFFFF"
+        style={{
+          display: "block",
+          backgroundColor: "#000000",
+          colorScheme: "light",
+        }}
+      />
+    </div>
+  </div>
 
-          <div style={styles.emergencyText}>
-  EMERGENCY PROFILE
+  <div style={styles.emergencyText}>
+    EMERGENCY PROFILE
+  </div>
 </div>
-        </div>
       </div>
     </>
   );
@@ -127,22 +129,13 @@ const styles: Record<string, React.CSSProperties> = {
   
   qrBox: {
   background: "#000000",
-  padding: 20,
+  padding: 24,
   borderRadius: 28,
   border: "6px solid #FFFFFF",
   colorScheme: "light",
   forcedColorAdjust: "none",
 },
 
-rroiText: {
-  fontSize: 62,
-  fontWeight: 900,
-  letterSpacing: 16,
-  lineHeight: 1,
-  textAlign: "center",
-  color: "#157A55",
-  marginBottom: 34,
-},
 scanTopText: {
   fontSize: 36,
   fontWeight: 900,
@@ -163,5 +156,18 @@ scanTopText: {
   color: "#FFFFFF",
   textTransform: "uppercase",
   marginTop: 36,
+},
+rroiSide: {
+  color: "#157A55",
+  fontSize: 70,
+  fontWeight: 900,
+  letterSpacing: 8,
+  lineHeight: 1,
+},
+middleRow: {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 30,
 },
  };
