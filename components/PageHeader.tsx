@@ -23,8 +23,8 @@ const styles: Record<string, React.CSSProperties> = {
   marginBottom: 0,
 },
   logo: {
-    width: "100%",
-    height: "auto",
-    maxWidth: 200, // clean, consistent size across all pages
-  },
+  width: "100%",
+  height: "auto",
+  maxWidth: 300,
+},
 };
