@@ -25,7 +25,7 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
       const dataUrl = await htmlToImage.toPng(ref.current, {
         cacheBust: true,
         pixelRatio: 2,
-        backgroundColor: "#050B08",
+        backgroundColor: "#000000",
       });
 
       const link = document.createElement("a");
@@ -51,7 +51,11 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
 
       <div style={styles.hiddenWrap} aria-hidden="true">
         <div ref={ref} style={styles.canvas}>
-          <div style={styles.rroiText}>RROI</div>
+          <img
+  src="/logo-full-white.png"
+  alt="RROI logo"
+  style={styles.logo}
+/>
 
           <div style={styles.qrBox}>
             <QRCodeSVG
@@ -69,7 +73,11 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
             />
           </div>
 
-          <div style={styles.emergencyText}>EMERGENCY PROFILE</div>
+          <div style={styles.emergencyText}>
+  SCAN TO VIEW MY
+  <br />
+  EMERGENCY PROFILE
+</div>
         </div>
       </div>
     </>
@@ -106,7 +114,7 @@ const styles: Record<string, React.CSSProperties> = {
   canvas: {
     width: 1024,
     height: 1024,
-    background: "#050B08",
+    background: "#000000",
     color: "#FFFFFF",
     colorScheme: "light",
     forcedColorAdjust: "none",
@@ -118,17 +126,7 @@ const styles: Record<string, React.CSSProperties> = {
     boxSizing: "border-box",
     padding: "0 90px",
   },
-
-  rroiText: {
-    fontSize: 58,
-    fontWeight: 900,
-    letterSpacing: 4,
-    lineHeight: 1,
-    textAlign: "center",
-    color: "#4ADE80",
-    marginBottom: 36,
-  },
-
+  
   qrBox: {
     background: "#FFFFFF",
     padding: 20,
@@ -138,13 +136,19 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   emergencyText: {
-    width: 520,
-    fontSize: 34,
-    fontWeight: 900,
-    letterSpacing: 1,
-    lineHeight: 1,
-    textAlign: "center",
-    color: "#4ADE80",
-    marginTop: 36,
-  },
+  width: 650,
+  fontSize: 46,
+  fontWeight: 900,
+  lineHeight: 1.15,
+  textAlign: "center",
+  color: "#FFFFFF",
+  textTransform: "uppercase",
+  marginTop: 36,
+},
+  logo: {
+  width: 300,
+  height: "auto",
+  display: "block",
+  marginBottom: 28,
+},
 };
