@@ -708,18 +708,7 @@ const totalPaid = confirmedReferrals
     </Link>
   </div>
 </section>
-          <div style={{ ...styles.shareBox, marginTop: 14 }}>
-            <div style={styles.shareLabel}>Referral Link</div>
-            <div style={styles.linkBox}>{referralLink || "Loading link..."}</div>
-            <button
-              type="button"
-              style={styles.primaryBtn}
-              disabled={!referralLink}
-              onClick={() => copyText(referralLink, "Referral link copied.", "link")}
->
-  {copiedItem === "link" ? "Copied" : "Copy Referral Link"}
-</button>
-          </div>
+          
         </section>
 
         <section style={styles.section}>
@@ -735,7 +724,7 @@ const totalPaid = confirmedReferrals
                 <thead>
                   <tr>
                     <th style={styles.th}>Date</th>
-                    <th style={styles.th}>Payment</th>
+                    <th style={styles.th}>Payment Reference</th>
                     <th style={styles.th}>Amount</th>
                     <th style={styles.th}>Commission</th>
                     <th style={styles.th}>Status</th>
@@ -746,7 +735,9 @@ const totalPaid = confirmedReferrals
                   {referrals.map((referral) => (
                     <tr key={referral.id}>
                       <td style={styles.td}>{formatDate(referral.created_at)}</td>
-                      <td style={styles.td}>{referral.payment_id || "-"}</td>
+                      <td style={styles.td}>
+  {referral.payment_id ? referral.payment_id.slice(0, 18) + "..." : "-"}
+</td>
                       <td style={styles.td}>
                         R{Number(referral.amount ?? 0).toFixed(2)}
                       </td>
