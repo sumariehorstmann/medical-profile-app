@@ -51,11 +51,11 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
 
       <div style={styles.hiddenWrap} aria-hidden="true">
         <div ref={ref} style={styles.canvas}>
-          <img
-  src="/logo-full-white.png"
-  alt="RROI logo"
-  style={styles.logo}
-/>
+          <div style={styles.rroiText}>RROI</div>
+
+<div style={styles.scanTopText}>
+  SCAN TO VIEW MY
+</div>
 
           <div style={styles.qrBox}>
             <QRCodeSVG
@@ -74,8 +74,6 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
           </div>
 
           <div style={styles.emergencyText}>
-  SCAN TO VIEW MY
-  <br />
   EMERGENCY PROFILE
 </div>
         </div>
@@ -135,20 +133,34 @@ const styles: Record<string, React.CSSProperties> = {
     forcedColorAdjust: "none",
   },
 
+rroiText: {
+  fontSize: 62,
+  fontWeight: 900,
+  letterSpacing: 16,
+  lineHeight: 1,
+  textAlign: "center",
+  color: "#157A55",
+  marginBottom: 34,
+},
+scanTopText: {
+  fontSize: 36,
+  fontWeight: 900,
+  letterSpacing: 5,
+  lineHeight: 1,
+  textAlign: "center",
+  color: "#FFFFFF",
+  textTransform: "uppercase",
+  marginBottom: 28,
+},
   emergencyText: {
   width: 650,
-  fontSize: 46,
+  fontSize: 36,
   fontWeight: 900,
-  lineHeight: 1.15,
+  letterSpacing: 5,
+  lineHeight: 1,
   textAlign: "center",
   color: "#FFFFFF",
   textTransform: "uppercase",
   marginTop: 36,
 },
-  logo: {
-  width: 300,
-  height: "auto",
-  display: "block",
-  marginBottom: 28,
-},
-};
+ };
