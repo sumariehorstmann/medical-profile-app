@@ -55,24 +55,20 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
     SCAN TO VIEW MY
   </div>
 
-  <div style={styles.middleRow}>
-    <div style={styles.rroiSide}>RROI</div>
-
-    <div style={styles.qrBox}>
-      <QRCodeSVG
-        value={publicUrl || " "}
-        size={320}
-        level="H"
-        includeMargin
-        bgColor="#000000"
-        fgColor="#FFFFFF"
-        style={{
-          display: "block",
-          backgroundColor: "#000000",
-          colorScheme: "light",
-        }}
-      />
-    </div>
+  <div style={styles.qrBox}>
+    <QRCodeSVG
+      value={publicUrl || " "}
+      size={340}
+      level="H"
+      includeMargin
+      bgColor="#000000"
+      fgColor="#FFFFFF"
+      style={{
+        display: "block",
+        backgroundColor: "#000000",
+        colorScheme: "light",
+      }}
+    />
   </div>
 
   <div style={styles.emergencyText}>
@@ -144,7 +140,7 @@ scanTopText: {
   textAlign: "center",
   color: "#FFFFFF",
   textTransform: "uppercase",
-  marginBottom: 28,
+  marginBottom: 20,
 },
   emergencyText: {
   width: 650,
@@ -155,21 +151,6 @@ scanTopText: {
   textAlign: "center",
   color: "#FFFFFF",
   textTransform: "uppercase",
-  marginTop: 36,
-},
-rroiSide: {
-  color: "#157A55",
-  fontSize: 66,
-  fontWeight: 900,
-  letterSpacing: 8,
-  lineHeight: 1,
-  writingMode: "vertical-rl",
-  transform: "rotate(180deg)",
-},
-middleRow: {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 24,
+  marginTop: 28,
 },
  };
