@@ -29,7 +29,11 @@ export default function QRScreensaver({
           />
         </div>
 
-        <div style={styles.scanText}>SCAN QR</div>
+        <div style={styles.scanText}>
+  SCAN TO VIEW MY
+  <br />
+  EMERGENCY PROFILE
+</div>
 
         <div style={styles.qrWrap}>
           <QRCodeSVG
@@ -48,8 +52,7 @@ export default function QRScreensaver({
           />
         </div>
 
-        <div style={styles.profileText}>EMERGENCY PROFILE</div>
-
+        
         {fullName ? (
           <div style={styles.nameText}>{fullName}</div>
         ) : null}
@@ -112,24 +115,16 @@ const styles: Record<string, React.CSSProperties> = {
     forcedColorAdjust: "none",
   },
 
-  scanText: {
-    fontSize: 50,
-    fontWeight: 900,
-    lineHeight: 1,
+ scanText: {
+  fontSize: 50,
+  fontWeight: 900,
+  lineHeight: 1.15,
     textAlign: "center",
     color: "#FFFFFF",
     textTransform: "uppercase",
   },
 
-  profileText: {
-    fontSize: 38,
-    fontWeight: 800,
-    lineHeight: 1,
-    textAlign: "center",
-    color: "#FFFFFF",
-    textTransform: "uppercase",
-  },
-
+  
   nameText: {
     fontSize: 42,
     fontWeight: 900,
