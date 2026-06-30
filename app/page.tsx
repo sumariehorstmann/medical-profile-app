@@ -391,7 +391,29 @@ const [isInstalled, setIsInstalled] = useState(false);
   </button>
 </div>
 )}
+<div style={styles.socialSection}>
+  <p style={styles.socialTitle}>Follow RROI</p>
 
+  <div style={styles.socialLinks}>
+    <a
+      href="https://www.facebook.com/profile.php?id=61591175673812"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={styles.socialLink}
+    >
+      📘 Facebook
+    </a>
+
+    <a
+      href="https://www.instagram.com/rroi_sa/"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={styles.socialLink}
+    >
+      📷 Instagram
+    </a>
+  </div>
+</div>
 </section>
     </main>
   );
@@ -841,5 +863,32 @@ outlineBtnFull: {
   textAlign: "center",
   lineHeight: 1.25,
   boxSizing: "border-box",
+},
+socialSection: {
+  textAlign: "center",
+  marginTop: 40,
+  marginBottom: 10,
+},
+
+socialTitle: {
+  fontSize: 20,
+  fontWeight: 700,
+  color: TEXT,
+  marginBottom: 18,
+},
+
+socialLinks: {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: 24,
+  flexWrap: "wrap",
+},
+
+socialLink: {
+  color: BRAND_GREEN,
+  fontSize: 17,
+  fontWeight: 600,
+  textDecoration: "none",
 },
 };
