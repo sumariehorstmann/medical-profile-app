@@ -895,5 +895,7 @@ socialLink: {
   fontSize: 17,
   fontWeight: 600,
   textDecoration: "none",
+  cursor: "pointer",
+  transition: "opacity 0.2s ease",
 },
 };
