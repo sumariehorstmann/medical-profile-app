@@ -13,7 +13,7 @@ import {
   UsersRound,
   Dumbbell,
 } from "lucide-react";
-
+import { FaFacebook, FaInstagram } from "react-icons/fa";
 export default function HomePage() {
 
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -401,7 +401,8 @@ const [isInstalled, setIsInstalled] = useState(false);
       rel="noopener noreferrer"
       style={styles.socialLink}
     >
-      📘 Facebook
+      <FaFacebook size={18} />
+      <span>Facebook</span>
     </a>
 
     <a
@@ -410,7 +411,8 @@ const [isInstalled, setIsInstalled] = useState(false);
       rel="noopener noreferrer"
       style={styles.socialLink}
     >
-      📷 Instagram
+      <FaInstagram size={18} />
+      <span>Instagram</span>
     </a>
   </div>
 </div>
@@ -886,6 +888,9 @@ socialLinks: {
 },
 
 socialLink: {
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
   color: BRAND_GREEN,
   fontSize: 17,
   fontWeight: 600,
