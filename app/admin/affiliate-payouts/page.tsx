@@ -75,6 +75,9 @@ type PayoutRow = {
   accountNumber: string;
   accountType: string;
   branchCode: string;
+  email: string;
+  premiumStatus: string;
+  premiumUntil: string | null;
 };
 
 type AffiliatePayoutHistoryRow = {
@@ -452,6 +455,13 @@ const totalPaid = confirmedReferrals
         affiliateCode: String(affiliate.affiliate_code || "-"),
         fullName: String(affiliate.full_name || "-"),
         status: String(affiliate.status || "-"),
+        email: application?.email || "",
+
+premiumStatus: isPremiumActive(subscription)
+  ? "Active"
+  : "Inactive",
+
+premiumUntil: subscription?.current_period_end || null,
         totalEarned,
         totalPaid,
         unpaidConfirmed,
@@ -638,7 +648,9 @@ const totalPaid = confirmedReferrals
               <thead>
                 <tr>
                   <th style={{ ...styles.th, ...styles.stickyHeader }}>Affiliate</th>
-                  <th style={styles.th}>Code</th>
+<th style={styles.th}>Email</th>
+<th style={styles.th}>Premium</th>
+<th style={styles.th}>Code</th>
                   <th style={styles.th}>Status</th>
                   <th style={styles.th}>Bank</th>
                   <th style={styles.th}>Account Holder</th>
@@ -672,8 +684,29 @@ const totalPaid = confirmedReferrals
                       <td style={{ ...styles.td, ...styles.stickyCell }}>
   {row.fullName}
 </td>
-                      <td style={styles.td}>{row.affiliateCode}</td>
-                      <td style={styles.td}>
+
+<td style={styles.td}>
+  {row.email || "-"}
+</td>
+
+<td style={styles.td}>
+  <span
+    style={{
+      ...styles.badge,
+      ...(row.premiumStatus === "Active"
+        ? styles.badgeGreen
+        : styles.badgeRed),
+    }}
+  >
+    {row.premiumStatus}
+  </span>
+</td>
+
+<td style={styles.td}>
+  {row.affiliateCode}
+</td>
+
+<td style={styles.td}>
                         <span
                           style={{
                             ...styles.badge,
