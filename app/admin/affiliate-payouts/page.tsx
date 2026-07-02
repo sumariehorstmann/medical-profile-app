@@ -730,16 +730,31 @@ premiumUntil: subscription?.current_period_end || null,
 </td>
 
 <td style={styles.td}>
-  <span
-    style={{
-      ...styles.badge,
-      ...(row.premiumStatus === "Active"
-        ? styles.badgeGreen
-        : styles.badgeRed),
-    }}
-  >
-    {row.premiumStatus}
-  </span>
+  <div>
+    <span
+      style={{
+        ...styles.badge,
+        ...(row.premiumStatus === "Active"
+          ? styles.badgeGreen
+          : styles.badgeRed),
+      }}
+    >
+      {row.premiumStatus}
+    </span>
+
+    {row.premiumUntil && (
+      <div
+        style={{
+          marginTop: 6,
+          fontSize: 12,
+          color: "#64748B",
+        }}
+      >
+        {row.premiumStatus === "Active" ? "Expires" : "Expired"}:{" "}
+{formatDate(row.premiumUntil)}
+      </div>
+    )}
+  </div>
 </td>
 
 <td style={styles.td}>
