@@ -119,11 +119,15 @@ export default function AffiliateResourcesPage() {
         </section>
 
         <section style={styles.section}>
-          <h2 style={styles.h2}>Approved Hashtags</h2>
-          <p style={styles.tagText}>
-            #RROI #MedicalID #EmergencyProfile #QRCode #SouthAfrica
-          </p>
-        </section>
+  <h2 style={styles.h2}>Approved Hashtags</h2>
+  <p style={styles.tagText}>
+    #RROI #EmergencyProfile #SouthAfrica #QRCode #EDC
+    <br />
+    #RapidResponseOnlineInformation #EmergencyPreparedness
+    <br />
+    #EmergencyContacts
+  </p>
+</section>
 
         <section style={styles.section}>
           <h2 style={styles.h2}>Approved Caption</h2>
