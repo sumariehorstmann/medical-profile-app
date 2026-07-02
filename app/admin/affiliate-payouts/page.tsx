@@ -30,7 +30,17 @@ type AffiliateRow = {
   account_type?: string | null;
   branch_code?: string | null;
 };
+type AffiliateApplicationRow = {
+  user_id: string;
+  email?: string | null;
+  full_name?: string | null;
+};
 
+type AffiliateSubscriptionRow = {
+  user_id: string;
+  status?: string | null;
+  current_period_end?: string | null;
+};
 type ReferralRow = {
   id: string;
   affiliate_id?: string | null;
@@ -96,7 +106,29 @@ function formatDate(value?: string | null) {
     year: "numeric",
   });
 }
+function getAffiliateApplication(
+  userId: string,
+  applications: AffiliateApplicationRow[]
+) {
+  return applications.find((app) => app.user_id === userId) || null;
+}
 
+function getAffiliateSubscription(
+  userId: string,
+  subscriptions: AffiliateSubscriptionRow[]
+) {
+  return subscriptions.find((sub) => sub.user_id === userId) || null;
+}
+
+function isPremiumActive(subscription: AffiliateSubscriptionRow | null) {
+  if (!subscription) return false;
+
+  if (subscription.status !== "active") return false;
+
+  if (!subscription.current_period_end) return true;
+
+  return new Date(subscription.current_period_end).getTime() > Date.now();
+}
 function getCurrentPayoutCycle() {
   const now = new Date();
   const year = now.getFullYear();
@@ -134,6 +166,13 @@ export default function AdminAffiliatePayoutsPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
   const [affiliates, setAffiliates] = useState<AffiliateRow[]>([]);
+  const [affiliateApplications, setAffiliateApplications] = useState<
+  AffiliateApplicationRow[]
+>([]);
+
+const [affiliateSubscriptions, setAffiliateSubscriptions] = useState<
+  AffiliateSubscriptionRow[]
+>([]);
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
   const [customerProfiles, setCustomerProfiles] = useState<CustomerProfileRow[]>([]);
   const [payoutHistory, setPayoutHistory] = useState<
@@ -200,6 +239,13 @@ if (!res.ok) {
 if (!mounted) return;
 
 setAffiliates((json.affiliates ?? []) as AffiliateRow[]);
+setAffiliateApplications(
+  (json.affiliateApplications ?? []) as AffiliateApplicationRow[]
+);
+
+setAffiliateSubscriptions(
+  (json.affiliateSubscriptions ?? []) as AffiliateSubscriptionRow[]
+);
 setReferrals((json.referrals ?? []) as ReferralRow[]);
 setPayoutHistory((json.payoutHistory ?? []) as AffiliatePayoutHistoryRow[]);
 setCustomerProfiles((json.customerProfiles ?? []) as CustomerProfileRow[]);
@@ -356,6 +402,15 @@ new Date(referral.created_at) <= payoutCycle.cutoff
 
   const payoutRows = useMemo<PayoutRow[]>(() => {
     return affiliates.map((affiliate) => {
+      const application = getAffiliateApplication(
+  affiliate.user_id || "",
+  affiliateApplications
+);
+
+const subscription = getAffiliateSubscription(
+  affiliate.user_id || "",
+  affiliateSubscriptions
+);
       const affiliateReferrals = referrals.filter(
         (referral) => referral.affiliate_id === affiliate.id
       );
