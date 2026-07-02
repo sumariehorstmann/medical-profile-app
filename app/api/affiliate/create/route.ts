@@ -280,11 +280,22 @@ export async function POST(req: NextRequest) {
         );
       }
     }
-await sendAffiliateApplicationEmail({
-  to: email,
-  firstName: fullName,
-  status: "submitted",
-});
+    await sendAffiliateApplicationEmail({
+      to: email,
+      firstName: fullName,
+      status: "submitted",
+    });
+
+    await sendAffiliateApplicationEmail({
+      to: "support@rroi.co.za",
+      firstName: fullName,
+      status: "new_application",
+      applicantEmail: email,
+      applicantPhone: phone,
+      province,
+      city,
+      promotionMethod,
+    });
     return NextResponse.json({
       success: true,
       status: "pending",
