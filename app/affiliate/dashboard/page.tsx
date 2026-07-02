@@ -29,7 +29,15 @@ type ReferralRow = {
   created_at: string;
   paid: boolean | null;
 };
-
+type PayoutHistoryRow = {
+  id: string;
+  payout_amount: number | null;
+  referral_count: number | null;
+  payout_cycle: string | null;
+  cutoff_date: string | null;
+  paid_at: string | null;
+  eft_reference: string | null;
+};
 const BRAND_GREEN = "#157A55";
 const TEXT = "#0F172A";
 const MUTED = "#475569";
@@ -46,6 +54,7 @@ export default function AffiliateDashboardPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [affiliate, setAffiliate] = useState<AffiliateRow | null>(null);
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
+  const [payoutHistory, setPayoutHistory] = useState<PayoutHistoryRow[]>([]);
   const [origin, setOrigin] = useState("");
   const [hasPremium, setHasPremium] = useState(false);
   const [copiedItem, setCopiedItem] = useState<"code" | "link" | null>(null);
@@ -136,9 +145,23 @@ export default function AffiliateDashboardPage() {
           if (referralError) throw referralError;
 
           if (!mounted) return;
-          setReferrals(referralData ?? []);
+setReferrals(referralData ?? []);
+
+const { data: payoutRows, error: payoutHistoryError } = await supabase
+  .from("affiliate_payouts")
+  .select(
+    "id, payout_amount, referral_count, payout_cycle, cutoff_date, paid_at, eft_reference"
+  )
+  .eq("affiliate_id", affiliateData.id)
+  .order("paid_at", { ascending: false });
+
+if (payoutHistoryError) throw payoutHistoryError;
+
+if (!mounted) return;
+setPayoutHistory((payoutRows ?? []) as PayoutHistoryRow[]);
         } else {
           setReferrals([]);
+setPayoutHistory([]);
         }
       } catch (err: any) {
         if (!mounted) return;
@@ -753,7 +776,47 @@ const totalPaid = confirmedReferrals
             </div>
           )}
         </section>
+<h2 style={styles.sectionTitle}>Payout History</h2>
 
+<div style={styles.tableWrap}>
+  <table style={styles.table}>
+    <thead>
+      <tr>
+        <th style={styles.th}>Paid Date</th>
+        <th style={styles.th}>Amount Paid</th>
+        <th style={styles.th}>Referrals Paid</th>
+        <th style={styles.th}>Payout Cycle</th>
+        <th style={styles.th}>Cut-off Date</th>
+        <th style={styles.th}>EFT Reference</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {payoutHistory.length === 0 ? (
+        <tr>
+          <td style={styles.emptyCell} colSpan={6}>
+            No payout history yet.
+          </td>
+        </tr>
+      ) : (
+        payoutHistory.map((payout) => (
+          <tr key={payout.id}>
+            <td style={styles.td}>{payout.paid_at ? formatDate(payout.paid_at) : "-"}</td>
+            <td style={styles.tdStrong}>
+              R{Number(payout.payout_amount ?? 0).toFixed(2)}
+            </td>
+            <td style={styles.td}>{payout.referral_count ?? 0}</td>
+            <td style={styles.td}>{payout.payout_cycle || "-"}</td>
+            <td style={styles.td}>
+  {payout.cutoff_date ? formatDate(payout.cutoff_date) : "-"}
+</td>
+            <td style={styles.td}>{payout.eft_reference || "-"}</td>
+          </tr>
+        ))
+      )}
+    </tbody>
+  </table>
+</div>
 <section style={styles.dangerSection}>
   <h2 style={styles.h2}>Affiliate Access</h2>
 
