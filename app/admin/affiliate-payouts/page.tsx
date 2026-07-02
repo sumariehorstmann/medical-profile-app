@@ -402,7 +402,47 @@ new Date(referral.created_at) <= payoutCycle.cutoff
       setWorkingAffiliateId(null);
     }
   }
+async function handleResendApprovalEmail(affiliateId: string) {
+  try {
+    setWorkingAffiliateId(affiliateId);
+    setMessage(null);
 
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError || !session?.access_token) {
+      throw new Error("You must be logged in as admin.");
+    }
+
+    const res = await fetch(
+      "/api/admin/affiliate-applications/resend-approved-email",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          affiliateId,
+        }),
+      }
+    );
+
+    const json = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(json?.error || "Failed to resend email.");
+    }
+
+    setMessage("Approval email sent successfully.");
+  } catch (err: any) {
+    setMessage(err?.message || "Failed to resend approval email.");
+  } finally {
+    setWorkingAffiliateId(null);
+  }
+}
   const payoutRows = useMemo<PayoutRow[]>(() => {
     return affiliates.map((affiliate) => {
       const application = getAffiliateApplication(
@@ -758,7 +798,24 @@ premiumUntil: subscription?.current_period_end || null,
                       <td style={styles.td}>{formatMoney(row.totalPaid)}</td>
                       <td style={styles.td}>{formatDate(row.latestReferralDate)}</td>
                       <td style={styles.td}>
-                        {row.eligibleNow ? (
+  <button
+    type="button"
+    onClick={() => handleResendApprovalEmail(row.affiliateId)}
+    disabled={workingAffiliateId === row.affiliateId}
+    style={{
+      ...styles.actionButton,
+      marginBottom: 8,
+      opacity: workingAffiliateId === row.affiliateId ? 0.6 : 1,
+      cursor:
+        workingAffiliateId === row.affiliateId ? "not-allowed" : "pointer",
+    }}
+  >
+    Resend Approved Email
+  </button>
+
+  <br />
+
+  {row.eligibleNow ? (
                           <button
                             onClick={() => handleMarkPaid(row.affiliateId)}
                             disabled={workingAffiliateId === row.affiliateId}
