@@ -349,7 +349,30 @@ if (data.user && data.user.identities && data.user.identities.length === 0) {
   );
   return;
 }
+if (data.user) {
+  for (let i = 0; i < 5; i++) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("user_id")
+      .eq("user_id", data.user.id)
+      .maybeSingle();
 
+    if (profile) {
+      await supabase
+        .from("profiles")
+        .update({
+          marketing_consent: marketingConsent,
+          marketing_consent_at: marketingConsent ? new Date().toISOString() : null,
+          marketing_unsubscribed_at: null,
+        })
+        .eq("user_id", data.user.id);
+
+      break;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 300));
+  }
+}
 setMessageType("success");
 setMessage(
   "Your account has been created successfully. Please check your email and confirm your email address before continuing."
@@ -641,9 +664,7 @@ and{" "}
     disabled={loading}
   />
   <span style={styles.checkboxText}>
-    I agree to receive occasional RROI marketing emails about Premium
-    features, safety tips, product updates and promotions. I can unsubscribe at
-    any time.
+    I would like to receive occasional emails from RROI about Premium features, product updates, safety tips and special offers. I can unsubscribe at any time.
   </span>
 </label>
             </>
