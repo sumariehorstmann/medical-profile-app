@@ -9,6 +9,11 @@ type AdminUser = {
   first_name: string | null;
   last_name: string | null;
   email: string | null;
+
+  marketing_consent: boolean | null;
+  marketing_consent_at: string | null;
+  marketing_unsubscribed_at: string | null;
+  
   is_paid: boolean | null;
   subscription_status: string | null;
   plan: string | null;
@@ -194,6 +199,7 @@ const res = await fetch("/api/admin/users", {
               <tr>
                 <th style={styles.th}>Name</th>
                 <th style={styles.th}>Email</th>
+                <th style={styles.th}>Marketing</th>
                 <th style={styles.th}>Profile Type</th>
                 <th style={styles.th}>Status</th>
                 <th style={styles.th}>Start</th>
@@ -214,7 +220,11 @@ const res = await fetch("/api/admin/users", {
                     <td style={styles.td}>
                       {[user.first_name, user.last_name].filter(Boolean).join(" ") || "-"}
                     </td>
-                    <td style={styles.td}>{user.email || "-"}</td>
+                    <td style={styles.td}>{user.email}</td>
+
+<td style={styles.td}>
+  {user.marketing_consent ? "✅ Yes" : "❌ No"}
+</td>
                     <td style={styles.td}>{isPremium ? "Premium" : "Free"}</td>
                     <td style={styles.td}>{user.subscription_status || "-"}</td>
                     <td style={styles.td}>{formatDate(user.current_period_start)}</td>
