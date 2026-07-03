@@ -1322,7 +1322,7 @@ emergency_button3_description: getText("emergency_button3_description"),
     </span>
   </label>
 </Section>
-      <div style={{ marginTop: 20, marginBottom: 16 }}>
+      <div style={{ marginTop: 20, marginBottom: 16, paddingLeft: 20 }}>
         <label
           style={{
             display: "flex",
