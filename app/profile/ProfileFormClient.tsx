@@ -1354,7 +1354,7 @@ emergency_button3_description: getText("emergency_button3_description"),
 
         {!consent ? (
           <div style={{ marginTop: 8, fontSize: 13, color: "#666" }}>
-            You must read and accept the Privacy Policy before saving your profile.
+            Please tick this box before clicking Save Profile.
           </div>
         ) : null}
       </div>
@@ -1380,7 +1380,7 @@ emergency_button3_description: getText("emergency_button3_description"),
           }}
           disabled={loading || !consent}
         >
-          {loading ? "Saving..." : "Save profile"}
+          {loading ? "Saving..." : consent ? "Save profile" : "Tick privacy consent to save"}
         </button>
 
         {showUpgrade ? (
