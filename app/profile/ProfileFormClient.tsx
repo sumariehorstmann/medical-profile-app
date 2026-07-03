@@ -1341,13 +1341,11 @@ emergency_button3_description: getText("emergency_button3_description"),
             I consent to the processing of my personal information in accordance
             with the{" "}
             <a
-              href="/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ textDecoration: "underline", fontWeight: 600 }}
-            >
-              Privacy Policy
-            </a>
+  href="/privacy"
+  style={{ textDecoration: "underline", fontWeight: 600 }}
+>
+  Privacy Policy
+</a>
             .
           </span>
         </label>
