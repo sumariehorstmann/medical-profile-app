@@ -9,6 +9,10 @@ type ProfileRow = {
   created_at: string;
   updated_at: string;
 
+  marketing_consent: boolean | null;
+  marketing_consent_at: string | null;
+  marketing_unsubscribed_at: string | null;
+
   first_name: string | null;
   last_name: string | null;
   profile_photo_url: string | null;
@@ -130,6 +134,16 @@ export async function PUT(req: NextRequest) {
   const body = await req.json();
 
   const update = {
+      marketing_consent:
+      typeof body.marketing_consent === "boolean"
+        ? body.marketing_consent
+        : undefined,
+
+    marketing_consent_at:
+      body.marketing_consent === true ? new Date().toISOString() : undefined,
+
+    marketing_unsubscribed_at:
+      body.marketing_consent === false ? new Date().toISOString() : undefined,
     first_name: toNull(body.first_name),
     last_name: toNull(body.last_name),
     profile_photo_url: toNull(body.profile_photo_url),

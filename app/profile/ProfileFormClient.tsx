@@ -12,6 +12,10 @@ type ProfileRow = {
   user_id: string;
   public_id: string;
 
+  marketing_consent: boolean | null;
+  marketing_consent_at: string | null;
+  marketing_unsubscribed_at: string | null;
+
   first_name: string | null;
   last_name: string | null;
   profile_photo_url: string | null;
@@ -310,6 +314,10 @@ const [emergencyButton3Number, setEmergencyButton3Number] = useState(
   initial?.emergency_button3_number ?? ""
 );
 
+const [marketingConsent, setMarketingConsent] = useState(
+  initial?.marketing_consent ?? false
+);
+
 const [emergencyButton3Description, setEmergencyButton3Description] = useState(
   initial?.emergency_button3_description ?? ""
 );
@@ -497,6 +505,7 @@ const formData = new FormData(e.currentTarget);
 const getText = (name: string) =>
   String(formData.get(name) ?? "").trim() || null;
       const payload = {
+        marketing_consent: marketingConsent,
         first_name: firstName.trim(),
         last_name: lastName.trim(),
         profile_photo_url: profilePhotoUrl || null,
@@ -1286,6 +1295,32 @@ emergency_button3_description: getText("emergency_button3_description"),
       placeholder="Optional"
     />
   </Field>
+</Section>
+<Section
+  title="Email Preferences"
+  subtitle="Choose whether you would like to receive occasional emails from RROI."
+>
+  <label
+    style={{
+      display: "flex",
+      gap: 12,
+      alignItems: "flex-start",
+    }}
+  >
+    <input
+      type="checkbox"
+      checked={marketingConsent}
+      onChange={(e) => setMarketingConsent(e.target.checked)}
+      style={{ marginTop: 4 }}
+    />
+
+    <span style={{ lineHeight: 1.6 }}>
+      I would like to receive occasional emails from RROI about Premium
+      features, subscription upgrades, new products, safety tips,
+      emergency preparedness information, company news and promotions.
+      I understand I can unsubscribe at any time.
+    </span>
+  </label>
 </Section>
       <div style={{ marginTop: 20, marginBottom: 16 }}>
         <label
