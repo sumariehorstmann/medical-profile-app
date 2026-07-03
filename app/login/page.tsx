@@ -330,10 +330,13 @@ const { data, error } = await supabase.auth.signUp({
   email: email.trim(),
   password,
   options: {
-    emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
-  redirectTo
-)}`,
+  data: {
+    marketing_consent: marketingConsent,
   },
+  emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
+    redirectTo
+  )}`,
+},
 });
 
       if (error) {
@@ -349,30 +352,7 @@ if (data.user && data.user.identities && data.user.identities.length === 0) {
   );
   return;
 }
-if (data.user) {
-  for (let i = 0; i < 5; i++) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("user_id")
-      .eq("user_id", data.user.id)
-      .maybeSingle();
 
-    if (profile) {
-      await supabase
-        .from("profiles")
-        .update({
-          marketing_consent: marketingConsent,
-          marketing_consent_at: marketingConsent ? new Date().toISOString() : null,
-          marketing_unsubscribed_at: null,
-        })
-        .eq("user_id", data.user.id);
-
-      break;
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 300));
-  }
-}
 setMessageType("success");
 setMessage(
   "Your account has been created successfully. Please check your email and confirm your email address before continuing."
