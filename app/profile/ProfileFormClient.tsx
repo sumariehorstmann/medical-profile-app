@@ -1358,17 +1358,7 @@ emergency_button3_description: getText("emergency_button3_description"),
           </div>
         ) : null}
       </div>
-
-      {showUpgrade ? (
-        <div style={freePlanBannerStyle}>
-          You are on the Free plan. Only the free-tier emergency details are visible
-          when your QR is scanned.
-        </div>
-      ) : (
-        <div style={premiumPlanBannerStyle}>
-          Premium is active. Your full profile is visible when your QR is scanned.
-        </div>
-      )}
+     
 
       <div style={actionRowStyle}>
         <button
