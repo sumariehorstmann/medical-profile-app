@@ -98,6 +98,7 @@ const [confirmEmail, setConfirmEmail] = useState("");
 const [password, setPassword] = useState("");
 const [confirmPassword, setConfirmPassword] = useState("");
 const [acceptTerms, setAcceptTerms] = useState(false);
+const [marketingConsent, setMarketingConsent] = useState(false);
 
 useEffect(() => {
   if (params.get("mode") === "signup") {
@@ -214,6 +215,7 @@ if (errorCode || errorDesc) {
     setPassword("");
     setConfirmPassword("");
     setAcceptTerms(false);
+    setMarketingConsent(false);
     setShowPassword(false);
     setShowConfirmPassword(false);
   }
@@ -631,6 +633,19 @@ and{" "}
                   .
                 </span>
               </label>
+              <label style={styles.checkboxRow}>
+  <input
+    type="checkbox"
+    checked={marketingConsent}
+    onChange={(e) => setMarketingConsent(e.target.checked)}
+    disabled={loading}
+  />
+  <span style={styles.checkboxText}>
+    I agree to receive occasional RROI marketing emails about Premium
+    features, safety tips, product updates and promotions. I can unsubscribe at
+    any time.
+  </span>
+</label>
             </>
           )}
 
