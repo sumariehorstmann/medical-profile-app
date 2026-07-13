@@ -26,44 +26,50 @@ export default function PremiumKitPage() {
         <h1 style={styles.h1}>Premium Kit</h1>
 
         <p style={styles.subtitle}>
-          The R499 Premium Kit gives you Premium access plus physical QR items
-          that can be scanned in an emergency.
-        </p>
+  The R499 Premium Kit includes one year of Premium access, physical QR
+  products and downloadable QR wallpapers for everyday use.
+</p>
 
         <div
-          style={{
-            ...styles.productGrid,
-            gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
-          }}
-        >
-          <ProductPhoto
-  src="/images/premium-kit/qr-card.png"
-  alt="Black Anodised Aluminium QR Card"
-  title="Black Anodised Aluminium QR Card"
-  isMobile={isMobile}
-/>
+  style={{
+    ...styles.productGrid,
+    gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
+  }}
+>
+  <ProductPhoto
+    src="/images/premium-kit/qr-card.png"
+    alt="Black Anodised Aluminium QR Card"
+    title="Black Anodised Aluminium QR Card"
+    isMobile={isMobile}
+  />
 
-<ProductPhoto
-  src="/images/premium-kit/qr-tag-front-back.png"
-  alt="Black Anodised Aluminium QR Tag Front and Back"
-  title="Black Anodised Aluminium QR Tag"
-  isMobile={isMobile}
-/>
+  <ProductPhoto
+    src="/images/premium-kit/qr-tag-front-back.png"
+    alt="Black Anodised Aluminium QR Tag Front and Back"
+    title="Black Anodised Aluminium QR Tag"
+    isMobile={isMobile}
+  />
 
-<ProductPhoto
-  src="/images/premium-kit/phone-lock-screen.png"
-  alt="Downloadable QR phone lock screen"
-  title="Downloadable QR Phone Lock Screen"
-  isMobile={isMobile}
-/>
+  <ProductPlaceholder
+    title="Pack of 5 Splash-Proof QR Stickers"
+    text="Product image coming soon."
+    isMobile={isMobile}
+  />
 
-<ProductPhoto
-  src="/images/premium-kit/smartwatch-wallpaper.png"
-  alt="Downloadable QR smartwatch wallpaper"
-  title="Downloadable QR Smartwatch Wallpaper"
-  isMobile={isMobile}
-/>
-        </div>
+  <ProductPhoto
+    src="/images/premium-kit/phone-lock-screen.png"
+    alt="Downloadable QR phone lock screen"
+    title="Downloadable QR Phone Lock Screen"
+    isMobile={isMobile}
+  />
+
+  <ProductPhoto
+    src="/images/premium-kit/smartwatch-wallpaper.png"
+    alt="Downloadable QR smartwatch wallpaper"
+    title="Downloadable QR Smartwatch Wallpaper"
+    isMobile={isMobile}
+  />
+</div>
 
 <p style={styles.deviceNote}>
   Phone and smartwatch not included. Images shown for illustration purposes only.
@@ -73,14 +79,15 @@ export default function PremiumKitPage() {
           <h2 style={styles.h2}>Included in the R499 Premium Kit</h2>
 
           <ul style={styles.list}>
-            <li>1-year RROI Premium subscription</li>
-            <li>Black anodised aluminium QR card</li>
-            <li>Black anodised aluminium QR tag</li>
-            <li>Full public emergency profile visibility</li>
-            <li>Downloadable QR phone lock screen</li>
-            <li>Downloadable QR smartwatch wallpaper</li>
-            <li>Nationwide delivery</li>
-          </ul>
+  <li>1-year RROI Premium subscription</li>
+  <li>Engraved metal QR card</li>
+  <li>Engraved metal QR tag</li>
+  <li>Pack of 5 splash-proof QR stickers</li>
+  <li>Full Premium Emergency Profile visibility</li>
+  <li>Downloadable QR phone lock screen</li>
+  <li>Downloadable QR smartwatch wallpaper</li>
+  <li>Free nationwide delivery</li>
+</ul>
         </div>
 <div style={styles.deliveryCard}>
   <div style={styles.deliveryTitle}>
@@ -93,22 +100,25 @@ export default function PremiumKitPage() {
   </p>
 </div>
         <div style={styles.noteCard}>
-          <h2 style={styles.noteTitle}>Digital-only Premium option</h2>
+  <h2 style={styles.noteTitle}>Digital-only Premium option</h2>
 
-          <p style={styles.noteText}>
-            You can also upgrade to Premium for R129 per year without purchasing
-            the physical kit. This gives you full public profile visibility and
-            the downloadable QR phone lock screen and downloadable QR smartwatch wallpaper only.
-          </p>
+  <p style={styles.noteText}>
+    You can also upgrade to Premium for R129 per year without purchasing
+    the physical Premium Kit. This includes full Premium Emergency Profile
+    visibility, a downloadable QR phone lock screen and a downloadable QR
+    smartwatch wallpaper.
+  </p>
 
-          <p style={styles.noteText}>
-  No physical QR card or tag is included with the 129 option.
-</p>
+  <p style={styles.noteText}>
+    No physical QR card, QR tag or QR stickers are included with the R129
+    Premium option.
+  </p>
 
-<p style={styles.noteText}>
-  Affiliate discount codes are not valid for the R129 Premium Visibility Only option.
-</p>
-        </div>
+  <p style={styles.noteText}>
+    Affiliate discount codes are not valid for the R129 digital-only
+    Premium option.
+  </p>
+</div>
 
         <div style={styles.exampleCard}>
           <h2 style={styles.h2}>Example Premium public profile</h2>
@@ -191,6 +201,55 @@ function ProductPhoto({
   );
 }
 
+function ProductPlaceholder({
+  title,
+  text,
+  isMobile,
+}: {
+  title: string;
+  text: string;
+  isMobile: boolean;
+}) {
+  return (
+    <div
+      style={{
+        ...styles.productCard,
+        display: isMobile ? "grid" : "block",
+        gridTemplateColumns: isMobile ? "120px 1fr" : undefined,
+        alignItems: isMobile ? "center" : undefined,
+        gap: isMobile ? 16 : undefined,
+      }}
+    >
+      <div
+        style={{
+          ...styles.placeholderWrap,
+          height: isMobile ? 120 : 220,
+          marginBottom: isMobile ? 0 : 12,
+        }}
+      >
+        <div style={styles.placeholderBadge}>5</div>
+
+        <div style={styles.placeholderLabel}>
+          Splash-Proof
+          <br />
+          QR Stickers
+        </div>
+
+        <div style={styles.placeholderText}>{text}</div>
+      </div>
+
+      <div
+        style={{
+          ...styles.productTitle,
+          textAlign: isMobile ? "left" : "center",
+        }}
+      >
+        {title}
+      </div>
+    </div>
+  );
+}
+
 const styles: Record<string, React.CSSProperties> = {
   page: {
     padding: "48px 20px",
@@ -245,6 +304,47 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 14,
     overflow: "hidden",
   },
+placeholderWrap: {
+  width: "100%",
+  background: "#F0FDF4",
+  border: "1px dashed #86EFAC",
+  borderRadius: 14,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  textAlign: "center",
+  padding: 16,
+  boxSizing: "border-box",
+},
+
+placeholderBadge: {
+  width: 42,
+  height: 42,
+  borderRadius: "50%",
+  background: "#157A55",
+  color: "#FFFFFF",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: 20,
+  fontWeight: 900,
+  marginBottom: 10,
+},
+
+placeholderLabel: {
+  color: "#166534",
+  fontSize: 17,
+  lineHeight: 1.25,
+  fontWeight: 900,
+},
+
+placeholderText: {
+  color: "#64748B",
+  fontSize: 12,
+  lineHeight: 1.4,
+  marginTop: 8,
+},
 
   imageWrap: {
     position: "relative",
