@@ -5,13 +5,11 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import {
   UserRound,
-  PencilLine,
-  Smartphone,
   Star,
-  Ambulance,
-  Pill,
+  Smartphone,
+  PencilLine,
+  Globe,
   UsersRound,
-  Dumbbell,
 } from "lucide-react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 export default function HomePage() {
@@ -196,7 +194,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 <div style={styles.planCard}>
   <div style={styles.planLabel}>Free</div>
 
-  <h3 style={styles.planTitle}>Basic Emergency Profile</h3>
+  <h3 style={styles.planTitle}>RROI Basic Emergency Profile</h3>
 
   <p style={styles.planPrice}>R0</p>
 
@@ -208,8 +206,8 @@ const [isInstalled, setIsInstalled] = useState(false);
   <li>Create your emergency profile</li>
   <li>First name and surname visible when scanned</li>
   <li>One emergency contact visible when scanned</li>
-  <li>QR phone wallpaper included</li>
-  <li>QR smartwatch wallpaper included</li>
+  <li>QR phone wallpaper</li>
+  <li>QR smartwatch wallpaper</li>
   <li>Update your profile anytime</li>
 </ul>
 
@@ -231,7 +229,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   ⭐ MOST POPULAR
 </div>
 
-  <h3 style={styles.planTitle}>Premium Emergency Profile</h3>
+  <h3 style={styles.planTitle}>RROI Premium Emergency Profile</h3>
 
   <p style={styles.planPrice}>R129/year</p>
 
@@ -245,8 +243,8 @@ const [isInstalled, setIsInstalled] = useState(false);
   <li>Allergies visible when scanned</li>
   <li>Medical conditions visible when scanned</li>
   <li>Medications visible when scanned</li>
-  <li>QR phone wallpaper included</li>
-  <li>QR smartwatch wallpaper included</li>
+  <li>QR phone wallpaper</li>
+  <li>QR smartwatch wallpaper</li>
   <li>Update your profile anytime</li>
 </ul>
 
@@ -285,10 +283,10 @@ const [isInstalled, setIsInstalled] = useState(false);
   </p>
 
   <ul style={styles.list}>
-  <li>Everything in Premium Emergency Profile</li>
+  <li>All Premium Emergency Profile features</li>
   <li>First-year Premium subscription included</li>
-  <li>Engraved QR emergency card</li>
-  <li>Engraved QR emergency tag</li>
+  <li>Engraved metal QR card</li>
+  <li>Engraved metal QR tag</li>
   <li>Pack of 5 splash-proof QR stickers</li>
   <li>Free nationwide delivery</li>
   <li>QR phone wallpaper</li>
@@ -317,56 +315,94 @@ const [isInstalled, setIsInstalled] = useState(false);
       </section>
 
       <section style={styles.section}>
-        <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>
-  Designed for everyday emergency readiness
-</h2>
+  <div style={styles.container}>
 
-          <div style={styles.useGrid}>
-  <div style={styles.useCard}>
-    <div style={styles.useIcon}>
-      <Ambulance size={30} />
-    </div>
-    <div style={styles.useLabel}>
-  Medical emergencies
-</div>
-  </div>
+    <h2 style={styles.sectionTitle}>
+      Why carry an RROI QR code?
+    </h2>
 
-  <div style={styles.useCard}>
-  <div style={styles.useIcon}>
-    <Pill size={30} />
-  </div>
+    <p style={styles.sectionIntro}>
+      Carry your RROI QR code every day so the emergency information you
+      choose to share can be accessed if it is ever needed.
+    </p>
 
-  <div style={styles.useLabel}>
-    Allergies & medication
-  </div>
-</div>
+    <div style={styles.grid4}>
 
-  <div style={styles.useCard}>
-  <div style={styles.useIcon}>
-    <UsersRound size={30} />
-  </div>
-
-  <div style={styles.useLabel}>
-    Children & elderly
-  </div>
-</div>
-
-  <div style={styles.useCard}>
-  <div style={styles.useIcon}>
-    <Dumbbell
-      size={30}
-      style={{ transform: "translateY(2px)" }}
-    />
-  </div>
-
-  <div style={styles.useLabel}>
-    Travel, sport & outdoor
-  </div>
-</div>
-</div>
+      <div style={styles.card}>
+        <div style={styles.cardIcon}>
+          <UsersRound size={34} />
         </div>
-      </section>
+
+        <h3 style={styles.cardTitle}>
+          Designed for everyone
+        </h3>
+
+        <div style={styles.cardText}>
+          <p>
+            Children, adults and older people can all create an RROI
+            Emergency Profile.
+          </p>
+        </div>
+      </div>
+
+      <div style={styles.card}>
+        <div style={styles.cardIcon}>
+          <Smartphone size={34} />
+        </div>
+
+        <h3 style={styles.cardTitle}>
+          Carry it every day
+        </h3>
+
+        <div style={styles.cardText}>
+          <p>
+            Use your QR phone wallpaper, smartwatch wallpaper, metal QR
+            card, metal QR tag or splash-proof QR stickers at work,
+            while travelling, during sport, outdoor activities and
+            everyday life.
+          </p>
+        </div>
+      </div>
+
+      <div style={styles.card}>
+        <div style={styles.cardIcon}>
+          <PencilLine size={34} />
+        </div>
+
+        <h3 style={styles.cardTitle}>
+          Update anytime
+        </h3>
+
+        <div style={styles.cardText}>
+          <p>
+            Keep your emergency information up to date whenever your
+            circumstances change.
+          </p>
+        </div>
+      </div>
+
+      <div style={styles.card}>
+        <div style={styles.cardIcon}>
+          <Globe size={34} />
+        </div>
+
+        <h3 style={styles.cardTitle}>
+          No app required
+        </h3>
+
+        <div style={styles.cardText}>
+          <p>
+            Your Emergency Profile opens instantly in a web browser when
+            your QR code is scanned. No app is required to scan your QR
+            code.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
 
       <section style={styles.sectionMuted}>
         <div style={styles.container}>
@@ -583,6 +619,30 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 950,
     color: TEXT,
   },
+  grid4: {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+  gap: 16,
+},
+
+card: {
+  border: `1px solid ${BORDER}`,
+  borderRadius: 20,
+  padding: 22,
+  background: "#FFFFFF",
+},
+
+cardIcon: {
+  width: 56,
+  height: 56,
+  borderRadius: "50%",
+  background: "#E8F5EE",
+  color: BRAND_GREEN,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  margin: "0 auto 18px",
+},
   stepsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
