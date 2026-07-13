@@ -47,7 +47,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 
           <div style={styles.heroContent}>
             <h1 style={styles.h1}>
-  Critical medical information, accessible by QR code.
+  Your emergency information, available when it matters most.
 </h1>
 
 <div style={styles.badge}>
@@ -55,9 +55,27 @@ const [isInstalled, setIsInstalled] = useState(false);
 </div>
 
 <p style={styles.sub}>
-  When your unique RROI QR code is scanned, emergency responders,
-  healthcare personnel, and bystanders can access the emergency
-  information you choose to share.
+  RROI lets you create an online emergency profile linked to your own
+  unique QR code. When the QR code is scanned with a smartphone, the
+  emergency information you choose to share opens in a web browser.
+  No app is required to scan it.
+</p>
+
+<div style={styles.ctaRow}>
+  <Link href="/login?mode=signup" style={styles.primaryBtn}>
+    Create Free Profile
+  </Link>
+
+  <Link
+    href="/e/9bde720b-fd11-4206-833b-9b8978d2a339"
+    style={styles.secondaryBtn}
+  >
+    View Example Profile
+  </Link>
+</div>
+
+<p style={styles.microText}>
+  Free to create. Upgrade only when you are ready.
 </p>
                         
           </div>
@@ -69,8 +87,9 @@ const [isInstalled, setIsInstalled] = useState(false);
           <h2 style={styles.sectionTitle}>HOW RROI WORKS</h2>
 
          <p style={styles.sectionIntro}>
-  When someone scans your QR code, your RROI emergency profile opens instantly in their web browser.
-</p> 
+  Create your profile, choose the information you want to display, and
+  use your unique QR code on your phone or RROI QR products.
+</p>
 
 <div style={styles.stepsGrid}>
   <div style={styles.stepCard}>
@@ -97,10 +116,16 @@ const [isInstalled, setIsInstalled] = useState(false);
 </div>
     <h3 style={styles.cardTitle}>Complete your profile</h3>
     <div style={styles.cardText}>
-  <p style={styles.shortLine}>Add your name, surname and profile photo.</p>
-  <p style={styles.shortLine}>Add one emergency contact.</p>
   <p style={styles.shortLine}>
-    Visible on your free profile when your QR code is scanned.
+    Add your name, profile photo and emergency contact.
+  </p>
+
+  <p style={styles.shortLine}>
+    You remain in control of the information you choose to include.
+  </p>
+
+  <p style={styles.shortLine}>
+    Your Basic Emergency Profile is available when your QR code is scanned.
   </p>
 </div>
   </div>
@@ -113,12 +138,19 @@ const [isInstalled, setIsInstalled] = useState(false);
     <Smartphone size={28} />
   </div>
 </div>
-    <h3 style={styles.cardTitle}>Download your QR wallpapers</h3>
-    <div style={styles.cardText}>
-  <p style={styles.shortLine}>Download your QR code wallpapers.</p>
-  <p style={styles.shortLine}>Save them to your phone.</p>
+    <h3 style={styles.cardTitle}>Use your QR code</h3>
+
+<div style={styles.cardText}>
   <p style={styles.shortLine}>
-    Set them as your phone lock screen and your smartwatch wallpaper.
+    Download your QR phone and smartwatch wallpapers.
+  </p>
+
+  <p style={styles.shortLine}>
+    Display your QR code where it can be easily found when needed.
+  </p>
+
+  <p style={styles.shortLine}>
+    Premium members can also order RROI cards, tags and splash-proof stickers.
   </p>
 </div>
   </div>
@@ -137,14 +169,18 @@ const [isInstalled, setIsInstalled] = useState(false);
   </h3>
 
   <div style={styles.cardText}>
-    <p style={styles.shortLine}>Upgrade anytime.</p>
-    <p style={styles.shortLine}>
-      Make your complete emergency profile visible.
-    </p>
-    <p style={styles.shortLine}>
-      Includes your medical information when your QR code is scanned.
-    </p>
-  </div>
+  <p style={styles.shortLine}>
+    Upgrade whenever you are ready.
+  </p>
+
+  <p style={styles.shortLine}>
+    Make additional emergency and medical information available when scanned.
+  </p>
+
+  <p style={styles.shortLine}>
+    Update the information in your profile at any time.
+  </p>
+</div>
 </div>
 </div>
         </div>
@@ -236,12 +272,12 @@ const [isInstalled, setIsInstalled] = useState(false);
     Premium Kit
   </div>
 
-  <h3 style={styles.planTitle}>Premium Emergency Kit</h3>
+  <h3 style={styles.planTitle}>RROI Premium Kit</h3>
 
   <p style={styles.planPrice}>R499 once-off</p>
 
   <p style={styles.planSub}>
-    Includes first-year Premium subscription
+   Premium access plus physical QR products for everyday use.
   </p>
 
   <p style={styles.planRenewal}>
@@ -250,17 +286,19 @@ const [isInstalled, setIsInstalled] = useState(false);
 
   <ul style={styles.list}>
   <li>Everything in Premium Emergency Profile</li>
-  <li>Engraved QR emergency card included</li>
-  <li>Engraved QR emergency tag included</li>
   <li>First-year Premium subscription included</li>
-  <li>Nationwide delivery included</li>
-  <li>QR phone wallpaper included</li>
-  <li>QR smartwatch wallpaper included</li>
+  <li>Engraved QR emergency card</li>
+  <li>Engraved QR emergency tag</li>
+  <li>Pack of 5 splash-proof QR stickers</li>
+  <li>Free nationwide delivery</li>
+  <li>QR phone wallpaper</li>
+  <li>QR smartwatch wallpaper</li>
   <li>Update your profile anytime</li>
 </ul>
 
   <p style={styles.upgradeNote}>
-  Create your free profile first, then order your Premium Kit from your dashboard.
+  Create your free profile first, then purchase the Premium Kit securely
+  from your dashboard.
 </p>
 
   <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
@@ -339,8 +377,8 @@ const [isInstalled, setIsInstalled] = useState(false);
 </h2>
 
 <p style={styles.cardTextLarge}>
-  Order additional engraved QR products, replacement items, and
-  accessories from the RROI Online Store.
+  Order additional RROI QR cards, tags, splash-proof sticker packs and
+  replacement products linked to your Emergency Profile.
 </p>
             </div>
 
