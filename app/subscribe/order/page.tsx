@@ -329,7 +329,7 @@ const affiliate = affiliateRows?.[0] || null;
     discount_code: appliedDiscountCode || appliedAffiliateCode || null,
     discount_percent: appliedDiscountPercent,
 
-    product_name: "Premium Full Kit",
+    product_name: "RROI Premium Kit Bundle",
     qr_card_qty: 1,
     qr_tag_qty: 1,
     amount_before_discount: 499,
@@ -399,11 +399,9 @@ if (error) {
             <ul style={styles.summaryList}>
   <li>1 × Engraved Metal QR Card</li>
   <li>1 × Engraved Metal QR Tag</li>
-  <li>1-Year RROI Premium subscription</li>
-  <li>Full public emergency profile visibility</li>
-  <li>Downloadable QR phone lock screen</li>
-  <li>Downloadable QR smartwatch wallpaper</li>
-  <li>Nationwide delivery</li>
+  <li>1 × Pack of 5 Splash-Proof QR Stickers</li>
+  <li>1-year RROI Premium Emergency Profile Subscription</li>
+  <li>Free nationwide delivery</li>
 </ul>
 
 <div
@@ -414,8 +412,8 @@ if (error) {
   }}
 >
   <div style={{ marginBottom: 6 }}>
-    Premium Full Kit: <strong>R499</strong>
-  </div>
+  RROI Premium Kit Bundle: <strong>R499</strong>
+</div>
 
   {discountValid && (
     <div style={{ marginBottom: 6, color: "#166534" }}>
