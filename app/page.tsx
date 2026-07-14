@@ -101,13 +101,6 @@ useEffect(() => {
   <Link href="/login?mode=signup" style={styles.primaryBtn}>
     Create Free Profile
   </Link>
-
-  <Link
-    href="/e/9bde720b-fd11-4206-833b-9b8978d2a339"
-    style={styles.secondaryBtn}
-  >
-    View Example Profile
-  </Link>
 </div>
 
 <p style={styles.microText}>
@@ -250,7 +243,7 @@ useEffect(() => {
           <li>Profile photo</li>
           <li>First name and surname</li>
           <li>One emergency contact</li>
-          <li>One Emergency Contact call button</li>
+          <li>One emergency contact call button</li>
           <li>QR phone lock screen wallpaper</li>
           <li>QR smartwatch wallpaper</li>
           <li>Update your profile anytime</li>
@@ -532,10 +525,49 @@ useEffect(() => {
             options and delivery separately would cost R699.
           </p>
 
-          <p style={styles.bundleActionText}>
-            Create your free profile first, then purchase the RROI Premium
-            Kit Bundle securely from your dashboard.
-          </p>
+          <div style={styles.upgradeSteps}>
+  <div style={styles.upgradeArrow}>
+    <ArrowRight
+      size={18}
+      color={BRAND_GREEN}
+      style={{
+        flexShrink: 0,
+        marginTop: 2,
+      }}
+    />
+    <span>
+      Sign up and create your <strong>FREE Profile</strong>
+    </span>
+  </div>
+
+  <div style={styles.upgradeArrow}>
+    <ArrowRight
+      size={18}
+      color={BRAND_GREEN}
+      style={{
+        flexShrink: 0,
+        marginTop: 2,
+      }}
+    />
+    <span>
+      Purchase <strong>RROI Premium Kit Bundle</strong> from your Profile page
+    </span>
+  </div>
+
+  <div style={styles.upgradeArrow}>
+    <ArrowRight
+      size={18}
+      color={BRAND_GREEN}
+      style={{
+        flexShrink: 0,
+        marginTop: 2,
+      }}
+    />
+    <span>
+      Renew annually <strong>(R129/year)</strong>
+    </span>
+  </div>
+</div>
 
           <Link
             href="/login?mode=signup"
