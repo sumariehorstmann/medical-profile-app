@@ -14,16 +14,21 @@ const BRAND_GREEN = "#157A55";
 
 const DOG_TAG_PRICE = 150;
 const QR_CARD_PRICE = 150;
+const STICKER_PACK_PRICE = 150;
 const DELIVERY_FEE = 120;
 
 export default function StorePage() {
   const [dogTags, setDogTags] = useState(0);
   const [cards, setCards] = useState(0);
+  const [stickerPacks, setStickerPacks] = useState(0);
 
   const subtotal = useMemo(
-    () => dogTags * DOG_TAG_PRICE + cards * QR_CARD_PRICE,
-    [dogTags, cards]
-  );
+  () =>
+    dogTags * DOG_TAG_PRICE +
+    cards * QR_CARD_PRICE +
+    stickerPacks * STICKER_PACK_PRICE,
+  [dogTags, cards, stickerPacks]
+);
 
   const hasItems = subtotal > 0;
   const total = hasItems ? subtotal + DELIVERY_FEE : 0;
@@ -32,9 +37,10 @@ export default function StorePage() {
     if (!hasItems) return;
 
     const params = new URLSearchParams({
-      dogTags: String(dogTags),
-      cards: String(cards),
-    });
+  dogTags: String(dogTags),
+  cards: String(cards),
+  stickerPacks: String(stickerPacks),
+});
 
     window.location.href = `/store/checkout?${params.toString()}`;
   }
@@ -49,8 +55,7 @@ export default function StorePage() {
             <h1 style={styles.title}>Online Store</h1>
 
             <p style={styles.subtitle}>
-              Order additional engraved QR code items linked to your existing
-              RROI public profile.
+              Order additional QR products linked to your existing RROI public profile.
             </p>
           </div>
 
@@ -60,10 +65,10 @@ export default function StorePage() {
   </div>
 
   <div style={styles.noticeText}>
-    Your engraved QR products link to your permanent RROI public profile.
-    Free profiles show basic emergency details. Premium profiles show full
-    profile details.
-  </div>
+  Your RROI QR products link to your permanent RROI public profile.
+  Free profiles show basic emergency details. Premium profiles show
+  additional emergency and medical information.
+</div>
 </div>
 
           <div style={styles.shippingNotice}>
@@ -102,6 +107,20 @@ export default function StorePage() {
   quantity={cards}
   onDecrease={() => setCards((value) => Math.max(0, value - 1))}
   onIncrease={() => setCards((value) => value + 1)}
+/>
+<ProductCard
+  title="Pack of 5 Splash-Proof QR Stickers"
+  price={STICKER_PACK_PRICE}
+  description="Pack of 5 splash-proof stickers printed with your permanent RROI QR code."
+  images={[
+    {
+      src: "/images/premium-kit/qr-sticker-pack.png",
+      alt: "Pack of 5 Splash-Proof QR Stickers",
+    },
+  ]}
+  quantity={stickerPacks}
+  onDecrease={() => setStickerPacks((value) => Math.max(0, value - 1))}
+  onIncrease={() => setStickerPacks((value) => value + 1)}
 />
             
           </div>
@@ -143,22 +162,20 @@ export default function StorePage() {
 
 <div style={styles.storeTrustBox}>
   <div>✓ Secure PayFast payments</div>
-  <div>✓ Custom-made engraved products</div>
+  <div>✓ Custom-made QR products</div>
   <div>✓ Nationwide South African delivery</div>
   <div>✓ Linked to your permanent RROI QR profile</div>
 </div>
 <div style={styles.storeDisclaimer}>
   <p>
-    Product images are for illustrative purposes only.
-    As each item is custom laser engraved and made to order,
-    slight variations in engraving position, finish, shape,
-    and colour tone may occur.
+    Product images are for illustrative purposes only. As each product is
+    custom made to order, slight variations in engraving position, print
+    position, finish, shape and colour tone may occur.
   </p>
 
   <p>
-    Actual product appearance may vary slightly from images
-    shown due to lighting, screen settings, and manufacturing
-    processes.
+    Actual product appearance may vary slightly from the images shown due
+    to lighting, screen settings and manufacturing processes.
   </p>
 </div>
   
