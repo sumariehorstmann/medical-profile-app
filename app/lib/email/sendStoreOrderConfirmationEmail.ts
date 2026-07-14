@@ -35,7 +35,7 @@ export async function sendStoreOrderConfirmationEmail({
   const isPremiumKit = emailType === "premium_kit";
 
   const subject = isPremiumKit
-    ? "Your RROI Premium Kit Order Has Been Confirmed"
+    ? "Your RROI Premium Kit Bundle Order Has Been Confirmed"
     : "RROI Order Confirmation";
 
   const storeItemsHtml =
@@ -73,11 +73,11 @@ export async function sendStoreOrderConfirmationEmail({
     <div style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 12px; padding: 14px 16px; margin: 20px 0;">
       <strong style="color: #157A55;">✓ Payment received</strong>
       <div style="font-size: 14px; color: #334155; margin-top: 4px;">
-        Your RROI Premium Kit is now in our production queue.
+        Your RROI Premium Kit Bundle is now in our production queue.
       </div>
     </div>
 
-    <h3 style="margin: 24px 0 10px; font-size: 18px;">Your Premium Kit Includes</h3>
+    <h3 style="margin: 24px 0 10px; font-size: 18px;">Your RROI Premium Kit Bundle Includes</h3>
 
     <ul style="padding-left: 20px; line-height: 1.8; font-size: 15px;">
   <li>Engraved Metal QR Card × 1</li>
@@ -138,7 +138,7 @@ export async function sendStoreOrderConfirmationEmail({
 
       <p style="font-size: 16px; line-height: 1.6;">
         Thank you. Your payment was successful and your RROI order has been received.
-        ${isPremiumKit ? " Your Premium Kit is now in production." : " Your order is now in our production queue."}
+        ${isPremiumKit ? " Your RROI Premium Kit Bundle is now in production." : " Your order is now in our production queue."}
       </p>
 
       <p style="font-size: 15px; line-height: 1.6;">

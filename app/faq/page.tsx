@@ -25,8 +25,8 @@ export default function FAQPage() {
         />
 
         <FAQ
-          q="Do I need to buy the RROI Premium Kit to use RROI?"
-          a="No. You can create and use a Free Basic Profile at no cost. You may later upgrade to the R129 annual Premium Subscription, purchase the R499 RROI Premium Kit, or order individual physical QR products separately through the RROI Online Store."
+          q="Do I need to buy the RROI Premium Kit Bundle to use RROI?"
+          a="No. You can create and use a Free Basic Profile at no cost. You may later upgrade to the R129 annual Premium Subscription, purchase the R499 RROI Premium Kit Bundle, or order individual physical QR products separately through the RROI Online Store."
         />
 
         <FAQ
@@ -55,23 +55,23 @@ export default function FAQPage() {
         />
 
         <FAQ
-          q="What is included in the R499 RROI Premium Kit?"
-          a="The R499 RROI Premium Kit includes a 1-year RROI Premium Subscription, full Premium Emergency Profile visibility, one Engraved Metal QR Card, one Engraved Metal QR Tag, one Pack of 5 Splash-Proof QR Stickers, a downloadable QR phone lock screen wallpaper, a downloadable QR smartwatch wallpaper and free nationwide delivery."
+          q="What is included in the R499 RROI Premium Kit Bundle?"
+          a="The R499 RROI Premium Kit Bundle includes a 1-year RROI Premium Subscription, full Premium Emergency Profile visibility, one Engraved Metal QR Card, one Engraved Metal QR Tag, one Pack of 5 Splash-Proof QR Stickers, a downloadable QR phone lock screen wallpaper, a downloadable QR smartwatch wallpaper and free nationwide delivery."
         />
 
         <FAQ
-          q="What happens after the first year of the RROI Premium Kit?"
-          a="The RROI Premium Kit includes Premium access for the first year. After that year, you may renew your Premium Subscription for R129 per year to keep the full Premium Emergency Profile visible."
+          q="What happens after the first year of the RROI Premium Kit Bundle?"
+          a="The RROI Premium Kit Bundle includes Premium access for the first year. After that year, you may renew your Premium Subscription for R129 per year to keep the full Premium Emergency Profile visible."
         />
 
         <FAQ
-          q="Is the RROI Premium Kit better value than buying everything separately?"
+          q="Is the RROI Premium Kit Bundle better value than buying everything separately?"
           a="Yes. Purchased separately, the R129 Premium Subscription, R150 Engraved Metal QR Card, R150 Engraved Metal QR Tag, R150 Pack of 5 Splash-Proof QR Stickers and R120 delivery would cost R699. The R499 RROI Premium Kit includes all of these, providing a saving of R200."
         />
 
         <FAQ
-          q="What happens if I already have Premium and then purchase the RROI Premium Kit?"
-          a="The RROI Premium Kit includes a full additional year of Premium. If you already have an active Premium Subscription, purchasing the Premium Kit extends your existing Premium period by another year."
+          q="What happens if I already have Premium and then purchase the RROI Premium Kit Bundle?"
+          a="The RROI Premium Kit Bundle includes a full additional year of Premium. If you already have an active Premium Subscription, purchasing the RROI Premium Kit Bundle extends your existing Premium period by another year."
         />
 
         <FAQ
@@ -161,12 +161,12 @@ export default function FAQPage() {
 
         <FAQ
           q="Can affiliate discount codes be used on all purchases?"
-          a="No. Affiliate discount codes are only valid on the RROI Premium Kit where stated. They are not valid for the R129 Premium Subscription or Online Store purchases."
+          a="No. Affiliate discount codes are only valid on the RROI Premium Kit Bundle where stated. They are not valid for the R129 Premium Subscription or Online Store purchases."
         />
 
         <FAQ
           q="How much discount does an affiliate code provide?"
-          a="An approved affiliate code provides a R30 discount on the R499 RROI Premium Kit, reducing the price to R469."
+          a="An approved affiliate code provides a R30 discount on the R499 RROI Premium Kit Bundle, reducing the price to R469."
         />
 
         <FAQ
@@ -175,7 +175,7 @@ export default function FAQPage() {
         />
 
         <FAQ
-          q="Is delivery included with the RROI Premium Kit?"
+          q="Is delivery included with the RROI Premium Kit Bundle?"
           a="Yes. Free nationwide delivery within South Africa is included with the R499 RROI Premium Kit."
         />
 

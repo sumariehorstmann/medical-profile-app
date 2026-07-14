@@ -267,10 +267,10 @@ const [isInstalled, setIsInstalled] = useState(false);
 {/* R499 */}
 <div style={styles.planCard}>
   <div style={styles.planLabelFeatured}>
-    Premium Kit
+    RROI Premium Kit Bundle
   </div>
 
-  <h3 style={styles.planTitle}>RROI Premium Kit</h3>
+  <h3 style={styles.planTitle}>RROI Premium Kit Bundle</h3>
 
   <p style={styles.planPrice}>R499 once-off</p>
 
@@ -285,8 +285,8 @@ const [isInstalled, setIsInstalled] = useState(false);
   <ul style={styles.list}>
   <li>All Premium Emergency Profile features</li>
   <li>First-year Premium subscription included</li>
-  <li>Engraved metal QR card</li>
-  <li>Engraved metal QR tag</li>
+  <li>Engraved Metal QR Card</li>
+  <li>Engraved Metal QR Tag</li>
   <li>Pack of 5 splash-proof QR stickers</li>
   <li>Free nationwide delivery</li>
   <li>QR phone wallpaper</li>
@@ -295,7 +295,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 </ul>
 
   <p style={styles.upgradeNote}>
-  Create your free profile first, then purchase the Premium Kit securely
+  Create your free profile first, then purchase the RROI Premium Kit Bundle securely
   from your dashboard.
 </p>
 
@@ -306,7 +306,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   href="/premium-kit"
   style={styles.outlineBtnFull}
 >
-  View Premium Kit
+  View RROI Premium Kit Bundle
 </Link>
 </div>
 
