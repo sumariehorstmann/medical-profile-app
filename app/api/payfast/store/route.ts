@@ -61,9 +61,21 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-const discountCode = String(body?.discountCode ?? "").trim().toUpperCase();
-    const dogTags = Math.max(0, Math.floor(Number(body.dogTags || 0)));
-const cards = Math.max(0, Math.floor(Number(body.cards || 0)));
+
+const discountCode = String(body?.discountCode ?? "")
+  .trim()
+  .toUpperCase();
+
+const dogTags = Math.max(
+  0,
+  Math.floor(Number(body.dogTags || 0))
+);
+
+const cards = Math.max(
+  0,
+  Math.floor(Number(body.cards || 0))
+);
+
 const stickerPacks = Math.max(
   0,
   Math.floor(Number(body.stickerPacks || 0))
