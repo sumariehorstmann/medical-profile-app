@@ -211,11 +211,10 @@ const [isInstalled, setIsInstalled] = useState(false);
         </p>
 
         <ul style={styles.list}>
-          <li>Optional profile photo</li>
+          <li>Profile photo</li>
           <li>First name and surname</li>
           <li>One emergency contact</li>
-          <li>Emergency contact relationship and phone number</li>
-          <li>One-tap Emergency Contact call button</li>
+          <li>One Emergency Contact call button</li>
           <li>QR phone lock screen wallpaper</li>
           <li>QR smartwatch wallpaper</li>
           <li>Update your profile anytime</li>
@@ -254,17 +253,17 @@ const [isInstalled, setIsInstalled] = useState(false);
         </p>
 
         <ul style={styles.list}>
-          <li>Everything included in the Free Basic Profile</li>
-          <li>Additional emergency and medical information</li>
+          <li>Profile photo</li>
+          <li>First name and surname</li>
           <li>Multiple emergency contacts</li>
-          <li>Allergies, medications and medical conditions</li>
-          <li>Medical aid, doctor and specialist information</li>
-          <li>Additional identification and support information</li>
-          <li>Custom emergency call buttons</li>
+          <li>Multiple emergency contact call button</li>
           <li>QR phone lock screen wallpaper</li>
           <li>QR smartwatch wallpaper</li>
+          <li>Blood Type, Allergies, medications and medical conditions</li>
+          <li>Medical aid, doctor and specialist information</li>
+          <li>Additional identification and support information</li>
           <li>Update your profile anytime</li>
-          <li>No physical QR products included</li>
+          
         </ul>
 
         <p style={styles.upgradeNote}>
