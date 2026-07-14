@@ -1229,41 +1229,35 @@ socialLinks: {
 
 bundleImages: {
   display: "grid",
-  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-  gap: 12,
-  marginTop: 24,
-  width: "100%",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gap: 18,
+  marginTop: 28,
 },
 
 bundleImageCard: {
-  minWidth: 0,
   border: `1px solid ${BORDER}`,
-  borderRadius: 14,
-  padding: 8,
+  borderRadius: 18,
   background: "#FFFFFF",
+  padding: 14,
   textAlign: "center",
 },
 
 bundleImageWrap: {
   position: "relative",
   width: "100%",
-  height: 120,
+  height: 190,
   overflow: "hidden",
-  borderRadius: 10,
-  background: "#FFFFFF",
 },
 
 bundleImage: {
   objectFit: "contain",
-  padding: 6,
 },
 
 bundleImageLabel: {
-  marginTop: 8,
-  fontSize: 12,
-  lineHeight: 1.3,
-  fontWeight: 800,
-  color: "#334155",
+  marginTop: 12,
+  fontSize: 16,
+  fontWeight: 900,
+  color: TEXT,
 },
 
 socialLink: {
