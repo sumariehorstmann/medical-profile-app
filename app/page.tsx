@@ -148,7 +148,7 @@ const [isInstalled, setIsInstalled] = useState(false);
   </p>
 
   <p style={styles.shortLine}>
-    Premium members can also order RROI cards, tags and splash-proof stickers.
+    Registered users can also order physical QR products from the RROI Online Store.
   </p>
 </div>
   </div>
@@ -185,134 +185,193 @@ const [isInstalled, setIsInstalled] = useState(false);
       </section>
 
       <section style={styles.sectionMuted}>
-        <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>CHOOSE YOUR PROFILE</h2>
+  <div style={styles.container}>
+    <h2 style={styles.sectionTitle}>CHOOSE YOUR RROI PROFILE</h2>
 
-          <div style={styles.pricingGrid}>
+    <p style={styles.sectionIntro}>
+      RROI has two profile options. Start with the Free Basic Emergency
+      Profile or upgrade to the annual Premium Emergency Profile for access
+      to additional emergency and medical information.
+    </p>
 
-  {/* FREE */}
-<div style={styles.planCard}>
-  <div style={styles.planLabel}>Free</div>
+    <div style={styles.profileOptionsGrid}>
+      {/* FREE BASIC PROFILE */}
+      <div style={styles.planCard}>
+        <div style={styles.planLabel}>FREE PROFILE</div>
 
-  <h3 style={styles.planTitle}>RROI Basic Emergency Profile</h3>
+        <h3 style={styles.planTitle}>
+          RROI Basic Emergency Profile
+        </h3>
 
-  <p style={styles.planPrice}>R0</p>
+        <p style={styles.planPrice}>R0</p>
 
-  <p style={styles.planSub}>
-  Essential emergency information
-</p>
+        <p style={styles.planSub}>
+          Essential emergency information available when your QR code is
+          scanned.
+        </p>
 
-  <ul style={styles.list}>
-  <li>Create your emergency profile</li>
-  <li>First name and surname visible when scanned</li>
-  <li>One emergency contact visible when scanned</li>
-  <li>QR phone wallpaper</li>
-  <li>QR smartwatch wallpaper</li>
-  <li>Update your profile anytime</li>
-</ul>
+        <ul style={styles.list}>
+          <li>Optional profile photo</li>
+          <li>First name and surname</li>
+          <li>One emergency contact</li>
+          <li>Emergency contact relationship and phone number</li>
+          <li>One-tap Emergency Contact call button</li>
+          <li>QR phone lock screen wallpaper</li>
+          <li>QR smartwatch wallpaper</li>
+          <li>Update your profile anytime</li>
+        </ul>
 
-  <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-  Create Free Profile
-</Link>
+        <Link
+          href="/login?mode=signup"
+          style={styles.primaryBtnFull}
+        >
+          Create Free Profile
+        </Link>
 
-<Link
-  href="/e/9bde720b-fd11-4206-833b-9b8978d2a339"
-  style={styles.outlineBtnFull}
->
-  View Example Free Public Profile
-</Link>
-</div>
+        <Link
+          href="/e/9bde720b-fd11-4206-833b-9b8978d2a339"
+          style={styles.outlineBtnFull}
+        >
+          View Example Free Public Profile
+        </Link>
+      </div>
 
-{/* R129 */}
-<div style={styles.planCardFeatured}>
-  <div style={styles.planLabelFeatured}>
-  ⭐ MOST POPULAR
-</div>
-
-  <h3 style={styles.planTitle}>RROI Premium Emergency Profile</h3>
-
-  <p style={styles.planPrice}>R129/year</p>
-
-  <p style={styles.planSub}>
-  More emergency information is available when your QR code is scanned
-</p>
-
-  <ul style={styles.list}>
-  <li>Expanded emergency information available when scanned</li>
-  <li>Multiple emergency contacts</li>
-  <li>Allergies visible when scanned</li>
-  <li>Medical conditions visible when scanned</li>
-  <li>Medications visible when scanned</li>
-  <li>QR phone wallpaper</li>
-  <li>QR smartwatch wallpaper</li>
-  <li>Update your profile anytime</li>
-</ul>
-
-  <p style={styles.upgradeNote}>
-  Create your free profile first, then upgrade from your dashboard.
-</p>
-
-  <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-  Create Free Profile
-</Link>
-
-<Link
-  href="/e/891729a6-9f88-49b8-b14d-9d702bde2c6b"
-  style={styles.outlineBtnFull}
->
-  View Example Premium Profile
-</Link>
-</div>
-
-{/* R499 */}
-<div style={styles.planCard}>
-  <div style={styles.planLabelFeatured}>
-    RROI Premium Kit Bundle
-  </div>
-
-  <h3 style={styles.planTitle}>RROI Premium Kit Bundle</h3>
-
-  <p style={styles.planPrice}>R499 once-off</p>
-
-  <p style={styles.planSub}>
-   Premium access plus physical QR products for everyday use.
-  </p>
-
-  <p style={styles.planRenewal}>
-    R129 per year thereafter
-  </p>
-
-  <ul style={styles.list}>
-  <li>All Premium Emergency Profile features</li>
-  <li>First-year Premium subscription included</li>
-  <li>Engraved Metal QR Card</li>
-  <li>Engraved Metal QR Tag</li>
-  <li>Pack of 5 splash-proof QR stickers</li>
-  <li>Free nationwide delivery</li>
-  <li>QR phone wallpaper</li>
-  <li>QR smartwatch wallpaper</li>
-  <li>Update your profile anytime</li>
-</ul>
-
-  <p style={styles.upgradeNote}>
-  Create your free profile first, then purchase the RROI Premium Kit Bundle securely
-  from your dashboard.
-</p>
-
-  <Link href="/login?mode=signup" style={styles.primaryBtnFull}>
-    Create Free Profile
-  </Link>
-  <Link
-  href="/premium-kit"
-  style={styles.outlineBtnFull}
->
-  View RROI Premium Kit Bundle
-</Link>
-</div>
-
-</div>
+      {/* PREMIUM PROFILE */}
+      <div style={styles.planCardFeatured}>
+        <div style={styles.planLabelFeatured}>
+          ⭐ PREMIUM PROFILE
         </div>
-      </section>
+
+        <h3 style={styles.planTitle}>
+          RROI Premium Emergency Profile
+        </h3>
+
+        <p style={styles.planPrice}>R129/year</p>
+
+        <p style={styles.planSub}>
+          Full Premium Emergency Profile visibility while your annual
+          subscription is active.
+        </p>
+
+        <ul style={styles.list}>
+          <li>Everything included in the Free Basic Profile</li>
+          <li>Additional emergency and medical information</li>
+          <li>Multiple emergency contacts</li>
+          <li>Allergies, medications and medical conditions</li>
+          <li>Medical aid, doctor and specialist information</li>
+          <li>Additional identification and support information</li>
+          <li>Custom emergency call buttons</li>
+          <li>QR phone lock screen wallpaper</li>
+          <li>QR smartwatch wallpaper</li>
+          <li>Update your profile anytime</li>
+          <li>No physical QR products included</li>
+        </ul>
+
+        <p style={styles.upgradeNote}>
+          Create your free profile first, then upgrade to Premium from your
+          dashboard. Renew for R129 each year to keep the full Premium
+          Emergency Profile visible.
+        </p>
+
+        <Link
+          href="/login?mode=signup"
+          style={styles.primaryBtnFull}
+        >
+          Create Free Profile
+        </Link>
+
+        <Link
+          href="/e/891729a6-9f88-49b8-b14d-9d702bde2c6b"
+          style={styles.outlineBtnFull}
+        >
+          View Example Premium Profile
+        </Link>
+      </div>
+    </div>
+
+    {/* SEPARATE PREMIUM KIT BUNDLE */}
+    <div style={styles.bundleCard}>
+      <div style={styles.bundleTopRow}>
+        <div style={styles.bundleHeadingWrap}>
+          <div style={styles.bundleLabel}>
+            OPTIONAL PREMIUM BUNDLE
+          </div>
+
+          <h3 style={styles.bundleTitle}>
+            Get the RROI Premium Kit Bundle
+          </h3>
+
+          <p style={styles.bundleText}>
+            The Premium Kit Bundle combines your first year of Premium
+            access with physical QR products and free nationwide delivery.
+            It is a bundle purchase, not a third profile level.
+          </p>
+        </div>
+
+        <div style={styles.bundlePriceBox}>
+          <div style={styles.bundlePrice}>R499</div>
+
+          <div style={styles.bundlePriceNote}>
+            Once-off bundle purchase
+          </div>
+
+          <div style={styles.bundleRenewal}>
+            Premium renews at R129/year after the first year
+          </div>
+        </div>
+      </div>
+
+      <div style={styles.bundleContentGrid}>
+        <div>
+          <h4 style={styles.bundleListTitle}>
+            Your Premium Kit Bundle includes:
+          </h4>
+
+          <ul style={styles.bundleList}>
+            <li>1-year RROI Premium Subscription</li>
+            <li>Full Premium Emergency Profile visibility</li>
+            <li>Engraved Metal QR Card</li>
+            <li>Engraved Metal QR Tag</li>
+            <li>Pack of 5 Splash-Proof QR Stickers</li>
+            <li>QR phone lock screen wallpaper</li>
+            <li>QR smartwatch wallpaper</li>
+            <li>Free nationwide delivery</li>
+          </ul>
+        </div>
+
+        <div style={styles.bundleActionPanel}>
+          <div style={styles.savingBadge}>
+            SAVE R200
+          </div>
+
+          <p style={styles.bundleActionText}>
+            Buying the R129 Premium Subscription, three physical QR product
+            options and delivery separately would cost R699.
+          </p>
+
+          <p style={styles.bundleActionText}>
+            Create your free profile first, then purchase the RROI Premium
+            Kit Bundle securely from your dashboard.
+          </p>
+
+          <Link
+            href="/login?mode=signup"
+            style={styles.primaryBtnFull}
+          >
+            Create Free Profile
+          </Link>
+
+          <Link
+            href="/premium-kit"
+            style={styles.outlineBtnFull}
+          >
+            View RROI Premium Kit Bundle
+          </Link>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       <section style={styles.section}>
   <div style={styles.container}>
@@ -708,11 +767,149 @@ stepBadge: {
     lineHeight: 1.65,
     color: "#334155",
   },
-  pricingGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    gap: 18,
-  },
+ 
+profileOptionsGrid: {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+  gap: 20,
+  maxWidth: 900,
+  margin: "0 auto",
+  alignItems: "stretch",
+},
+
+bundleCard: {
+  marginTop: 32,
+  border: `2px solid ${BRAND_GREEN}`,
+  borderRadius: 24,
+  padding: 28,
+  background: "#FFFFFF",
+  boxShadow: "0 18px 38px rgba(21, 122, 85, 0.12)",
+},
+
+bundleTopRow: {
+  display: "flex",
+  alignItems: "flex-start",
+  justifyContent: "space-between",
+  gap: 24,
+  flexWrap: "wrap",
+  paddingBottom: 24,
+  borderBottom: `1px solid ${BORDER}`,
+},
+
+bundleHeadingWrap: {
+  flex: "1 1 520px",
+},
+
+bundleLabel: {
+  display: "inline-flex",
+  padding: "7px 12px",
+  borderRadius: 999,
+  background: "#EAF7F1",
+  color: BRAND_GREEN,
+  fontSize: 13,
+  fontWeight: 950,
+  marginBottom: 14,
+},
+
+bundleTitle: {
+  margin: "0 0 10px",
+  fontSize: "clamp(26px, 4vw, 38px)",
+  lineHeight: 1.1,
+  letterSpacing: "-0.03em",
+  fontWeight: 950,
+  color: TEXT,
+},
+
+bundleText: {
+  margin: 0,
+  maxWidth: 650,
+  fontSize: 16,
+  lineHeight: 1.65,
+  color: "#334155",
+},
+
+bundlePriceBox: {
+  flex: "0 1 250px",
+  minWidth: 220,
+  padding: 20,
+  borderRadius: 18,
+  background: "#F0FDF4",
+  border: "1px solid #BBF7D0",
+  textAlign: "center",
+},
+
+bundlePrice: {
+  fontSize: 42,
+  lineHeight: 1,
+  fontWeight: 950,
+  color: TEXT,
+},
+
+bundlePriceNote: {
+  marginTop: 8,
+  fontSize: 14,
+  fontWeight: 800,
+  color: "#334155",
+},
+
+bundleRenewal: {
+  marginTop: 10,
+  fontSize: 13,
+  lineHeight: 1.5,
+  fontWeight: 900,
+  color: BRAND_GREEN,
+},
+
+bundleContentGrid: {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+  gap: 28,
+  paddingTop: 24,
+  alignItems: "start",
+},
+
+bundleListTitle: {
+  margin: "0 0 12px",
+  fontSize: 18,
+  lineHeight: 1.3,
+  fontWeight: 950,
+  color: TEXT,
+},
+
+bundleList: {
+  margin: 0,
+  paddingLeft: 22,
+  fontSize: 15,
+  lineHeight: 1.9,
+  color: "#334155",
+},
+
+bundleActionPanel: {
+  padding: 22,
+  borderRadius: 18,
+  background: SOFT,
+  border: `1px solid ${BORDER}`,
+},
+
+savingBadge: {
+  display: "inline-flex",
+  padding: "8px 13px",
+  borderRadius: 999,
+  background: BRAND_GREEN,
+  color: "#FFFFFF",
+  fontSize: 14,
+  fontWeight: 950,
+  marginBottom: 14,
+},
+
+bundleActionText: {
+  margin: "0 0 14px",
+  fontSize: 14,
+  lineHeight: 1.65,
+  color: "#475569",
+  fontWeight: 700,
+},
+
   planCard: {
   border: `1px solid ${BORDER}`,
   borderRadius: 22,
