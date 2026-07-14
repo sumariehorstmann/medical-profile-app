@@ -335,29 +335,53 @@ const [isInstalled, setIsInstalled] = useState(false);
             <li>Free nationwide delivery</li>
           </ul>
           <div style={styles.bundleImages}>
-  <Image
-    src="/images/premium-kit/qr-card.png"
-    alt="RROI QR Card"
-    width={180}
-    height={114}
-    style={styles.bundleImage}
-  />
+  <div style={styles.bundleImageCard}>
+    <div style={styles.bundleImageWrap}>
+      <Image
+        src="/images/premium-kit/qr-card.png"
+        alt="Engraved Metal QR Card"
+        fill
+        sizes="(max-width: 700px) 30vw, 150px"
+        style={styles.bundleImage}
+      />
+    </div>
 
-  <Image
-    src="/images/premium-kit/qr-sticker-pack.png"
-    alt="RROI QR Sticker Pack"
-    width={180}
-    height={180}
-    style={styles.bundleImage}
-  />
+    <div style={styles.bundleImageLabel}>
+      QR Card
+    </div>
+  </div>
 
-  <Image
-    src="/images/premium-kit/qr-tag-front-back.png"
-    alt="RROI QR Tag"
-    width={180}
-    height={180}
-    style={styles.bundleImage}
-  />
+  <div style={styles.bundleImageCard}>
+    <div style={styles.bundleImageWrap}>
+      <Image
+        src="/images/premium-kit/qr-sticker-pack.png"
+        alt="Pack of 5 Splash-Proof QR Stickers"
+        fill
+        sizes="(max-width: 700px) 30vw, 150px"
+        style={styles.bundleImage}
+      />
+    </div>
+
+    <div style={styles.bundleImageLabel}>
+      QR Stickers
+    </div>
+  </div>
+
+  <div style={styles.bundleImageCard}>
+    <div style={styles.bundleImageWrap}>
+      <Image
+        src="/images/premium-kit/qr-tag-front-back.png"
+        alt="Engraved Metal QR Tag"
+        fill
+        sizes="(max-width: 700px) 30vw, 150px"
+        style={styles.bundleImage}
+      />
+    </div>
+
+    <div style={styles.bundleImageLabel}>
+      QR Tag
+    </div>
+  </div>
 </div>
         </div>
 
@@ -1204,17 +1228,42 @@ socialLinks: {
 },
 
 bundleImages: {
-  display: "flex",
-  gap: 18,
-  flexWrap: "wrap",
-  marginTop: 28,
+  display: "grid",
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  gap: 12,
+  marginTop: 24,
+  width: "100%",
+},
+
+bundleImageCard: {
+  minWidth: 0,
+  border: `1px solid ${BORDER}`,
+  borderRadius: 14,
+  padding: 8,
+  background: "#FFFFFF",
+  textAlign: "center",
+},
+
+bundleImageWrap: {
+  position: "relative",
+  width: "100%",
+  height: 120,
+  overflow: "hidden",
+  borderRadius: 10,
+  background: "#FFFFFF",
 },
 
 bundleImage: {
-  borderRadius: 12,
-  border: `1px solid ${BORDER}`,
-  background: "#FFFFFF",
-  padding: 8,
+  objectFit: "contain",
+  padding: 6,
+},
+
+bundleImageLabel: {
+  marginTop: 8,
+  fontSize: 12,
+  lineHeight: 1.3,
+  fontWeight: 800,
+  color: "#334155",
 },
 
 socialLink: {
