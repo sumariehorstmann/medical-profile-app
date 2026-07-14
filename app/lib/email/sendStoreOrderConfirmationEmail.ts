@@ -96,7 +96,7 @@ export async function sendStoreOrderConfirmationEmail({
     <h3 style="margin: 24px 0 10px; font-size: 18px;">What Happens Next?</h3>
 
     <ol style="padding-left: 20px; line-height: 1.8; font-size: 15px;">
-      <li>We prepare your QR card, QR tag and sticker pack.</li>
+      <li>We prepare your personalised QR card, QR tag and sticker pack.</li>
       <li>Your personalised QR products are quality checked.</li>
       <li>Your parcel is packaged and dispatched.</li>
       <li>You will receive tracking information once shipped.</li>
