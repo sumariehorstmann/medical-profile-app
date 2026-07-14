@@ -122,8 +122,8 @@ function PayPageInner() {
 
     const confirmUpgrade = window.confirm(
       hasAffiliateCode
-        ? `Upgrade to Premium. Base price R${BASE_PRICE}, affiliate discount R${DISCOUNT_AMOUNT}, price today R${AFFILIATE_PRICE}. Continue?`
-        : `Upgrade to Premium. Price today R${priceToday}. Continue?`
+        ? `Purchase the RROI Premium Kit Bundle. Base price R${BASE_PRICE}, affiliate discount R${DISCOUNT_AMOUNT}, price today R${AFFILIATE_PRICE}. Continue?`
+        : `Purchase the RROI Premium Kit Bundle for R${priceToday}. Continue?`
     );
 
     if (!confirmUpgrade) return;
@@ -188,11 +188,13 @@ function PayPageInner() {
 
   return (
     <main className="max-w-xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-semibold mb-2">Confirm Premium Upgrade</h1>
+      <h1 className="text-2xl font-semibold mb-2">
+  Confirm RROI Premium Kit Bundle Purchase
+</h1>
 
       <p className="mb-6 text-sm text-gray-600">
-        You are upgrading your account. Your Premium Kit includes your first year subscription, 2 physical QR code products, and delivery.
-      </p>
+  You are purchasing the RROI Premium Kit Bundle. It includes a 1-year Premium Subscription, an Engraved Metal QR Card, an Engraved Metal QR Tag, a Pack of 5 Splash-Proof QR Stickers and free nationwide delivery.
+</p>
 
       {error ? (
         <div className="rounded border border-red-300 bg-red-50 p-4 text-red-700">
@@ -209,7 +211,7 @@ function PayPageInner() {
               {[profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "-"}
             </p>
             <p>
-              <strong>Plan:</strong> RROI Premium Kit
+              <strong>Plan:</strong> RROI Premium Kit Bundle
             </p>
             <p>
               <strong>Base Price:</strong> R{BASE_PRICE}
@@ -267,7 +269,7 @@ setAffiliateMessage("");
             disabled={loading || !profile}
             className="w-full rounded bg-black px-4 py-3 text-white disabled:opacity-60"
           >
-            {loading ? "Redirecting..." : `Proceed to Payment - R${priceToday}`}
+            {loading ? "Redirecting..." : `Purchase RROI Premium Kit Bundle - R${priceToday}`}
           </button>
 
           <button
