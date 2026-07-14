@@ -39,14 +39,14 @@ export default function PremiumKitPage() {
   <ProductPhoto
     src="/images/premium-kit/qr-card.png"
     alt="Engraved Metal QR Card"
-    title="Black Anodised Aluminium QR Card"
+    title="Engraved Metal QR Card"
     isMobile={isMobile}
   />
 
   <ProductPhoto
     src="/images/premium-kit/qr-tag-front-back.png"
     alt="Engraved Metal QR Tag Front and Back"
-    title="Black Anodised Aluminium QR Tag"
+    title="Engraved Metal QR Tag"
     isMobile={isMobile}
   />
 
@@ -81,9 +81,9 @@ export default function PremiumKitPage() {
 
           <ul style={styles.list}>
   <li>1-year RROI Premium subscription</li>
-  <li>Engraved metal QR card</li>
-  <li>Engraved metal QR tag</li>
-  <li>Pack of 5 splash-proof QR stickers</li>
+  <li>Engraved Metal QR Card</li>
+  <li>Engraved Metal QR Tag</li>
+  <li>Pack of 5 Splash-Proof QR Stickers</li>
   <li>Full Premium Emergency Profile visibility</li>
   <li>Downloadable QR phone lock screen</li>
   <li>Downloadable QR smartwatch wallpaper</li>
@@ -112,7 +112,7 @@ export default function PremiumKitPage() {
 
   <p style={styles.noteText}>
     No physical QR card, QR tag or QR stickers are included with the R129
-    Premium option.
+Premium option.
   </p>
 
   <p style={styles.noteText}>
