@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
 import {
   UserRound,
@@ -314,9 +315,7 @@ const [isInstalled, setIsInstalled] = useState(false);
             Once-off bundle purchase
           </div>
 
-          <div style={styles.bundleRenewal}>
-            
-          </div>
+          
         </div>
       </div>
 
@@ -335,6 +334,31 @@ const [isInstalled, setIsInstalled] = useState(false);
             <li>QR smartwatch wallpaper</li>
             <li>Free nationwide delivery</li>
           </ul>
+          <div style={styles.bundleImages}>
+  <Image
+    src="/images/premium-kit/qr-card.png"
+    alt="RROI QR Card"
+    width={180}
+    height={114}
+    style={styles.bundleImage}
+  />
+
+  <Image
+    src="/images/premium-kit/qr-sticker-pack.png"
+    alt="RROI QR Sticker Pack"
+    width={180}
+    height={180}
+    style={styles.bundleImage}
+  />
+
+  <Image
+    src="/images/premium-kit/qr-tag-front-back.png"
+    alt="RROI QR Tag"
+    width={180}
+    height={180}
+    style={styles.bundleImage}
+  />
+</div>
         </div>
 
         <div style={styles.bundleActionPanel}>
@@ -1177,6 +1201,20 @@ socialLinks: {
   alignItems: "center",
   gap: 24,
   flexWrap: "wrap",
+},
+
+bundleImages: {
+  display: "flex",
+  gap: 18,
+  flexWrap: "wrap",
+  marginTop: 28,
+},
+
+bundleImage: {
+  borderRadius: 12,
+  border: `1px solid ${BORDER}`,
+  background: "#FFFFFF",
+  padding: 8,
 },
 
 socialLink: {
