@@ -233,11 +233,40 @@ const finalAmount = Number(
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>Order Summary</h2>
-            <p style={styles.paragraph}>Product: RROI Premium Full Kit</p>
-            <p style={styles.paragraph}>Includes: 2 × QR code emergency products</p>
-            <p style={styles.paragraph}>Premium profile activation: Included</p>
-            <p style={styles.paragraph}>Nationwide delivery: Included</p>
-            <p style={styles.paragraph}>Normal Price: R499.00</p>
+            <p style={styles.paragraph}>
+  Product: RROI Premium Kit Bundle
+</p>
+
+<p style={styles.paragraph}>
+  Engraved Metal QR Card: 1
+</p>
+
+<p style={styles.paragraph}>
+  Engraved Metal QR Tag: 1
+</p>
+
+<p style={styles.paragraph}>
+  Pack of 5 Splash-Proof QR Stickers: 1
+</p>
+
+<p style={styles.paragraph}>
+  1-year RROI Premium Emergency Profile Subscription: Included
+</p>
+
+<p style={styles.paragraph}>
+  QR phone lock screen wallpaper: Included
+</p>
+
+<p style={styles.paragraph}>
+  QR smartwatch wallpaper: Included
+</p>
+
+<p style={styles.paragraph}>
+  Free nationwide delivery: Included
+</p>
+<p style={styles.paragraph}>
+  Normal Price: R499.00
+</p>
             {orderForm?.discount_code ? (
               <p style={styles.paragraph}>
                 Discount Code: {orderForm.discount_code}{" "}
