@@ -50,11 +50,12 @@ export default function PremiumKitPage() {
     isMobile={isMobile}
   />
 
-  <ProductPlaceholder
-    title="Pack of 5 Splash-Proof QR Stickers"
-    text="Product image coming soon."
-    isMobile={isMobile}
-  />
+  <ProductPhoto
+  src="/images/premium-kit/qr-sticker-pack.png"
+  alt="Pack of 5 Splash-Proof QR Stickers"
+  title="Pack of 5 Splash-Proof QR Stickers"
+  isMobile={isMobile}
+/>
 
   <ProductPhoto
     src="/images/premium-kit/phone-lock-screen.png"
@@ -201,55 +202,6 @@ function ProductPhoto({
   );
 }
 
-function ProductPlaceholder({
-  title,
-  text,
-  isMobile,
-}: {
-  title: string;
-  text: string;
-  isMobile: boolean;
-}) {
-  return (
-    <div
-      style={{
-        ...styles.productCard,
-        display: isMobile ? "grid" : "block",
-        gridTemplateColumns: isMobile ? "120px 1fr" : undefined,
-        alignItems: isMobile ? "center" : undefined,
-        gap: isMobile ? 16 : undefined,
-      }}
-    >
-      <div
-        style={{
-          ...styles.placeholderWrap,
-          height: isMobile ? 120 : 220,
-          marginBottom: isMobile ? 0 : 12,
-        }}
-      >
-        <div style={styles.placeholderBadge}>5</div>
-
-        <div style={styles.placeholderLabel}>
-          Splash-Proof
-          <br />
-          QR Stickers
-        </div>
-
-        <div style={styles.placeholderText}>{text}</div>
-      </div>
-
-      <div
-        style={{
-          ...styles.productTitle,
-          textAlign: isMobile ? "left" : "center",
-        }}
-      >
-        {title}
-      </div>
-    </div>
-  );
-}
-
 const styles: Record<string, React.CSSProperties> = {
   page: {
     padding: "48px 20px",
@@ -304,47 +256,6 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 14,
     overflow: "hidden",
   },
-placeholderWrap: {
-  width: "100%",
-  background: "#F0FDF4",
-  border: "1px dashed #86EFAC",
-  borderRadius: 14,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  textAlign: "center",
-  padding: 16,
-  boxSizing: "border-box",
-},
-
-placeholderBadge: {
-  width: 42,
-  height: 42,
-  borderRadius: "50%",
-  background: "#157A55",
-  color: "#FFFFFF",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontSize: 20,
-  fontWeight: 900,
-  marginBottom: 10,
-},
-
-placeholderLabel: {
-  color: "#166534",
-  fontSize: 17,
-  lineHeight: 1.25,
-  fontWeight: 900,
-},
-
-placeholderText: {
-  color: "#64748B",
-  fontSize: 12,
-  lineHeight: 1.4,
-  marginTop: 8,
-},
 
   imageWrap: {
     position: "relative",
