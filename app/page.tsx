@@ -304,21 +304,42 @@ useEffect(() => {
 
         <div style={styles.upgradeSteps}>
   <div style={styles.upgradeArrow}>
-  <ArrowRight size={18} color={BRAND_GREEN} />
+  <ArrowRight
+  size={18}
+  color={BRAND_GREEN}
+  style={{
+    flexShrink: 0,
+    marginTop: 2,
+  }}
+/>
   <span>
     Sign up and create your <strong>FREE Profile</strong>
   </span>
 </div>
 
 <div style={styles.upgradeArrow}>
-  <ArrowRight size={18} color={BRAND_GREEN} />
+  <ArrowRight
+  size={18}
+  color={BRAND_GREEN}
+  style={{
+    flexShrink: 0,
+    marginTop: 2,
+  }}
+/>
   <span>
     Upgrade to <strong>Premium</strong> from your Profile page
   </span>
 </div>
 
 <div style={styles.upgradeArrow}>
-  <ArrowRight size={18} color={BRAND_GREEN} />
+  <ArrowRight
+  size={18}
+  color={BRAND_GREEN}
+  style={{
+    flexShrink: 0,
+    marginTop: 2,
+  }}
+/>
   <span>
     Renew annually <strong>(R129/year)</strong>
   </span>
@@ -1401,7 +1422,7 @@ upgradeSteps: {
 
 upgradeArrow: {
   display: "flex",
-  alignItems: "center",
+  alignItems: "flex-start",   // instead of center
   gap: 10,
   fontSize: 15,
   fontWeight: 700,
