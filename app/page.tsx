@@ -285,7 +285,7 @@ useEffect(() => {
           <li>Profile photo</li>
           <li>First name and surname</li>
           <li>Multiple emergency contacts</li>
-          <li>Multiple emergency contact call button</li>
+          <li>Multiple emergency contact call buttons</li>
           <li>QR phone lock screen wallpaper</li>
           <li>QR smartwatch wallpaper</li>
           <li>Blood Type, allergies, medications and medical conditions</li>

@@ -65,7 +65,77 @@ const hasHadPremium =
   (subscription?.current_period_end &&
     new Date(subscription.current_period_end).getTime() < Date.now());
   const isAffiliate = !!affiliate;
+const premiumOptionsSection = (
+  <div style={styles.upgradeOptions}>
+    <h2 style={styles.upgradeOptionsTitle}>
+      {isPremium
+        ? "Renew or extend your Premium"
+        : "Choose your Premium option"}
+    </h2>
 
+    <p style={styles.upgradeOptionsText}>
+      {isPremium && subscription?.current_period_end
+        ? `Your Premium profile is active until ${new Date(
+            subscription.current_period_end
+          ).toLocaleDateString("en-ZA", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          })}. You can renew before expiry to extend your Premium access for another year.`
+        : "Choose between the R129 annual Premium Subscription or the R499 RROI Premium Kit Bundle."}
+    </p>
+
+    <div style={styles.upgradeOptionGrid}>
+      <div style={styles.upgradeOptionCard}>
+        <h3 style={styles.upgradeOptionHeading}>
+          {isPremium
+            ? "Renew Premium Subscription Only"
+            : "Premium Subscription Only"}
+        </h3>
+
+        <div style={styles.upgradeOptionPrice}>R129/year</div>
+
+        <p style={styles.upgradeOptionDescription}>
+          Full Premium Emergency Profile visibility. No physical QR products
+          are included. QR phone lock screen and smartwatch wallpapers are
+          included.
+        </p>
+
+        <Link href="/renew" style={styles.secondaryBtn}>
+          {isPremium
+            ? "Renew Premium - R129"
+            : "Upgrade to Premium - R129"}
+        </Link>
+      </div>
+
+      <div style={styles.upgradeOptionCard}>
+        <h3 style={styles.upgradeOptionHeading}>
+          {isPremium
+            ? "Purchase Premium Kit Bundle"
+            : "RROI Premium Kit Bundle"}
+        </h3>
+
+        <div style={styles.upgradeOptionPrice}>R499</div>
+
+        <p style={styles.upgradeOptionDescription}>
+          Includes a 1-year Premium subscription, an Engraved Metal QR Card,
+          an Engraved Metal QR Tag, a Pack of 5 Splash-Proof QR Stickers,
+          QR wallpapers and free nationwide delivery.
+        </p>
+
+        <Link href="/subscribe/order" style={styles.upgradeBtn}>
+          {isPremium
+            ? "Purchase Premium Kit Bundle"
+            : "Get Premium Kit Bundle - R499"}
+        </Link>
+
+        <Link href="/premium-kit" style={styles.viewKitLink}>
+          View Premium Kit Bundle →
+        </Link>
+      </div>
+    </div>
+  </div>
+);
   return (
     <main style={styles.page}>
       <div style={styles.container}>
@@ -90,120 +160,10 @@ const hasHadPremium =
 </ul>
         </div>
 
-        {!isPremium && (
-          <div style={styles.upgradeBanner}>
-            <div style={styles.upgradeBannerTitle}>Upgrade to Premium</div>
-            <p style={styles.upgradeBannerText}>
-              Your full profile can be completed and saved now. Upgrade when you
-              want your full medical profile to be visible when your QR code is
-              scanned.
-            </p>
-            {!isPremium && !hasHadPremium && (
-  <Link href="/subscribe/order" style={styles.upgradeBtn}>
-    Get Premium Kit - R499
-  </Link>
-)}
-{!hasHadPremium && (
-  <div style={styles.premiumIncludes}>
-    <p style={styles.includesTitle}>Premium Kit includes:</p>
-    <ul style={styles.includesList}>
-      <li>1-year RROI Premium subscription</li>
-      <li>2 physical QR code items</li>
-      <li>Downloadable QR phone lock screen</li>
-      <li>Downloadable QR smartwatch wallpaper</li>
-      <li>Nationwide delivery</li>
-    </ul>
+        {!isPremium && premiumOptionsSection}
 
-    <Link
-      href="/premium-kit"
-      style={{ ...styles.viewKitLink, marginTop: 8, display: "inline-block" }}
-    >
-      See what's in the Premium Kit →
-    </Link>
-  </div>
-)}
+<ProfileFormClient initial={profile} showUpgrade={false} />
 
-{!isPremium && hasHadPremium && (
-  <Link href="/renew" style={styles.upgradeBtn}>
-    Renew Premium - R129/year
-  </Link>
-)}
-          </div>
-        )}
-
-        <ProfileFormClient initial={profile} showUpgrade={false} />
-{true && (
-  <div style={styles.upgradeOptions}>
-    <h2 style={styles.upgradeOptionsTitle}>
-  {isPremium
-    ? "Renew or extend your Premium"
-    : "Choose your Premium option"}
-</h2>
-
-    <p style={styles.upgradeOptionsText}>
-  {isPremium && subscription?.current_period_end
-    ? `Your Premium profile is active until ${new Date(
-        subscription.current_period_end
-      ).toLocaleDateString("en-ZA", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      })}. You can renew before expiry to extend your Premium access for another year.`
-    : "Upgrade your profile for full public medical profile visibility when your QR code is scanned."}
-</p>
-
-    <div style={styles.upgradeOptionGrid}>
-      <div style={styles.upgradeOptionCard}>
-        <h3 style={styles.upgradeOptionHeading}>
-  {isPremium
-    ? "Renew Premium Subscription Only"
-    : "Premium Subscription Only"}
-</h3>
-        <div style={styles.upgradeOptionPrice}>R129/year</div>
-
-        <p style={styles.upgradeOptionDescription}>
-          Upgrade your profile to Premium visibility. No physical QR products are included.
-          Free downloadable QR lock screen. Free downloadable QR smartwatch wallpaper.
-        </p>
-
-        <Link href="/renew" style={styles.secondaryBtn}>
-          {isPremium
-  ? "Renew Premium - R129"
-  : "Upgrade to Premium - R129"}
-        </Link>
-      </div>
-
-      <div style={styles.upgradeOptionCard}>
-        <h3 style={styles.upgradeOptionHeading}>
-  {isPremium
-    ? "Renew Premium Full Kit"
-    : "Premium Full Kit"}
-</h3>
-        <div style={styles.upgradeOptionPrice}>R499</div>
-
-        <p style={styles.upgradeOptionDescription}>
-          Includes 1 year Premium subscription, 2 engraved physical QR products, downloadable QR lock screen, downloadable QR smartwatch wallpaper,
-          and nationwide delivery.
-        </p>
-
-        <Link href="/subscribe/order" style={styles.upgradeBtn}>
-          {isPremium
-  ? "Renew Premium Full Kit"
-  : "Upgrade to Premium Full Kit"}
-        </Link>
-
-        <Link href="/premium-kit" style={styles.viewKitLink}>
-          View Premium Kit →
-        </Link>
-      </div>
-    </div>
-  </div>
-)}
-        <div style={styles.downloadBlock}>
-  <Link href="/store" style={styles.upgradeBtn}>
-    Online Store
-  </Link>
-</div>
 
         <div style={styles.card}>
           <h2 style={styles.h2}>Subscription Status</h2>
@@ -286,6 +246,15 @@ const hasHadPremium =
             </>
           )}
         </div>
+
+        {isPremium && premiumOptionsSection}
+
+        <div style={styles.downloadBlock}>
+          <Link href="/store" style={styles.upgradeBtn}>
+            Online Store
+          </Link>
+        </div>
+
       </div>
     </main>
   );
