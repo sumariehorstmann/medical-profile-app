@@ -36,6 +36,7 @@ type ProfileRow = {
 
 const DOG_TAG_PRICE = 150;
 const QR_CARD_PRICE = 150;
+const STICKER_PACK_PRICE = 150;
 const DELIVERY_FEE = 120;
 
 const EMPTY_FORM: OrderFormData = {
@@ -79,9 +80,16 @@ function StoreCheckoutInner() {
   const supabase = useMemo(() => createSupabaseBrowser(), []);
 
   const dogTags = Math.max(0, Number(params.get("dogTags") || 0));
-  const cards = Math.max(0, Number(params.get("cards") || 0));
+const cards = Math.max(0, Number(params.get("cards") || 0));
+const stickerPacks = Math.max(
+  0,
+  Number(params.get("stickerPacks") || 0)
+);
 
-  const subtotal = dogTags * DOG_TAG_PRICE + cards * QR_CARD_PRICE;
+  const subtotal =
+  dogTags * DOG_TAG_PRICE +
+  cards * QR_CARD_PRICE +
+  stickerPacks * STICKER_PACK_PRICE;
   const hasItems = subtotal > 0;
   const total = hasItems ? subtotal + DELIVERY_FEE : 0;
 
@@ -118,7 +126,10 @@ const money = (amount: number) => `R${amount.toFixed(2)}`;
         } = await supabase.auth.getSession();
 
         if (sessionError || !session?.user) {
-          const next = `/store/checkout?dogTags=${dogTags}&cards=${cards}`;
+          const next =
+  `/store/checkout?dogTags=${dogTags}` +
+  `&cards=${cards}` +
+  `&stickerPacks=${stickerPacks}`;
           window.location.href = `/login?next=${encodeURIComponent(next)}`;
           return;
         }
@@ -177,7 +188,7 @@ const money = (amount: number) => `R${amount.toFixed(2)}`;
     return () => {
       mounted = false;
     };
-  }, [supabase, dogTags, cards]);
+  }, [supabase, dogTags, cards, stickerPacks]);
 
   function updateField<K extends keyof OrderFormData>(
     field: K,
@@ -268,6 +279,7 @@ try {
         body: JSON.stringify({
   dogTags,
   cards,
+  stickerPacks,
   deliveryFee: DELIVERY_FEE,
   discountCode: discountValid ? discountCode : "",
   ...form,
@@ -304,15 +316,28 @@ if (confirming) {
             <div style={styles.summaryTitle}>Products</div>
 
             {dogTags > 0 ? (
-              <p>Black Anodised Aluminium QR Tag × {dogTags}: R{dogTags * DOG_TAG_PRICE}</p>
-            ) : null}
+  <p>
+    Black Anodised Aluminium QR Tag × {dogTags}: R
+    {dogTags * DOG_TAG_PRICE}
+  </p>
+) : null}
 
-            {cards > 0 ? (
-              <p>Black Anodised Aluminium QR Card × {cards}: R{cards * QR_CARD_PRICE}</p>
-            ) : null}
+{cards > 0 ? (
+  <p>
+    Black Anodised Aluminium QR Card × {cards}: R
+    {cards * QR_CARD_PRICE}
+  </p>
+) : null}
 
-            <p>Items subtotal: R{subtotal}</p>
-            <p>Delivery: R{DELIVERY_FEE}</p>
+{stickerPacks > 0 ? (
+  <p>
+    Pack of 5 Splash-Proof QR Stickers × {stickerPacks}: R
+    {stickerPacks * STICKER_PACK_PRICE}
+  </p>
+) : null}
+
+<p>Items subtotal: R{subtotal}</p>
+<p>Delivery: R{DELIVERY_FEE}</p>
 
 {discountAmount > 0 && (
   <p style={{ color: "#157A55", fontWeight: 700 }}>
@@ -404,7 +429,7 @@ if (confirming) {
         </div>
         <div style={styles.container}>
           <div style={styles.card}>
-            <div style={styles.progress}>Step 1 of 2 — Store Order Details</div>
+            <div style={styles.progress}>Step 1 of 3 — Store Order Details</div>
             <h1 style={styles.title}>Complete Your Store Order Details</h1>
             <p style={styles.loadingText}>Loading...</p>
           </div>
@@ -430,8 +455,8 @@ if (confirming) {
 </p>
 
 <p style={styles.subtitle}>
-  This information will be used to engrave your QR code products and
-  deliver your order.
+  This information will be used to prepare your personalised QR products
+  and deliver your order.
 </p>
 
           <div style={styles.summaryBox}>
@@ -439,13 +464,22 @@ if (confirming) {
             <ul style={styles.summaryList}>
               {dogTags > 0 ? (
   <li>
-    Black Anodised Aluminium QR Tag × {dogTags}: R{dogTags * DOG_TAG_PRICE}
+    Black Anodised Aluminium QR Tag × {dogTags}: R
+    {dogTags * DOG_TAG_PRICE}
   </li>
 ) : null}
 
 {cards > 0 ? (
   <li>
-    Black Anodised Aluminium QR Card × {cards}: R{cards * QR_CARD_PRICE}
+    Black Anodised Aluminium QR Card × {cards}: R
+    {cards * QR_CARD_PRICE}
+  </li>
+) : null}
+
+{stickerPacks > 0 ? (
+  <li>
+    Pack of 5 Splash-Proof QR Stickers × {stickerPacks}: R
+    {stickerPacks * STICKER_PACK_PRICE}
   </li>
 ) : null}
 
@@ -519,8 +553,8 @@ if (confirming) {
   <div style={styles.deliveryTitle}>Custom Made to Order</div>
 
   <div style={styles.deliveryText}>
-    Every RROI product is manufactured specifically for your order and
-    delivered to your door within 7–14 working days.
+    Every RROI QR product is custom made specifically for your order and
+delivered to your door within 7–14 working days.
   </div>
 </div>
 
