@@ -17,6 +17,7 @@ export default function HomePage() {
 
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 const [isInstalled, setIsInstalled] = useState(false);
+const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
   const params = new URLSearchParams(window.location.search);
@@ -28,14 +29,49 @@ const [isInstalled, setIsInstalled] = useState(false);
     } catch {}
   }
 
-  window.addEventListener("beforeinstallprompt", (e) => {
+  function handleBeforeInstallPrompt(e: Event) {
     e.preventDefault();
     setDeferredPrompt(e);
-  });
-  
-  window.addEventListener("appinstalled", () => {
-  setIsInstalled(true);
-});
+  }
+
+  function handleAppInstalled() {
+    setIsInstalled(true);
+  }
+
+  window.addEventListener(
+    "beforeinstallprompt",
+    handleBeforeInstallPrompt
+  );
+
+  window.addEventListener(
+    "appinstalled",
+    handleAppInstalled
+  );
+
+  return () => {
+    window.removeEventListener(
+      "beforeinstallprompt",
+      handleBeforeInstallPrompt
+    );
+
+    window.removeEventListener(
+      "appinstalled",
+      handleAppInstalled
+    );
+  };
+}, []);
+
+useEffect(() => {
+  function checkScreenSize() {
+    setIsMobile(window.innerWidth <= 700);
+  }
+
+  checkScreenSize();
+  window.addEventListener("resize", checkScreenSize);
+
+  return () => {
+    window.removeEventListener("resize", checkScreenSize);
+  };
 }, []);
 
   return (
@@ -334,52 +370,116 @@ const [isInstalled, setIsInstalled] = useState(false);
             <li>QR smartwatch wallpaper</li>
             <li>Free nationwide delivery</li>
           </ul>
-          <div style={styles.bundleImages}>
-  <div style={styles.bundleImageCard}>
-    <div style={styles.bundleImageWrap}>
+          <div
+  style={{
+    ...styles.bundleImages,
+    gridTemplateColumns: isMobile
+      ? "1fr"
+      : "repeat(3, minmax(0, 1fr))",
+  }}
+>
+  <div
+    style={{
+      ...styles.bundleImageCard,
+      display: isMobile ? "grid" : "block",
+      gridTemplateColumns: isMobile ? "130px 1fr" : undefined,
+      alignItems: isMobile ? "center" : undefined,
+      gap: isMobile ? 16 : undefined,
+    }}
+  >
+    <div
+      style={{
+        ...styles.bundleImageWrap,
+        height: isMobile ? 110 : 190,
+      }}
+    >
       <Image
         src="/images/premium-kit/qr-card.png"
         alt="Engraved Metal QR Card"
         fill
-        sizes="(max-width: 700px) 30vw, 150px"
+        sizes={isMobile ? "130px" : "180px"}
         style={styles.bundleImage}
       />
     </div>
 
-    <div style={styles.bundleImageLabel}>
-      QR Card
+    <div
+      style={{
+        ...styles.bundleImageLabel,
+        marginTop: isMobile ? 0 : 12,
+        textAlign: isMobile ? "left" : "center",
+      }}
+    >
+      Engraved Metal QR Card
     </div>
   </div>
 
-  <div style={styles.bundleImageCard}>
-    <div style={styles.bundleImageWrap}>
+  <div
+    style={{
+      ...styles.bundleImageCard,
+      display: isMobile ? "grid" : "block",
+      gridTemplateColumns: isMobile ? "130px 1fr" : undefined,
+      alignItems: isMobile ? "center" : undefined,
+      gap: isMobile ? 16 : undefined,
+    }}
+  >
+    <div
+      style={{
+        ...styles.bundleImageWrap,
+        height: isMobile ? 110 : 190,
+      }}
+    >
       <Image
         src="/images/premium-kit/qr-sticker-pack.png"
         alt="Pack of 5 Splash-Proof QR Stickers"
         fill
-        sizes="(max-width: 700px) 30vw, 150px"
+        sizes={isMobile ? "130px" : "180px"}
         style={styles.bundleImage}
       />
     </div>
 
-    <div style={styles.bundleImageLabel}>
-      QR Stickers
+    <div
+      style={{
+        ...styles.bundleImageLabel,
+        marginTop: isMobile ? 0 : 12,
+        textAlign: isMobile ? "left" : "center",
+      }}
+    >
+      Pack of 5 Splash-Proof QR Stickers
     </div>
   </div>
 
-  <div style={styles.bundleImageCard}>
-    <div style={styles.bundleImageWrap}>
+  <div
+    style={{
+      ...styles.bundleImageCard,
+      display: isMobile ? "grid" : "block",
+      gridTemplateColumns: isMobile ? "130px 1fr" : undefined,
+      alignItems: isMobile ? "center" : undefined,
+      gap: isMobile ? 16 : undefined,
+    }}
+  >
+    <div
+      style={{
+        ...styles.bundleImageWrap,
+        height: isMobile ? 110 : 190,
+      }}
+    >
       <Image
         src="/images/premium-kit/qr-tag-front-back.png"
         alt="Engraved Metal QR Tag"
         fill
-        sizes="(max-width: 700px) 30vw, 150px"
+        sizes={isMobile ? "130px" : "180px"}
         style={styles.bundleImage}
       />
     </div>
 
-    <div style={styles.bundleImageLabel}>
-      QR Tag
+    <div
+      style={{
+        ...styles.bundleImageLabel,
+        marginTop: isMobile ? 0 : 12,
+        textAlign: isMobile ? "left" : "center",
+      }}
+    >
+      Engraved Metal QR Tag
     </div>
   </div>
 </div>
@@ -1229,12 +1329,13 @@ socialLinks: {
 
 bundleImages: {
   display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
-  gap: 18,
+  gap: 16,
   marginTop: 28,
+  width: "100%",
 },
 
 bundleImageCard: {
+  minWidth: 0,
   border: `1px solid ${BORDER}`,
   borderRadius: 18,
   background: "#FFFFFF",
