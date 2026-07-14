@@ -11,6 +11,7 @@ import {
   PencilLine,
   Globe,
   UsersRound,
+  ArrowRight,
 } from "lucide-react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 export default function HomePage() {
@@ -223,12 +224,10 @@ useEffect(() => {
 
       <section style={styles.sectionMuted}>
   <div style={styles.container}>
-    <h2 style={styles.sectionTitle}>CHOOSE YOUR RROI PROFILE</h2>
+    <h2 style={styles.sectionTitle}>CHOOSE YOUR RROI EMERGENCY PROFILE</h2>
 
     <p style={styles.sectionIntro}>
-      RROI has two profile options. Start with the Free Basic Emergency
-      Profile or upgrade to the annual Premium Emergency Profile for access
-      to additional emergency and medical information.
+      Compare our Free and Premium Emergency Profiles below.
     </p>
 
     <div style={styles.profileOptionsGrid}>
@@ -303,11 +302,28 @@ useEffect(() => {
           
         </ul>
 
-        <p style={styles.upgradeNote}>
-          Create your free profile first, then upgrade to Premium from your
-          dashboard. Renew for R129 each year to keep the full Premium
-          Emergency Profile visible.
-        </p>
+        <div style={styles.upgradeSteps}>
+  <div style={styles.upgradeArrow}>
+  <ArrowRight size={18} color={BRAND_GREEN} />
+  <span>
+    Sign up and create your <strong>FREE Profile</strong>
+  </span>
+</div>
+
+<div style={styles.upgradeArrow}>
+  <ArrowRight size={18} color={BRAND_GREEN} />
+  <span>
+    Upgrade to <strong>Premium</strong> from your Profile page
+  </span>
+</div>
+
+<div style={styles.upgradeArrow}>
+  <ArrowRight size={18} color={BRAND_GREEN} />
+  <span>
+    Renew annually <strong>(R129/year)</strong>
+  </span>
+</div>
+</div>
 
         <Link
           href="/login?mode=signup"
@@ -320,7 +336,7 @@ useEffect(() => {
           href="/e/891729a6-9f88-49b8-b14d-9d702bde2c6b"
           style={styles.outlineBtnFull}
         >
-          View Example Premium Profile
+          View Example Premium Public Profile
         </Link>
       </div>
     </div>
@@ -1371,5 +1387,25 @@ socialLink: {
   textDecoration: "none",
   cursor: "pointer",
   transition: "opacity 0.2s ease",
+},
+upgradeSteps: {
+  margin: "0 0 20px",
+  padding: 16,
+  borderRadius: 14,
+  background: "#F8FAFC",
+  border: `1px solid ${BORDER}`,
+  display: "flex",
+  flexDirection: "column",
+  gap: 12,
+},
+
+upgradeArrow: {
+  display: "flex",
+  alignItems: "center",
+  gap: 10,
+  fontSize: 15,
+  fontWeight: 700,
+  color: "#334155",
+  lineHeight: 1.5,
 },
 };
