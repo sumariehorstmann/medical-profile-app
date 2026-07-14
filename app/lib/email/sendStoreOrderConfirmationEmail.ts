@@ -80,11 +80,14 @@ export async function sendStoreOrderConfirmationEmail({
     <h3 style="margin: 24px 0 10px; font-size: 18px;">Your Premium Kit Includes</h3>
 
     <ul style="padding-left: 20px; line-height: 1.8; font-size: 15px;">
-      <li>Premium QR Card × 1</li>
-      <li>Premium QR Tag × 1</li>
-      <li>Premium Profile Visibility – 1 Year</li>
-      <li>Nationwide Delivery</li>
-    </ul>
+  <li>Engraved Metal QR Card × 1</li>
+  <li>Engraved Metal QR Tag × 1</li>
+  <li>Pack of 5 Splash-Proof QR Stickers × 1</li>
+  <li>RROI Premium Emergency Profile – 1 Year</li>
+  <li>QR Phone Wallpaper</li>
+  <li>QR Smartwatch Wallpaper</li>
+  <li>Free Nationwide Delivery</li>
+</ul>
 
     <p style="font-size: 16px; line-height: 1.6; margin-top: 20px;">
       <strong>Total paid:</strong> R${Number(totalAmount || 0).toFixed(2)}
@@ -93,8 +96,8 @@ export async function sendStoreOrderConfirmationEmail({
     <h3 style="margin: 24px 0 10px; font-size: 18px;">What Happens Next?</h3>
 
     <ol style="padding-left: 20px; line-height: 1.8; font-size: 15px;">
-      <li>We manufacture your QR Card and QR Tag.</li>
-      <li>Your order is quality checked.</li>
+      <li>We prepare your QR card, QR tag and sticker pack.</li>
+      <li>Your personalised QR products are quality checked.</li>
       <li>Your parcel is packaged and dispatched.</li>
       <li>You will receive tracking information once shipped.</li>
     </ol>

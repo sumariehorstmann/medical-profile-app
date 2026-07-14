@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const DOG_TAG_PRICE = 150;
 const QR_CARD_PRICE = 150;
+const STICKER_PACK_PRICE = 150;
 const DELIVERY_FEE = 120;
 
 function payfastProcessUrl() {
@@ -61,10 +62,14 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 const discountCode = String(body?.discountCode ?? "").trim().toUpperCase();
-    const dogTags = Math.max(0, Number(body.dogTags || 0));
-    const cards = Math.max(0, Number(body.cards || 0));
+    const dogTags = Math.max(0, Math.floor(Number(body.dogTags || 0)));
+const cards = Math.max(0, Math.floor(Number(body.cards || 0)));
+const stickerPacks = Math.max(
+  0,
+  Math.floor(Number(body.stickerPacks || 0))
+);
 
-    if (dogTags === 0 && cards === 0) {
+    if (dogTags === 0 && cards === 0 && stickerPacks === 0) {
       return NextResponse.json(
         { error: "Please select at least one item." },
         { status: 400 }
@@ -126,7 +131,10 @@ const discountCode = String(body?.discountCode ?? "").trim().toUpperCase();
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!.trim();
     const qrUrl = `${baseUrl}/e/${profile.public_id}`;
 
-    const subtotal = dogTags * DOG_TAG_PRICE + cards * QR_CARD_PRICE;
+    const subtotal =
+  dogTags * DOG_TAG_PRICE +
+  cards * QR_CARD_PRICE +
+  stickerPacks * STICKER_PACK_PRICE;
     const totalBeforeDiscount = subtotal + DELIVERY_FEE;
 
 let discountPercent = 0;
@@ -172,23 +180,33 @@ const total = Number(
     const paymentReference = `store_${Date.now()}_${user.id.slice(0, 8)}`;
 
     const items = [
-      dogTags > 0
-        ? {
-            name: "Black Anodised Aluminium QR Tag",
-            quantity: dogTags,
-            unit_price: DOG_TAG_PRICE,
-            total: dogTags * DOG_TAG_PRICE,
-          }
-        : null,
-      cards > 0
-        ? {
-            name: "Black Anodised Aluminium QR Card",
-            quantity: cards,
-            unit_price: QR_CARD_PRICE,
-            total: cards * QR_CARD_PRICE,
-          }
-        : null,
-    ].filter(Boolean);
+  dogTags > 0
+    ? {
+        name: "Black Anodised Aluminium QR Tag",
+        quantity: dogTags,
+        unit_price: DOG_TAG_PRICE,
+        total: dogTags * DOG_TAG_PRICE,
+      }
+    : null,
+
+  cards > 0
+    ? {
+        name: "Black Anodised Aluminium QR Card",
+        quantity: cards,
+        unit_price: QR_CARD_PRICE,
+        total: cards * QR_CARD_PRICE,
+      }
+    : null,
+
+  stickerPacks > 0
+    ? {
+        name: "Pack of 5 Splash-Proof QR Stickers",
+        quantity: stickerPacks,
+        unit_price: STICKER_PACK_PRICE,
+        total: stickerPacks * STICKER_PACK_PRICE,
+      }
+    : null,
+].filter(Boolean);
 
     const customerName = `${firstName} ${lastName}`.trim();
     const { error: pendingOrderError } = await supabase
@@ -256,7 +274,9 @@ if (pendingOrderError) {
       m_payment_id: paymentReference,
       amount: total.toFixed(2),
       item_name: "RROI Store QR Products",
-      item_description: `Dog tags: ${dogTags}, QR cards: ${cards}, delivery included`,
+      item_description:
+  `QR tags: ${dogTags}, QR cards: ${cards}, ` +
+  `sticker packs: ${stickerPacks}, delivery included`,
       custom_str1: user.id,
       custom_str2: profile.public_id,
       custom_str3: "store",
