@@ -254,14 +254,6 @@ const finalAmount = Number(
 </p>
 
 <p style={styles.paragraph}>
-  QR phone lock screen wallpaper: Included
-</p>
-
-<p style={styles.paragraph}>
-  QR smartwatch wallpaper: Included
-</p>
-
-<p style={styles.paragraph}>
   Free nationwide delivery: Included
 </p>
 <p style={styles.paragraph}>
