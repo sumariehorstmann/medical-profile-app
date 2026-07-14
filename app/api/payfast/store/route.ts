@@ -182,7 +182,7 @@ const total = Number(
     const items = [
   dogTags > 0
     ? {
-        name: "Black Anodised Aluminium QR Tag",
+        name: "Engraved Metal QR Tag",
         quantity: dogTags,
         unit_price: DOG_TAG_PRICE,
         total: dogTags * DOG_TAG_PRICE,
@@ -191,7 +191,7 @@ const total = Number(
 
   cards > 0
     ? {
-        name: "Black Anodised Aluminium QR Card",
+        name: "Engraved Metal QR Card",
         quantity: cards,
         unit_price: QR_CARD_PRICE,
         total: cards * QR_CARD_PRICE,

@@ -77,9 +77,9 @@ export default function StorePage() {
 
           <div style={styles.productGrid}>
             <ProductCard
-              title="Black Anodised Aluminium QR Tag"
+              title="Engraved Metal QR Tag"
               price={DOG_TAG_PRICE}
-              description="Black anodised aluminium QR tag engraved with your permanent RROI QR code."
+              description="Made from black anodised aluminium and engraved with your permanent RROI QR code."
               images={[
                 {
                   src: "/images/premium-kit/qr-tag-front.png",
@@ -95,9 +95,9 @@ export default function StorePage() {
               onIncrease={() => setDogTags((value) => value + 1)}
             />
 <ProductCard
-  title="Black Anodised Aluminium QR Card"
+  title="Engraved Metal QR Card"
   price={QR_CARD_PRICE}
-  description="Wallet-sized black anodised aluminium QR card engraved with your permanent RROI QR code."
+  description="Wallet-sized engraved metal QR card made from black anodised aluminium and linked to your permanent RROI QR code."
   images={[
     {
       src: "/images/premium-kit/qr-card.png",

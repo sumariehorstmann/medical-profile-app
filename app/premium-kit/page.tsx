@@ -38,14 +38,14 @@ export default function PremiumKitPage() {
 >
   <ProductPhoto
     src="/images/premium-kit/qr-card.png"
-    alt="Black Anodised Aluminium QR Card"
+    alt="Engraved Metal QR Card"
     title="Black Anodised Aluminium QR Card"
     isMobile={isMobile}
   />
 
   <ProductPhoto
     src="/images/premium-kit/qr-tag-front-back.png"
-    alt="Black Anodised Aluminium QR Tag Front and Back"
+    alt="Engraved Metal QR Tag Front and Back"
     title="Black Anodised Aluminium QR Tag"
     isMobile={isMobile}
   />

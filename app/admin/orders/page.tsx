@@ -525,21 +525,24 @@ async function recoverMissingOrders() {
   </div>
 
   <div className="row" style={styles.row}>
-    <strong>Dog Tags:</strong> {order.dog_tag_qty || 0}
-  </div>
+  <strong>Metal QR Tags:</strong> {order.dog_tag_qty || 0}
+</div>
 
-  <div className="row" style={styles.row}>
-    <strong>QR Cards:</strong> {order.card_qty || 0}
-  </div>
+<div className="row" style={styles.row}>
+  <strong>Metal QR Cards:</strong> {order.card_qty || 0}
+</div>
 <div className="row" style={styles.row}>
   <strong>Products Ordered:</strong>
   {Array.isArray(order.items) && order.items.length > 0 ? (
     <ul style={{ margin: "6px 0 0 18px", padding: 0 }}>
       {order.items.map((item: any, index: number) => (
-        <li key={index}>
-          {item.name || "Product"} × {item.quantity || 0}
-        </li>
-      ))}
+  <li key={index}>
+    {item.name || "Product"} × {item.quantity || 0}
+    {item.total != null
+      ? ` — R${Number(item.total).toFixed(2)}`
+      : ""}
+  </li>
+))}
     </ul>
   ) : (
     <span> -</span>

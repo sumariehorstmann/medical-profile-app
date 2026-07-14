@@ -317,14 +317,14 @@ if (confirming) {
 
             {dogTags > 0 ? (
   <p>
-    Black Anodised Aluminium QR Tag × {dogTags}: R
+    Engraved Metal QR Tag × {dogTags}: R
     {dogTags * DOG_TAG_PRICE}
   </p>
 ) : null}
 
 {cards > 0 ? (
   <p>
-    Black Anodised Aluminium QR Card × {cards}: R
+    Engraved Metal QR Card × {cards}: R
     {cards * QR_CARD_PRICE}
   </p>
 ) : null}
@@ -464,14 +464,14 @@ if (confirming) {
             <ul style={styles.summaryList}>
               {dogTags > 0 ? (
   <li>
-    Black Anodised Aluminium QR Tag × {dogTags}: R
+    Engraved Metal QR Tag × {dogTags}: R
     {dogTags * DOG_TAG_PRICE}
   </li>
 ) : null}
 
 {cards > 0 ? (
   <li>
-    Black Anodised Aluminium QR Card × {cards}: R
+    Engraved Metal QR Card × {cards}: R
     {cards * QR_CARD_PRICE}
   </li>
 ) : null}
