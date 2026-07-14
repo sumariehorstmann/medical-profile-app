@@ -395,10 +395,10 @@ if (error) {
           </p>
 
           <div style={styles.summaryBox}>
-            <div style={styles.summaryTitle}>Your Premium Kit includes:</div>
+            <div style={styles.summaryTitle}>Your RROI Premium Kit Bundle includes:</div>
             <ul style={styles.summaryList}>
-  <li>1 × Black anodised aluminium QR card</li>
-  <li>1 × Black anodised aluminium QR tag</li>
+  <li>1 × Engraved Metal QR Card</li>
+  <li>1 × Engraved Metal QR Tag</li>
   <li>1-Year RROI Premium subscription</li>
   <li>Full public emergency profile visibility</li>
   <li>Downloadable QR phone lock screen</li>

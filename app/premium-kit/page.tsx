@@ -23,10 +23,10 @@ export default function PremiumKitPage() {
       <div style={styles.container}>
         <div style={styles.badge}>RROI Premium</div>
 
-        <h1 style={styles.h1}>Premium Kit</h1>
+        <h1 style={styles.h1}>RROI Premium Kit Bundle</h1>
 
         <p style={styles.subtitle}>
-  The R499 Premium Kit includes one year of Premium access, physical QR
+  The R499 RROI Premium Kit Bundle includes one year of Premium access, physical QR
   products and downloadable QR wallpapers for everyday use.
 </p>
 
@@ -77,7 +77,7 @@ export default function PremiumKitPage() {
 </p>
 
         <div style={styles.card}>
-          <h2 style={styles.h2}>Included in the R499 Premium Kit</h2>
+          <h2 style={styles.h2}>Included in the R499 Premium Kit Bundle</h2>
 
           <ul style={styles.list}>
   <li>1-year RROI Premium subscription</li>
@@ -105,7 +105,7 @@ export default function PremiumKitPage() {
 
   <p style={styles.noteText}>
     You can also upgrade to Premium for R129 per year without purchasing
-    the physical Premium Kit. This includes full Premium Emergency Profile
+    the RROI Premium Kit Bundle. This includes full Premium Emergency Profile
     visibility, a downloadable QR phone lock screen and a downloadable QR
     smartwatch wallpaper.
   </p>
