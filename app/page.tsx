@@ -472,8 +472,7 @@ const [isInstalled, setIsInstalled] = useState(false);
 </h2>
 
 <p style={styles.cardTextLarge}>
-  Order additional RROI QR cards, tags, splash-proof sticker packs and
-  replacement products linked to your Emergency Profile.
+  Order additional RROI QR Cards, QR Tags and QR Stickers linked to your RROI Emergency Profile from our Online Store.
 </p>
             </div>
 
