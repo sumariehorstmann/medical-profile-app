@@ -294,7 +294,7 @@ const [isInstalled, setIsInstalled] = useState(false);
       <div style={styles.bundleTopRow}>
         <div style={styles.bundleHeadingWrap}>
           <div style={styles.bundleLabel}>
-            OPTIONAL PREMIUM BUNDLE
+            RROI PREMIUM KIT BUNDLE
           </div>
 
           <h3 style={styles.bundleTitle}>
@@ -304,7 +304,7 @@ const [isInstalled, setIsInstalled] = useState(false);
           <p style={styles.bundleText}>
             The Premium Kit Bundle combines your first year of Premium
             access with physical QR products and free nationwide delivery.
-            It is a bundle purchase, not a third profile level.
+          
           </p>
         </div>
 
@@ -316,7 +316,7 @@ const [isInstalled, setIsInstalled] = useState(false);
           </div>
 
           <div style={styles.bundleRenewal}>
-            Premium renews at R129/year after the first year
+            
           </div>
         </div>
       </div>
