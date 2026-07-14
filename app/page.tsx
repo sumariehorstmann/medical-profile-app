@@ -259,7 +259,7 @@ const [isInstalled, setIsInstalled] = useState(false);
           <li>Multiple emergency contact call button</li>
           <li>QR phone lock screen wallpaper</li>
           <li>QR smartwatch wallpaper</li>
-          <li>Blood Type, Allergies, medications and medical conditions</li>
+          <li>Blood Type, allergies, medications and medical conditions</li>
           <li>Medical aid, doctor and specialist information</li>
           <li>Additional identification and support information</li>
           <li>Update your profile anytime</li>
@@ -327,8 +327,7 @@ const [isInstalled, setIsInstalled] = useState(false);
           </h4>
 
           <ul style={styles.bundleList}>
-            <li>1-year RROI Premium Subscription</li>
-            <li>Full Premium Emergency Profile visibility</li>
+            <li>1-year RROI Premium Emergency Profile Subscription</li>
             <li>Engraved Metal QR Card</li>
             <li>Engraved Metal QR Tag</li>
             <li>Pack of 5 Splash-Proof QR Stickers</li>
