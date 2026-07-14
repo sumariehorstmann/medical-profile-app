@@ -111,8 +111,8 @@ const premiumOptionsSection = (
       <div style={styles.upgradeOptionCard}>
         <h3 style={styles.upgradeOptionHeading}>
           {isPremium
-            ? "Purchase Premium Kit Bundle"
-            : "RROI Premium Kit Bundle"}
+  ? "Renew RROI Premium Kit Bundle"
+  : "RROI Premium Kit Bundle"}
         </h3>
 
         <div style={styles.upgradeOptionPrice}>R499</div>
@@ -125,8 +125,8 @@ const premiumOptionsSection = (
 
         <Link href="/subscribe/order" style={styles.upgradeBtn}>
           {isPremium
-            ? "Purchase Premium Kit Bundle"
-            : "Get Premium Kit Bundle - R499"}
+  ? "Renew RROI Premium Kit Bundle"
+  : "Get Premium Kit Bundle - R499"}
         </Link>
 
         <Link href="/premium-kit" style={styles.viewKitLink}>
