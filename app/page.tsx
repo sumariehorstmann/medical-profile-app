@@ -355,25 +355,16 @@ useEffect(() => {
     marginTop: 50,
   }}
 >
-  RROI PREMIUM KIT BUNDLE
+  GET THE RROI PREMIUM KIT BUNDLE
 </h2>
 
 <p style={styles.sectionIntro}>
-  Everything you need to get started with RROI.
+  The Premium Kit Bundle combines your first year of Premium access with physical QR products and free nationwide delivery.
 </p>
     <div style={styles.bundleCard}>
       <div style={styles.bundleTopRow}>
         <div style={styles.bundleHeadingWrap}>
-          
-          <h3 style={styles.bundleTitle}>
-            Get the RROI Premium Kit Bundle
-          </h3>
-
-          <p style={styles.bundleText}>
-            The Premium Kit Bundle combines your first year of Premium
-            access with physical QR products and free nationwide delivery.
-          
-          </p>
+                  
         </div>
 
         <div style={styles.bundlePriceBox}>
@@ -686,10 +677,7 @@ useEffect(() => {
     <h2 style={styles.sectionTitle}>
       RROI ONLINE STORE
     </h2>
-
-    <p style={styles.sectionIntro}>
-      Order additional QR products linked to your RROI Emergency Profile.
-    </p>
+   
 
     <div style={styles.splitCard}>
       <div>
