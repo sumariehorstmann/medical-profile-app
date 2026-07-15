@@ -249,11 +249,24 @@ const premiumOptionsSection = (
 
         {isPremium && premiumOptionsSection}
 
-        <div style={styles.downloadBlock}>
-          <Link href="/store" style={styles.upgradeBtn}>
-            Online Store
-          </Link>
-        </div>
+        <div style={styles.storeSection}>
+  <div style={styles.storeCard}>
+    <div>
+      <h2 style={styles.storeTitle}>
+        RROI Online Store
+      </h2>
+
+      <p style={styles.storeText}>
+        Order additional RROI QR Cards, QR Tags and QR Stickers linked to
+        your RROI Emergency Profile from our Online Store.
+      </p>
+    </div>
+
+    <Link href="/store" style={styles.storeButton}>
+      Online Store
+    </Link>
+  </div>
+</div>
 
       </div>
     </main>
@@ -352,9 +365,7 @@ includesList: {
     textDecoration: "none",
     fontWeight: 800,
   },
-  downloadBlock: {
-    marginTop: 20,
-  },
+  
   primaryBtn: {
     display: "inline-flex",
     alignItems: "center",
@@ -452,5 +463,53 @@ viewKitLink: {
   color: BRAND_GREEN,
   fontWeight: 700,
   textDecoration: "none",
+},
+storeSection: {
+  marginTop: 24,
+  marginBottom: 24,
+},
+
+storeCard: {
+  border: "1px solid #E5E7EB",
+  borderRadius: 24,
+  padding: 26,
+  background: "#FFFFFF",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 22,
+  flexWrap: "wrap",
+},
+
+storeTitle: {
+  margin: "0 0 10px",
+  fontSize: "clamp(24px, 4vw, 34px)",
+  lineHeight: 1.12,
+  letterSpacing: "-0.03em",
+  fontWeight: 950,
+  color: "#0F172A",
+},
+
+storeText: {
+  margin: 0,
+  maxWidth: 660,
+  fontSize: 17,
+  lineHeight: 1.65,
+  color: "#334155",
+},
+
+storeButton: {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: 54,
+  padding: "15px 22px",
+  borderRadius: 15,
+  border: `1px solid ${BRAND_GREEN}`,
+  background: "#FFFFFF",
+  color: BRAND_GREEN,
+  textDecoration: "none",
+  fontWeight: 950,
+  fontSize: 16,
 },
 };
