@@ -370,6 +370,7 @@ useEffect(() => {
     <div style={styles.bundleCard}>
       <div style={styles.bundleTopRow}>
   <div style={styles.bundlePriceBox}>
+  <div style={styles.bundleTop}>
     <div style={styles.bestValueBadge}>
       BEST VALUE
     </div>
@@ -381,11 +382,14 @@ useEffect(() => {
     <div style={styles.savingBadge}>
       SAVE R200
     </div>
+  </div>
 
+  <div style={styles.bundleBottom}>
     <p style={styles.bundleSavingText}>
       Buying the Premium Subscription, physical QR products and delivery separately would cost <strong>R699</strong>.
     </p>
   </div>
+</div>
 </div>
 <div
   style={{
@@ -1553,5 +1557,14 @@ upgradeArrow: {
   fontWeight: 700,
   color: "#334155",
   lineHeight: 1.5,
+},
+bundleTop: {
+  paddingBottom: 18,
+  marginBottom: 18,
+  borderBottom: `1px solid #BBF7D0`,
+},
+
+bundleBottom: {
+  paddingTop: 2,
 },
 };
