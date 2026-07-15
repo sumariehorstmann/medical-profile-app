@@ -115,11 +115,7 @@ useEffect(() => {
         <div style={styles.container}>
           <h2 style={styles.sectionTitle}>HOW RROI WORKS</h2>
 
-         <p style={styles.sectionIntro}>
-  Create your profile, choose the information you want to display, and
-  use your unique QR code on your phone or RROI QR products.
-</p>
-
+         
 <div style={styles.stepsGrid}>
   <div style={styles.stepCard}>
     <div style={styles.stepWrap}>
@@ -150,11 +146,11 @@ useEffect(() => {
   </p>
 
   <p style={styles.shortLine}>
-    You remain in control of the information you choose to include.
+    You decide what information to include.
   </p>
 
   <p style={styles.shortLine}>
-    Your Basic Emergency Profile is available when your QR code is scanned.
+    Your Basic Emergency Profile becomes available when your QR code is scanned.
   </p>
 </div>
   </div>
@@ -171,16 +167,13 @@ useEffect(() => {
 
 <div style={styles.cardText}>
   <p style={styles.shortLine}>
-    Download your QR phone and smartwatch wallpapers.
+    Download your digital QR code images.
   </p>
 
   <p style={styles.shortLine}>
-    Display your QR code where it can be easily found when needed.
+    Use them as your phone lock screen wallpaper or smartwatch wallpaper, or share them digitally with family and friends.
   </p>
 
-  <p style={styles.shortLine}>
-    Registered users can also order physical QR products from the RROI Online Store.
-  </p>
 </div>
   </div>
 
@@ -203,7 +196,7 @@ useEffect(() => {
   </p>
 
   <p style={styles.shortLine}>
-    Make additional emergency and medical information available when scanned.
+    Make additional emergency and medical information available when your QR code is scanned.
   </p>
 
   <p style={styles.shortLine}>
