@@ -359,7 +359,7 @@ useEffect(() => {
 </h2>
 
 <p style={styles.sectionIntro}>
-  The Premium Kit Bundle combines your first year of Premium access with physical QR products and free nationwide delivery.
+  The RROI Premium Kit Bundle combines your first year of Premium access with physical QR products and free nationwide delivery.
 </p>
     <div style={styles.bundleCard}>
       <div style={styles.bundleTopRow}>
@@ -629,8 +629,8 @@ useEffect(() => {
       }}
     />
     <span>
-      Renew annually <strong>(R129/year)</strong>
-    </span>
+  Renew your Premium Emergency Profile annually <strong>(R129/year)</strong>
+</span>
   </div>
 </div>
 
