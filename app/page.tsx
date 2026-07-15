@@ -93,15 +93,12 @@ useEffect(() => {
 </div>
 
 <p style={styles.sub}>
-  RROI lets you create an online emergency profile linked to your own
-  unique QR code. When the QR code is scanned with a smartphone, the
-  emergency information you choose to share opens in a web browser.
-  No app is required to scan it.
+  Create your own emergency profile linked to a unique QR code. When scanned, your emergency information opens instantly in any web browser.
 </p>
 
 <div style={styles.ctaRow}>
   <Link href="/login?mode=signup" style={styles.primaryBtn}>
-    Create Free Profile
+    Sign Up
   </Link>
 </div>
 
