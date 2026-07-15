@@ -363,20 +363,25 @@ useEffect(() => {
 </p>
     <div style={styles.bundleCard}>
       <div style={styles.bundleTopRow}>
-        <div style={styles.bundleHeadingWrap}>
-                  
-        </div>
+  <div style={styles.bundlePriceBox}>
+    <div style={styles.bestValueBadge}>
+      BEST VALUE
+    </div>
 
-        <div style={styles.bundlePriceBox}>
-          <div style={styles.bundlePrice}>R499</div>
+    <div style={styles.bundlePrice}>
+      R499
+    </div>
 
-          <div style={styles.bundlePriceNote}>
-            Once-off bundle purchase
-          </div>
+    <div style={styles.savingBadge}>
+      SAVE R200
+    </div>
 
-          
-        </div>
-      </div>
+    <p style={styles.bundleSavingText}>
+      Buying the R129 Premium Subscription, three physical QR product
+      options and delivery separately would cost <strong>R699</strong>.
+    </p>
+  </div>
+</div>
 <div
   style={{
     ...styles.bundleImages,
@@ -584,15 +589,7 @@ useEffect(() => {
         </div>
 
         <div style={styles.bundleActionPanel}>
-          <div style={styles.savingBadge}>
-            SAVE R200
-          </div>
-
-          <p style={styles.bundleActionText}>
-            Buying the R129 Premium Subscription, three physical QR product
-            options and delivery separately would cost R699.
-          </p>
-
+          
           <div style={styles.upgradeSteps}>
   <div style={styles.upgradeArrow}>
     <ArrowRight
@@ -1070,16 +1067,9 @@ bundleCard: {
 
 bundleTopRow: {
   display: "flex",
-  alignItems: "flex-start",
-  justifyContent: "space-between",
-  gap: 24,
-  flexWrap: "wrap",
+  justifyContent: "center",
   paddingBottom: 24,
   borderBottom: `1px solid ${BORDER}`,
-},
-
-bundleHeadingWrap: {
-  flex: "1 1 520px",
 },
 
 bundleTitle: {
@@ -1100,13 +1090,34 @@ bundleText: {
 },
 
 bundlePriceBox: {
-  flex: "0 1 250px",
-  minWidth: 220,
-  padding: 20,
+  width: "100%",
+  maxWidth: 680,
+  padding: 24,
   borderRadius: 18,
   background: "#F0FDF4",
   border: "1px solid #BBF7D0",
   textAlign: "center",
+},
+
+bestValueBadge: {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "8px 14px",
+  borderRadius: 999,
+  background: "#DCFCE7",
+  color: BRAND_GREEN,
+  fontSize: 13,
+  fontWeight: 950,
+  marginBottom: 16,
+},
+
+bundleSavingText: {
+  marginTop: 14,
+  fontSize: 14,
+  lineHeight: 1.6,
+  color: "#475569",
+  fontWeight: 700,
 },
 
 bundlePrice: {
