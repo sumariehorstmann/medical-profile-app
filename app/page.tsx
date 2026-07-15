@@ -1109,7 +1109,7 @@ bestValueBadge: {
   color: BRAND_GREEN,
   fontSize: 13,
   fontWeight: 950,
-  marginBottom: 16,
+  marginBottom: 22,   // was 16
 },
 
 bundleSavingText: {
@@ -1181,6 +1181,7 @@ savingBadge: {
   color: "#FFFFFF",
   fontSize: 14,
   fontWeight: 950,
+  marginTop: 12,      // adds space below the price
   marginBottom: 14,
 },
 
