@@ -355,7 +355,7 @@ useEffect(() => {
     marginTop: 50,
   }}
 >
-  GET THE RROI PREMIUM KIT BUNDLE
+  GET YOUR RROI PREMIUM KIT BUNDLE
 </h2>
 
 <p style={styles.sectionIntro}>
@@ -377,30 +377,15 @@ useEffect(() => {
           
         </div>
       </div>
-
-      <div style={styles.bundleContentGrid}>
-        <div>
-          <h4 style={styles.bundleListTitle}>
-            Your Premium Kit Bundle includes:
-          </h4>
-
-          <ul style={styles.bundleList}>
-            <li>1-year RROI Premium Emergency Profile Subscription</li>
-            <li>Engraved Metal QR Card</li>
-            <li>Engraved Metal QR Tag</li>
-            <li>Pack of 5 Splash-Proof QR Stickers</li>
-            <li>QR phone lock screen wallpaper</li>
-            <li>QR smartwatch wallpaper</li>
-            <li>Free nationwide delivery</li>
-          </ul>
-          <div
+<div
   style={{
     ...styles.bundleImages,
     gridTemplateColumns: isMobile
       ? "1fr"
-      : "repeat(3, minmax(0, 1fr))",
+      : "repeat(5, minmax(0, 1fr))",
   }}
 >
+  {/* Engraved Metal QR Card */}
   <div
     style={{
       ...styles.bundleImageCard,
@@ -436,6 +421,43 @@ useEffect(() => {
     </div>
   </div>
 
+  {/* Engraved Metal QR Tag */}
+  <div
+    style={{
+      ...styles.bundleImageCard,
+      display: isMobile ? "grid" : "block",
+      gridTemplateColumns: isMobile ? "130px 1fr" : undefined,
+      alignItems: isMobile ? "center" : undefined,
+      gap: isMobile ? 16 : undefined,
+    }}
+  >
+    <div
+      style={{
+        ...styles.bundleImageWrap,
+        height: isMobile ? 110 : 190,
+      }}
+    >
+      <Image
+        src="/images/premium-kit/qr-tag-front-back.png"
+        alt="Engraved Metal QR Tag"
+        fill
+        sizes={isMobile ? "130px" : "180px"}
+        style={styles.bundleImage}
+      />
+    </div>
+
+    <div
+      style={{
+        ...styles.bundleImageLabel,
+        marginTop: isMobile ? 0 : 12,
+        textAlign: isMobile ? "left" : "center",
+      }}
+    >
+      Engraved Metal QR Tag
+    </div>
+  </div>
+
+  {/* QR Stickers */}
   <div
     style={{
       ...styles.bundleImageCard,
@@ -471,6 +493,7 @@ useEffect(() => {
     </div>
   </div>
 
+  {/* Phone Wallpaper */}
   <div
     style={{
       ...styles.bundleImageCard,
@@ -487,8 +510,8 @@ useEffect(() => {
       }}
     >
       <Image
-        src="/images/premium-kit/qr-tag-front-back.png"
-        alt="Engraved Metal QR Tag"
+        src="/images/premium-kit/phone-lock-screen.png"
+        alt="Phone Lock Screen Wallpaper"
         fill
         sizes={isMobile ? "130px" : "180px"}
         style={styles.bundleImage}
@@ -502,10 +525,62 @@ useEffect(() => {
         textAlign: isMobile ? "left" : "center",
       }}
     >
-      Engraved Metal QR Tag
+      Phone Lock Screen Wallpaper
+    </div>
+  </div>
+
+  {/* Smartwatch Wallpaper */}
+  <div
+    style={{
+      ...styles.bundleImageCard,
+      display: isMobile ? "grid" : "block",
+      gridTemplateColumns: isMobile ? "130px 1fr" : undefined,
+      alignItems: isMobile ? "center" : undefined,
+      gap: isMobile ? 16 : undefined,
+    }}
+  >
+    <div
+      style={{
+        ...styles.bundleImageWrap,
+        height: isMobile ? 110 : 190,
+      }}
+    >
+      <Image
+        src="/images/premium-kit/smartwatch-wallpaper.png"
+        alt="Smartwatch Wallpaper"
+        fill
+        sizes={isMobile ? "130px" : "180px"}
+        style={styles.bundleImage}
+      />
+    </div>
+
+    <div
+      style={{
+        ...styles.bundleImageLabel,
+        marginTop: isMobile ? 0 : 12,
+        textAlign: isMobile ? "left" : "center",
+      }}
+    >
+      Smartwatch Wallpaper
     </div>
   </div>
 </div>
+      <div style={styles.bundleContentGrid}>
+        <div>
+          <h4 style={styles.bundleListTitle}>
+            Your Premium Kit Bundle includes:
+          </h4>
+
+          <ul style={styles.bundleList}>
+            <li>1-year RROI Premium Emergency Profile Subscription</li>
+            <li>Engraved Metal QR Card</li>
+            <li>Engraved Metal QR Tag</li>
+            <li>Pack of 5 Splash-Proof QR Stickers</li>
+            <li>QR phone lock screen wallpaper</li>
+            <li>QR smartwatch wallpaper</li>
+            <li>Free nationwide delivery</li>
+          </ul>
+          
         </div>
 
         <div style={styles.bundleActionPanel}>
@@ -1381,7 +1456,7 @@ socialLinks: {
 bundleImages: {
   display: "grid",
   gap: 16,
-  marginTop: 28,
+  marginTop: 20,
   width: "100%",
 },
 
