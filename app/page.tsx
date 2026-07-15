@@ -349,13 +349,22 @@ useEffect(() => {
     </div>
 
     {/* SEPARATE PREMIUM KIT BUNDLE */}
+    <h2
+  style={{
+    ...styles.sectionTitle,
+    marginTop: 50,
+  }}
+>
+  RROI PREMIUM KIT BUNDLE
+</h2>
+
+<p style={styles.sectionIntro}>
+  Everything you need to get started with RROI.
+</p>
     <div style={styles.bundleCard}>
       <div style={styles.bundleTopRow}>
         <div style={styles.bundleHeadingWrap}>
-          <div style={styles.bundleLabel}>
-            RROI PREMIUM KIT BUNDLE
-          </div>
-
+          
           <h3 style={styles.bundleTitle}>
             Get the RROI Premium Kit Bundle
           </h3>
@@ -672,24 +681,34 @@ useEffect(() => {
 </section>
 
       <section style={styles.sectionMuted}>
-        <div style={styles.container}>
-          <div style={styles.splitCard}>
-            <div>
-              <h2 style={styles.sectionTitleLeft}>
-  RROI Online Store
-</h2>
+  <div style={styles.container}>
 
-<p style={styles.cardTextLarge}>
-  Order additional RROI QR Cards, QR Tags and QR Stickers linked to your RROI Emergency Profile from our Online Store.
-</p>
-            </div>
+    <h2 style={styles.sectionTitle}>
+      RROI ONLINE STORE
+    </h2>
 
-            <Link href="/store" style={styles.secondaryBtnLarge}>
-              Online Store
-            </Link>
-          </div>
-        </div>
-      </section>
+    <p style={styles.sectionIntro}>
+      Order additional QR products linked to your RROI Emergency Profile.
+    </p>
+
+    <div style={styles.splitCard}>
+      <div>
+
+        <p style={styles.cardTextLarge}>
+          Order additional RROI QR Cards, QR Tags and QR Stickers linked to your
+          RROI Emergency Profile from our Online Store.
+        </p>
+
+      </div>
+
+      <Link href="/store" style={styles.secondaryBtnLarge}>
+        Online Store
+      </Link>
+
+    </div>
+
+  </div>
+</section>
 
       <section style={styles.finalSection}>
         <div style={styles.container}>
@@ -877,14 +896,7 @@ const styles: Record<string, React.CSSProperties> = {
   fontWeight: 950,
   color: TEXT,
 },
-  sectionTitleLeft: {
-    margin: "0 0 10px",
-    fontSize: "clamp(24px, 4vw, 34px)",
-    lineHeight: 1.12,
-    letterSpacing: "-0.03em",
-    fontWeight: 950,
-    color: TEXT,
-  },
+  
   grid4: {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
@@ -1005,17 +1017,6 @@ bundleTopRow: {
 
 bundleHeadingWrap: {
   flex: "1 1 520px",
-},
-
-bundleLabel: {
-  display: "inline-flex",
-  padding: "7px 12px",
-  borderRadius: 999,
-  background: "#EAF7F1",
-  color: BRAND_GREEN,
-  fontSize: 13,
-  fontWeight: 950,
-  marginBottom: 14,
 },
 
 bundleTitle: {
