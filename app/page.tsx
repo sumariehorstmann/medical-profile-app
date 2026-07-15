@@ -89,16 +89,16 @@ useEffect(() => {
 </h1>
 
 <div style={styles.badge}>
-  South African Emergency QR Profile
+  Emergency QR Profiles for South Africans
 </div>
 
 <p style={styles.sub}>
-  Create your own emergency profile linked to a unique QR code. When scanned, your emergency information opens instantly in any web browser.
+  Create your RROI Emergency Profile linked to your own unique QR code. When your QR code is scanned, your emergency information opens instantly in any web browser.
 </p>
 
 <div style={styles.ctaRow}>
   <Link href="/login?mode=signup" style={styles.primaryBtn}>
-    Sign Up
+    Get Started
   </Link>
 </div>
 
