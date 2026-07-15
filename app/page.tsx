@@ -89,7 +89,7 @@ useEffect(() => {
 </h1>
 
 <div style={styles.badge}>
-  Emergency QR Profiles for South Africans
+  Emergency Profiles for South Africans
 </div>
 
 <p style={styles.sub}>
@@ -1198,13 +1198,14 @@ bundleActionPanel: {
 
 savingBadge: {
   display: "inline-flex",
-  padding: "8px 13px",
+  padding: "5px 12px",
   borderRadius: 999,
-  background: BRAND_GREEN,
-  color: "#FFFFFF",
-  fontSize: 14,
-  fontWeight: 950,
-  marginTop: 10,      // adds space below the price
+  background: "#F0FDF4",
+  border: `1px solid #BBF7D0`,
+  color: BRAND_GREEN,
+  fontSize: 13,
+  fontWeight: 900,
+  marginTop: 12,
   marginBottom: 14,
 },
 
