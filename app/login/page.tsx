@@ -355,7 +355,7 @@ if (data.user && data.user.identities && data.user.identities.length === 0) {
 
 setMessageType("success");
 setMessage(
-  "Your account has been created successfully. Please check your email and confirm your email address before continuing."
+  "✅ Account created successfully. Please check your email and click the verification link to activate your account. Then log in."
 );
       resetSignupFields();
     } catch {
