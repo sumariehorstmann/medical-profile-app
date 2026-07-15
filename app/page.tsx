@@ -12,6 +12,8 @@ import {
   Globe,
   UsersRound,
   ArrowRight,
+  CheckCircle2,
+  Clock3,
 } from "lucide-react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 export default function HomePage() {
@@ -103,9 +105,17 @@ useEffect(() => {
   </Link>
 </div>
 
-<p style={styles.microText}>
-  Free to create. Upgrade only when you are ready.
-</p>
+<div style={styles.heroFeatures}>
+  <div style={styles.heroFeature}>
+    <CheckCircle2 size={18} color={BRAND_GREEN} />
+    <span>Free to create</span>
+  </div>
+
+  <div style={styles.heroFeature}>
+    <Clock3 size={18} color={BRAND_GREEN} />
+    <span>About 3 minutes to set up</span>
+  </div>
+</div>
                         
           </div>
         </div>
@@ -270,8 +280,7 @@ useEffect(() => {
         <p style={styles.planPrice}>R129/year</p>
 
         <p style={styles.planSub}>
-          Full Premium Emergency Profile visibility while your annual
-          subscription is active.
+          Full access to your Premium Emergency Profile while your annual subscription is active.
         </p>
 
         <ul style={styles.list}>
@@ -377,8 +386,7 @@ useEffect(() => {
     </div>
 
     <p style={styles.bundleSavingText}>
-      Buying the R129 Premium Subscription, three physical QR product
-      options and delivery separately would cost <strong>R699</strong>.
+      Buying the Premium Subscription, physical QR products and delivery separately would cost <strong>R699</strong>.
     </p>
   </div>
 </div>
@@ -774,7 +782,8 @@ useEffect(() => {
         <div style={styles.container}>
           <div style={styles.finalCta}>
   <h2 style={styles.finalTitle}>
-    Your emergency information when it matters most.
+    When every second counts, be prepared.
+Ready to create your RROI Emergency Profile?
   </h2>
 </div>
 
@@ -938,6 +947,23 @@ const styles: Record<string, React.CSSProperties> = {
     color: MUTED,
     fontWeight: 700,
   },
+  heroFeatures: {
+  marginTop: 18,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: 24,
+  flexWrap: "wrap",
+},
+
+heroFeature: {
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+  fontSize: 15,
+  fontWeight: 700,
+  color: "#334155",
+},
   section: {
   padding: "50px 0",
   background: "#FFFFFF",
