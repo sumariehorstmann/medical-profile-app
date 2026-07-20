@@ -1,4 +1,5 @@
 import type React from "react";
+import RatingForm from "./RatingForm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@supabase/ssr";
@@ -86,31 +87,7 @@ export default async function RateRROIPage() {
           Your star rating is required. All written feedback is optional.
         </p>
 
-        <section style={sectionStyle}>
-          <div style={labelStyle}>
-            1. How would you rate your overall RROI experience?{" "}
-            <span style={{ color: "#B00020" }}>*</span>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              marginTop: 12,
-              fontSize: 42,
-              lineHeight: 1,
-              color: "#D1D5DB",
-              letterSpacing: 2,
-            }}
-            aria-label="Rating selection coming soon"
-          >
-            ☆☆☆☆☆
-          </div>
-
-          <div style={hintStyle}>
-            Star rating selection will be added next.
-          </div>
-        </section>
+       <RatingForm />
 
         <section style={sectionStyle}>
           <label style={labelStyle}>
@@ -228,12 +205,6 @@ const labelStyle: React.CSSProperties = {
 const optionalStyle: React.CSSProperties = {
   marginTop: 4,
   marginBottom: 8,
-  fontSize: 13,
-  color: "#64748B",
-};
-
-const hintStyle: React.CSSProperties = {
-  marginTop: 10,
   fontSize: 13,
   color: "#64748B",
 };
