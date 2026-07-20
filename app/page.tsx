@@ -93,7 +93,7 @@ useEffect(() => {
 </div>
 
 <p style={styles.sub}>
-  Create your RROI Emergency Profile linked to your own unique QR code. When your QR code is scanned, your emergency information opens instantly in any web browser.
+  Create your RROI Emergency Profile linked to your own unique QR code. When your QR code is scanned, your emergency information opens instantly in any web browser. Public profile information displayed is supplied and managed by the profile owner.
 </p>
 
 <div style={styles.ctaRow}>
