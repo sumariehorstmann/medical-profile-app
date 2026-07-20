@@ -358,9 +358,7 @@ useEffect(() => {
     <h2
   style={{
     ...styles.sectionTitle,
-    marginTop: 24,
-    marginBottom: 14,
-    fontSize: "clamp(22px, 3vw, 30px)",
+    marginTop: 56,
   }}
 >
   GET YOUR RROI PREMIUM KIT BUNDLE
@@ -667,8 +665,8 @@ useEffect(() => {
   <div style={styles.container}>
 
     <h2 style={styles.sectionTitle}>
-      Why carry an RROI QR code?
-    </h2>
+  WHY CARRY AN RROI QR CODE?
+</h2>
 
     <p style={styles.sectionIntro}>
       Carry your RROI QR code every day so the emergency information you
@@ -967,15 +965,16 @@ heroFeature: {
   color: "#334155",
 },
   section: {
-  padding: "50px 0",
+  padding: "56px 0",
   background: "#FFFFFF",
 },
-  sectionMuted: {
-    padding: "46px 0",
-    background: SOFT,
-  },
+
+sectionMuted: {
+  padding: "56px 0",
+  background: SOFT,
+},
   sectionTitle: {
-  margin: "0 auto 20px",
+  margin: "0 auto 24px",
   maxWidth: 720,
   textAlign: "center",
   fontSize: "clamp(24px, 3.5vw, 34px)",
@@ -1442,7 +1441,7 @@ installBtn: {
   boxShadow: "0 12px 24px rgba(21,122,85,0.25)",
 },
 sectionIntro: {
-  margin: "-6px auto 48px",
+  margin: "8px auto 48px",
   maxWidth: 680,
   textAlign: "center",
   fontSize: 17,
