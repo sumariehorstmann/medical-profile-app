@@ -2,13 +2,77 @@
 
 import { useState, type CSSProperties } from "react";
 
+type PermissionChoice = "public" | "internal" | "";
+
 export default function RatingForm() {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [experienceComment, setExperienceComment] = useState("");
   const [improvementFeedback, setImprovementFeedback] = useState("");
+  const [permissionChoice, setPermissionChoice] =
+    useState<PermissionChoice>("");
+
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<
+    "success" | "error" | null
+  >(null);
 
   const visibleRating = hoveredRating || rating;
+
+  async function handleSaveRating() {
+    setMessage(null);
+    setMessageType(null);
+
+    if (rating < 1 || rating > 5) {
+      setMessage("Please select a rating from 1 to 5 stars.");
+      setMessageType("error");
+      return;
+    }
+
+    if (!permissionChoice) {
+      setMessage("Please choose how RROI may use your feedback.");
+      setMessageType("error");
+      return;
+    }
+
+    try {
+      setSaving(true);
+
+      const response = await fetch("/api/ratings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          rating,
+          experience_comment: experienceComment,
+          improvement_feedback: improvementFeedback,
+          public_permission: permissionChoice === "public",
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result?.error || "Your rating could not be saved."
+        );
+      }
+
+      setMessage("Thank you. Your rating has been saved successfully.");
+      setMessageType("success");
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while saving your rating."
+      );
+      setMessageType("error");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <>
@@ -38,9 +102,11 @@ export default function RatingForm() {
                 onMouseLeave={() => setHoveredRating(0)}
                 onFocus={() => setHoveredRating(star)}
                 onBlur={() => setHoveredRating(0)}
+                disabled={saving}
                 style={{
                   ...starButtonStyle,
                   color: selected ? "#F4B400" : "#D1D5DB",
+                  cursor: saving ? "not-allowed" : "pointer",
                 }}
               >
                 ★
@@ -70,6 +136,7 @@ export default function RatingForm() {
           value={experienceComment}
           onChange={(event) => setExperienceComment(event.target.value)}
           placeholder="Tell us what you like about RROI or how it has helped you."
+          disabled={saving}
           style={textareaStyle}
         />
 
@@ -92,6 +159,7 @@ export default function RatingForm() {
           value={improvementFeedback}
           onChange={(event) => setImprovementFeedback(event.target.value)}
           placeholder="Share any suggestions or ideas that could make RROI even better."
+          disabled={saving}
           style={textareaStyle}
         />
 
@@ -99,6 +167,85 @@ export default function RatingForm() {
           {improvementFeedback.length}/1000
         </div>
       </section>
+
+      <section style={sectionStyle}>
+        <div style={labelStyle}>
+          4. Permission to use your feedback{" "}
+          <span style={{ color: "#B00020" }}>*</span>
+        </div>
+
+        <p style={permissionIntroStyle}>
+          Please choose how RROI may use your feedback.
+        </p>
+
+        <label style={radioRowStyle}>
+          <input
+            type="radio"
+            name="feedback-permission"
+            value="public"
+            checked={permissionChoice === "public"}
+            onChange={() => setPermissionChoice("public")}
+            disabled={saving}
+            style={radioStyle}
+          />
+
+          <span>
+            <strong>I give RROI permission</strong> to use my star rating and
+            written feedback on the RROI website, social media and other
+            marketing material. Only my name and surname will be displayed. My
+            contact details and private profile information will not be
+            published.
+          </span>
+        </label>
+
+        <label style={radioRowStyle}>
+          <input
+            type="radio"
+            name="feedback-permission"
+            value="internal"
+            checked={permissionChoice === "internal"}
+            onChange={() => setPermissionChoice("internal")}
+            disabled={saving}
+            style={radioStyle}
+          />
+
+          <span>
+            <strong>I do not give RROI permission</strong> to use my feedback
+            publicly. My rating and comments may only be used internally by RROI
+            to help improve its products and services.
+          </span>
+        </label>
+      </section>
+
+      {message ? (
+        <div
+          role="status"
+          style={{
+            ...messageStyle,
+            borderColor:
+              messageType === "success" ? "#BBF7D0" : "#FECACA",
+            background:
+              messageType === "success" ? "#F0FDF4" : "#FEF2F2",
+            color:
+              messageType === "success" ? "#166534" : "#991B1B",
+          }}
+        >
+          {message}
+        </div>
+      ) : null}
+
+      <button
+        type="button"
+        onClick={handleSaveRating}
+        disabled={saving}
+        style={{
+          ...saveButtonStyle,
+          opacity: saving ? 0.65 : 1,
+          cursor: saving ? "not-allowed" : "pointer",
+        }}
+      >
+        {saving ? "SAVING..." : "SAVE MY RATING"}
+      </button>
     </>
   );
 }
@@ -138,8 +285,7 @@ const starButtonStyle: CSSProperties = {
   padding: "2px",
   fontSize: 44,
   lineHeight: 1,
-  cursor: "pointer",
-  transition: "color 0.15s ease, transform 0.15s ease",
+  transition: "color 0.15s ease",
 };
 
 const hintStyle: CSSProperties = {
@@ -168,4 +314,48 @@ const characterCountStyle: CSSProperties = {
   textAlign: "right",
   fontSize: 12,
   color: "#64748B",
+};
+
+const permissionIntroStyle: CSSProperties = {
+  margin: "8px 0 16px",
+  fontSize: 14,
+  lineHeight: 1.6,
+  color: "#475569",
+};
+
+const radioRowStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "flex-start",
+  gap: 12,
+  marginBottom: 16,
+  fontSize: 14,
+  lineHeight: 1.65,
+  color: "#334155",
+  cursor: "pointer",
+};
+
+const radioStyle: CSSProperties = {
+  marginTop: 5,
+  flexShrink: 0,
+};
+
+const messageStyle: CSSProperties = {
+  marginBottom: 16,
+  padding: "12px 14px",
+  border: "1px solid",
+  borderRadius: 12,
+  fontSize: 14,
+  lineHeight: 1.6,
+  fontWeight: 700,
+};
+
+const saveButtonStyle: CSSProperties = {
+  width: "100%",
+  padding: "14px 18px",
+  borderRadius: 12,
+  border: "1px solid #157A55",
+  background: "#157A55",
+  color: "#FFFFFF",
+  fontSize: 16,
+  fontWeight: 900,
 };

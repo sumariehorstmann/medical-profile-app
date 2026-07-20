@@ -1,4 +1,3 @@
-import type React from "react";
 import RatingForm from "./RatingForm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -87,99 +86,8 @@ export default async function RateRROIPage() {
           Your star rating is required. All written feedback is optional.
         </p>
 
-       <RatingForm />
-              
-        <section style={sectionStyle}>
-          <div style={labelStyle}>Permission to use your feedback</div>
-
-          <p
-            style={{
-              margin: "8px 0 16px",
-              fontSize: 14,
-              lineHeight: 1.6,
-              color: "#475569",
-            }}
-          >
-            Please choose how RROI may use your feedback.
-          </p>
-
-          <label style={radioRowStyle}>
-            <input type="radio" disabled />
-
-            <span>
-              <strong>I give RROI permission</strong> to use my star rating and
-              written feedback on the RROI website, social media and other
-              marketing material. Only my name and surname will be displayed.
-              My contact details and private profile information will not be
-              published.
-            </span>
-          </label>
-
-          <label style={radioRowStyle}>
-            <input type="radio" disabled />
-
-            <span>
-              <strong>I do not give RROI permission</strong> to use my feedback
-              publicly. My rating and comments may only be used internally by
-              RROI to help improve its products and services.
-            </span>
-          </label>
-        </section>
-
-        <button
-          type="button"
-          disabled
-          style={{
-            width: "100%",
-            padding: "14px 18px",
-            borderRadius: 12,
-            border: "1px solid #157A55",
-            background: "#157A55",
-            color: "#FFFFFF",
-            fontSize: 16,
-            fontWeight: 900,
-            opacity: 0.5,
-            cursor: "not-allowed",
-          }}
-        >
-          SAVE MY RATING
-        </button>
-
-        <div
-          style={{
-            marginTop: 14,
-            textAlign: "center",
-            fontSize: 13,
-            color: "#64748B",
-          }}
-        >
-          The rating form is currently under development.
-        </div>
+        <RatingForm />
       </div>
     </main>
   );
 }
-
-const sectionStyle: React.CSSProperties = {
-  marginBottom: 24,
-  paddingBottom: 24,
-  borderBottom: "1px solid #E5E7EB",
-};
-
-const labelStyle: React.CSSProperties = {
-  display: "block",
-  fontSize: 16,
-  fontWeight: 800,
-  lineHeight: 1.5,
-  color: "#0F172A",
-};
-
-const radioRowStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "flex-start",
-  gap: 12,
-  marginBottom: 16,
-  fontSize: 14,
-  lineHeight: 1.65,
-  color: "#334155",
-};
