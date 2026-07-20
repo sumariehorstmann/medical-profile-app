@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
+import { useRouter } from "next/navigation";
 
 type PermissionChoice = "public" | "internal" | "";
 
 export default function RatingForm() {
   const [rating, setRating] = useState(0);
+  const router = useRouter();
   const [hoveredRating, setHoveredRating] = useState(0);
   const [experienceComment, setExperienceComment] = useState("");
   const [improvementFeedback, setImprovementFeedback] = useState("");
@@ -246,6 +248,24 @@ export default function RatingForm() {
       >
         {saving ? "SAVING..." : "SAVE MY RATING"}
       </button>
+      <button
+  type="button"
+  onClick={() => router.push("/profile")}
+  style={{
+    width: "100%",
+    marginTop: 12,
+    padding: "14px 18px",
+    borderRadius: 12,
+    border: "1px solid #D1D5DB",
+    background: "#FFFFFF",
+    color: "#0F172A",
+    fontSize: 16,
+    fontWeight: 700,
+    cursor: "pointer",
+  }}
+>
+  ← Back to My Profile
+</button>
     </>
   );
 }
