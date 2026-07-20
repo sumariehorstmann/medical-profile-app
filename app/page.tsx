@@ -1442,7 +1442,7 @@ installBtn: {
   boxShadow: "0 12px 24px rgba(21,122,85,0.25)",
 },
 sectionIntro: {
-  margin: "-6px auto 26px",
+  margin: "-6px auto 48px",
   maxWidth: 680,
   textAlign: "center",
   fontSize: 17,
