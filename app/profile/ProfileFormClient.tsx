@@ -1391,6 +1391,19 @@ emergency_button3_description: getText("emergency_button3_description"),
           </button>
         ) : null}
 
+<button
+  type="button"
+  style={{
+    ...secondaryBtnStyle,
+    borderColor: "#157A55",
+    color: "#157A55",
+  }}
+  onClick={() => router.push("/rate-rroi")}
+  disabled={loading}
+>
+  ★★★★★ RATE RROI
+</button>
+
         <button
           type="button"
           style={secondaryBtnStyle}
