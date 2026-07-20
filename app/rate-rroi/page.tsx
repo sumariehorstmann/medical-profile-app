@@ -88,35 +88,7 @@ export default async function RateRROIPage() {
         </p>
 
        <RatingForm />
-
-        <section style={sectionStyle}>
-          <label style={labelStyle}>
-            2. Tell us about your experience with RROI
-          </label>
-
-          <div style={optionalStyle}>Optional</div>
-
-          <textarea
-            disabled
-            rows={5}
-            placeholder="Tell us what you like about RROI or how it has helped you."
-            style={textareaStyle}
-          />
-        </section>
-
-        <section style={sectionStyle}>
-          <label style={labelStyle}>3. How could we improve RROI?</label>
-
-          <div style={optionalStyle}>Optional</div>
-
-          <textarea
-            disabled
-            rows={5}
-            placeholder="Share any suggestions or ideas that could make RROI even better."
-            style={textareaStyle}
-          />
-        </section>
-
+              
         <section style={sectionStyle}>
           <div style={labelStyle}>Permission to use your feedback</div>
 
@@ -200,27 +172,6 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 800,
   lineHeight: 1.5,
   color: "#0F172A",
-};
-
-const optionalStyle: React.CSSProperties = {
-  marginTop: 4,
-  marginBottom: 8,
-  fontSize: 13,
-  color: "#64748B",
-};
-
-const textareaStyle: React.CSSProperties = {
-  width: "100%",
-  boxSizing: "border-box",
-  padding: "13px 14px",
-  border: "1px solid #D1D5DB",
-  borderRadius: 12,
-  background: "#F8FAFC",
-  color: "#64748B",
-  fontSize: 15,
-  fontFamily: "inherit",
-  lineHeight: 1.6,
-  resize: "vertical",
 };
 
 const radioRowStyle: React.CSSProperties = {
