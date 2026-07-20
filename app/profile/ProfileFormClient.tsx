@@ -752,30 +752,39 @@ emergency_button3_description: getText("emergency_button3_description"),
               </div>
 
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <button
-  type="button"
-  style={{
-    ...secondaryBtnStyle,
-    background: linkCopied ? "#157A55" : "#FFFFFF",
-    color: linkCopied ? "#FFFFFF" : "#0F172A",
-    border: linkCopied ? "1px solid #157A55" : "1px solid #D1D5DB",
-  }}
-  onClick={async () => {
-    if (!publicUrl) return;
+  <button
+    type="button"
+    style={{
+      ...secondaryBtnStyle,
+      background: linkCopied ? "#157A55" : "#FFFFFF",
+      color: linkCopied ? "#FFFFFF" : "#0F172A",
+      border: linkCopied ? "1px solid #157A55" : "1px solid #D1D5DB",
+    }}
+    onClick={async () => {
+      if (!publicUrl) return;
 
-    await navigator.clipboard.writeText(publicUrl);
-    setLinkCopied(true);
-    setMessage("✅ Link copied.");
+      await navigator.clipboard.writeText(publicUrl);
+      setLinkCopied(true);
+      setMessage("✅ Link copied.");
 
-    setTimeout(() => {
-      setLinkCopied(false);
-    }, 2000);
-  }}
-  disabled={!publicUrl}
->
-  {linkCopied ? "Copied!" : "Copy Link"}
-</button>
-              </div>
+      setTimeout(() => {
+        setLinkCopied(false);
+      }, 2000);
+    }}
+    disabled={!publicUrl}
+  >
+    {linkCopied ? "Copied!" : "Copy Link"}
+  </button>
+
+  <button
+    type="button"
+    style={secondaryBtnStyle}
+    onClick={() => window.open(publicUrl, "_blank")}
+    disabled={!publicUrl}
+  >
+    View My Public Profile
+  </button>
+</div>
 
               {publicId ? (
   <div style={{ marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap" }}>
