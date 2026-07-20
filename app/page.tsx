@@ -358,36 +358,37 @@ useEffect(() => {
     <h2
   style={{
     ...styles.sectionTitle,
-    marginTop: 50,
+    marginTop: 24,
+    marginBottom: 14,
+    fontSize: "clamp(22px, 3vw, 30px)",
   }}
 >
   GET YOUR RROI PREMIUM KIT BUNDLE
 </h2>
 
 <p style={styles.sectionIntro}>
-  The RROI Premium Kit Bundle combines your first year of Premium access with physical QR products and free nationwide delivery.
+  Includes one year of Premium access, three physical QR products, free nationwide delivery, saving you R200 compared to buying everything separately.
 </p>
     <div style={styles.bundleCard}>
       <div style={styles.bundleTopRow}>
   <div style={styles.bundlePriceBox}>
   <div style={styles.bundleTop}>
     <div style={styles.bestValueBadge}>
-      BEST VALUE
-    </div>
+  BEST VALUE
+</div>
 
-    <div style={styles.bundlePrice}>
-      R499
-    </div>
+<h3 style={styles.bundleProductTitle}>
+  RROI Premium Kit Bundle
+</h3>
 
-    <div style={styles.savingBadge}>
-      SAVE R200
-    </div>
+<div style={styles.bundlePrice}>
+  R499
+</div>
+    
   </div>
 
   <div style={styles.bundleBottom}>
-    <p style={styles.bundleSavingText}>
-      Buying the Premium Subscription, physical QR products and delivery separately would cost <strong>R699</strong>.
-    </p>
+   
   </div>
 </div>
 </div>
@@ -1139,6 +1140,14 @@ bestValueBadge: {
   marginBottom: 14,   // was 16
 },
 
+bundleProductTitle: {
+  margin: "0 0 14px",
+  fontSize: 24,
+  lineHeight: 1.2,
+  fontWeight: 950,
+  color: TEXT,
+},
+
 bundleSavingText: {
   marginTop: 14,
   fontSize: 14,
@@ -1198,19 +1207,6 @@ bundleActionPanel: {
   borderRadius: 18,
   background: SOFT,
   border: `1px solid ${BORDER}`,
-},
-
-savingBadge: {
-  display: "inline-flex",
-  padding: "5px 12px",
-  borderRadius: 999,
-  background: "#F0FDF4",
-  border: `1px solid #BBF7D0`,
-  color: BRAND_GREEN,
-  fontSize: 13,
-  fontWeight: 900,
-  marginTop: 12,
-  marginBottom: 14,
 },
 
 bundleActionText: {
@@ -1559,9 +1555,8 @@ upgradeArrow: {
   lineHeight: 1.5,
 },
 bundleTop: {
-  paddingBottom: 18,
-  marginBottom: 18,
-  borderBottom: `1px solid #BBF7D0`,
+  paddingBottom: 0,
+  marginBottom: 0,
 },
 
 bundleBottom: {
