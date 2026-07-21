@@ -22,6 +22,14 @@ type AdminUser = {
   amount: number | null;
   payment_status: string | null;
   paid_at: string | null;
+
+  rating: number | null;
+  experience_comment: string | null;
+  improvement_feedback: string | null;
+  public_permission: boolean | null;
+  show_on_homepage: boolean;
+  rating_created_at: string | null;
+  rating_updated_at: string | null;
 };
 
 type FilterType = "all" | "free" | "premium" | "active" | "expired";
@@ -48,7 +56,8 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
   const [sort, setSort] = useState<SortType>("end_asc");
-
+const [updatingHomepageUserId, setUpdatingHomepageUserId] =
+  useState<string | null>(null);
   useEffect(() => {
     async function loadUsers() {
       try {
@@ -87,7 +96,65 @@ const res = await fetch("/api/admin/users", {
 
     loadUsers();
   }, []);
+async function handleHomepageSelection(
+  userId: string,
+  showOnHomepage: boolean
+) {
+  try {
+    setUpdatingHomepageUserId(userId);
+    setError("");
 
+    const {
+      data: { session },
+      error: sessionError,
+    } = await createSupabaseBrowser().auth.getSession();
+
+    if (sessionError || !session?.access_token) {
+      throw new Error("You must be logged in as admin.");
+    }
+
+    const response = await fetch("/api/admin/users", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        show_on_homepage: showOnHomepage,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result?.error || "Failed to update homepage testimonial."
+      );
+    }
+
+    setUsers((currentUsers) =>
+      currentUsers.map((user) =>
+        user.user_id === userId
+          ? {
+              ...user,
+              show_on_homepage: showOnHomepage,
+              rating_updated_at:
+                result?.rating?.updated_at ?? user.rating_updated_at,
+            }
+          : user
+      )
+    );
+  } catch (err) {
+    setError(
+      err instanceof Error
+        ? err.message
+        : "Failed to update homepage testimonial."
+    );
+  } finally {
+    setUpdatingHomepageUserId(null);
+  }
+}
   const filteredUsers = useMemo(() => {
     const q = search.trim().toLowerCase();
 
@@ -200,6 +267,9 @@ const res = await fetch("/api/admin/users", {
                 <th style={styles.th}>Name</th>
                 <th style={styles.th}>Email</th>
                 <th style={styles.th}>Marketing</th>
+                <th style={styles.th}>Rating</th>
+                <th style={styles.th}>Feedback Permission</th>
+                <th style={styles.th}>Feedback</th>
                 <th style={styles.th}>Profile Type</th>
                 <th style={styles.th}>Status</th>
                 <th style={styles.th}>Start</th>
@@ -224,6 +294,103 @@ const res = await fetch("/api/admin/users", {
 
 <td style={styles.td}>
   {user.marketing_consent ? "✅ Yes" : "❌ No"}
+</td>
+<td style={styles.td}>
+  {user.rating
+    ? `${"★".repeat(user.rating)}${"☆".repeat(5 - user.rating)}`
+    : "Not rated"}
+</td>
+
+<td style={styles.td}>
+  {user.public_permission === true
+    ? "Public use allowed"
+    : user.public_permission === false
+      ? "Internal use only"
+      : "-"}
+</td>
+<td style={styles.td}>
+  {user.rating ? (
+    <details>
+      <summary style={styles.feedbackSummary}>
+        View feedback
+      </summary>
+
+      <div style={styles.feedbackBox}>
+        <div>
+          <strong>Experience:</strong>
+          <p style={styles.feedbackText}>
+            {user.experience_comment || "No comment provided."}
+          </p>
+        </div>
+
+        <div>
+          <strong>Improvement feedback:</strong>
+          <p style={styles.feedbackText}>
+            {user.improvement_feedback || "No feedback provided."}
+          </p>
+        </div>
+
+        <div>
+          <strong>Submitted:</strong>{" "}
+          {formatDate(user.rating_created_at)}
+        </div>
+
+        <div>
+          <strong>Last updated:</strong>{" "}
+          {formatDate(user.rating_updated_at)}
+        </div>
+
+        <div>
+  <strong>Homepage:</strong>{" "}
+  {user.show_on_homepage ? "✅ Featured" : "❌ Not featured"}
+</div>
+
+{user.rating === 5 && user.public_permission === true && (
+  <div
+    style={{
+      marginTop: 14,
+      paddingTop: 12,
+      borderTop: "1px solid #E5E7EB",
+    }}
+  >
+    <button
+  type="button"
+  onClick={() =>
+    handleHomepageSelection(
+      user.user_id,
+      !user.show_on_homepage
+    )
+  }
+  disabled={updatingHomepageUserId === user.user_id}
+  style={{
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: 10,
+    border: "1px solid #157A55",
+    background: user.show_on_homepage ? "#FFFFFF" : "#157A55",
+    color: user.show_on_homepage ? "#157A55" : "#FFFFFF",
+    fontWeight: 800,
+    cursor:
+      updatingHomepageUserId === user.user_id
+        ? "not-allowed"
+        : "pointer",
+    opacity:
+      updatingHomepageUserId === user.user_id ? 0.65 : 1,
+  }}
+>
+  {updatingHomepageUserId === user.user_id
+    ? "Updating..."
+    : user.show_on_homepage
+      ? "Remove from Homepage"
+      : "Show on Homepage"}
+</button>
+  </div>
+)}
+      </div>
+    </details>
+  ) : (
+    "-"
+  )}
 </td>
                     <td style={styles.td}>{isPremium ? "Premium" : "Free"}</td>
                     <td style={styles.td}>{user.subscription_status || "-"}</td>
@@ -266,6 +433,29 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 900,
     marginBottom: 20,
   },
+  feedbackSummary: {
+  cursor: "pointer",
+  fontWeight: 800,
+  color: "#157A55",
+  whiteSpace: "nowrap",
+},
+
+feedbackBox: {
+  marginTop: 10,
+  width: 320,
+  padding: 14,
+  border: "1px solid #E5E7EB",
+  borderRadius: 10,
+  background: "#F8FAFC",
+  whiteSpace: "normal",
+  lineHeight: 1.6,
+},
+
+feedbackText: {
+  margin: "4px 0 12px",
+  color: "#475569",
+  whiteSpace: "pre-wrap",
+},
   statsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
