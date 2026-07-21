@@ -21,6 +21,7 @@ export default function HomePage() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 const [isInstalled, setIsInstalled] = useState(false);
 const [isMobile, setIsMobile] = useState(false);
+const [testimonials, setTestimonials] = useState<any[]>([]);
 
   useEffect(() => {
   const params = new URLSearchParams(window.location.search);
@@ -76,7 +77,42 @@ useEffect(() => {
     window.removeEventListener("resize", checkScreenSize);
   };
 }, []);
+useEffect(() => {
+  let cancelled = false;
 
+  async function loadTestimonials() {
+    try {
+      const response = await fetch("/api/testimonials", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result?.error || "Testimonials could not be loaded."
+        );
+      }
+
+      if (!cancelled) {
+        setTestimonials(Array.isArray(result) ? result : []);
+      }
+    } catch (error) {
+      console.error("Homepage testimonials error:", error);
+
+      if (!cancelled) {
+        setTestimonials([]);
+      }
+    }
+  }
+
+  void loadTestimonials();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
   return (
     <main style={styles.page}>
       <section style={styles.hero}>
@@ -777,7 +813,41 @@ useEffect(() => {
 
   </div>
 </section>
+{testimonials.length > 0 && (
+  <section style={styles.section}>
+    <div style={styles.container}>
+      <h2 style={styles.sectionTitle}>WHAT OUR USERS SAY</h2>
 
+      <p style={styles.sectionIntro}>
+        Feedback from RROI users who have chosen to share their experience.
+      </p>
+
+      <div style={styles.testimonialsGrid}>
+        {testimonials.map((testimonial, index) => (
+          <article
+            key={`${testimonial.name}-${index}`}
+            style={styles.testimonialCard}
+          >
+            <div
+              style={styles.testimonialStars}
+              aria-label={`${testimonial.rating} out of 5 stars`}
+            >
+              {"★".repeat(testimonial.rating)}
+            </div>
+
+            <p style={styles.testimonialComment}>
+              “{testimonial.comment || "Excellent experience using RROI."}”
+            </p>
+
+            <div style={styles.testimonialName}>
+              {testimonial.name}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
       <section style={styles.finalSection}>
         <div style={styles.container}>
           <div style={styles.finalCta}>
@@ -1560,5 +1630,48 @@ bundleTop: {
 
 bundleBottom: {
   paddingTop: 2,
+},
+testimonialsGrid: {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+  gap: 18,
+  maxWidth: 1000,
+  margin: "0 auto",
+},
+
+testimonialCard: {
+  display: "flex",
+  flexDirection: "column",
+  minHeight: 230,
+  padding: 24,
+  border: `1px solid ${BORDER}`,
+  borderRadius: 20,
+  background: "#FFFFFF",
+  boxShadow: "0 12px 28px rgba(15, 23, 42, 0.06)",
+},
+
+testimonialStars: {
+  marginBottom: 18,
+  color: "#F4B400",
+  fontSize: 24,
+  lineHeight: 1,
+  letterSpacing: 2,
+},
+
+testimonialComment: {
+  margin: "0 0 20px",
+  flexGrow: 1,
+  fontSize: 16,
+  lineHeight: 1.7,
+  color: "#334155",
+  whiteSpace: "pre-wrap",
+},
+
+testimonialName: {
+  paddingTop: 14,
+  borderTop: `1px solid ${BORDER}`,
+  fontSize: 15,
+  fontWeight: 900,
+  color: TEXT,
 },
 };
