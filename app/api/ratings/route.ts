@@ -16,30 +16,82 @@ function cleanOptionalText(value: unknown): string | null {
   return cleaned ? cleaned : null;
 }
 
+async function createAuthenticatedSupabaseClient() {
+  const cookieStore = await cookies();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // Cookies cannot always be written from this context.
+          }
+        },
+      },
+    }
+  );
+
+  return supabase;
+}
+
+export async function GET() {
+  try {
+    const supabase = await createAuthenticatedSupabaseClient();
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      return NextResponse.json(
+        { error: "You must be logged in to view your rating." },
+        { status: 401 }
+      );
+    }
+
+    const { data, error } = await supabase
+      .from("ratings")
+      .select(
+        "id, rating, experience_comment, improvement_feedback, public_permission, show_on_homepage, created_at, updated_at"
+      )
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Rating read error:", error);
+
+      return NextResponse.json(
+        { error: "Your rating could not be loaded." },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      rating: data ?? null,
+    });
+  } catch (error) {
+    console.error("Rating GET API error:", error);
+
+    return NextResponse.json(
+      { error: "Something went wrong while loading your rating." },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll(cookiesToSet) {
-            try {
-              cookiesToSet.forEach(({ name, value, options }) =>
-                cookieStore.set(name, value, options)
-              );
-            } catch {
-              // Cookies cannot always be written from a route response context.
-            }
-          },
-        },
-      }
-    );
+    const supabase = await createAuthenticatedSupabaseClient();
 
     const {
       data: { user },
@@ -70,14 +122,19 @@ export async function POST(request: Request) {
 
     if (experienceComment && experienceComment.length > 1000) {
       return NextResponse.json(
-        { error: "Your experience comment may not exceed 1000 characters." },
+        {
+          error: "Your experience comment may not exceed 1000 characters.",
+        },
         { status: 400 }
       );
     }
 
     if (improvementFeedback && improvementFeedback.length > 1000) {
       return NextResponse.json(
-        { error: "Your improvement feedback may not exceed 1000 characters." },
+        {
+          error:
+            "Your improvement feedback may not exceed 1000 characters.",
+        },
         { status: 400 }
       );
     }
@@ -122,7 +179,7 @@ export async function POST(request: Request) {
       rating: data,
     });
   } catch (error) {
-    console.error("Rating API error:", error);
+    console.error("Rating POST API error:", error);
 
     return NextResponse.json(
       { error: "Something went wrong while saving your rating." },

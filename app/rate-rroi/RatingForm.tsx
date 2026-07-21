@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 
 type PermissionChoice = "public" | "internal" | "";
@@ -15,12 +15,66 @@ export default function RatingForm() {
     useState<PermissionChoice>("");
 
   const [saving, setSaving] = useState(false);
+  const [loadingRating, setLoadingRating] = useState(true);
+  const [hasExistingRating, setHasExistingRating] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<
     "success" | "error" | null
   >(null);
 
   const visibleRating = hoveredRating || rating;
+
+useEffect(() => {
+  let cancelled = false;
+
+  async function loadExistingRating() {
+    try {
+      const response = await fetch("/api/ratings", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result?.error || "Your existing rating could not be loaded."
+        );
+      }
+
+      if (cancelled) return;
+
+      if (result.rating) {
+        setRating(result.rating.rating);
+        setExperienceComment(result.rating.experience_comment ?? "");
+        setImprovementFeedback(result.rating.improvement_feedback ?? "");
+        setPermissionChoice(
+          result.rating.public_permission ? "public" : "internal"
+        );
+        setHasExistingRating(true);
+      }
+    } catch (error) {
+      if (cancelled) return;
+
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Your existing rating could not be loaded."
+      );
+      setMessageType("error");
+    } finally {
+      if (!cancelled) {
+        setLoadingRating(false);
+      }
+    }
+  }
+
+  void loadExistingRating();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
 
   async function handleSaveRating() {
     setMessage(null);
@@ -64,6 +118,7 @@ export default function RatingForm() {
 
       setMessage("Thank you. Your rating has been saved successfully.");
       setMessageType("success");
+      setHasExistingRating(true);
     } catch (error) {
       setMessage(
         error instanceof Error
@@ -239,14 +294,18 @@ export default function RatingForm() {
       <button
         type="button"
         onClick={handleSaveRating}
-        disabled={saving}
+        disabled={saving || loadingRating}
         style={{
           ...saveButtonStyle,
-          opacity: saving ? 0.65 : 1,
-          cursor: saving ? "not-allowed" : "pointer",
+          opacity: saving || loadingRating ? 0.65 : 1,
+cursor: saving || loadingRating ? "not-allowed" : "pointer",
         }}
       >
-        {saving ? "SAVING..." : "SAVE MY RATING"}
+        {saving
+  ? "SAVING..."
+  : hasExistingRating
+    ? "UPDATE MY RATING"
+    : "SAVE MY RATING"}
       </button>
       <button
   type="button"
