@@ -1,4 +1,5 @@
 import PageHeader from "@/components/PageHeader";
+import DeleteAccountClient from "./DeleteAccountClient";
 
 export default function DeleteAccountPage() {
   return (
@@ -27,48 +28,7 @@ export default function DeleteAccountPage() {
           Delete RROI Account
         </h1>
 
-        <div
-          style={{
-            background: "#fff5f5",
-            border: "1px solid #fecaca",
-            borderRadius: 12,
-            padding: 24,
-          }}
-        >
-          <h2
-            style={{
-              color: "#991b1b",
-              marginTop: 0,
-            }}
-          >
-            Permanently Delete Account
-          </h2>
-
-          <p>
-            This page allows you to permanently delete your RROI account and
-            all associated emergency profile information.
-          </p>
-
-          <p>
-            You must be logged in before you can delete your account.
-          </p>
-
-          <a
-            href="/login"
-            style={{
-              display: "inline-block",
-              marginTop: 20,
-              padding: "12px 18px",
-              background: "#157A55",
-              color: "#fff",
-              borderRadius: 8,
-              textDecoration: "none",
-              fontWeight: 700,
-            }}
-          >
-            Log in
-          </a>
-        </div>
+        <DeleteAccountClient />
       </div>
     </main>
   );

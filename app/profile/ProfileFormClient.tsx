@@ -1420,12 +1420,7 @@ emergency_button3_description: getText("emergency_button3_description"),
     borderColor: "#ddd",
     color: "#333",
   }}
-  onClick={() => {
-    setShowDeleteBox(true);
-    setDeletePassword("");
-    setDeleteConfirmText("");
-    setMessage(null);
-  }}
+  onClick={() => router.push("/delete-account")}
 >
   Delete account
 </button>
