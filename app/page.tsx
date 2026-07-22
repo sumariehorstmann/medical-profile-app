@@ -1671,12 +1671,15 @@ bundleImage: {
 
 bundleImageLabel: {
   maxWidth: "100%",
-  overflowWrap: "anywhere",
-  wordBreak: "break-word",
+  minWidth: 0,
   marginTop: 12,
   fontSize: 16,
+  lineHeight: 1.3,
   fontWeight: 900,
   color: TEXT,
+  whiteSpace: "normal",
+  overflowWrap: "normal",
+  wordBreak: "normal",
 },
 
 socialLink: {
