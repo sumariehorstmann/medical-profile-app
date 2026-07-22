@@ -339,17 +339,23 @@ export default function PublicPageClient({ profile }: Props) {
         <a
           href="https://www.rroi.co.za"
           style={{
-            display: "block",
-            width: "100%",
-            textAlign: "center",
-            background: "#157A55",
-            color: "#FFFFFF",
-            padding: "16px",
-            borderRadius: "12px",
-            textDecoration: "none",
-            fontWeight: 900,
-            fontSize: "18px",
-          }}
+  display: "block",
+  width: "100%",
+  maxWidth: "100%",
+  boxSizing: "border-box",
+  textAlign: "center",
+  background: "#157A55",
+  color: "#FFFFFF",
+  padding: "16px",
+  borderRadius: "12px",
+  textDecoration: "none",
+  fontWeight: 900,
+  fontSize: "18px",
+  lineHeight: 1.4,
+  whiteSpace: "normal",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
+}}
         >
           Create Your Own RROI Emergency Profile
         </a>
@@ -360,20 +366,27 @@ export default function PublicPageClient({ profile }: Props) {
 }
 
 const pageStyle: React.CSSProperties = {
+  width: "100%",
   maxWidth: 860,
   margin: "0 auto",
   padding: 20,
+  boxSizing: "border-box",
   fontFamily: "system-ui, sans-serif",
   background: "#F8FAFC",
   minHeight: "100vh",
+  overflowX: "hidden",
 };
 
 const headerCardStyle: React.CSSProperties = {
+  width: "100%",
+  maxWidth: "100%",
+  boxSizing: "border-box",
   background: "#FFFFFF",
   border: "1px solid #E5E7EB",
   borderRadius: 18,
   padding: 20,
   marginBottom: 18,
+  overflow: "hidden",
 };
 
 const pageTitleStyle: React.CSSProperties = {
@@ -391,6 +404,10 @@ const pageSubtitleStyle: React.CSSProperties = {
 };
 
 const sectionCardStyle: React.CSSProperties = {
+  width: "100%",
+  maxWidth: "100%",
+  boxSizing: "border-box",
+  overflow: "hidden",
   background: "#FFFFFF",
   border: "1px solid #E5E7EB",
   borderRadius: 18,
@@ -402,29 +419,44 @@ const sectionTitleStyle: React.CSSProperties = {
   marginTop: 0,
   marginBottom: 14,
   fontSize: 22,
+  lineHeight: 1.25,
   fontWeight: 900,
   color: "#0F172A",
+  maxWidth: "100%",
+  overflowWrap: "anywhere",
 };
 
 const rowStyle: React.CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "160px 1fr",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
   gap: 14,
+  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
   padding: "12px 0",
+  boxSizing: "border-box",
   borderBottom: "1px solid #F1F5F9",
+  alignItems: "start",
 };
 
 const labelStyle: React.CSSProperties = {
   color: "#475569",
   fontWeight: 700,
+  minWidth: 0,
+  maxWidth: "100%",
+  whiteSpace: "normal",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
 };
 
 const valueStyle: React.CSSProperties = {
   color: "#0F172A",
   fontWeight: 700,
+  minWidth: 0,
+  maxWidth: "100%",
   whiteSpace: "pre-wrap",
-  wordBreak: "normal",
-overflowWrap: "break-word",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
 };
 
 const buttonStyle: React.CSSProperties = {
@@ -466,12 +498,19 @@ const photoPlaceholderStyle: React.CSSProperties = {
 };
 const callButtonStyle: React.CSSProperties = {
   display: "block",
+  width: "100%",
+  maxWidth: "100%",
+  boxSizing: "border-box",
   textAlign: "center",
   background: "#DC2626",
   color: "#FFFFFF",
   padding: 14,
   borderRadius: 12,
   fontWeight: 900,
+  lineHeight: 1.4,
   textDecoration: "none",
   marginBottom: 12,
+  whiteSpace: "normal",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
 };
