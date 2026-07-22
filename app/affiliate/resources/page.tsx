@@ -9,7 +9,7 @@ const ads = [
     downloadName: "rroi-create-free-emergency-profile.png",
   },
   {
-    title: "Premium Kit Discount",
+    title: "RROI Premium Kit Bundle Discount",
     description: "Affiliate ad with space for your own discount code.",
     file: "/affiliate-ads/2.png",
     downloadName: "rroi-premium-kit-discount.png",
@@ -132,7 +132,7 @@ export default function AffiliateResourcesPage() {
         <section style={styles.section}>
           <h2 style={styles.h2}>Approved Caption</h2>
           <p style={styles.p}>
-            Use my affiliate code to get R30 off your RROI Premium Kit.
+            Use my affiliate code to get R30 off your RROI Premium Kit Bundle.
           </p>
         </section>
 
@@ -256,12 +256,16 @@ const styles: Record<string, React.CSSProperties> = {
   marginTop: "auto",
 },
   tagText: {
-    margin: 0,
-    fontSize: 15,
-    lineHeight: 1.7,
-    color: TEXT,
-    fontWeight: 800,
-  },
+  margin: 0,
+  fontSize: 15,
+  lineHeight: 1.7,
+  color: TEXT,
+  fontWeight: 800,
+  whiteSpace: "normal",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
+  maxWidth: "100%",
+},
   links: {
     marginTop: 24,
     display: "flex",

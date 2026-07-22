@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'co.za.rroi.app',
+  appId: 'www.rroi.co.za',
   appName: 'RROI',
   webDir: 'public',
   server: {
