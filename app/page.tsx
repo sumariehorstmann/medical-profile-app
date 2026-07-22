@@ -430,8 +430,8 @@ useEffect(() => {
   style={{
     ...styles.bundleImages,
     gridTemplateColumns: isMobile
-      ? "1fr"
-      : "repeat(5, minmax(0, 1fr))",
+  ? "1fr"
+  : "repeat(auto-fit, minmax(160px, 1fr))",
   }}
 >
   {/* Engraved Metal QR Card */}
@@ -439,7 +439,9 @@ useEffect(() => {
     style={{
       ...styles.bundleImageCard,
       display: isMobile ? "grid" : "block",
-      gridTemplateColumns: isMobile ? "130px 1fr" : undefined,
+      gridTemplateColumns: isMobile
+  ? "minmax(90px, 120px) minmax(0, 1fr)"
+  : undefined,
       alignItems: isMobile ? "center" : undefined,
       gap: isMobile ? 16 : undefined,
     }}
@@ -454,7 +456,7 @@ useEffect(() => {
         src="/images/premium-kit/qr-card.png"
         alt="Engraved Metal QR Card"
         fill
-        sizes={isMobile ? "130px" : "180px"}
+        sizes={isMobile ? "120px" : "180px"}
         style={styles.bundleImage}
       />
     </div>
@@ -475,7 +477,9 @@ useEffect(() => {
     style={{
       ...styles.bundleImageCard,
       display: isMobile ? "grid" : "block",
-      gridTemplateColumns: isMobile ? "130px 1fr" : undefined,
+      gridTemplateColumns: isMobile
+  ? "minmax(90px, 120px) minmax(0, 1fr)"
+  : undefined,
       alignItems: isMobile ? "center" : undefined,
       gap: isMobile ? 16 : undefined,
     }}
@@ -490,7 +494,7 @@ useEffect(() => {
         src="/images/premium-kit/qr-tag-front-back.png"
         alt="Engraved Metal QR Tag"
         fill
-        sizes={isMobile ? "130px" : "180px"}
+        sizes={isMobile ? "120px" : "180px"}
         style={styles.bundleImage}
       />
     </div>
@@ -511,7 +515,9 @@ useEffect(() => {
     style={{
       ...styles.bundleImageCard,
       display: isMobile ? "grid" : "block",
-      gridTemplateColumns: isMobile ? "130px 1fr" : undefined,
+      gridTemplateColumns: isMobile
+  ? "minmax(90px, 120px) minmax(0, 1fr)"
+  : undefined,
       alignItems: isMobile ? "center" : undefined,
       gap: isMobile ? 16 : undefined,
     }}
@@ -526,7 +532,7 @@ useEffect(() => {
         src="/images/premium-kit/qr-sticker-pack.png"
         alt="Pack of 5 Splash-Proof QR Stickers"
         fill
-        sizes={isMobile ? "130px" : "180px"}
+        sizes={isMobile ? "120px" : "180px"}
         style={styles.bundleImage}
       />
     </div>
@@ -547,7 +553,9 @@ useEffect(() => {
     style={{
       ...styles.bundleImageCard,
       display: isMobile ? "grid" : "block",
-      gridTemplateColumns: isMobile ? "130px 1fr" : undefined,
+      gridTemplateColumns: isMobile
+  ? "minmax(90px, 120px) minmax(0, 1fr)"
+  : undefined,
       alignItems: isMobile ? "center" : undefined,
       gap: isMobile ? 16 : undefined,
     }}
@@ -562,7 +570,7 @@ useEffect(() => {
         src="/images/premium-kit/phone-lock-screen.png"
         alt="Phone Lock Screen Wallpaper"
         fill
-        sizes={isMobile ? "130px" : "180px"}
+        sizes={isMobile ? "120px" : "180px"}
         style={styles.bundleImage}
       />
     </div>
@@ -583,7 +591,9 @@ useEffect(() => {
     style={{
       ...styles.bundleImageCard,
       display: isMobile ? "grid" : "block",
-      gridTemplateColumns: isMobile ? "130px 1fr" : undefined,
+      gridTemplateColumns: isMobile
+  ? "minmax(90px, 120px) minmax(0, 1fr)"
+  : undefined,
       alignItems: isMobile ? "center" : undefined,
       gap: isMobile ? 16 : undefined,
     }}
@@ -598,7 +608,7 @@ useEffect(() => {
         src="/images/premium-kit/smartwatch-wallpaper.png"
         alt="Smartwatch Wallpaper"
         fill
-        sizes={isMobile ? "130px" : "180px"}
+        sizes={isMobile ? "120px" : "180px"}
         style={styles.bundleImage}
       />
     </div>
@@ -927,16 +937,20 @@ const SOFT = "#F8FAFC";
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
-    minHeight: "100vh",
-    background: "#FFFFFF",
-    color: TEXT,
-  },
+  width: "100%",
+  minHeight: "100vh",
+  background: "#FFFFFF",
+  color: TEXT,
+  overflowX: "hidden",
+},
   container: {
-    width: "100%",
-    maxWidth: 1080,
-    margin: "0 auto",
-    padding: "0 18px",
-  },
+  width: "100%",
+  maxWidth: 1080,
+  margin: "0 auto",
+  padding: "0 clamp(14px, 4vw, 24px)",
+  boxSizing: "border-box",
+  minWidth: 0,
+},
   hero: {
     padding: "30px 0 42px",
     background:
@@ -960,7 +974,10 @@ const styles: Record<string, React.CSSProperties> = {
   fontWeight: 900,
 },
   h1: {
-  margin: "0 0 16px",
+    maxWidth: "100%",
+    overflowWrap: "anywhere",
+    wordBreak: "break-word",
+    margin: "0 0 16px",
     fontSize: "clamp(34px, 6vw, 58px)",
     lineHeight: 1.04,
     letterSpacing: "-0.045em",
@@ -1035,17 +1052,19 @@ heroFeature: {
   color: "#334155",
 },
   section: {
-  padding: "56px 0",
+  padding: "clamp(40px, 7vw, 56px) 0",
   background: "#FFFFFF",
 },
 
 sectionMuted: {
-  padding: "56px 0",
+  padding: "clamp(40px, 7vw, 56px) 0",
   background: SOFT,
 },
   sectionTitle: {
+  maxWidth: "100%",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
   margin: "0 auto 24px",
-  maxWidth: 720,
   textAlign: "center",
   fontSize: "clamp(24px, 3.5vw, 34px)",
   lineHeight: 1.15,
@@ -1061,6 +1080,11 @@ sectionMuted: {
 },
 
 card: {
+  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
+  boxSizing: "border-box",
+  overflow: "hidden",
   border: `1px solid ${BORDER}`,
   borderRadius: 20,
   padding: 22,
@@ -1084,6 +1108,11 @@ cardIcon: {
     gap: 16,
   },
   stepCard: {
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
     border: `1px solid ${BORDER}`,
     borderRadius: 20,
     padding: 22,
@@ -1121,6 +1150,9 @@ stepBadge: {
   margin: "0 auto 14px",
 },
   cardTitle: {
+    maxWidth: "100%",
+    overflowWrap: "anywhere",
+    wordBreak: "break-word",
     margin: "0 0 8px",
     fontSize: 19,
     lineHeight: 1.25,
@@ -1146,14 +1178,20 @@ stepBadge: {
  
 profileOptionsGrid: {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
   gap: 20,
+  width: "100%",
   maxWidth: 900,
   margin: "0 auto",
   alignItems: "stretch",
 },
 
 bundleCard: {
+  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
+  boxSizing: "border-box",
+  overflow: "hidden",
   marginTop: 32,
   border: `2px solid ${BRAND_GREEN}`,
   borderRadius: 24,
@@ -1188,7 +1226,10 @@ bundleText: {
 
 bundlePriceBox: {
   width: "100%",
-  maxWidth: 680,
+  maxWidth: "100%",
+  minWidth: 0,
+  boxSizing: "border-box",
+  overflow: "hidden",
   padding: 24,
   borderRadius: 18,
   background: "#F0FDF4",
@@ -1210,6 +1251,9 @@ bestValueBadge: {
 },
 
 bundleProductTitle: {
+  maxWidth: "100%",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
   margin: "0 0 14px",
   fontSize: 24,
   lineHeight: 1.2,
@@ -1249,7 +1293,7 @@ bundleRenewal: {
 
 bundleContentGrid: {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
   gap: 28,
   paddingTop: 24,
   alignItems: "start",
@@ -1272,6 +1316,11 @@ bundleList: {
 },
 
 bundleActionPanel: {
+  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
+  boxSizing: "border-box",
+  overflow: "hidden",
   padding: 22,
   borderRadius: 18,
   background: SOFT,
@@ -1287,6 +1336,11 @@ bundleActionText: {
 },
 
   planCard: {
+  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
+  boxSizing: "border-box",
+  overflow: "hidden",
   border: `1px solid ${BORDER}`,
   borderRadius: 22,
   padding: 24,
@@ -1297,6 +1351,11 @@ bundleActionText: {
 },
 
 planCardFeatured: {
+  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
+  boxSizing: "border-box",
+  overflow: "hidden",
   border: `2px solid ${BRAND_GREEN}`,
   borderRadius: 22,
   padding: 24,
@@ -1327,6 +1386,9 @@ planCardFeatured: {
     marginBottom: 14,
   },
   planTitle: {
+    maxWidth: "100%",
+    overflowWrap: "anywhere",
+    wordBreak: "break-word",
     margin: 0,
     fontSize: 22,
     lineHeight: 1.2,
@@ -1369,6 +1431,8 @@ planCardFeatured: {
   primaryBtnFull: {
   display: "inline-flex",
   width: "100%",
+  maxWidth: "100%",
+  boxSizing: "border-box",
   alignItems: "center",
   justifyContent: "center",
   minHeight: 54,
@@ -1379,7 +1443,10 @@ planCardFeatured: {
   textDecoration: "none",
   fontWeight: 900,
   fontSize: 16,
-
+  lineHeight: 1.35,
+  textAlign: "center",
+  whiteSpace: "normal",
+  overflowWrap: "anywhere",
   marginTop: "auto",
 },
   useGrid: {
@@ -1425,6 +1492,11 @@ useLabel: {
   justifyContent: "flex-start",
 },
   splitCard: {
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
     border: `1px solid ${BORDER}`,
     borderRadius: 24,
     padding: 26,
@@ -1461,11 +1533,15 @@ useLabel: {
     textAlign: "center",
   },
   finalTitle: {
+    maxWidth: "100%",
+    overflowWrap: "anywhere",
+    wordBreak: "break-word",
     margin: 0,
     fontSize: "clamp(26px, 5vw, 42px)",
     lineHeight: 1.1,
     letterSpacing: "-0.035em",
     fontWeight: 950,
+    whiteSpace: "pre-line",
   },
   finalText: {
     margin: "14px auto 24px",
@@ -1519,6 +1595,10 @@ sectionIntro: {
   color: "#334155",
 },
 outlineBtnFull: {
+  maxWidth: "100%",
+  whiteSpace: "normal",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
   display: "inline-flex",
   width: "100%",
   justifyContent: "center",
@@ -1566,7 +1646,11 @@ bundleImages: {
 },
 
 bundleImageCard: {
+  width: "100%",
+  maxWidth: "100%",
   minWidth: 0,
+  boxSizing: "border-box",
+  overflow: "hidden",
   border: `1px solid ${BORDER}`,
   borderRadius: 18,
   background: "#FFFFFF",
@@ -1586,6 +1670,9 @@ bundleImage: {
 },
 
 bundleImageLabel: {
+  maxWidth: "100%",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
   marginTop: 12,
   fontSize: 16,
   fontWeight: 900,
@@ -1640,6 +1727,11 @@ testimonialsGrid: {
 },
 
 testimonialCard: {
+  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
+  boxSizing: "border-box",
+  overflow: "hidden",
   display: "flex",
   flexDirection: "column",
   minHeight: 230,
@@ -1659,6 +1751,9 @@ testimonialStars: {
 },
 
 testimonialComment: {
+  maxWidth: "100%",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
   margin: "0 0 20px",
   flexGrow: 1,
   fontSize: 16,
