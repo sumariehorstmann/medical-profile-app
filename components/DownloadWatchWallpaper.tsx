@@ -1,8 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import * as htmlToImage from "html-to-image";
 import { QRCodeSVG } from "qrcode.react";
+import { Capacitor } from "@capacitor/core";
+import { Directory, Filesystem } from "@capacitor/filesystem";
+import { Share } from "@capacitor/share";
 
 type Props = {
   publicId: string;
@@ -12,31 +15,64 @@ type Props = {
 
 export default function DownloadWatchWallpaper({ publicId }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
 
-  const publicUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/e/${publicId}`
-      : "";
+  const baseUrl =
+  process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "") ||
+  "https://www.rroi.co.za";
+
+const publicUrl = publicId ? `${baseUrl}/e/${publicId}` : "";
 
   async function downloadWatchWallpaper() {
-    if (!ref.current || !publicId) return;
+  if (!ref.current || !publicId || downloading) return;
 
-    try {
-      const dataUrl = await htmlToImage.toPng(ref.current, {
-        cacheBust: true,
-        pixelRatio: 2,
-        backgroundColor: "#000000",
+  setDownloading(true);
+
+  try {
+    const dataUrl = await htmlToImage.toPng(ref.current, {
+      cacheBust: true,
+      pixelRatio: 2,
+      backgroundColor: "#000000",
+    });
+
+    const fileName = "rroi-smartwatch-qr-wallpaper.png";
+
+    if (Capacitor.isNativePlatform()) {
+      const base64Data = dataUrl.split(",")[1];
+
+      if (!base64Data) {
+        throw new Error("The smartwatch wallpaper could not be prepared.");
+      }
+
+      const savedFile = await Filesystem.writeFile({
+        path: fileName,
+        data: base64Data,
+        directory: Directory.Cache,
       });
 
-      const link = document.createElement("a");
-      link.download = "rroi-smartwatch-qr-wallpaper.png";
-      link.href = dataUrl;
-      link.click();
-    } catch (err) {
-      console.error("Smartwatch wallpaper download failed", err);
-      alert("Download failed. Please try again.");
+      await Share.share({
+        title: "RROI Smartwatch Wallpaper",
+        text: "Save or share your RROI smartwatch wallpaper.",
+        files: [savedFile.uri],
+        dialogTitle: "Save or share RROI wallpaper",
+      });
+
+      return;
     }
+
+    const link = document.createElement("a");
+    link.download = fileName;
+    link.href = dataUrl;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (err) {
+    console.error("Smartwatch wallpaper download failed", err);
+    alert("Download failed. Please try again.");
+  } finally {
+    setDownloading(false);
   }
+}
 
   return (
     <>
@@ -44,9 +80,11 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
         type="button"
         onClick={downloadWatchWallpaper}
         style={styles.button}
-        disabled={!publicId}
+        disabled={!publicId || downloading}
       >
-        Download Smartwatch Wallpaper
+        {downloading
+  ? "Preparing download..."
+  : "Download Smartwatch Wallpaper"}
       </button>
 
       <div style={styles.hiddenWrap} aria-hidden="true">
@@ -85,7 +123,9 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: 20,
     padding: "16px 24px",
     minHeight: 52,
-    width: 310,
+    width: "100%",
+    maxWidth: 310,
+    boxSizing: "border-box",
     borderRadius: 12,
     background: "#157A55",
     color: "#FFFFFF",

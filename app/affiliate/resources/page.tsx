@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
+import { Capacitor } from "@capacitor/core";
+import { Directory, Filesystem } from "@capacitor/filesystem";
+import { Share } from "@capacitor/share";
 
 const ads = [
   {
@@ -77,6 +82,76 @@ const ads = [
 ];
 
 export default function AffiliateResourcesPage() {
+    async function handleAdDownload(
+    file: string,
+    downloadName: string,
+    title: string
+  ) {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const response = await fetch(file);
+
+        if (!response.ok) {
+          throw new Error("The advertisement could not be loaded.");
+        }
+
+        const blob = await response.blob();
+
+        const base64Data = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+
+          reader.onloadend = () => {
+            const result = reader.result;
+
+            if (typeof result !== "string") {
+              reject(new Error("The advertisement could not be prepared."));
+              return;
+            }
+
+            const base64 = result.split(",")[1];
+
+            if (!base64) {
+              reject(new Error("The advertisement could not be prepared."));
+              return;
+            }
+
+            resolve(base64);
+          };
+
+          reader.onerror = () => {
+            reject(new Error("The advertisement could not be read."));
+          };
+
+          reader.readAsDataURL(blob);
+        });
+
+        const savedFile = await Filesystem.writeFile({
+          path: downloadName,
+          data: base64Data,
+          directory: Directory.Cache,
+        });
+
+        await Share.share({
+          title,
+          text: "Save or share this official RROI advertisement.",
+          files: [savedFile.uri],
+          dialogTitle: "Save or share RROI advertisement",
+        });
+
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.href = file;
+      link.download = downloadName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Advertisement download failed:", error);
+      alert("The advertisement could not be downloaded. Please try again.");
+    }
+  }
   return (
     <main style={styles.page}>
       <div style={styles.card}>
@@ -106,13 +181,15 @@ export default function AffiliateResourcesPage() {
 
                 <p style={styles.adDescription}>{ad.description}</p>
 
-                <a
-                  href={ad.file}
-                  download={ad.downloadName}
-                  style={styles.downloadButton}
-                >
-                  Download Ad
-                </a>
+                <button
+  type="button"
+  onClick={() =>
+    handleAdDownload(ad.file, ad.downloadName, ad.title)
+  }
+  style={styles.downloadButton}
+>
+  Download Ad
+</button>
               </div>
             ))}
           </div>
@@ -271,16 +348,19 @@ const styles: Record<string, React.CSSProperties> = {
   alignItems: "center",
   padding: "10px 12px",
   borderRadius: 10,
+  border: "none",
   background: BRAND_GREEN,
   color: "#FFFFFF",
   textDecoration: "none",
   fontWeight: 900,
   fontSize: 14,
+  fontFamily: "inherit",
   lineHeight: 1.35,
   textAlign: "center",
   whiteSpace: "normal",
   overflowWrap: "break-word",
   marginTop: "auto",
+  cursor: "pointer",
 },
  tagText: {
   margin: 0,
