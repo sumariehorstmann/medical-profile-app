@@ -34,60 +34,79 @@ export default async function RateRROIPage() {
   }
 
   return (
-    <main
+  <main
+    style={{
+      width: "100%",
+      minHeight: "100vh",
+      maxWidth: "100%",
+      margin: 0,
+      padding: "clamp(16px, 5vw, 40px) clamp(12px, 4vw, 20px)",
+      boxSizing: "border-box",
+      background: "#F8FAFC",
+      overflowX: "hidden",
+    }}
+  >
+    <div
       style={{
         width: "100%",
         maxWidth: 760,
-        margin: "40px auto",
-        padding: "24px",
+        minWidth: 0,
+        margin: "0 auto",
+        boxSizing: "border-box",
+        overflow: "hidden",
+        border: "1px solid #E5E7EB",
+        borderRadius: 18,
+        background: "#FFFFFF",
+        padding: "clamp(18px, 4vw, 24px)",
+        boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
       }}
     >
-      <div
+      <h1
         style={{
-          border: "1px solid #E5E7EB",
-          borderRadius: 18,
-          background: "#FFFFFF",
-          padding: 24,
-          boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
+          margin: "0 0 12px",
+          maxWidth: "100%",
+          fontSize: "clamp(27px, 5vw, 38px)",
+          lineHeight: 1.15,
+          fontWeight: 900,
+          color: "#0F172A",
+          whiteSpace: "normal",
+          overflowWrap: "normal",
+          wordBreak: "normal",
         }}
       >
-        <h1
-          style={{
-            margin: "0 0 12px",
-            fontSize: "clamp(28px, 5vw, 38px)",
-            fontWeight: 900,
-            color: "#0F172A",
-          }}
-        >
-          ⭐ Rate Your RROI Experience
-        </h1>
+        ⭐ Rate Your RROI Experience
+      </h1>
 
-        <p
-          style={{
-            margin: "0 0 8px",
-            fontSize: 16,
-            lineHeight: 1.7,
-            color: "#334155",
-          }}
-        >
-          Your feedback helps us improve RROI and create a better experience for
-          all users.
-        </p>
+      <p
+        style={{
+          margin: "0 0 8px",
+          maxWidth: "100%",
+          fontSize: 16,
+          lineHeight: 1.7,
+          color: "#334155",
+          overflowWrap: "break-word",
+        }}
+      >
+        Your feedback helps us improve RROI and create a better experience for
+        all users.
+      </p>
 
-        <p
-          style={{
-            margin: "0 0 28px",
-            fontSize: 14,
-            lineHeight: 1.6,
-            color: "#64748B",
-            fontWeight: 700,
-          }}
-        >
-          Your star rating is required. All written feedback is optional.
-        </p>
+      <p
+        style={{
+          margin: "0 0 28px",
+          maxWidth: "100%",
+          fontSize: 14,
+          lineHeight: 1.6,
+          color: "#64748B",
+          fontWeight: 700,
+          overflowWrap: "break-word",
+        }}
+      >
+        Your star rating is required. All written feedback is optional.
+      </p>
 
-        <RatingForm />
-      </div>
-    </main>
-  );
+      <RatingForm />
+    </div>
+  </main>
+);
 }

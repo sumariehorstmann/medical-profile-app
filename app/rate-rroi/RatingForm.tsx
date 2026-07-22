@@ -362,7 +362,7 @@ const starButtonStyle: CSSProperties = {
   border: "none",
   background: "transparent",
   padding: "2px",
-  fontSize: 44,
+  fontSize: "clamp(36px, 8vw, 44px)",
   lineHeight: 1,
   transition: "color 0.15s ease",
 };
@@ -411,6 +411,8 @@ const radioRowStyle: CSSProperties = {
   lineHeight: 1.65,
   color: "#334155",
   cursor: "pointer",
+  width: "100%",
+  overflowWrap: "break-word",
 };
 
 const radioStyle: CSSProperties = {
@@ -426,6 +428,7 @@ const messageStyle: CSSProperties = {
   fontSize: 14,
   lineHeight: 1.6,
   fontWeight: 700,
+  overflowWrap: "break-word",
 };
 
 const saveButtonStyle: CSSProperties = {
