@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import SiteHeader from "@/components/SiteHeader";
 import Footer from "@/components/Footer";
+import AndroidBackButton from "@/components/AndroidBackButton";
 
 export const metadata: Metadata = {
   title: "RROI",
@@ -24,32 +25,35 @@ export default function RootLayout({
       </head>
 
       <body
-        style={{
-          margin: 0,
-          background: "#FFFFFF",
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <SiteHeader />
-
-        <main style={{ flex: 1 }}>{children}</main>
-
-        <Footer />
-
-<script
-  dangerouslySetInnerHTML={{
-    __html: `
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function () {
-          navigator.serviceWorker.register('/sw.js');
-        });
-      }
-    `,
+  style={{
+    margin: 0,
+    background: "#FFFFFF",
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
   }}
-/>
-      </body>
+>
+  <AndroidBackButton />
+
+  <SiteHeader />
+
+  <main style={{ flex: 1 }}>{children}</main>
+
+  <Footer />
+
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/sw.js');
+          });
+        }
+      `,
+    }}
+  />
+</body>
+      
     </html>
   );
 }
