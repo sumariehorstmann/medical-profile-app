@@ -1,9 +1,8 @@
 import { sendAffiliateApplicationEmail } from "@/app/lib/email/sendAffiliateApplicationEmail";
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { generateAffiliateCode } from "@/lib/generateAffiliateCode";
+import { requireAdmin } from "@/lib/admin/requireAdmin";
 
 export const dynamic = "force-dynamic";
 
@@ -13,52 +12,19 @@ function normalizeString(value: unknown) {
 
 export async function POST(req: NextRequest) {
   try {
-    const cookieStore = await cookies();
+    const adminCheck = await requireAdmin(req);
 
-    const supabaseAuth = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll() {
-            // no-op
-          },
-        },
-      }
-    );
-
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-
-    const {
-      data: { user },
-      error: authError,
-    } = await supabaseAuth.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-    }
-
-    // TEMPORARY ADMIN CHECK
-    // Replace this later with your real admin check.
-    const adminEmails = [
-  "sumariehorstmann@gmail.com",
-  "support@rroi.co.za",
-];
-
-const userEmail = String(user.email || "").toLowerCase();
-
-if (!adminEmails.includes(userEmail)) {
+if (adminCheck.error) {
   return NextResponse.json(
-    { error: `Forbidden for user: ${userEmail}` },
-    { status: 403 }
+    { error: adminCheck.error },
+    { status: adminCheck.status }
   );
 }
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
     const body = await req.json().catch(() => ({}));
     const applicationId = normalizeString(body?.applicationId);

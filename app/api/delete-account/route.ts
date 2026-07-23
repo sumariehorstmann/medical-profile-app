@@ -67,7 +67,21 @@ export async function POST(request: Request) {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
+// Delete uploaded profile-photo files from Supabase Storage
+const { error: profilePhotoDeleteError } = await admin.storage
+  .from("profile-photos")
+  .remove([
+    `${user.id}/profile.jpg`,
+    `${user.id}/profile.png`,
+    `${user.id}/profile.webp`,
+  ]);
 
+if (profilePhotoDeleteError) {
+  return NextResponse.json(
+    { error: "Failed to delete profile photo" },
+    { status: 500 }
+  );
+}
     // Look up affiliate row
     const { data: affiliateRow, error: affiliateLookupError } = await admin
       .from("affiliates")
@@ -158,11 +172,13 @@ export async function POST(request: Request) {
     const tablesToDelete = [
       { table: "affiliate_applications", column: "user_id" },
       { table: "premium_order_forms", column: "user_id" },
+      { table: "store_pending_orders", column: "user_id" },
       { table: "affiliates", column: "user_id" },
       { table: "subscriptions", column: "user_id" },
       { table: "payments", column: "user_id" },
       { table: "orders", column: "user_id" },
       { table: "shipping_details", column: "user_id" },
+      { table: "ratings", column: "user_id" },
       { table: "profiles", column: "user_id" },
     ];
 

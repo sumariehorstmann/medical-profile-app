@@ -78,9 +78,23 @@ const [trackingInputs, setTrackingInputs] = useState<
     async function loadOrders() {
       setLoading(true);
 
-      const res = await fetch("/api/admin/orders", {
+      const {
+  data: { session },
+} = await supabase.auth.getSession();
+
+if (!session?.access_token) {
+  console.error("Admin session missing.");
+  setOrders([]);
+  if (mounted) setLoading(false);
+  return;
+}
+
+const res = await fetch("/api/admin/orders", {
   method: "GET",
   cache: "no-store",
+  headers: {
+    Authorization: `Bearer ${session.access_token}`,
+  },
 });
 
 const json = await res.json();
@@ -108,13 +122,23 @@ setLoading(false);
     try {
       setUpdatingId(orderId);
 
-      const res = await fetch("/api/admin/orders/update-status", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ orderId, status }),
-      });
+      const {
+  data: { session },
+} = await supabase.auth.getSession();
+
+if (!session?.access_token) {
+  alert("Admin session missing. Please log in again.");
+  return;
+}
+
+const res = await fetch("/api/admin/orders/update-status", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${session.access_token}`,
+  },
+  body: JSON.stringify({ orderId, status }),
+});
 
       const data = await res.json();
 
@@ -143,17 +167,27 @@ setLoading(false);
   if (!confirmed) return;
 
   try {
-    setUpdatingId(orderId);
+  setUpdatingId(orderId);
 
-    const res = await fetch("/api/admin/orders/resend-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        orderId,
-      }),
-    });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session?.access_token) {
+    alert("Admin session missing. Please log in again.");
+    return;
+  }
+
+  const res = await fetch("/api/admin/orders/resend-email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({
+      orderId,
+    }),
+  });
 
     const json = await res.json();
 
@@ -188,12 +222,20 @@ async function sendTrackingEmail(orderId: string) {
 
   try {
     setUpdatingId(orderId);
+const {
+  data: { session },
+} = await supabase.auth.getSession();
 
+if (!session?.access_token) {
+  alert("Admin session missing. Please log in again.");
+  return;
+}
     const res = await fetch("/api/admin/orders/send-tracking-email", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-      },
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${session.access_token}`,
+},
       body: JSON.stringify({
         orderId,
         courierName: input.courierName,
@@ -525,11 +567,11 @@ async function recoverMissingOrders() {
   </div>
 
   <div className="row" style={styles.row}>
-  <strong>Metal QR Tags:</strong> {order.dog_tag_qty || 0}
+  <strong>Engraved Metal QR Tag:</strong> {order.dog_tag_qty || 0}
 </div>
 
 <div className="row" style={styles.row}>
-  <strong>Metal QR Cards:</strong> {order.card_qty || 0}
+  <strong>Engraved Metal QR Card:</strong> {order.card_qty || 0}
 </div>
 <div className="row" style={styles.row}>
   <strong>Products Ordered:</strong>

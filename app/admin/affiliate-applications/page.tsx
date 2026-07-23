@@ -53,26 +53,24 @@ export default function AdminAffiliateApplicationsPage() {
         setMessage(null);
 
         const {
-          data: { user },
-          error: authError,
-        } = await supabase.auth.getUser();
+  data: { session },
+} = await supabase.auth.getSession();
+
+if (!session?.access_token) {
+  router.replace("/login");
+  return;
+}
+
+const {
+  data: { user },
+  error: authError,
+} = await supabase.auth.getUser();
 
         if (authError || !user) {
           router.replace("/login");
           return;
         }
-
-        const adminEmails = [
-  "sumariehorstmann@gmail.com",
-  "support@rroi.co.za",
-];
-        const userEmail = String(user.email || "").toLowerCase();
-
-        if (!adminEmails.includes(userEmail)) {
-  setMessage(`Admin access denied for: ${userEmail}`);
-  setLoading(false);
-  return;
-}
+       
 
         const { data, error } = await supabase
           .from("affiliate_applications")
@@ -127,12 +125,20 @@ export default function AdminAffiliateApplicationsPage() {
     try {
       setWorkingId(applicationId);
       setMessage(null);
+      const {
+  data: { session },
+} = await supabase.auth.getSession();
+
+if (!session?.access_token) {
+  throw new Error("Admin session missing. Please log in again.");
+}
 
       const res = await fetch("/api/admin/affiliate-applications/approve", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-        },
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${session.access_token}`,
+},
         body: JSON.stringify({
           applicationId,
           reviewNotes: reviewNotes[applicationId] || "",
@@ -158,12 +164,20 @@ export default function AdminAffiliateApplicationsPage() {
     try {
       setWorkingId(applicationId);
       setMessage(null);
+      const {
+  data: { session },
+} = await supabase.auth.getSession();
+
+if (!session?.access_token) {
+  throw new Error("Admin session missing. Please log in again.");
+}
 
       const res = await fetch("/api/admin/affiliate-applications/decline", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-        },
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${session.access_token}`,
+},
         body: JSON.stringify({
           applicationId,
           reviewNotes: reviewNotes[applicationId] || "",

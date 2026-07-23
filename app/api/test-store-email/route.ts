@@ -3,7 +3,7 @@ import { sendStoreOrderConfirmationEmail } from "@/app/lib/email/sendStoreOrderC
 
 export async function GET() {
   const emailWasSent = await sendStoreOrderConfirmationEmail({
-    to: "sumariehorstmann@gmail.com",
+    to: "support@rroi.co.za",
     customerName: "Su-Marie Horstmann",
     paymentReference: "TEST-ORDER-EMAIL",
     items: [

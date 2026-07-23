@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { sendTrackingEmail } from "@/app/lib/email/sendTrackingEmail";
+import { requireAdmin } from "@/lib/admin/requireAdmin";
 
 export async function POST(req: NextRequest) {
   try {
+    const adminCheck = await requireAdmin(req);
+
+if (adminCheck.error) {
+  return NextResponse.json(
+    { error: adminCheck.error },
+    { status: adminCheck.status }
+  );
+}
     const { orderId, courierName, trackingNumber, trackingUrl } =
       await req.json();
 

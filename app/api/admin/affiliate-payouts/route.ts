@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/admin/requireAdmin";
 
 export const dynamic = "force-dynamic";
 
@@ -8,44 +8,14 @@ export async function GET(req: NextRequest) {
   try {
     const admin = createSupabaseAdmin();
 
-    const authHeader = req.headers.get("authorization") || "";
-    const token = authHeader.replace("Bearer ", "").trim();
+    const adminCheck = await requireAdmin(req);
 
-    if (!token) {
-      return NextResponse.json({ error: "Missing auth token." }, { status: 401 });
-    }
-
-    const userClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        global: {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      }
-    );
-
-    const {
-      data: { user },
-      error: userError,
-    } = await userClient.auth.getUser();
-
-    if (userError || !user) {
-      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-    }
-
-    const adminEmails = [
-      "sumariehorstmann@gmail.com",
-      "support@rroi.co.za",
-    ];
-
-    const userEmail = String(user.email || "").toLowerCase();
-
-    if (!adminEmails.includes(userEmail)) {
-      return NextResponse.json({ error: "Admin access denied." }, { status: 403 });
-    }
+if (adminCheck.error) {
+  return NextResponse.json(
+    { error: adminCheck.error },
+    { status: adminCheck.status }
+  );
+}
 
     const { data: affiliates, error: affiliatesError } = await admin
       .from("affiliates")

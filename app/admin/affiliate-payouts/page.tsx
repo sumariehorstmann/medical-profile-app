@@ -203,19 +203,7 @@ const [showEligibleOnly, setShowEligibleOnly] = useState(false);
           setLoading(false);
           return;
         }
-
-        const adminEmails = [
-          "sumariehorstmann@gmail.com",
-          "support@rroi.co.za",
-        ];
-
-        const userEmail = String(user.email || "").toLowerCase();
-
-        if (!adminEmails.includes(userEmail)) {
-          setMessage(`Admin access denied for: ${userEmail}`);
-          setLoading(false);
-          return;
-        }
+      
 
        const {
   data: { session },

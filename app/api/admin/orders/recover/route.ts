@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { requireAdmin } from "@/lib/admin/requireAdmin";
 
 export const dynamic = "force-dynamic";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.rroi.co.za";
 
-const adminEmails = ["sumariehorstmann@gmail.com", "support@rroi.co.za"];
+
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
@@ -25,45 +25,13 @@ function splitFullName(fullName?: string | null) {
   };
 }
 
-async function verifyAdmin(req: NextRequest) {
-  const authHeader = req.headers.get("authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim();
-
-  if (!token) {
-    return { ok: false, error: "Missing auth token.", status: 401 };
-  }
-
-  const userClient = createClient(SUPABASE_URL, ANON_KEY, {
-    global: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const {
-    data: { user },
-    error,
-  } = await userClient.auth.getUser();
-
-  if (error || !user?.email) {
-    return { ok: false, error: "Unauthorized.", status: 401 };
-  }
-
-  if (!adminEmails.includes(user.email.toLowerCase())) {
-    return { ok: false, error: "Admin access denied.", status: 403 };
-  }
-
-  return { ok: true, email: user.email };
-}
-
 export async function POST(req: NextRequest) {
-  const admin = await verifyAdmin(req);
+  const adminCheck = await requireAdmin(req);
 
-  if (!admin.ok) {
+  if (adminCheck.error) {
     return NextResponse.json(
-      { error: admin.error },
-      { status: admin.status }
+      { error: adminCheck.error },
+      { status: adminCheck.status }
     );
   }
 

@@ -1,42 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-
-const ADMIN_EMAILS = ["sumariehorstmann@gmail.com", "support@rroi.co.za"];
+import { requireAdmin } from "@/lib/admin/requireAdmin";
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim();
+  const adminCheck = await requireAdmin(req);
 
-  if (!token) {
-    return NextResponse.json({ error: "Missing auth token." }, { status: 401 });
-  }
-
-  const userClient = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      global: {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    }
+if (adminCheck.error) {
+  return NextResponse.json(
+    { error: adminCheck.error },
+    { status: adminCheck.status }
   );
-
-  const {
-    data: { user },
-    error: userError,
-  } = await userClient.auth.getUser();
-
-  if (userError || !user) {
-    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-  }
-
-  const userEmail = String(user.email || "").toLowerCase();
-
-  if (!ADMIN_EMAILS.includes(userEmail)) {
-    return NextResponse.json({ error: "Admin access denied." }, { status: 403 });
-  }
+}
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -95,48 +69,14 @@ return NextResponse.json(combined);
 }
 export async function PATCH(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization") || "";
-    const token = authHeader.replace("Bearer ", "").trim();
+    const adminCheck = await requireAdmin(req);
 
-    if (!token) {
-      return NextResponse.json(
-        { error: "Missing auth token." },
-        { status: 401 }
-      );
-    }
-
-    const userClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        global: {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      }
-    );
-
-    const {
-      data: { user },
-      error: userError,
-    } = await userClient.auth.getUser();
-
-    if (userError || !user) {
-      return NextResponse.json(
-        { error: "Unauthorized." },
-        { status: 401 }
-      );
-    }
-
-    const userEmail = String(user.email || "").toLowerCase();
-
-    if (!ADMIN_EMAILS.includes(userEmail)) {
-      return NextResponse.json(
-        { error: "Admin access denied." },
-        { status: 403 }
-      );
-    }
+if (adminCheck.error) {
+  return NextResponse.json(
+    { error: adminCheck.error },
+    { status: adminCheck.status }
+  );
+}
 
     const body = await req.json();
 
