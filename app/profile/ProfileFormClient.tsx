@@ -629,7 +629,14 @@ emergency_button3_description: getText("emergency_button3_description"),
               )}
             </div>
 
-            <div style={{ flex: 1, minWidth: 240 }}>
+            <div
+  style={{
+    flex: "1 1 240px",
+    width: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+  }}
+>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <label style={secondaryBtnStyle}>
                   {photoUploading ? "Uploading..." : "Upload photo"}
@@ -743,7 +750,14 @@ emergency_button3_description: getText("emergency_button3_description"),
               <QRCodeSVG value={publicUrl || " "} size={180} />
             </div>
 
-            <div style={{ minWidth: 280, flex: 1 }}>
+            <div
+  style={{
+    flex: "1 1 280px",
+    width: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+  }}
+>
               <div style={{ fontSize: 14, marginBottom: 10, lineHeight: 1.5 }}>
                 <b>Public link:</b>
                 <div style={publicLinkStyle}>
@@ -1535,17 +1549,24 @@ emergency_button3_description: getText("emergency_button3_description"),
 }
 
 const cardStyle: React.CSSProperties = {
+  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
+  boxSizing: "border-box",
+  overflow: "hidden",
   border: "1px solid #E5E7EB",
-  borderRadius: 16,
-  padding: 18,
+  borderRadius: 18,
+  padding: "clamp(16px, 3vw, 22px)",
   marginBottom: 18,
   background: "#FFFFFF",
 };
 
 const sectionTitleStyle: React.CSSProperties = {
-  fontSize: 20,
+  fontSize: "clamp(18px,4vw,20px)",
+  lineHeight: 1.3,
   fontWeight: 900,
   color: "#0F172A",
+  overflowWrap: "break-word",
 };
 
 const sectionSubtitleStyle: React.CSSProperties = {
@@ -1581,10 +1602,13 @@ const fieldHintStyle: React.CSSProperties = {
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
+  maxWidth: "100%",
+  boxSizing: "border-box",
   padding: "12px 14px",
   border: "1px solid #D1D5DB",
   borderRadius: 12,
   fontSize: 15,
+  lineHeight: 1.5,
   color: "#0F172A",
   background: "#FFFFFF",
 };
@@ -1599,10 +1623,13 @@ const qrRowStyle: React.CSSProperties = {
   display: "flex",
   gap: 18,
   alignItems: "center",
+  justifyContent: "center",
   flexWrap: "wrap",
+  width: "100%",
 };
 
 const qrCardStyle: React.CSSProperties = {
+  flexShrink: 0,
   background: "#FFFFFF",
   border: "1px solid #E5E7EB",
   padding: 12,
@@ -1615,57 +1642,53 @@ const publicLinkStyle: React.CSSProperties = {
   borderRadius: 8,
   background: "#F1F5F9",
   fontSize: 13,
-  wordBreak: "break-all",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
   color: "#0F172A",
 };
 
 const primaryBtnStyle: React.CSSProperties = {
-  padding: "12px 16px",
-  borderRadius: 10,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+  maxWidth: 340,
+  minHeight: 48,
+  boxSizing: "border-box",
+  padding: "12px 18px",
+  borderRadius: 12,
   border: "1px solid #157A55",
   background: "#157A55",
   color: "#FFFFFF",
   fontWeight: 800,
   cursor: "pointer",
+  textAlign: "center",
 };
 
 const secondaryBtnStyle: React.CSSProperties = {
-  padding: "12px 16px",
-  borderRadius: 10,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+  maxWidth: 340,
+  minHeight: 48,
+  boxSizing: "border-box",
+  padding: "12px 18px",
+  borderRadius: 12,
   border: "1px solid #D1D5DB",
   background: "#FFFFFF",
   color: "#0F172A",
   fontWeight: 800,
   cursor: "pointer",
-};
-
-const freePlanBannerStyle: React.CSSProperties = {
-  marginBottom: 12,
-  padding: 12,
-  borderRadius: 10,
-  background: "#FFF3CD",
-  border: "1px solid #FFE69C",
-  fontSize: 13,
-  fontWeight: 700,
-  color: "#7C5A00",
-};
-
-const premiumPlanBannerStyle: React.CSSProperties = {
-  marginBottom: 12,
-  padding: 12,
-  borderRadius: 10,
-  background: "#E8F7EE",
-  border: "1px solid #B7E4C7",
-  fontSize: 13,
-  fontWeight: 700,
-  color: "#166534",
+  textAlign: "center",
 };
 
 const actionRowStyle: React.CSSProperties = {
   display: "flex",
-  gap: 12,
+  flexDirection: "column",
   alignItems: "center",
-  flexWrap: "wrap",
+  width: "100%",
+  gap: 12,
 };
 
 const messageStyle: React.CSSProperties = {

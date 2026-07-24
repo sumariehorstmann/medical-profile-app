@@ -21,8 +21,9 @@ export default function AffiliatePage() {
           <div style={styles.topBlock}>
             <h1 style={styles.title}>RROI Affiliate Program</h1>
             <p style={styles.subtitle}>
-              Share RROI and earn commission when new users purchase the Premium Full Kit using your approved affiliate code.
-            </p>
+  Share RROI and earn commission when new users purchase the RROI Premium Kit
+  Bundle using your approved affiliate code.
+</p>
           </div>
 
           <div style={styles.notice}>
@@ -48,33 +49,41 @@ export default function AffiliatePage() {
           </div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Affiliate discount</h2>
-            <p style={styles.paragraph}>
-  Affiliate discounts apply only to the RROI Premium Full Kit (R499), which includes two physical QR products.
-</p>
+  <h2 style={styles.sectionTitle}>Affiliate discount</h2>
 
-<p style={styles.paragraph}>
-  Affiliate codes are not valid for Premium Visibility Only subscriptions (R129), renewals, store purchases, or any other products unless expressly stated by RROI.
-</p>
-            <p style={styles.paragraph}>
-              Normal Premium price: <strong>R499</strong>
-              <br />
-              Affiliate code discount: <strong>R30</strong>
-              <br />
-              User pays: <strong>R469</strong>
-            </p>
-          </div>
+  <p style={styles.paragraph}>
+    Affiliate discounts apply only to the RROI Premium Kit Bundle (R499), which
+    includes one year of Premium access and three physical QR products.
+  </p>
+
+  <p style={styles.paragraph}>
+    Affiliate codes are not valid for Premium Subscription Only purchases
+    (R129), renewals, online store purchases, or any other products unless
+    expressly stated by RROI.
+  </p>
+
+  <p style={styles.paragraph}>
+    Normal Premium Kit Bundle price: <strong>R499</strong>
+    <br />
+    Affiliate code discount: <strong>R30</strong>
+    <br />
+    Customer pays: <strong>R469</strong>
+  </p>
+</div>
 
           <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Affiliate commission</h2>
-            <p style={styles.paragraph}>
-  Affiliates earn R30 commission only when a customer purchases the Premium Full Kit using their approved affiliate code.
-</p>
-            <p style={styles.paragraph}>
-              Commission per qualifying Premium Full Kit purchase:{" "}
-              <strong>R30</strong>.
-            </p>
-          </div>
+  <h2 style={styles.sectionTitle}>Affiliate commission</h2>
+
+  <p style={styles.paragraph}>
+    Affiliates earn R30 commission only when a customer successfully purchases
+    the RROI Premium Kit Bundle using their approved affiliate code.
+  </p>
+
+  <p style={styles.paragraph}>
+    Commission per qualifying Premium Kit Bundle purchase:{" "}
+    <strong>R30</strong>.
+  </p>
+</div>
          <div style={styles.section}>
   <h2 style={styles.sectionTitle}>Payouts</h2>
   <p style={styles.paragraph}>
@@ -109,88 +118,146 @@ export default function AffiliatePage() {
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
-    background: PAGE_BG,
-    minHeight: "100%",
-    padding: "40px 16px 56px",
-  },
-  container: {
-    maxWidth: 900,
-    margin: "0 auto",
     width: "100%",
+    minHeight: "100vh",
+    background: PAGE_BG,
+    padding: "clamp(16px, 5vw, 40px) clamp(12px, 4vw, 16px) 56px",
+    boxSizing: "border-box",
+    overflowX: "hidden",
   },
+
+  container: {
+    width: "100%",
+    maxWidth: 900,
+    minWidth: 0,
+    margin: "0 auto",
+    boxSizing: "border-box",
+  },
+
   card: {
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
     background: CARD_BG,
     border: `1px solid ${BORDER}`,
     borderRadius: 24,
-    padding: 28,
+    padding: "clamp(16px, 4vw, 28px)",
     boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
     color: TEXT,
     fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
   },
+
   topBlock: {
+    width: "100%",
+    maxWidth: "100%",
     marginBottom: 24,
     textAlign: "center",
   },
+
   title: {
     margin: 0,
-    fontSize: 34,
-    lineHeight: 1.1,
+    maxWidth: "100%",
+    fontSize: "clamp(28px, 6vw, 34px)",
+    lineHeight: 1.15,
     fontWeight: 900,
     color: TEXT,
+    overflowWrap: "break-word",
   },
+
   subtitle: {
     margin: "12px auto 0",
-    fontSize: 16,
-    lineHeight: 1.6,
-    color: MUTED,
+    width: "100%",
     maxWidth: 650,
+    fontSize: "clamp(15px, 2.5vw, 16px)",
+    lineHeight: 1.7,
+    color: MUTED,
+    overflowWrap: "break-word",
   },
+
   notice: {
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
     border: "1px solid #A7F3D0",
     borderRadius: 18,
-    padding: 18,
+    padding: "clamp(16px, 3vw, 18px)",
     background: "#ECFDF5",
     marginBottom: 18,
     color: "#065F46",
+    fontSize: 15,
     fontWeight: 800,
-    lineHeight: 1.6,
+    lineHeight: 1.65,
+    overflowWrap: "break-word",
   },
+
   section: {
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
     border: `1px solid ${BORDER}`,
     borderRadius: 18,
-    padding: 20,
+    padding: "clamp(16px, 3vw, 20px)",
     background: "#FFFFFF",
     marginBottom: 18,
   },
+
   sectionTitle: {
     margin: "0 0 10px",
-    fontSize: 20,
+    maxWidth: "100%",
+    fontSize: "clamp(18px, 4vw, 20px)",
+    lineHeight: 1.3,
     fontWeight: 800,
     color: TEXT,
+    overflowWrap: "break-word",
   },
+
   paragraph: {
     margin: "0 0 10px",
+    maxWidth: "100%",
     fontSize: 15,
     lineHeight: 1.7,
     color: MUTED,
+    overflowWrap: "break-word",
+    wordBreak: "normal",
   },
+
   orderedList: {
-    margin: "6px 0 0 22px",
-    padding: 0,
+    width: "100%",
+    maxWidth: "100%",
+    boxSizing: "border-box",
+    margin: "8px 0 0",
+    paddingLeft: 24,
     fontSize: 15,
-    lineHeight: 1.9,
+    lineHeight: 1.8,
     color: MUTED,
+    overflowWrap: "break-word",
   },
+
   ctaWrap: {
+    width: "100%",
+    maxWidth: "100%",
     marginTop: 24,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     gap: 12,
+    boxSizing: "border-box",
   },
+
   primaryBtn: {
-    display: "inline-block",
-    minWidth: 260,
+    display: "flex",
+    width: "100%",
+    maxWidth: 360,
+    minHeight: 48,
+    boxSizing: "border-box",
+    justifyContent: "center",
+    alignItems: "center",
     textAlign: "center",
     padding: "12px 18px",
     borderRadius: 12,
@@ -198,16 +265,32 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#FFFFFF",
     textDecoration: "none",
     fontWeight: 800,
+    fontSize: 15,
+    lineHeight: 1.4,
+    overflowWrap: "break-word",
   },
+
   secondaryLink: {
-    textDecoration: "none",
+    display: "inline-block",
+    maxWidth: "100%",
+    textAlign: "center",
+    textDecoration: "underline",
+    textUnderlineOffset: 2,
     color: BRAND_GREEN,
     fontWeight: 700,
     fontSize: 15,
+    lineHeight: 1.5,
+    overflowWrap: "break-word",
   },
+
   link: {
-  color: BRAND_GREEN,
-  fontWeight: 800,
-  textDecoration: "none",
-},
+    display: "inline-block",
+    maxWidth: "100%",
+    color: BRAND_GREEN,
+    fontWeight: 800,
+    textDecoration: "underline",
+    textUnderlineOffset: 2,
+    lineHeight: 1.5,
+    overflowWrap: "anywhere",
+  },
 };

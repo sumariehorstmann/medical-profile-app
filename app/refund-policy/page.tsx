@@ -42,7 +42,7 @@ export default function RefundPolicyPage() {
   </p>
   <ul style={styles.list}>
     <li style={styles.listItem}>Payments are generally non-refundable once Premium access has been activated.</li>
-    <li style={styles.listItem}>Access is considered used immediately upon activation</li>
+    <li style={styles.listItem}>Access is considered used immediately upon activation.</li>
   </ul>
   <p style={styles.paragraphSpaced}>
     Refunds will only be considered for duplicate payments, verified billing errors, or where required by applicable law.
@@ -50,29 +50,56 @@ export default function RefundPolicyPage() {
 </div>
 
 <div style={styles.section}>
-  <h2 style={styles.sectionTitle}>3. Custom Physical Products (QR Items)</h2>
+  <h2 style={styles.sectionTitle}>
+    3. Custom Physical Products and Personalised QR Items
+  </h2>
+
   <p style={styles.paragraph}>
-    All RROI physical products are made to order, custom-linked to a user&apos;s unique QR profile, and manufactured specifically for each customer.
+    RROI physical QR products are made to order and personalised by linking
+    them to the customer&apos;s unique RROI Emergency Profile.
   </p>
+
   <p style={styles.paragraphSpaced}>
-    Product colour, engraving appearance, finish, and shape may vary slightly from product images due to material and manufacturing differences.
+    Product colour, engraving appearance, finish, dimensions and shape may vary
+    slightly from photographs, mockups and examples because of normal material
+    and manufacturing variations.
   </p>
+
   <p style={styles.paragraphSpaced}>
-  Product photographs, mockups, and examples are provided for illustrative purposes only.
-</p>
-  <ul style={styles.listSpaced}>
-    <li style={styles.listItem}>No cancellations are allowed once payment has been made</li>
-    <li style={styles.listItem}>No returns or refunds are accepted for change of mind or incorrect information submitted by the user</li>
-  </ul>
+    To the extent permitted by applicable law, personalised products cannot
+    ordinarily be cancelled, returned or refunded merely because the customer
+    changes their mind after production has started.
+  </p>
+
+  <p style={styles.paragraphSpaced}>
+    RROI is not responsible for incorrect names, contact details, medical
+    information, delivery details or other information submitted or confirmed
+    by the customer. This does not limit any non-excludable rights relating to
+    defective, unsafe, incorrectly supplied or materially non-conforming goods.
+  </p>
 </div>
 
 <div style={styles.section}>
-  <h2 style={styles.sectionTitle}>4. Damaged, Defective, or Incorrect Items</h2>
+  <h2 style={styles.sectionTitle}>
+    4. Damaged, Defective or Incorrect Items
+  </h2>
+
   <p style={styles.paragraph}>
-    RROI will replace or refund an order only if the item arrives damaged, is defective, does not match the confirmed order details, or the wrong item was sent.
+    Where an item arrives damaged, is defective, differs materially from the
+    confirmed order, or the wrong item was supplied, please contact RROI as soon
+    as reasonably possible after delivery.
   </p>
+
   <p style={styles.paragraphSpaced}>
-    The issue must be reported within 48 hours of delivery and clear photographic evidence must be provided.
+    We request that visible delivery damage or order errors be reported within
+    48 hours, together with clear photographs and the relevant order details,
+    so that the matter can be investigated promptly. Failure to report within
+    48 hours does not remove any rights that cannot lawfully be excluded.
+  </p>
+
+  <p style={styles.paragraphSpaced}>
+    After assessment, RROI will provide the remedy required by applicable law,
+    which may include repair, replacement or refund.
   </p>
 </div>
 
@@ -112,82 +139,127 @@ export default function RefundPolicyPage() {
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
-    background: PAGE_BG,
-    minHeight: "100%",
-    padding: "40px 16px 56px",
-  },
-  container: {
-    maxWidth: 900,
-    margin: "0 auto",
     width: "100%",
+    minHeight: "100vh",
+    background: PAGE_BG,
+    padding: "clamp(16px, 5vw, 40px) clamp(12px, 4vw, 16px) 56px",
+    boxSizing: "border-box",
+    overflowX: "hidden",
   },
+
+  container: {
+    width: "100%",
+    maxWidth: 900,
+    minWidth: 0,
+    margin: "0 auto",
+    boxSizing: "border-box",
+  },
+
   card: {
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
     background: CARD_BG,
     border: `1px solid ${BORDER}`,
     borderRadius: 24,
-    padding: 28,
+    padding: "clamp(16px, 4vw, 28px)",
     boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
   },
+
   topBlock: {
+    width: "100%",
+    maxWidth: "100%",
     marginBottom: 24,
     textAlign: "center",
   },
+
   title: {
     margin: 0,
-    fontSize: 34,
+    maxWidth: "100%",
+    fontSize: "clamp(30px, 6vw, 36px)",
+    lineHeight: 1.15,
     fontWeight: 900,
     color: TEXT,
+    overflowWrap: "break-word",
   },
+
   subtitle: {
+    width: "100%",
+    maxWidth: 680,
     margin: "12px auto 0",
-    fontSize: 16,
+    fontSize: "clamp(15px, 2.5vw, 16px)",
+    lineHeight: 1.7,
     color: MUTED,
-    lineHeight: 1.6,
-    maxWidth: 650,
+    overflowWrap: "break-word",
   },
+
   section: {
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
     border: `1px solid ${BORDER}`,
     borderRadius: 18,
-    padding: 20,
+    padding: "clamp(16px, 3vw, 20px)",
     background: "#FFFFFF",
     marginBottom: 18,
   },
+
   sectionTitle: {
     margin: "0 0 10px",
-    fontSize: 20,
+    maxWidth: "100%",
+    fontSize: "clamp(18px, 4vw, 20px)",
+    lineHeight: 1.35,
     fontWeight: 800,
     color: TEXT,
+    overflowWrap: "break-word",
   },
+
   paragraph: {
     margin: 0,
+    maxWidth: "100%",
     fontSize: 15,
-    lineHeight: 1.7,
+    lineHeight: 1.75,
     color: MUTED,
+    overflowWrap: "break-word",
   },
+
   paragraphSpaced: {
     margin: "12px 0 0",
+    maxWidth: "100%",
     fontSize: 15,
-    lineHeight: 1.7,
+    lineHeight: 1.75,
     color: MUTED,
+    overflowWrap: "break-word",
   },
+
   list: {
-    margin: "10px 0 0 22px",
-    padding: 0,
+    width: "100%",
+    maxWidth: "100%",
+    boxSizing: "border-box",
+    margin: "10px 0 0",
+    paddingLeft: 22,
     color: MUTED,
   },
-  listSpaced: {
-    margin: "12px 0 0 22px",
-    padding: 0,
-    color: MUTED,
-  },
+  
   listItem: {
     marginBottom: 8,
+    paddingLeft: 3,
     fontSize: 15,
     lineHeight: 1.7,
+    overflowWrap: "break-word",
   },
+
   link: {
+    display: "inline",
+    maxWidth: "100%",
     color: "#157A55",
     fontWeight: 700,
-    textDecoration: "none",
+    textDecoration: "underline",
+    textUnderlineOffset: 2,
+    overflowWrap: "anywhere",
   },
 };

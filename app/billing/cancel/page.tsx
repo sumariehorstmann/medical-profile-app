@@ -1,5 +1,12 @@
 import Link from "next/link";
 
+const TEXT = "#0F172A";
+const MUTED = "#475569";
+const BORDER = "#E5E7EB";
+const PAGE_BG = "#F8FAFC";
+const CARD_BG = "#FFFFFF";
+const BRAND_GREEN = "#157A55";
+
 export const dynamic = "force-dynamic";
 
 export default function BillingCancelPage() {
@@ -29,69 +36,93 @@ export default function BillingCancelPage() {
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
+    width: "100%",
     minHeight: "100vh",
-    background: "#F8FAFC",
+    background: PAGE_BG,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: 24,
+    padding: "clamp(16px, 5vw, 40px)",
+    boxSizing: "border-box",
+    overflowX: "hidden",
   },
 
   card: {
     width: "100%",
     maxWidth: 520,
-    background: "#FFFFFF",
-    border: "1px solid #E5E7EB",
-    borderRadius: 20,
-    padding: 28,
-    boxShadow: "0 20px 45px rgba(15, 23, 42, 0.08)",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
+    background: CARD_BG,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 24,
+    padding: "clamp(20px, 5vw, 32px)",
+    boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
     textAlign: "center",
   },
 
   title: {
-    margin: "0 0 10px",
-    fontSize: 34,
+    margin: "0 0 12px",
+    maxWidth: "100%",
+    fontSize: "clamp(28px, 6vw, 36px)",
+    lineHeight: 1.15,
     fontWeight: 900,
-    color: "#0F172A",
+    color: TEXT,
+    overflowWrap: "break-word",
   },
 
   text: {
-    margin: "0 auto 24px",
-    fontSize: 15,
-    color: "#475569",
-    lineHeight: 1.7,
+    margin: "0 auto 28px",
+    width: "100%",
     maxWidth: 420,
+    fontSize: "clamp(15px, 2.5vw, 16px)",
+    lineHeight: 1.7,
+    color: MUTED,
+    overflowWrap: "break-word",
   },
 
   actions: {
+    width: "100%",
     display: "flex",
+    flexDirection: "column",
     gap: 12,
-    justifyContent: "center",
-    flexWrap: "wrap",
+    alignItems: "center",
   },
 
   primaryBtn: {
-    display: "inline-flex",
-    alignItems: "center",
+    display: "flex",
+    width: "100%",
+    maxWidth: 320,
+    minHeight: 48,
     justifyContent: "center",
+    alignItems: "center",
     padding: "12px 18px",
+    boxSizing: "border-box",
     borderRadius: 12,
-    background: "#157A55",
+    background: BRAND_GREEN,
     color: "#FFFFFF",
     textDecoration: "none",
     fontWeight: 800,
+    fontSize: 15,
+    lineHeight: 1.4,
   },
 
   secondaryBtn: {
-    display: "inline-flex",
-    alignItems: "center",
+    display: "flex",
+    width: "100%",
+    maxWidth: 320,
+    minHeight: 48,
     justifyContent: "center",
+    alignItems: "center",
     padding: "12px 18px",
+    boxSizing: "border-box",
     borderRadius: 12,
-    border: "1px solid #D1D5DB",
+    border: `1px solid ${BORDER}`,
     background: "#FFFFFF",
-    color: "#0F172A",
+    color: TEXT,
     textDecoration: "none",
     fontWeight: 800,
+    fontSize: 15,
+    lineHeight: 1.4,
   },
 };

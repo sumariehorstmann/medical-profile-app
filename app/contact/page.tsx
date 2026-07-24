@@ -68,16 +68,23 @@ export default function ContactPage() {
 <div style={styles.section}>
   <h2 style={styles.sectionTitle}>Privacy & Data Requests</h2>
   <p style={styles.paragraph}>
-  For privacy, account deletion, data correction, access to your personal information, or other data protection requests, please contact us at support@rroi.co.za.
+  For privacy, account deletion, data correction, access to your personal
+  information, or other data-protection requests, please contact us at{" "}
+  <a href="mailto:support@rroi.co.za" style={styles.link}>
+    support@rroi.co.za
+  </a>
+  .
 </p>
 </div>
 
 <div style={styles.section}>
   <h2 style={styles.sectionTitle}>Important</h2>
   <p style={styles.paragraph}>
-    RROI is a digital medical information platform and is not a medical service, healthcare provider, emergency response service, or emergency dispatch service. If you are dealing with an emergency, contact your local emergency
-    services immediately.
-  </p>
+  RROI is an emergency-information storage and retrieval platform. It is not a
+  medical service, healthcare provider, ambulance service, emergency response
+  service, or emergency dispatch service. In an emergency, contact the
+  appropriate local emergency services immediately.
+</p>
   <p style={{ ...styles.paragraph, marginTop: 12 }}>
     Do not use this page to request urgent emergency or medical assistance.
   </p>
@@ -92,79 +99,133 @@ export default function ContactPage() {
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
-    background: PAGE_BG,
-    minHeight: "100%",
-    padding: "40px 16px 56px",
-  },
-  container: {
-    maxWidth: 900,
-    margin: "0 auto",
     width: "100%",
+    minHeight: "100vh",
+    background: PAGE_BG,
+    padding: "clamp(16px, 5vw, 40px) clamp(12px, 4vw, 16px) 56px",
+    boxSizing: "border-box",
+    overflowX: "hidden",
   },
+
+  container: {
+    width: "100%",
+    maxWidth: 900,
+    minWidth: 0,
+    margin: "0 auto",
+    boxSizing: "border-box",
+  },
+
   card: {
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
     background: CARD_BG,
     border: `1px solid ${BORDER}`,
     borderRadius: 24,
-    padding: 28,
+    padding: "clamp(16px, 4vw, 28px)",
     boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
   },
+
   topBlock: {
+    width: "100%",
+    maxWidth: "100%",
     marginBottom: 24,
     textAlign: "center",
   },
+
   title: {
     margin: 0,
-    fontSize: 34,
-    lineHeight: 1.1,
+    maxWidth: "100%",
+    fontSize: "clamp(30px, 6vw, 34px)",
+    lineHeight: 1.15,
     fontWeight: 900,
     color: TEXT,
+    overflowWrap: "break-word",
   },
+
   subtitle: {
     margin: "12px auto 0",
-    fontSize: 16,
-    lineHeight: 1.6,
-    color: MUTED,
+    width: "100%",
     maxWidth: 650,
+    fontSize: "clamp(15px, 2.5vw, 16px)",
+    lineHeight: 1.7,
+    color: MUTED,
+    overflowWrap: "break-word",
   },
+
   section: {
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
     border: `1px solid ${BORDER}`,
     borderRadius: 18,
-    padding: 20,
+    padding: "clamp(16px, 3vw, 20px)",
     background: "#FFFFFF",
     marginBottom: 18,
   },
+
   sectionTitle: {
     margin: "0 0 12px",
-    fontSize: 20,
+    maxWidth: "100%",
+    fontSize: "clamp(18px, 4vw, 20px)",
+    lineHeight: 1.3,
     fontWeight: 800,
     color: TEXT,
+    overflowWrap: "break-word",
   },
+
   infoGrid: {
     display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
     gap: 16,
+    width: "100%",
   },
+
   infoItem: {
+    minWidth: 0,
     display: "grid",
     gap: 6,
+    padding: 14,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 12,
+    background: "#F8FAFC",
+    boxSizing: "border-box",
   },
+
   label: {
+    maxWidth: "100%",
     fontSize: 13,
+    lineHeight: 1.4,
     fontWeight: 800,
     color: TEXT,
     textTransform: "uppercase",
     letterSpacing: 0.2,
+    overflowWrap: "break-word",
   },
+
   link: {
+    display: "inline-block",
+    maxWidth: "100%",
     fontSize: 16,
+    lineHeight: 1.5,
     fontWeight: 700,
     color: BRAND_GREEN,
-    textDecoration: "none",
-    wordBreak: "break-word",
+    textDecoration: "underline",
+    textUnderlineOffset: 2,
+    overflowWrap: "anywhere",
   },
+
   paragraph: {
     margin: 0,
+    maxWidth: "100%",
     fontSize: 15,
     lineHeight: 1.7,
     color: MUTED,
+    overflowWrap: "break-word",
+    wordBreak: "normal",
   },
 };

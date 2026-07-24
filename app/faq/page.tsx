@@ -1,13 +1,24 @@
 import PageHeader from "@/components/PageHeader";
 import PageBottomNav from "@/components/PageBottomNav";
 
+const TEXT = "#0F172A";
+const MUTED = "#475569";
+const BORDER = "#E5E7EB";
+const PAGE_BG = "#F8FAFC";
+const CARD_BG = "#FFFFFF";
+
 export default function FAQPage() {
   return (
     <main style={styles.page}>
-      <section style={styles.card}>
+      <section style={styles.container}>
+  <div style={styles.card}>
         <PageHeader />
 
         <h1 style={styles.title}>Frequently Asked Questions</h1>
+        <p style={styles.subtitle}>
+  Find answers to the most common questions about RROI, Premium
+  subscriptions, QR products, orders and emergency profiles.
+</p>
 
         <FAQ
           q="What is RROI?"
@@ -210,6 +221,7 @@ export default function FAQPage() {
         />
 
         <PageBottomNav />
+        </div>
       </section>
     </main>
   );
@@ -226,47 +238,88 @@ function FAQ({ q, a }: { q: string; a: string }) {
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
+    width: "100%",
     minHeight: "100vh",
-    background: "#F8FAFC",
-    padding: "40px 16px",
+    background: PAGE_BG,
+    padding: "clamp(16px, 5vw, 40px) clamp(12px, 4vw, 16px) 56px",
+    boxSizing: "border-box",
+    overflowX: "hidden",
+  },
+
+  container: {
+    width: "100%",
+    maxWidth: 900,
+    minWidth: 0,
+    margin: "0 auto",
+    boxSizing: "border-box",
   },
 
   card: {
-    maxWidth: 850,
-    margin: "0 auto",
-    background: "#FFFFFF",
-    border: "1px solid #E5E7EB",
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
+    background: CARD_BG,
+    border: `1px solid ${BORDER}`,
     borderRadius: 24,
-    padding: 28,
-    color: "#0F172A",
+    padding: "clamp(16px, 4vw, 28px)",
+    boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
+    color: TEXT,
   },
 
   title: {
     margin: "20px 0 24px",
-    fontSize: 36,
+    maxWidth: "100%",
+    fontSize: "clamp(30px, 6vw, 36px)",
+    lineHeight: 1.15,
     fontWeight: 900,
-    lineHeight: 1.1,
+    color: TEXT,
     textAlign: "center",
+    overflowWrap: "break-word",
   },
 
   faqItem: {
-    border: "1px solid #E5E7EB",
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 14,
+    width: "100%",
+    maxWidth: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    overflow: "hidden",
+    border: `1px solid ${BORDER}`,
+    borderRadius: 18,
+    padding: "clamp(16px, 3vw, 20px)",
+    marginBottom: 18,
     background: "#FFFFFF",
+    textAlign: "left",
   },
 
   question: {
-    margin: "0 0 8px",
-    fontSize: 18,
+    margin: "0 0 10px",
+    maxWidth: "100%",
+    fontSize: "clamp(18px, 4vw, 20px)",
+    lineHeight: 1.35,
     fontWeight: 900,
+    color: TEXT,
+    overflowWrap: "break-word",
   },
 
   answer: {
     margin: 0,
+    maxWidth: "100%",
     fontSize: 15,
-    lineHeight: 1.7,
-    color: "#475569",
+    lineHeight: 1.75,
+    color: MUTED,
+    overflowWrap: "break-word",
+    wordBreak: "normal",
   },
+  subtitle: {
+  margin: "0 auto 28px",
+  width: "100%",
+  maxWidth: 700,
+  fontSize: "clamp(15px, 2.5vw, 16px)",
+  lineHeight: 1.7,
+  color: MUTED,
+  textAlign: "center",
+  overflowWrap: "break-word",
+},
 };
