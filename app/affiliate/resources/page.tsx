@@ -3,8 +3,7 @@
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import { Capacitor } from "@capacitor/core";
-import { Directory, Filesystem } from "@capacitor/filesystem";
-import { Share } from "@capacitor/share";
+import { Media } from "@capacitor-community/media";
 
 const ads = [
   {
@@ -82,76 +81,75 @@ const ads = [
 ];
 
 export default function AffiliateResourcesPage() {
+  
     async function handleAdDownload(
-    file: string,
-    downloadName: string,
-    title: string
-  ) {
-    try {
-      if (Capacitor.isNativePlatform()) {
-        const response = await fetch(file);
+  file: string,
+  downloadName: string
+) {
+  try {
+    if (Capacitor.isNativePlatform()) {
+      const response = await fetch(file);
 
-        if (!response.ok) {
-          throw new Error("The advertisement could not be loaded.");
-        }
-
-        const blob = await response.blob();
-
-        const base64Data = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-
-          reader.onloadend = () => {
-            const result = reader.result;
-
-            if (typeof result !== "string") {
-              reject(new Error("The advertisement could not be prepared."));
-              return;
-            }
-
-            const base64 = result.split(",")[1];
-
-            if (!base64) {
-              reject(new Error("The advertisement could not be prepared."));
-              return;
-            }
-
-            resolve(base64);
-          };
-
-          reader.onerror = () => {
-            reject(new Error("The advertisement could not be read."));
-          };
-
-          reader.readAsDataURL(blob);
-        });
-
-        const savedFile = await Filesystem.writeFile({
-          path: downloadName,
-          data: base64Data,
-          directory: Directory.Cache,
-        });
-
-        await Share.share({
-          title,
-          text: "Save or share this official RROI advertisement.",
-          files: [savedFile.uri],
-          dialogTitle: "Save or share RROI advertisement",
-        });
-
-        return;
+      if (!response.ok) {
+        throw new Error("The advertisement could not be loaded.");
       }
 
-      const link = document.createElement("a");
-      link.href = file;
-      link.download = downloadName;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error("Advertisement download failed:", error);
-      alert("The advertisement could not be downloaded. Please try again.");
+      const blob = await response.blob();
+
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          if (typeof reader.result !== "string") {
+            reject(new Error("The advertisement could not be prepared."));
+            return;
+          }
+
+          resolve(reader.result);
+        };
+
+        reader.onerror = () => {
+          reject(new Error("The advertisement could not be read."));
+        };
+
+        reader.readAsDataURL(blob);
+      });
+
+      
+      const fileNameWithoutExtension = downloadName.replace(
+        /\.(png|jpg|jpeg|webp)$/i,
+        ""
+      );
+
+      await Media.savePhoto({
+  path: dataUrl,
+  fileName: `${fileNameWithoutExtension}-${Date.now()}`,
+});
+
+      alert("Advertisement saved to your Photos.");
+      return;
     }
+
+    const link = document.createElement("a");
+    link.href = file;
+    link.download = downloadName;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (err: unknown) {
+    console.error("Advertisement download failed:", err);
+
+    const errorMessage =
+      err instanceof Error
+        ? err.message
+        : typeof err === "string"
+        ? err
+        : JSON.stringify(err);
+
+    alert(`Advertisement download failed: ${errorMessage}`);
   }
+}
   return (
     <main style={styles.page}>
       <div style={styles.card}>
@@ -184,7 +182,7 @@ export default function AffiliateResourcesPage() {
                 <button
   type="button"
   onClick={() =>
-    handleAdDownload(ad.file, ad.downloadName, ad.title)
+    handleAdDownload(ad.file, ad.downloadName)
   }
   style={styles.downloadButton}
 >

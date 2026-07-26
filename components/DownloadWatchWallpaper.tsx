@@ -22,33 +22,7 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
 
   const publicUrl = publicId ? `${baseUrl}/e/${publicId}` : "";
 
-  async function getOrCreateRroiAlbum(): Promise<string> {
-    const existingAlbums = await Media.getAlbums();
-
-    const existingAlbum = existingAlbums.albums.find(
-      (album) => album.name.trim().toLowerCase() === "rroi"
-    );
-
-    if (existingAlbum) {
-      return existingAlbum.identifier;
-    }
-
-    await Media.createAlbum({
-      name: "RROI",
-    });
-
-    const updatedAlbums = await Media.getAlbums();
-
-    const createdAlbum = updatedAlbums.albums.find(
-      (album) => album.name.trim().toLowerCase() === "rroi"
-    );
-
-    if (!createdAlbum) {
-      throw new Error("The RROI Gallery album could not be created.");
-    }
-
-    return createdAlbum.identifier;
-  }
+  
 
   async function downloadWatchWallpaper() {
     if (!ref.current || !publicId || downloading) return;
@@ -65,17 +39,14 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
       const fileName = `rroi-smartwatch-wallpaper-${Date.now()}`;
 
       if (Capacitor.isNativePlatform()) {
-        const albumIdentifier = await getOrCreateRroiAlbum();
+  await Media.savePhoto({
+    path: dataUrl,
+    fileName,
+  });
 
-        await Media.savePhoto({
-          path: dataUrl,
-          albumIdentifier,
-          fileName,
-        });
-
-        alert("Smartwatch wallpaper saved to your Gallery in the RROI album.");
-        return;
-      }
+  alert("Smartwatch wallpaper saved to your Gallery.");
+  return;
+}
 
       const link = document.createElement("a");
       link.download = `${fileName}.png`;
