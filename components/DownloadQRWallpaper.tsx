@@ -17,7 +17,34 @@ export default function DownloadQRWallpaper({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
-  
+  async function getOrCreateRroiAlbum(): Promise<string> {
+  const { albums } = await Media.getAlbums();
+
+  const existingAlbum = albums.find(
+    (album) => album.name.trim().toLowerCase() === "rroi"
+  );
+
+  if (existingAlbum) {
+    return existingAlbum.identifier;
+  }
+
+  await Media.createAlbum({
+    name: "RROI",
+  });
+
+  const updatedAlbums = await Media.getAlbums();
+
+  const createdAlbum = updatedAlbums.albums.find(
+    (album) => album.name.trim().toLowerCase() === "rroi"
+  );
+
+  if (!createdAlbum) {
+    throw new Error("The Gallery save location could not be prepared.");
+  }
+
+  return createdAlbum.identifier;
+}
+
 const handleDownload = async () => {
   if (!ref.current || !publicId || downloading) return;
 
@@ -33,14 +60,17 @@ const handleDownload = async () => {
     const fileName = `rroi-phone-lock-screen-${Date.now()}`;
 
     if (Capacitor.isNativePlatform()) {
-      await Media.savePhoto({
-        path: dataUrl,
-        fileName,
-      });
+  const albumIdentifier = await getOrCreateRroiAlbum();
 
-      alert("Phone lock screen wallpaper saved to your Gallery.");
-      return;
-    }
+  await Media.savePhoto({
+    path: dataUrl,
+    albumIdentifier,
+    fileName,
+  });
+
+  alert("Phone lock screen wallpaper saved to your Gallery.");
+  return;
+}
 
     const link = document.createElement("a");
     link.download = `${fileName}.png`;

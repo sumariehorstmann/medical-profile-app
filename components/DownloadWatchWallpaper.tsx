@@ -16,6 +16,34 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
 
+  async function getOrCreateRroiAlbum(): Promise<string> {
+  const { albums } = await Media.getAlbums();
+
+  const existingAlbum = albums.find(
+    (album) => album.name.trim().toLowerCase() === "rroi"
+  );
+
+  if (existingAlbum) {
+    return existingAlbum.identifier;
+  }
+
+  await Media.createAlbum({
+    name: "RROI",
+  });
+
+  const updatedAlbums = await Media.getAlbums();
+
+  const createdAlbum = updatedAlbums.albums.find(
+    (album) => album.name.trim().toLowerCase() === "rroi"
+  );
+
+  if (!createdAlbum) {
+    throw new Error("The Gallery save location could not be prepared.");
+  }
+
+  return createdAlbum.identifier;
+}
+
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "") ||
     "https://www.rroi.co.za";
@@ -39,8 +67,11 @@ export default function DownloadWatchWallpaper({ publicId }: Props) {
       const fileName = `rroi-smartwatch-wallpaper-${Date.now()}`;
 
       if (Capacitor.isNativePlatform()) {
+  const albumIdentifier = await getOrCreateRroiAlbum();
+
   await Media.savePhoto({
     path: dataUrl,
+    albumIdentifier,
     fileName,
   });
 

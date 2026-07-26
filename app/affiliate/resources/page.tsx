@@ -81,7 +81,33 @@ const ads = [
 ];
 
 export default function AffiliateResourcesPage() {
-  
+  async function getOrCreateRroiAlbum(): Promise<string> {
+  const { albums } = await Media.getAlbums();
+
+  const existingAlbum = albums.find(
+    (album) => album.name.trim().toLowerCase() === "rroi"
+  );
+
+  if (existingAlbum) {
+    return existingAlbum.identifier;
+  }
+
+  await Media.createAlbum({
+    name: "RROI",
+  });
+
+  const updatedAlbums = await Media.getAlbums();
+
+  const createdAlbum = updatedAlbums.albums.find(
+    (album) => album.name.trim().toLowerCase() === "rroi"
+  );
+
+  if (!createdAlbum) {
+    throw new Error("The Gallery save location could not be prepared.");
+  }
+
+  return createdAlbum.identifier;
+}
     async function handleAdDownload(
   file: string,
   downloadName: string
@@ -121,8 +147,11 @@ export default function AffiliateResourcesPage() {
         ""
       );
 
-      await Media.savePhoto({
+      const albumIdentifier = await getOrCreateRroiAlbum();
+
+await Media.savePhoto({
   path: dataUrl,
+  albumIdentifier,
   fileName: `${fileNameWithoutExtension}-${Date.now()}`,
 });
 
