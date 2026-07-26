@@ -62,10 +62,18 @@ export default function DownloadQRWallpaper({
     document.body.appendChild(link);
     link.click();
     link.remove();
-  } catch (err) {
-    console.error("Download failed", err);
-    alert("Download failed. Please try again.");
-  } finally {
+  } catch (err: unknown) {
+  console.error("Wallpaper download failed:", err);
+
+  const errorMessage =
+    err instanceof Error
+      ? err.message
+      : typeof err === "string"
+      ? err
+      : JSON.stringify(err);
+
+  alert(`Wallpaper failed: ${errorMessage}`);
+} finally {
     setDownloading(false);
   }
 };
