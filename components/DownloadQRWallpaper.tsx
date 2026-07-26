@@ -3,8 +3,7 @@
 import { useRef, useState } from "react";
 import * as htmlToImage from "html-to-image";
 import { Capacitor } from "@capacitor/core";
-import { Directory, Filesystem } from "@capacitor/filesystem";
-import { Share } from "@capacitor/share";
+import { Media } from "@capacitor-community/media";
 import QRScreensaver from "./QRScreensaver";
 
 export default function DownloadQRWallpaper({
@@ -19,64 +18,83 @@ export default function DownloadQRWallpaper({
   const ref = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
 
-  const handleDownload = async () => {
-  if (!ref.current || !publicId || downloading) return;
+  async function getOrCreateRroiAlbum(): Promise<string> {
+    const existingAlbums = await Media.getAlbums();
 
-  setDownloading(true);
+    const existingAlbum = existingAlbums.albums.find(
+      (album) => album.name.trim().toLowerCase() === "rroi"
+    );
 
-  try {
-    const dataUrl = await htmlToImage.toPng(ref.current, {
-      pixelRatio: 2,
-      cacheBust: true,
-      backgroundColor: "#000000",
-    });
-
-    const fileName = "rroi-phone-lock-screen.png";
-
-    if (Capacitor.isNativePlatform()) {
-      const base64Data = dataUrl.split(",")[1];
-
-      if (!base64Data) {
-        throw new Error("The wallpaper image could not be prepared.");
-      }
-
-      const savedFile = await Filesystem.writeFile({
-        path: fileName,
-        data: base64Data,
-        directory: Directory.Cache,
-      });
-
-      await Share.share({
-        title: "RROI Phone Lock Screen",
-        text: "Save or share your RROI phone lock screen wallpaper.",
-        files: [savedFile.uri],
-        dialogTitle: "Save or share RROI wallpaper",
-      });
-
-      return;
+    if (existingAlbum) {
+      return existingAlbum.identifier;
     }
 
-    const link = document.createElement("a");
-    link.download = fileName;
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (err: unknown) {
-  console.error("Wallpaper download failed:", err);
+    await Media.createAlbum({
+      name: "RROI",
+    });
 
-  const errorMessage =
-    err instanceof Error
-      ? err.message
-      : typeof err === "string"
-      ? err
-      : JSON.stringify(err);
+    const updatedAlbums = await Media.getAlbums();
 
-  alert(`Wallpaper failed: ${errorMessage}`);
-} finally {
-    setDownloading(false);
+    const createdAlbum = updatedAlbums.albums.find(
+      (album) => album.name.trim().toLowerCase() === "rroi"
+    );
+
+    if (!createdAlbum) {
+      throw new Error("The RROI Gallery album could not be created.");
+    }
+
+    return createdAlbum.identifier;
   }
-};
+
+  const handleDownload = async () => {
+    if (!ref.current || !publicId || downloading) return;
+
+    setDownloading(true);
+
+    try {
+      const dataUrl = await htmlToImage.toPng(ref.current, {
+        pixelRatio: 2,
+        cacheBust: true,
+        backgroundColor: "#000000",
+      });
+
+      const fileName = `rroi-phone-lock-screen-${Date.now()}`;
+
+      if (Capacitor.isNativePlatform()) {
+        const albumIdentifier = await getOrCreateRroiAlbum();
+
+        await Media.savePhoto({
+          path: dataUrl,
+          albumIdentifier,
+          fileName,
+        });
+
+        alert("Wallpaper saved to your Gallery in the RROI album.");
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.download = `${fileName}.png`;
+      link.href = dataUrl;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err: unknown) {
+      console.error("Wallpaper download failed:", err);
+
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : typeof err === "string"
+          ? err
+          : JSON.stringify(err);
+
+      alert(`Wallpaper failed: ${errorMessage}`);
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "") ||
@@ -87,16 +105,16 @@ export default function DownloadQRWallpaper({
   return (
     <>
       <div
-  aria-hidden="true"
-  style={{
-    position: "fixed",
-    top: "-10000px",
-    left: "-10000px",
-    pointerEvents: "none",
-    colorScheme: "light",
-    forcedColorAdjust: "none",
-  }}
->
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          top: "-10000px",
+          left: "-10000px",
+          pointerEvents: "none",
+          colorScheme: "light",
+          forcedColorAdjust: "none",
+        }}
+      >
         <div ref={ref}>
           <QRScreensaver
             qrValue={qrUrl}
@@ -112,7 +130,9 @@ export default function DownloadQRWallpaper({
         style={styles.button}
         disabled={!publicId || downloading}
       >
-        {downloading ? "Preparing download..." : "Download Phone Lock Screen"}
+        {downloading
+          ? "Saving wallpaper..."
+          : "Download Phone Lock Screen"}
       </button>
     </>
   );
@@ -120,19 +140,19 @@ export default function DownloadQRWallpaper({
 
 const styles: Record<string, React.CSSProperties> = {
   button: {
-  marginTop: 20,
-  padding: "16px 24px",
-  minHeight: 52,
-  width: "100%",
-  maxWidth: 310,
-  boxSizing: "border-box",
-  borderRadius: 12,
-  background: "#157A55",
-  color: "#FFFFFF",
-  fontWeight: 800,
-  border: "none",
-  cursor: "pointer",
-  display: "inline-block",
-  boxShadow: "0 10px 24px rgba(21,122,85,0.22)",
-},
+    marginTop: 20,
+    padding: "16px 24px",
+    minHeight: 52,
+    width: "100%",
+    maxWidth: 310,
+    boxSizing: "border-box",
+    borderRadius: 12,
+    background: "#157A55",
+    color: "#FFFFFF",
+    fontWeight: 800,
+    border: "none",
+    cursor: "pointer",
+    display: "inline-block",
+    boxShadow: "0 10px 24px rgba(21,122,85,0.22)",
+  },
 };
