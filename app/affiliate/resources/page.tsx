@@ -78,6 +78,36 @@ const ads = [
     file: "/affiliate-ads/12.png",
     downloadName: "rroi-who-can-scan-rroi.png",
   },
+  {
+  title: "RROI Premium Kit Bundle",
+  description: "Promote the Premium Kit Bundle with your affiliate discount code.",
+  file: "/affiliate-ads/13.png",
+  downloadName: "rroi-premium-kit-bundle-discount.png",
+},
+{
+  title: "Carry It Every Day",
+  description: "Show when an RROI QR profile can help.",
+  file: "/affiliate-ads/14.png",
+  downloadName: "rroi-carry-it-every-day.png",
+},
+{
+  title: "Choose Your Emergency Profile",
+  description: "Compare the Free and Premium Emergency Profiles.",
+  file: "/affiliate-ads/15.png",
+  downloadName: "rroi-profile-options.png",
+},
+{
+  title: "Emergency Information by QR Code",
+  description: "Explain how emergency information is accessed.",
+  file: "/affiliate-ads/16.png",
+  downloadName: "rroi-emergency-information-qr.png",
+},
+{
+  title: "Blood Compatibility Chart",
+  description: "Educational blood compatibility chart.",
+  file: "/affiliate-ads/17.png",
+  downloadName: "rroi-blood-compatibility-chart.png",
+},
 ];
 
 export default function AffiliateResourcesPage() {
@@ -155,7 +185,7 @@ await Media.savePhoto({
   fileName: `${fileNameWithoutExtension}-${Date.now()}`,
 });
 
-      alert("Advertisement saved to your Photos.");
+      alert("Advertisement saved to your Gallery.");
       return;
     }
 
@@ -197,30 +227,32 @@ await Media.savePhoto({
         </div>
 
         <section style={styles.section}>
-          <h2 style={styles.h2}>Downloads</h2>
+  <h2 style={styles.h2}>Downloads</h2>
 
-          <div style={styles.adGrid}>
-            {ads.map((ad) => (
-              <div key={ad.title} style={styles.adCard}>
-                <img src={ad.file} alt={ad.title} style={styles.adImage} />
+  <div style={styles.adGrid}>
+    {ads.map((ad, index) => (
+      <div key={ad.file} style={styles.adCard}>
+        <div style={styles.adNumber}>
+          {index + 1}
+        </div>
 
-                <h3 style={styles.adTitle}>{ad.title}</h3>
+        <img
+          src={ad.file}
+          alt={`Advertisement ${index + 1}`}
+          style={styles.adImage}
+        />
 
-                <p style={styles.adDescription}>{ad.description}</p>
-
-                <button
-  type="button"
-  onClick={() =>
-    handleAdDownload(ad.file, ad.downloadName)
-  }
-  style={styles.downloadButton}
->
-  Download Ad
-</button>
-              </div>
-            ))}
-          </div>
-        </section>
+        <button
+          type="button"
+          onClick={() => handleAdDownload(ad.file, ad.downloadName)}
+          style={styles.downloadButton}
+        >
+          Download Ad
+        </button>
+      </div>
+    ))}
+  </div>
+</section>
 
         <section style={styles.section}>
   <h2 style={styles.h2}>Approved Hashtags</h2>
@@ -414,5 +446,12 @@ const styles: Record<string, React.CSSProperties> = {
   fontWeight: 900,
   lineHeight: 1.4,
   overflowWrap: "break-word",
+},
+adNumber: {
+  marginBottom: 10,
+  textAlign: "center",
+  fontSize: 15,
+  fontWeight: 900,
+  color: BRAND_GREEN,
 },
 };
