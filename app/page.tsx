@@ -15,7 +15,7 @@ import {
   CheckCircle2,
   Clock3,
 } from "lucide-react";
-import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 export default function HomePage() {
 
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -922,6 +922,16 @@ Ready to create your RROI Emergency Profile?
       <FaInstagram size={18} />
       <span>Instagram</span>
     </a>
+
+    <a
+  href="https://www.youtube.com/@RROI_SA"
+  target="_blank"
+  rel="noopener noreferrer"
+  style={styles.socialLink}
+>
+  <FaYoutube size={18} />
+  <span>YouTube</span>
+</a>
   </div>
 </div>
 </section>
