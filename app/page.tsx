@@ -869,36 +869,20 @@ Ready to create your RROI Emergency Profile?
 
 </div>
 
-{!isInstalled && (
 <div style={styles.installWrap}>
   <p style={styles.installText}>
-    Install RROI for quick access to your emergency profile.
+    Download the official RROI app for Android from Google Play.
   </p>
-  <button
-    type="button"
-    onClick={async () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
 
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === "accepted") {
-      console.log("RROI app installed");
-    }
-
-    setDeferredPrompt(null);
-  } else {
-    alert(
-      "Install RROI App\n\nAndroid: Tap the menu button in your browser, then select Add to Home screen or Install app.\n\niPhone: Open this website in Safari, tap Share, then select Add to Home Screen.\n\nLaptop/Desktop: Use the install icon in your browser address bar if available."
-    );
-  }
-}}
+  <a
+    href="https://play.google.com/store/apps/details?id=www.rroi.co.za"
+    target="_blank"
+    rel="noopener noreferrer"
     style={styles.installBtn}
   >
-    Install RROI App
-  </button>
+    Get the RROI App
+  </a>
 </div>
-)}
 <div style={styles.socialSection}>
   <p style={styles.socialTitle}>Follow RROI</p>
 
