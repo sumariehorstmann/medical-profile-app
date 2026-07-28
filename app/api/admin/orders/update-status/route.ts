@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { requireAdmin } from "@/lib/admin/requireAdmin";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,6 +17,14 @@ const ALLOWED_STATUSES = [
 
 export async function POST(req: NextRequest) {
   try {
+    const adminCheck = await requireAdmin(req);
+
+if (adminCheck.error) {
+  return NextResponse.json(
+    { error: adminCheck.error },
+    { status: adminCheck.status }
+  );
+}
     const body = await req.json();
     const orderId = String(body.orderId || "").trim();
     const status = String(body.status || "").trim();

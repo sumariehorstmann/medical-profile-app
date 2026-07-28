@@ -144,6 +144,7 @@ export async function PUT(req: NextRequest) {
 
     marketing_unsubscribed_at:
       body.marketing_consent === false ? new Date().toISOString() : undefined,
+      
     first_name: toNull(body.first_name),
     last_name: toNull(body.last_name),
     profile_photo_url: toNull(body.profile_photo_url),

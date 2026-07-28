@@ -39,3 +39,8 @@ a:active {
   font-weight: inherit;
 }
 
+img,
+svg,
+canvas {
+  forced-color-adjust: none;
+}
