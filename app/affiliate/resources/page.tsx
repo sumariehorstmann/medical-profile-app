@@ -74,7 +74,7 @@ const ads = [
   },
   {
     title: "Who Can Scan RROI QR Codes?",
-    description: "Explain who can scan an RROI QR code.",
+    description: "Explain who can scan a RROI QR code.",
     file: "/affiliate-ads/12.png",
     downloadName: "rroi-who-can-scan-rroi.png",
   },
@@ -86,7 +86,7 @@ const ads = [
 },
 {
   title: "Carry It Every Day",
-  description: "Show when an RROI QR profile can help.",
+  description: "Show when a RROI QR profile can help.",
   file: "/affiliate-ads/14.png",
   downloadName: "rroi-carry-it-every-day.png",
 },
