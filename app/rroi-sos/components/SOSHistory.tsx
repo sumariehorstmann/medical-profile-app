@@ -50,14 +50,38 @@ export default function SOSHistory({ history }: SOSHistoryProps) {
               padding: "14px 0",
             }}
           >
-            <p
-              style={{
-                margin: 0,
-                fontWeight: 700,
-              }}
-            >
-              {item.status}
-            </p>
+            <div
+  style={{
+    display: "inline-block",
+    padding: "6px 12px",
+    borderRadius: "999px",
+    fontWeight: 700,
+    fontSize: "14px",
+    background:
+      item.status === "Delivered"
+        ? "#DCFCE7"
+        : item.status === "Sent"
+        ? "#DBEAFE"
+        : item.status === "Queued"
+        ? "#FEF3C7"
+        : "#FEE2E2",
+    color:
+      item.status === "Delivered"
+        ? "#166534"
+        : item.status === "Sent"
+        ? "#1D4ED8"
+        : item.status === "Queued"
+        ? "#92400E"
+        : "#991B1B",
+  }}
+>
+  {item.status === "Delivered" && "🟢 "}
+  {item.status === "Sent" && "🔵 "}
+  {item.status === "Queued" && "🟡 "}
+  {item.status === "Failed" && "🔴 "}
+  {item.status === "Cancelled" && "⚫ "}
+  {item.status}
+</div>
 
             <p style={{ margin: "6px 0 0" }}>
               Contact {item.contactNumber}
