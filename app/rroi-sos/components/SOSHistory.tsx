@@ -1,6 +1,12 @@
 type HistoryItem = {
   id: string;
-  status: "Queued" | "Sending" | "Delivered" | "Failed" | "Cancelled";
+  status:
+  | "Queued"
+  | "Sent"
+  | "Sending"
+  | "Delivered"
+  | "Failed"
+  | "Cancelled";
   contactNumber: 1 | 2;
   contactName: string;
   createdAt: string;

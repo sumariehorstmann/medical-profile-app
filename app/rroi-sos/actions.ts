@@ -407,9 +407,10 @@ if (!accepted || !providerMessageId) {
 const { error: alertUpdateError } = await supabaseAdmin
   .from("sos_alerts")
   .update({
-    provider_message_id: providerMessageId,
-    counted: true,
-  })
+  provider_message_id: providerMessageId,
+  sms_status: "Sent",
+  counted: true,
+})
   .eq("id", alert.id);
 
 if (alertUpdateError) {

@@ -274,7 +274,8 @@ export default function RROISOSClient({
       item.sms_status === "Delivered" ||
       item.sms_status === "Failed" ||
       item.sms_status === "Cancelled" ||
-      item.sms_status === "Queued"
+      item.sms_status === "Queued" ||
+      item.sms_status === "Sent"
         ? item.sms_status
         : "Queued",
     contactNumber: item.contact_number === 2 ? 2 : 1,
