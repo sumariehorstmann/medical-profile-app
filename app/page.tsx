@@ -711,7 +711,7 @@ useEffect(() => {
   <div style={styles.container}>
 
     <h2 style={styles.sectionTitle}>
-  WHY CARRY AN RROI QR CODE?
+  WHY CARRY A RROI QR CODE?
 </h2>
 
     <p style={styles.sectionIntro}>
@@ -732,7 +732,7 @@ useEffect(() => {
 
         <div style={styles.cardText}>
           <p>
-            Children, adults and older people can all create an RROI
+            Children, adults and older people can all create a RROI
             Emergency Profile.
           </p>
         </div>

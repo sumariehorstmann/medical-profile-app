@@ -6,6 +6,7 @@ import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
+import Link from "next/link";
 
 type ProfileRow = {
   id: string;
@@ -1393,17 +1394,28 @@ emergency_button3_description: getText("emergency_button3_description"),
         >
           {loading ? "Saving..." : consent ? "Save profile" : "Tick privacy consent to save"}
         </button>
-
-        {showUpgrade ? (
-          <button
-            type="button"
-            style={secondaryBtnStyle}
-            onClick={() => router.push("/subscribe/order")}
-            disabled={loading}
-          >
-            Upgrade to Premium Full Kit
-          </button>
-        ) : null}
+<Link
+  href="/rroi-sos"
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    maxWidth: 340,
+    minHeight: 48,
+    boxSizing: "border-box",
+    padding: "12px 18px",
+    borderRadius: 12,
+    background: "#C40000",
+    border: "1px solid #C40000",
+    color: "#FFFFFF",
+    textDecoration: "none",
+    fontWeight: 800,
+    textAlign: "center",
+  }}
+>
+  🆘 OPEN RROI SOS
+</Link>
 
 <button
   type="button"

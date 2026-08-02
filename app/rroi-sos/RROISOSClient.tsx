@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import AddToHomeScreen from "./components/AddToHomeScreen";
 import SOSHistory from "./components/SOSHistory";
 import AlertCounter from "./components/AlertCounter";
@@ -18,11 +19,13 @@ import { useSOS } from "./hooks/useSOS";
 
 type Props = {
   isPremium: boolean;
+  hasHadPremium: boolean;
   premiumExpiry: string | null;
 };
 
 export default function RROISOSClient({
   isPremium,
+  hasHadPremium,
   premiumExpiry,
 }: Props) {
   const {
@@ -36,32 +39,92 @@ export default function RROISOSClient({
   const [sosMessage, setSOSMessage] = useState("");
 
   if (isLoading) {
-    return (
-      <p style={{ padding: "24px 0", color: "#475569" }}>
-        Loading RROI SOS...
-      </p>
-    );
-  }
+  return (
+    <p style={{ padding: "24px 0", color: "#475569" }}>
+      Loading RROI SOS...
+    </p>
+  );
+}
 
-  if (error || !settings) {
-    return (
-      <section
+if (!isPremium) {
+  return (
+    <section
+      style={{
+        marginTop: 20,
+        padding: "28px 20px",
+        border: "1px solid #E2E8F0",
+        borderRadius: 18,
+        background: "#FFFFFF",
+        textAlign: "center",
+      }}
+    >
+      <div style={{ fontSize: 42, marginBottom: 12 }}>🆘</div>
+
+      <h1
         style={{
-          marginTop: 20,
-          padding: 20,
-          border: "1px solid #DC2626",
-          borderRadius: 16,
-          background: "#FFF4F4",
-          color: "#991B1B",
+          margin: "0 0 12px",
+          fontSize: "clamp(26px, 6vw, 34px)",
+          fontWeight: 900,
+          color: "#0F172A",
         }}
       >
-        {error || "RROI SOS could not be loaded."}
-      </section>
-    );
-  }
+        RROI SOS
+      </h1>
 
-  const contact1Configured = Boolean(settings.contact_1_phone);
-  const contact2Configured = Boolean(settings.contact_2_phone);
+      <p
+  style={{
+    margin: "0 auto 20px",
+    maxWidth: 560,
+    color: "#475569",
+    lineHeight: 1.7,
+    fontSize: 16,
+  }}
+>
+  {hasHadPremium
+    ? "Your RROI Premium subscription has expired. Please renew your subscription to continue using RROI SOS."
+    : "RROI SOS is available to Premium subscribers only. Please upgrade to Premium to configure SOS contacts, send location-based SMS alerts, track delivery status and add RROI SOS to your phone's home screen."}
+</p>
+
+<Link
+  href={hasHadPremium ? "/renew" : "/subscribe/order"}
+  style={{
+    display: "inline-flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: 48,
+    padding: "12px 22px",
+    borderRadius: 12,
+    background: "#157A55",
+    color: "#FFFFFF",
+    textDecoration: "none",
+    fontWeight: 800,
+  }}
+>
+  {hasHadPremium ? "RENEW PREMIUM" : "UPGRADE TO PREMIUM"}
+</Link>
+    </section>
+  );
+}
+
+if (error || !settings) {
+  return (
+    <section
+      style={{
+        marginTop: 20,
+        padding: 20,
+        border: "1px solid #DC2626",
+        borderRadius: 16,
+        background: "#FFF4F4",
+        color: "#991B1B",
+      }}
+    >
+      {error || "RROI SOS could not be loaded."}
+    </section>
+  );
+}
+
+const contact1Configured = Boolean(settings.contact_1_phone);
+const contact2Configured = Boolean(settings.contact_2_phone);
 
   async function saveContact(
     contactNumber: 1 | 2,

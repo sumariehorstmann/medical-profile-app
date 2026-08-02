@@ -62,9 +62,10 @@ export default async function RROISOSPage() {
         <PageHeader />
 
         <RROISOSClient
-          isPremium={isPremium}
-          premiumExpiry={subscription?.current_period_end ?? null}
-        />
+  isPremium={isPremium}
+  hasHadPremium={Boolean(subscription?.current_period_end)}
+  premiumExpiry={subscription?.current_period_end ?? null}
+/>
       </div>
     </main>
   );
