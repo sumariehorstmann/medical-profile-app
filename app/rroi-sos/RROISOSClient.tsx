@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import AddToHomeScreen from "./components/AddToHomeScreen";
 import SOSHistory from "./components/SOSHistory";
 import AlertCounter from "./components/AlertCounter";
 import PremiumBanner from "./components/PremiumBanner";
@@ -294,6 +295,7 @@ export default function RROISOSClient({
         : null,
   }))}
 />
+<AddToHomeScreen />
     </div>
   );
 }
