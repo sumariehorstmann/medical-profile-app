@@ -19,6 +19,7 @@ export type SOSSettings = {
 };
 export type SOSHistoryItem = {
   id: string;
+  contact_number: number | null;
   recipient_name: string;
   sms_status: string | null;
   latitude: number | null;

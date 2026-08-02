@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import SOSHistory from "./components/SOSHistory";
 import AlertCounter from "./components/AlertCounter";
 import PremiumBanner from "./components/PremiumBanner";
 import SOSButton from "./components/SOSButton";
@@ -23,7 +24,13 @@ export default function RROISOSClient({
   isPremium,
   premiumExpiry,
 }: Props) {
-  const { settings, isLoading, error, refreshSettings } = useSOS();
+  const {
+  settings,
+  history,
+  isLoading,
+  error,
+  refreshSettings,
+} = useSOS();
   const [processingContact, setProcessingContact] = useState<1 | 2 | null>(null);
   const [sosMessage, setSOSMessage] = useState("");
 
@@ -260,6 +267,32 @@ export default function RROISOSClient({
         onSave={(contact) => saveContact(2, contact)}
         onClear={() => clearContact(2)}
       />
+      <SOSHistory
+  history={history.map((item) => ({
+    id: item.id,
+    status:
+      item.sms_status === "Delivered" ||
+      item.sms_status === "Failed" ||
+      item.sms_status === "Cancelled" ||
+      item.sms_status === "Queued"
+        ? item.sms_status
+        : "Queued",
+    contactNumber: item.contact_number === 2 ? 2 : 1,
+    contactName: item.recipient_name,
+    createdAt: new Date(item.created_at).toLocaleString("en-ZA", {
+      timeZone: "Africa/Johannesburg",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+    locationUrl:
+      item.latitude !== null && item.longitude !== null
+        ? `https://www.google.com/maps?q=${item.latitude},${item.longitude}`
+        : null,
+  }))}
+/>
     </div>
   );
 }
