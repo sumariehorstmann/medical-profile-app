@@ -103,6 +103,31 @@ export default function RROISOSClient({
         alertsUsed={settings.alerts_used}
         alertsLimit={settings.alerts_limit}
       />
+      {sosMessage && (
+  <section
+    role="status"
+    aria-live="polite"
+    style={{
+      padding: 16,
+      borderRadius: 14,
+      border: "1px solid #CBD5E1",
+      background: "#FFFFFF",
+      color: sosMessage.includes("successfully")
+        ? "#166534"
+        : sosMessage.includes("could not") ||
+            sosMessage.includes("not available") ||
+            sosMessage.includes("Please")
+          ? "#991B1B"
+          : "#0F172A",
+      fontWeight: 700,
+      textAlign: "center",
+    }}
+  >
+    {processingContact
+      ? `SOS Contact ${processingContact}: ${sosMessage}`
+      : sosMessage}
+  </section>
+)}
 
       <SOSButton
         contactNumber={1}
@@ -112,8 +137,50 @@ export default function RROISOSClient({
         isConfigured={contact1Configured}
         isPremiumActive={isPremium}
         onPress={() => {
-          console.log("SOS Contact 1 pressed");
-        }}
+  if (!navigator.geolocation) {
+    setSOSMessage("Location services are not available on this device.");
+    return;
+  }
+
+  setProcessingContact(1);
+  setSOSMessage("Getting your current location...");
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      try {
+        setSOSMessage("Sending SOS alert...");
+
+        await sendSOSAlert({
+          contactNumber: 1,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+
+        setSOSMessage("SOS alert sent successfully.");
+        await refreshSettings();
+      } catch (error) {
+        setSOSMessage(
+          error instanceof Error
+            ? error.message
+            : "The SOS alert could not be sent."
+        );
+      } finally {
+        setProcessingContact(null);
+      }
+    },
+    () => {
+      setSOSMessage(
+        "Your current location could not be obtained. Please allow location access."
+      );
+      setProcessingContact(null);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0,
+    }
+  );
+}}
       />
 
       <SOSButton
@@ -124,8 +191,50 @@ export default function RROISOSClient({
         isConfigured={contact2Configured}
         isPremiumActive={isPremium}
         onPress={() => {
-          console.log("SOS Contact 2 pressed");
-        }}
+  if (!navigator.geolocation) {
+    setSOSMessage("Location services are not available on this device.");
+    return;
+  }
+
+  setProcessingContact(2);
+  setSOSMessage("Getting your current location...");
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      try {
+        setSOSMessage("Sending SOS alert...");
+
+        await sendSOSAlert({
+          contactNumber: 2,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+
+        setSOSMessage("SOS alert sent successfully.");
+        await refreshSettings();
+      } catch (error) {
+        setSOSMessage(
+          error instanceof Error
+            ? error.message
+            : "The SOS alert could not be sent."
+        );
+      } finally {
+        setProcessingContact(null);
+      }
+    },
+    () => {
+      setSOSMessage(
+        "Your current location could not be obtained. Please allow location access."
+      );
+      setProcessingContact(null);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0,
+    }
+  );
+}}
       />
 
       <SOSContactCard
