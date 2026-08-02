@@ -1,12 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import AlertCounter from "./components/AlertCounter";
 import PremiumBanner from "./components/PremiumBanner";
 import SOSButton from "./components/SOSButton";
 import SOSContactCard, {
   SOSContactForm,
 } from "./components/SOSContactCard";
-import { clearSOSContact, saveSOSContact } from "./actions";
+import {
+  clearSOSContact,
+  saveSOSContact,
+  sendSOSAlert,
+} from "./actions";
 import { useSOS } from "./hooks/useSOS";
 
 type Props = {
@@ -19,6 +24,8 @@ export default function RROISOSClient({
   premiumExpiry,
 }: Props) {
   const { settings, isLoading, error, refreshSettings } = useSOS();
+  const [processingContact, setProcessingContact] = useState<1 | 2 | null>(null);
+  const [sosMessage, setSOSMessage] = useState("");
 
   if (isLoading) {
     return (
