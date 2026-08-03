@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "RROI SOS",
   description:
     "Open your RROI SOS dashboard and send an emergency alert.",
-  manifest: "/rroi-sos-manifest",
+  manifest: "/rroi-sos-manifest?v=2",
   applicationName: "RROI SOS",
   themeColor: "#991B1B",
   appleWebApp: {

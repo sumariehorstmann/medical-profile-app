@@ -31,7 +31,7 @@ export async function GET() {
     {
       headers: {
         "Content-Type": "application/manifest+json",
-        "Cache-Control": "public, max-age=3600",
+        "Cache-Control": "no-store, no-cache, must-revalidate",
       },
     }
   );
