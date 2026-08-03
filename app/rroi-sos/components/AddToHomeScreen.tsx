@@ -6,9 +6,15 @@ type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
   userChoice: Promise<{
     outcome: "accepted" | "dismissed";
-    platform: string;
+    platform?: string;
   }>;
 };
+
+declare global {
+  interface Window {
+    __rroiInstallPrompt?: InstallPromptEvent | null;
+  }
+}
 
 type DeviceType = "ios" | "android" | "other";
 
@@ -50,12 +56,31 @@ export default function AddToHomeScreen() {
     setDevice(detectDevice());
     setIsInstalled(isStandaloneMode());
 
-    function handleBeforeInstallPrompt(event: Event) {
+    // Use an install event that may have been captured before
+    // this React component loaded.
+    if (window.__rroiInstallPrompt) {
+      setInstallPrompt(window.__rroiInstallPrompt);
+    }
+
+    function saveInstallPrompt(event: Event) {
       event.preventDefault();
-      setInstallPrompt(event as InstallPromptEvent);
+
+      const promptEvent = event as InstallPromptEvent;
+
+      window.__rroiInstallPrompt = promptEvent;
+      setInstallPrompt(promptEvent);
+      setShowInstructions(false);
+    }
+
+    function useSavedInstallPrompt() {
+      if (window.__rroiInstallPrompt) {
+        setInstallPrompt(window.__rroiInstallPrompt);
+        setShowInstructions(false);
+      }
     }
 
     function handleInstalled() {
+      window.__rroiInstallPrompt = null;
       setInstallPrompt(null);
       setIsInstalled(true);
       setShowInstructions(false);
@@ -63,32 +88,75 @@ export default function AddToHomeScreen() {
 
     window.addEventListener(
       "beforeinstallprompt",
-      handleBeforeInstallPrompt
+      saveInstallPrompt
     );
 
-    window.addEventListener("appinstalled", handleInstalled);
+    window.addEventListener(
+      "rroi-install-prompt-ready",
+      useSavedInstallPrompt
+    );
+
+    window.addEventListener(
+      "rroi-app-installed",
+      handleInstalled
+    );
+
+    window.addEventListener(
+      "appinstalled",
+      handleInstalled
+    );
 
     return () => {
       window.removeEventListener(
         "beforeinstallprompt",
-        handleBeforeInstallPrompt
+        saveInstallPrompt
       );
 
-      window.removeEventListener("appinstalled", handleInstalled);
+      window.removeEventListener(
+        "rroi-install-prompt-ready",
+        useSavedInstallPrompt
+      );
+
+      window.removeEventListener(
+        "rroi-app-installed",
+        handleInstalled
+      );
+
+      window.removeEventListener(
+        "appinstalled",
+        handleInstalled
+      );
     };
   }, []);
 
   async function handleInstall() {
-    if (installPrompt) {
-      await installPrompt.prompt();
+    const promptEvent =
+      installPrompt ??
+      window.__rroiInstallPrompt ??
+      null;
 
-      const choice = await installPrompt.userChoice;
+    if (promptEvent) {
+      try {
+        await promptEvent.prompt();
 
-      if (choice.outcome === "accepted") {
-        setIsInstalled(true);
+        const choice = await promptEvent.userChoice;
+
+        if (choice.outcome === "accepted") {
+          setIsInstalled(true);
+          setShowInstructions(false);
+        }
+
+        window.__rroiInstallPrompt = null;
+        setInstallPrompt(null);
+      } catch (error) {
+        console.error(
+          "RROI SOS installation prompt failed:",
+          error
+        );
+
+        setShowInstructions(true);
       }
 
-      setInstallPrompt(null);
       return;
     }
 
@@ -146,8 +214,8 @@ export default function AddToHomeScreen() {
             lineHeight: 1.6,
           }}
         >
-          Create a one-tap RROI SOS shortcut on your phone&apos;s Home
-          Screen.
+          Create a one-tap RROI SOS icon on your phone&apos;s
+          Home Screen.
         </p>
 
         <button
@@ -196,7 +264,8 @@ export default function AddToHomeScreen() {
               borderRadius: 20,
               padding: 24,
               background: "#FFFFFF",
-              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.25)",
+              boxShadow:
+                "0 20px 60px rgba(0, 0, 0, 0.25)",
             }}
             onClick={(event) => event.stopPropagation()}
           >
@@ -226,8 +295,12 @@ export default function AddToHomeScreen() {
                 <ol style={{ paddingLeft: 22 }}>
                   <li>Open this page in Safari.</li>
                   <li>Tap the Share button.</li>
-                  <li>Scroll down and tap Add to Home Screen.</li>
-                  <li>Confirm the name RROI SOS and tap Add.</li>
+                  <li>
+                    Tap <strong>Add to Home Screen</strong>.
+                  </li>
+                  <li>
+                    Confirm the name RROI SOS and tap Add.
+                  </li>
                 </ol>
               </div>
             ) : device === "android" ? (
@@ -238,23 +311,27 @@ export default function AddToHomeScreen() {
                 }}
               >
                 <p style={{ marginTop: 0 }}>
-                  On Android:
+                  Automatic installation is not available from
+                  this screen.
                 </p>
 
                 <ol style={{ paddingLeft: 22 }}>
                   <li>
                     Open this page in the full Chrome browser.
                   </li>
-                  <li>Tap the three-dot menu at the top right.</li>
                   <li>
-                    Tap Add to Home screen or Install app.
+                    Tap the three-dot menu at the top right.
                   </li>
-                  <li>Confirm by tapping Add or Install.</li>
+                  <li>
+                    Tap <strong>Install app</strong> or{" "}
+                    <strong>Add to Home screen</strong>.
+                  </li>
+                  <li>Tap Install or Add.</li>
                 </ol>
 
-                <p>
-                  When viewing this page inside the RROI app, first use
-                  the browser menu to select Open in Chrome.
+                <p style={{ marginBottom: 0 }}>
+                  When viewing RROI inside the Play Store app,
+                  use the browser menu and select Open in Chrome.
                 </p>
               </div>
             ) : (
@@ -265,9 +342,9 @@ export default function AddToHomeScreen() {
                 }}
               >
                 <p style={{ marginTop: 0 }}>
-                  Open this page in your phone&apos;s main browser and use
-                  the browser menu to select Add to Home Screen or
-                  Install app.
+                  Open this page in your device&apos;s main
+                  browser and select Install app or Add to Home
+                  Screen from the browser menu.
                 </p>
               </div>
             )}
@@ -294,7 +371,9 @@ export default function AddToHomeScreen() {
                   cursor: "pointer",
                 }}
               >
-                {linkCopied ? "LINK COPIED" : "COPY RROI SOS LINK"}
+                {linkCopied
+                  ? "LINK COPIED"
+                  : "COPY RROI SOS LINK"}
               </button>
 
               <button

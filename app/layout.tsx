@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import Script from "next/script";
 import SiteHeader from "@/components/SiteHeader";
 import Footer from "@/components/Footer";
 import AndroidBackButton from "@/components/AndroidBackButton";
@@ -33,6 +34,38 @@ export default function RootLayout({
     flexDirection: "column",
   }}
 >
+  <Script
+  id="capture-rroi-install-prompt"
+  strategy="beforeInteractive"
+  dangerouslySetInnerHTML={{
+    __html: `
+      window.__rroiInstallPrompt = null;
+
+      window.addEventListener(
+        "beforeinstallprompt",
+        function (event) {
+          event.preventDefault();
+          window.__rroiInstallPrompt = event;
+
+          window.dispatchEvent(
+            new CustomEvent("rroi-install-prompt-ready")
+          );
+        }
+      );
+
+      window.addEventListener(
+        "appinstalled",
+        function () {
+          window.__rroiInstallPrompt = null;
+
+          window.dispatchEvent(
+            new CustomEvent("rroi-app-installed")
+          );
+        }
+      );
+    `,
+  }}
+/>
   <AndroidBackButton />
 
   <SiteHeader />
