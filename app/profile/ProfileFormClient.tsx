@@ -1418,6 +1418,39 @@ async function clearProfileSOSContact(contactNumber: 1 | 2) {
   )}
 </Section>
 
+<div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    marginTop: 8,
+    marginBottom: 24,
+  }}
+>
+  <Link
+    href="/rroi-sos"
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      maxWidth: 340,
+      minHeight: 48,
+      boxSizing: "border-box",
+      padding: "12px 18px",
+      borderRadius: 12,
+      background: "#C40000",
+      border: "1px solid #C40000",
+      color: "#FFFFFF",
+      textDecoration: "none",
+      fontWeight: 800,
+      textAlign: "center",
+    }}
+  >
+    🆘 OPEN RROI SOS
+  </Link>
+</div>
+
 <Section
   title="Email Preferences"
   subtitle="Choose whether you would like to receive occasional emails from RROI."
@@ -1492,28 +1525,7 @@ async function clearProfileSOSContact(contactNumber: 1 | 2) {
         >
           {loading ? "Saving..." : consent ? "Save profile" : "Tick privacy consent to save"}
         </button>
-<Link
-  href="/rroi-sos"
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    maxWidth: 340,
-    minHeight: 48,
-    boxSizing: "border-box",
-    padding: "12px 18px",
-    borderRadius: 12,
-    background: "#C40000",
-    border: "1px solid #C40000",
-    color: "#FFFFFF",
-    textDecoration: "none",
-    fontWeight: 800,
-    textAlign: "center",
-  }}
->
-  🆘 OPEN RROI SOS
-</Link>
+
 
 <button
   type="button"
