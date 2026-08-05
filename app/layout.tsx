@@ -70,7 +70,14 @@ export default function RootLayout({
 
   <SiteHeader />
 
-  <main style={{ flex: 1 }}>{children}</main>
+  <main
+  style={{
+    flex: 1,
+    paddingTop: 76,
+  }}
+>
+  {children}
+</main>
 
   <Footer />
 

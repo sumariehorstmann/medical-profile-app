@@ -47,14 +47,20 @@ export default function SiteHeader() {
   }, [supabase]);
 
   async function handleLogout() {
-    try {
-      setLoggingOut(true);
-      await supabase.auth.signOut();
-      window.location.href = "/";
-    } finally {
-      setLoggingOut(false);
-    }
+  try {
+    setLoggingOut(true);
+    await supabase.auth.signOut();
+
+    const loginUrl =
+      pathname === "/rroi-sos"
+        ? "/login?redirect=/rroi-sos"
+        : "/login";
+
+    window.location.href = loginUrl;
+  } finally {
+    setLoggingOut(false);
   }
+}
 
   return (
     <header style={styles.header}>
@@ -100,8 +106,11 @@ const BORDER = "#E5E7EB";
 
 const styles: Record<string, React.CSSProperties> = {
   header: {
-    position: "sticky",
+    position: "fixed",
     top: 0,
+    left: 0,
+    right: 0,
+    boxShadow: "0 2px 10px rgba(15, 23, 42, 0.08)",
     zIndex: 1000,
     width: "100%",
     minHeight: 76,
