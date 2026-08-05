@@ -7,14 +7,8 @@ import SOSHistory from "./components/SOSHistory";
 import AlertCounter from "./components/AlertCounter";
 import PremiumBanner from "./components/PremiumBanner";
 import SOSButton from "./components/SOSButton";
-import SOSContactCard, {
-  SOSContactForm,
-} from "./components/SOSContactCard";
-import {
-  clearSOSContact,
-  saveSOSContact,
-  sendSOSAlert,
-} from "./actions";
+
+import { sendSOSAlert } from "./actions";
 import { useSOS } from "./hooks/useSOS";
 
 type Props = {
@@ -126,18 +120,7 @@ if (error || !settings) {
 const contact1Configured = Boolean(settings.contact_1_phone);
 const contact2Configured = Boolean(settings.contact_2_phone);
 
-  async function saveContact(
-    contactNumber: 1 | 2,
-    contact: SOSContactForm
-  ) {
-    await saveSOSContact(contactNumber, contact);
-    await refreshSettings();
-  }
-
-  async function clearContact(contactNumber: 1 | 2) {
-    await clearSOSContact(contactNumber);
-    await refreshSettings();
-  }
+  
 
   return (
     <div
@@ -308,29 +291,7 @@ const contact2Configured = Boolean(settings.contact_2_phone);
 }}
       />
 
-      <SOSContactCard
-        contactNumber={1}
-        initialContact={{
-          firstName: settings.contact_1_name ?? "",
-          surname: settings.contact_1_surname ?? "",
-          relationship: settings.contact_1_relationship ?? "",
-          phone: settings.contact_1_phone ?? "",
-        }}
-        onSave={(contact) => saveContact(1, contact)}
-        onClear={() => clearContact(1)}
-      />
-
-      <SOSContactCard
-        contactNumber={2}
-        initialContact={{
-          firstName: settings.contact_2_name ?? "",
-          surname: settings.contact_2_surname ?? "",
-          relationship: settings.contact_2_relationship ?? "",
-          phone: settings.contact_2_phone ?? "",
-        }}
-        onSave={(contact) => saveContact(2, contact)}
-        onClear={() => clearContact(2)}
-      />
+      
       <SOSHistory
   history={history.map((item) => ({
     id: item.id,
