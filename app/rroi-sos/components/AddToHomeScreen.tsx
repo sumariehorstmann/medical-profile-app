@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Capacitor, registerPlugin } from "@capacitor/core";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -9,6 +10,15 @@ type InstallPromptEvent = Event & {
     platform?: string;
   }>;
 };
+
+type RroiSosShortcutPlugin = {
+  addToHomeScreen: () => Promise<{
+    requested: boolean;
+  }>;
+};
+
+const RroiSosShortcut =
+  registerPlugin<RroiSosShortcutPlugin>("RroiSosShortcut");
 
 declare global {
   interface Window {
@@ -80,6 +90,7 @@ export default function AddToHomeScreen() {
     }
 
     function handleInstalled() {
+        
       window.__rroiInstallPrompt = null;
       setInstallPrompt(null);
       setIsInstalled(true);
@@ -130,6 +141,25 @@ export default function AddToHomeScreen() {
   }, []);
 
   async function handleInstall() {
+    if (Capacitor.isNativePlatform()) {
+  try {
+    const result =
+      await RroiSosShortcut.addToHomeScreen();
+
+    if (!result.requested) {
+      setShowInstructions(true);
+    }
+  } catch (error) {
+    console.error(
+      "Android RROI SOS shortcut failed:",
+      error
+    );
+
+    setShowInstructions(true);
+  }
+
+  return;
+}
     const promptEvent =
       installPrompt ??
       window.__rroiInstallPrompt ??
