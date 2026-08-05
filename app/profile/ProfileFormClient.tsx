@@ -7,6 +7,16 @@ import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 import Link from "next/link";
+import SOSContactCard, {
+  SOSContactForm,
+} from "@/app/rroi-sos/components/SOSContactCard";
+
+import {
+  clearSOSContact,
+  saveSOSContact,
+} from "@/app/rroi-sos/actions";
+
+import { useSOS } from "@/app/rroi-sos/hooks/useSOS";
 
 type ProfileRow = {
   id: string;
@@ -177,6 +187,13 @@ export default function ProfileFormClient({
 }) {
   const router = useRouter();
   const supabase = createSupabaseBrowser();
+
+  const {
+  settings: sosSettings,
+  isLoading: sosLoading,
+  error: sosError,
+  refreshSettings: refreshSOSSettings,
+} = useSOS();
 
   const emergency1Legacy = splitLegacyName(initial?.emergency1_fullname ?? null);
   const emergency2Legacy = splitLegacyName(initial?.emergency2_fullname ?? null);
@@ -593,6 +610,18 @@ emergency_button3_description: getText("emergency_button3_description"),
     }
   }
   
+  async function saveProfileSOSContact(
+  contactNumber: 1 | 2,
+  contact: SOSContactForm
+) {
+  await saveSOSContact(contactNumber, contact);
+  await refreshSOSSettings();
+}
+
+async function clearProfileSOSContact(contactNumber: 1 | 2) {
+  await clearSOSContact(contactNumber);
+  await refreshSOSSettings();
+}
 
   async function handleLogout() {
     setMessage(null);
@@ -1320,6 +1349,75 @@ emergency_button3_description: getText("emergency_button3_description"),
     />
   </Field>
 </Section>
+
+<Section
+  title="Section 8 — RROI SOS Contacts"
+  subtitle="These contacts receive your RROI SOS SMS alerts. Your SOS contacts are private and are not shown on your public emergency profile."
+>
+  {sosLoading ? (
+    <div
+      style={{
+        padding: 16,
+        borderRadius: 12,
+        background: "#F8FAFC",
+        color: "#475569",
+        fontWeight: 700,
+        textAlign: "center",
+      }}
+    >
+      Loading RROI SOS contacts...
+    </div>
+  ) : sosError || !sosSettings ? (
+    <div
+      style={{
+        padding: 16,
+        borderRadius: 12,
+        border: "1px solid #FECACA",
+        background: "#FEF2F2",
+        color: "#991B1B",
+        fontWeight: 700,
+      }}
+    >
+      {sosError || "RROI SOS contacts could not be loaded."}
+    </div>
+  ) : (
+    <div
+      style={{
+        display: "grid",
+        gap: 18,
+      }}
+    >
+      <SOSContactCard
+        contactNumber={1}
+        initialContact={{
+          firstName: sosSettings.contact_1_name ?? "",
+          surname: sosSettings.contact_1_surname ?? "",
+          relationship: sosSettings.contact_1_relationship ?? "",
+          phone: sosSettings.contact_1_phone ?? "",
+        }}
+        onSave={(contact) =>
+          saveProfileSOSContact(1, contact)
+        }
+        onClear={() => clearProfileSOSContact(1)}
+      />
+
+      <SOSContactCard
+        contactNumber={2}
+        initialContact={{
+          firstName: sosSettings.contact_2_name ?? "",
+          surname: sosSettings.contact_2_surname ?? "",
+          relationship: sosSettings.contact_2_relationship ?? "",
+          phone: sosSettings.contact_2_phone ?? "",
+        }}
+        onSave={(contact) =>
+          saveProfileSOSContact(2, contact)
+        }
+        onClear={() => clearProfileSOSContact(2)}
+      />
+    </div>
+  )}
+</Section>
+
 <Section
   title="Email Preferences"
   subtitle="Choose whether you would like to receive occasional emails from RROI."
