@@ -141,6 +141,15 @@ export default function AddToHomeScreen() {
   }, []);
 
   async function handleInstall() {
+  const isSOSDomain =
+    window.location.hostname === "sos.rroi.co.za";
+
+  if (!isSOSDomain) {
+    window.location.href = "https://sos.rroi.co.za";
+    return;
+  }
+
+  // Keep the rest of your existing handleInstall code below
     if (Capacitor.isNativePlatform()) {
   try {
     const result =
