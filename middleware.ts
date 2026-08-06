@@ -43,11 +43,21 @@ export async function middleware(req: NextRequest) {
           return req.cookies.getAll();
         },
 
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            res.cookies.set(name, value, options);
-          });
-        },
+       setAll(cookiesToSet) {
+  const isRROIDomain =
+    hostname === "rroi.co.za" ||
+    hostname.endsWith(".rroi.co.za");
+
+  cookiesToSet.forEach(({ name, value, options }) => {
+    res.cookies.set(name, value, {
+      ...options,
+      ...(isRROIDomain ? { domain: ".rroi.co.za" } : {}),
+      path: "/",
+      sameSite: options?.sameSite ?? "lax",
+      secure: req.nextUrl.protocol === "https:",
+    });
+  });
+},
       },
     }
   );
@@ -63,21 +73,27 @@ export async function middleware(req: NextRequest) {
     shouldRewriteToSOS;
 
   if (needsAuth && !user) {
-    const loginUrl = req.nextUrl.clone();
+  const loginUrl = req.nextUrl.clone();
 
-    loginUrl.pathname = "/login";
+  loginUrl.pathname = "/login";
 
-    /*
-     * On sos.rroi.co.za, return to the clean root address
-     * after login. The middleware will then serve /rroi-sos.
-     */
-    loginUrl.searchParams.set(
-      "next",
-      shouldRewriteToSOS ? "/" : path
-    );
+  /*
+   * On sos.rroi.co.za, return to the clean root address
+   * after login. The middleware will then serve /rroi-sos.
+   */
+  loginUrl.searchParams.set(
+    "next",
+    shouldRewriteToSOS ? "/" : path
+  );
 
-    return NextResponse.redirect(loginUrl);
-  }
+  const redirectResponse = NextResponse.redirect(loginUrl);
+
+  res.cookies.getAll().forEach((cookie) => {
+    redirectResponse.cookies.set(cookie);
+  });
+
+  return redirectResponse;
+}
 
   return res;
 }

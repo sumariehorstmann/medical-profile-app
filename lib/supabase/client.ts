@@ -20,23 +20,39 @@ export function createSupabaseBrowser() {
             });
         },
         setAll(cookiesToSet) {
-          if (typeof document === "undefined") return;
+  if (typeof document === "undefined") return;
 
-          cookiesToSet.forEach(({ name, value, options }) => {
-            let cookie = `${name}=${encodeURIComponent(value)}`;
+  const isRROIDomain =
+    window.location.hostname === "rroi.co.za" ||
+    window.location.hostname.endsWith(".rroi.co.za");
 
-            const opts = options ?? {};
-            cookie += `; Path=${opts.path ?? "/"}`;
+  cookiesToSet.forEach(({ name, value, options }) => {
+    let cookie = `${name}=${encodeURIComponent(value)}`;
+    const opts = options ?? {};
 
-            if (opts.maxAge !== undefined) cookie += `; Max-Age=${opts.maxAge}`;
-            if (opts.expires) cookie += `; Expires=${opts.expires.toUTCString()}`;
-            if (opts.domain) cookie += `; Domain=${opts.domain}`;
-            if (opts.sameSite) cookie += `; SameSite=${opts.sameSite}`;
-            if (opts.secure) cookie += `; Secure`;
+    cookie += `; Path=${opts.path ?? "/"}`;
 
-            document.cookie = cookie;
-          });
-        },
+    if (opts.maxAge !== undefined) {
+      cookie += `; Max-Age=${opts.maxAge}`;
+    }
+
+    if (opts.expires) {
+      cookie += `; Expires=${opts.expires.toUTCString()}`;
+    }
+
+    if (isRROIDomain) {
+      cookie += `; Domain=.rroi.co.za`;
+    }
+
+    cookie += `; SameSite=${opts.sameSite ?? "lax"}`;
+
+    if (window.location.protocol === "https:") {
+      cookie += `; Secure`;
+    }
+
+    document.cookie = cookie;
+  });
+},
       },
     }
   );
