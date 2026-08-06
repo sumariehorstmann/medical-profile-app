@@ -196,8 +196,8 @@ export default function AddToHomeScreen() {
   async function copySOSLink() {
     try {
       await navigator.clipboard.writeText(
-        "https://www.rroi.co.za/rroi-sos"
-      );
+  "https://sos.rroi.co.za"
+);
 
       setLinkCopied(true);
 

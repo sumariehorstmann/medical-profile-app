@@ -3,12 +3,22 @@ import { NextResponse } from "next/server";
 export async function GET() {
   return NextResponse.json(
     {
-      id: "/rroi-sos",
+      id: "/",
       name: "RROI SOS",
       short_name: "RROI SOS",
       description:
         "Open your RROI SOS dashboard and send an emergency alert.",
-      start_url: "/rroi-sos",
+        categories: ["medical", "health"],
+        lang: "en-ZA",
+        screenshots: [
+  {
+    src: "/images/rroi-sos-screen.png",
+    sizes: "1080x1920",
+    type: "image/png",
+    form_factor: "narrow",
+  },
+],
+      start_url: "/",
       scope: "/",
       display: "standalone",
       background_color: "#ffffff",
