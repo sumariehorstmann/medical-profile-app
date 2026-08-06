@@ -197,6 +197,13 @@ export async function getSOSHistory() {
 
   return data ?? [];
 }
+function makeSmsSafe(text: string) {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\x20-\x7E]/g, "");
+}
+
 export async function sendSOSAlert(input: SOSAlertInput) {
   const { contactNumber, latitude, longitude } = input;
 
@@ -284,28 +291,25 @@ export async function sendSOSAlert(input: SOSAlertInput) {
     throw new Error("Your RROI emergency profile could not be found.");
   }
 
-  const userName =
-    [profile.first_name, profile.last_name].filter(Boolean).join(" ") ||
-    "An RROI user";
+  const userName = makeSmsSafe(
+  [profile.first_name, profile.last_name]
+    .filter(Boolean)
+    .join(" ") || "RROI user"
+);
 
-  const locationUrl =
-    `https://www.google.com/maps?q=${latitude},${longitude}`;
+  const shortLatitude = latitude.toFixed(5);
+const shortLongitude = longitude.toFixed(5);
 
-  const profileUrl =
-    `https://www.rroi.co.za/e/${profile.public_id}`;
+const locationUrl =
+  `https://maps.google.com/?q=${shortLatitude},${shortLongitude}`;
 
-  const now = new Date().toLocaleString("en-ZA", {
-  timeZone: "Africa/Johannesburg",
-  dateStyle: "short",
-  timeStyle: "short",
-});
+const profileUrl =
+  `https://rroi.co.za/e/${profile.public_id}`;
 
 const message =
-  `RROI SOS\n` +
-  `${userName} needs help.\n` +
-  `${now}\n` +
-  `Map: ${locationUrl}\n` +
-  `Profile: ${profileUrl}`;
+  `RROI SOS: ${userName} needs help. ` +
+  `Map ${locationUrl} ` +
+  `Profile ${profileUrl}`;
 
   const { data: alert, error: alertError } = await supabaseAdmin
     .from("sos_alerts")
