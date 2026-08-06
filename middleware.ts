@@ -44,18 +44,8 @@ export async function middleware(req: NextRequest) {
         },
 
        setAll(cookiesToSet) {
-  const isRROIDomain =
-    hostname === "rroi.co.za" ||
-    hostname.endsWith(".rroi.co.za");
-
   cookiesToSet.forEach(({ name, value, options }) => {
-    res.cookies.set(name, value, {
-      ...options,
-      ...(isRROIDomain ? { domain: ".rroi.co.za" } : {}),
-      path: "/",
-      sameSite: options?.sameSite ?? "lax",
-      secure: req.nextUrl.protocol === "https:",
-    });
+    res.cookies.set(name, value, options);
   });
 },
       },
@@ -85,14 +75,8 @@ export async function middleware(req: NextRequest) {
     "next",
     shouldRewriteToSOS ? "/" : path
   );
-
-  const redirectResponse = NextResponse.redirect(loginUrl);
-
-  res.cookies.getAll().forEach((cookie) => {
-    redirectResponse.cookies.set(cookie);
-  });
-
-  return redirectResponse;
+return NextResponse.redirect(loginUrl);
+  
 }
 
   return res;

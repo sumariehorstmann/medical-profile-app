@@ -8,6 +8,7 @@ export function createSupabaseBrowser() {
       cookies: {
         getAll() {
           if (typeof document === "undefined") return [];
+
           return document.cookie
             .split(";")
             .map((c) => c.trim())
@@ -16,43 +17,46 @@ export function createSupabaseBrowser() {
               const eq = c.indexOf("=");
               const name = eq >= 0 ? c.slice(0, eq) : c;
               const value = eq >= 0 ? c.slice(eq + 1) : "";
-              return { name, value: decodeURIComponent(value) };
+
+              return {
+                name,
+                value: decodeURIComponent(value),
+              };
             });
         },
+
         setAll(cookiesToSet) {
-  if (typeof document === "undefined") return;
+          if (typeof document === "undefined") return;
 
-  const isRROIDomain =
-    window.location.hostname === "rroi.co.za" ||
-    window.location.hostname.endsWith(".rroi.co.za");
+          cookiesToSet.forEach(({ name, value, options }) => {
+            let cookie = `${name}=${encodeURIComponent(value)}`;
+            const opts = options ?? {};
 
-  cookiesToSet.forEach(({ name, value, options }) => {
-    let cookie = `${name}=${encodeURIComponent(value)}`;
-    const opts = options ?? {};
+            cookie += `; Path=${opts.path ?? "/"}`;
 
-    cookie += `; Path=${opts.path ?? "/"}`;
+            if (opts.maxAge !== undefined) {
+              cookie += `; Max-Age=${opts.maxAge}`;
+            }
 
-    if (opts.maxAge !== undefined) {
-      cookie += `; Max-Age=${opts.maxAge}`;
-    }
+            if (opts.expires) {
+              cookie += `; Expires=${opts.expires.toUTCString()}`;
+            }
 
-    if (opts.expires) {
-      cookie += `; Expires=${opts.expires.toUTCString()}`;
-    }
+            if (opts.domain) {
+              cookie += `; Domain=${opts.domain}`;
+            }
 
-    if (isRROIDomain) {
-      cookie += `; Domain=.rroi.co.za`;
-    }
+            if (opts.sameSite) {
+              cookie += `; SameSite=${opts.sameSite}`;
+            }
 
-    cookie += `; SameSite=${opts.sameSite ?? "lax"}`;
+            if (opts.secure) {
+              cookie += `; Secure`;
+            }
 
-    if (window.location.protocol === "https:") {
-      cookie += `; Secure`;
-    }
-
-    document.cookie = cookie;
-  });
-},
+            document.cookie = cookie;
+          });
+        },
       },
     }
   );
