@@ -236,49 +236,69 @@ export default function RROISOSClient({
         </section>
       )}
 
-      <p
+      <section
         style={{
-          margin: "0 0 -10px",
-          textAlign: "center",
-          color: "#475569",
-          fontSize: 14,
-          fontWeight: 700,
+          background: "#FFFFFF",
+          border: "1px solid #E2E8F0",
+          borderRadius: 18,
+          padding: 20,
+          boxShadow: "0 2px 10px rgba(15, 23, 42, 0.05)",
         }}
       >
-        Press now to send an SOS alert
-      </p>
+        <p
+          style={{
+            margin: "0 0 14px",
+            textAlign: "center",
+            color: "#475569",
+            fontSize: 14,
+            fontWeight: 700,
+          }}
+        >
+          Press now to send an SOS alert
+        </p>
 
-      <SOSButton
-        contactNumber={1}
-        firstName={settings.contact_1_name}
-        surname={settings.contact_1_surname}
-        relationship={settings.contact_1_relationship}
-        isConfigured={contact1Configured}
-        isPremiumActive={isPremium}
-        onPress={() => handleSOS(1)}
-      />
+        <SOSButton
+          contactNumber={1}
+          firstName={settings.contact_1_name}
+          surname={settings.contact_1_surname}
+          relationship={settings.contact_1_relationship}
+          isConfigured={contact1Configured}
+          isPremiumActive={isPremium}
+          onPress={() => handleSOS(1)}
+        />
+      </section>
 
-      <p
+      <section
         style={{
-          margin: "0 0 -10px",
-          textAlign: "center",
-          color: "#475569",
-          fontSize: 14,
-          fontWeight: 700,
+          background: "#FFFFFF",
+          border: "1px solid #E2E8F0",
+          borderRadius: 18,
+          padding: 20,
+          boxShadow: "0 2px 10px rgba(15, 23, 42, 0.05)",
         }}
       >
-        Press now to send an SOS alert
-      </p>
+        <p
+          style={{
+            margin: "0 0 14px",
+            textAlign: "center",
+            color: "#475569",
+            fontSize: 14,
+            fontWeight: 700,
+          }}
+        >
+          Press now to send an SOS alert
+        </p>
 
-      <SOSButton
-        contactNumber={2}
-        firstName={settings.contact_2_name}
-        surname={settings.contact_2_surname}
-        relationship={settings.contact_2_relationship}
-        isConfigured={contact2Configured}
-        isPremiumActive={isPremium}
-        onPress={() => handleSOS(2)}
-      />
+        <SOSButton
+          contactNumber={2}
+          firstName={settings.contact_2_name}
+          surname={settings.contact_2_surname}
+          relationship={settings.contact_2_relationship}
+          isConfigured={contact2Configured}
+          isPremiumActive={isPremium}
+          onPress={() => handleSOS(2)}
+        />
+      </section>
 
       <PremiumBanner
         isPremiumActive={isPremium}
