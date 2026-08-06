@@ -294,15 +294,18 @@ export async function sendSOSAlert(input: SOSAlertInput) {
   const profileUrl =
     `https://www.rroi.co.za/e/${profile.public_id}`;
 
-  const message = [
-    "RROI SOS ALERT",
-    `${userName} has sent an SOS alert.`,
-    `Date and time: ${new Date().toLocaleString("en-ZA", {
-      timeZone: "Africa/Johannesburg",
-    })}`,
-    `Current location: ${locationUrl}`,
-    `Emergency profile: ${profileUrl}`,
-  ].join("\n");
+  const now = new Date().toLocaleString("en-ZA", {
+  timeZone: "Africa/Johannesburg",
+  dateStyle: "short",
+  timeStyle: "short",
+});
+
+const message =
+  `RROI SOS\n` +
+  `${userName} needs help.\n` +
+  `${now}\n` +
+  `Map: ${locationUrl}\n` +
+  `Profile: ${profileUrl}`;
 
   const { data: alert, error: alertError } = await supabaseAdmin
     .from("sos_alerts")
