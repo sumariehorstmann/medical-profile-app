@@ -12,15 +12,23 @@ export default function SiteHeader() {
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [isSOSDomain, setIsSOSDomain] = useState(false);
 
   const showGuestButtons =
+  !isSOSDomain &&
+  (
     pathname === "/" ||
     pathname === "/login" ||
     pathname === "/forgot-password" ||
-    pathname === "/reset-password";
+    pathname === "/reset-password"
+  );
 
   useEffect(() => {
     let mounted = true;
+
+    setIsSOSDomain(
+  window.location.hostname === "sos.rroi.co.za"
+);
 
     async function loadSession() {
       const {
@@ -52,9 +60,11 @@ export default function SiteHeader() {
     await supabase.auth.signOut();
 
     const loginUrl =
-      pathname === "/rroi-sos"
-        ? "/login?redirect=/rroi-sos"
-        : "/login";
+  isSOSDomain
+    ? "/login?next=/"
+    : pathname === "/rroi-sos"
+      ? "/login?redirect=/rroi-sos"
+      : "/login";
 
     window.location.href = loginUrl;
   } finally {
@@ -66,8 +76,8 @@ export default function SiteHeader() {
     <header style={styles.header}>
       <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
         <Image
-  src="/icons/rroi-sos-512.png"
-  alt="RROI SOS"
+  src={isSOSDomain ? "/icons/rroi-sos-512.png" : "/logo.png"}
+  alt={isSOSDomain ? "RROI SOS" : "RROI"}
   width={64}
   height={64}
   priority
