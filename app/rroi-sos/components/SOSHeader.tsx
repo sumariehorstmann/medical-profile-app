@@ -12,7 +12,7 @@ export default function SiteHeader() {
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
-  const [isSOSDomain, setIsSOSDomain] = useState(false);
+  const [isSOSDomain, setIsSOSDomain] = useState<boolean | null>(null);
 
   const showGuestButtons =
   !isSOSDomain &&
@@ -22,7 +22,8 @@ export default function SiteHeader() {
     pathname === "/forgot-password" ||
     pathname === "/reset-password"
   );
-
+const isProtectedSOSPage =
+  isSOSDomain === true && pathname === "/";
   useEffect(() => {
     let mounted = true;
 
@@ -86,27 +87,28 @@ export default function SiteHeader() {
       </Link>
 
       <div style={styles.headerActions}>
-        {isLoggedIn === null ? null : showGuestButtons || !isLoggedIn ? (
-          <>
-            <Link href="/login" style={styles.loginLink}>
-              Log in
-            </Link>
+  {isSOSDomain === null || isLoggedIn === null ? null : isProtectedSOSPage ||
+    isLoggedIn ? (
+    <button
+      type="button"
+      onClick={handleLogout}
+      style={styles.logoutBtn}
+      disabled={loggingOut}
+    >
+      {loggingOut ? "Logging out..." : "Log out"}
+    </button>
+  ) : showGuestButtons || !isLoggedIn ? (
+    <>
+      <Link href="/login" style={styles.loginLink}>
+        Log in
+      </Link>
 
-            <Link href="/login?mode=signup" style={styles.signupLink}>
-              Sign up
-            </Link>
-          </>
-        ) : (
-          <button
-            type="button"
-            onClick={handleLogout}
-            style={styles.logoutBtn}
-            disabled={loggingOut}
-          >
-            {loggingOut ? "Logging out..." : "Log out"}
-          </button>
-        )}
-      </div>
+      <Link href="/login?mode=signup" style={styles.signupLink}>
+        Sign up
+      </Link>
+    </>
+  ) : null}
+</div>
     </header>
   );
 }
