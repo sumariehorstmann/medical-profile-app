@@ -1,15 +1,38 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-// If you already have a helper that checks subscription status, you can plug it in later.
-// For now this middleware:
-// - requires login for /profile and /subscribe/pay
-// - lets logged-in users reach /subscribe/pay even if not subscribed yet (pay-first flow)
-
 export async function middleware(req: NextRequest) {
-  let res = NextResponse.next();
+  const hostname =
+    req.headers.get("host")?.split(":")[0].toLowerCase() ?? "";
+
+  const path = req.nextUrl.pathname;
+
+  const isSOSDomain =
+    hostname === "sos.rroi.co.za" ||
+    hostname === "www.sos.rroi.co.za";
+
+  /*
+   * When someone visits:
+   * https://sos.rroi.co.za
+   *
+   * internally serve:
+   * /rroi-sos
+   *
+   * The browser address remains sos.rroi.co.za.
+   */
+  const shouldRewriteToSOS = isSOSDomain && path === "/";
+
+  let res: NextResponse;
+
+  if (shouldRewriteToSOS) {
+    const rewriteUrl = req.nextUrl.clone();
+    rewriteUrl.pathname = "/rroi-sos";
+
+    res = NextResponse.rewrite(rewriteUrl);
+  } else {
+    res = NextResponse.next();
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,6 +42,7 @@ export async function middleware(req: NextRequest) {
         getAll() {
           return req.cookies.getAll();
         },
+
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
             res.cookies.set(name, value, options);
@@ -28,24 +52,41 @@ export async function middleware(req: NextRequest) {
     }
   );
 
-  const { data } = await supabase.auth.getUser();
-  const user = data.user;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const path = req.nextUrl.pathname;
-
-  // Protect these routes (must be logged in)
-  const needsAuth = path.startsWith("/profile") || path.startsWith("/subscribe/pay");
+  const needsAuth =
+    path.startsWith("/profile") ||
+    path.startsWith("/subscribe/pay") ||
+    path.startsWith("/rroi-sos") ||
+    shouldRewriteToSOS;
 
   if (needsAuth && !user) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("next", path);
-    return NextResponse.redirect(url);
+    const loginUrl = req.nextUrl.clone();
+
+    loginUrl.pathname = "/login";
+
+    /*
+     * On sos.rroi.co.za, return to the clean root address
+     * after login. The middleware will then serve /rroi-sos.
+     */
+    loginUrl.searchParams.set(
+      "next",
+      shouldRewriteToSOS ? "/" : path
+    );
+
+    return NextResponse.redirect(loginUrl);
   }
 
   return res;
 }
 
 export const config = {
-  matcher: ["/profile/:path*", "/subscribe/pay"],
+  matcher: [
+    "/",
+    "/profile/:path*",
+    "/subscribe/pay",
+    "/rroi-sos/:path*",
+  ],
 };
