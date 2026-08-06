@@ -8,20 +8,22 @@ export async function middleware(req: NextRequest) {
 
   const path = req.nextUrl.pathname;
 
+  const isRROIDomain =
+    hostname === "rroi.co.za" ||
+    hostname === "www.rroi.co.za" ||
+    hostname.endsWith(".rroi.co.za");
+
   const isSOSDomain =
     hostname === "sos.rroi.co.za" ||
     hostname === "www.sos.rroi.co.za";
 
   /*
-   * When someone visits:
-   * https://sos.rroi.co.za
-   *
-   * internally serve:
-   * /rroi-sos
-   *
+   * https://sos.rroi.co.za/
+   * is internally served by /rroi-sos.
    * The browser address remains sos.rroi.co.za.
    */
-  const shouldRewriteToSOS = isSOSDomain && path === "/";
+  const shouldRewriteToSOS =
+    isSOSDomain && path === "/";
 
   let res: NextResponse;
 
@@ -43,11 +45,29 @@ export async function middleware(req: NextRequest) {
           return req.cookies.getAll();
         },
 
-       setAll(cookiesToSet) {
-  cookiesToSet.forEach(({ name, value, options }) => {
-    res.cookies.set(name, value, options);
-  });
-},
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            /*
+             * Make refreshed cookies available during this request.
+             */
+            req.cookies.set(name, value);
+
+            /*
+             * Make the session available to www.rroi.co.za,
+             * rroi.co.za and sos.rroi.co.za.
+             */
+            res.cookies.set(name, value, {
+              ...options,
+              ...(isRROIDomain
+                ? { domain: ".rroi.co.za" }
+                : {}),
+              path: "/",
+              sameSite: options?.sameSite ?? "lax",
+              secure:
+                req.nextUrl.protocol === "https:",
+            });
+          });
+        },
       },
     }
   );
@@ -63,21 +83,26 @@ export async function middleware(req: NextRequest) {
     shouldRewriteToSOS;
 
   if (needsAuth && !user) {
-  const loginUrl = req.nextUrl.clone();
+    const loginUrl = req.nextUrl.clone();
+    loginUrl.pathname = "/login";
 
-  loginUrl.pathname = "/login";
+    loginUrl.searchParams.set(
+      "next",
+      shouldRewriteToSOS ? "/" : path
+    );
 
-  /*
-   * On sos.rroi.co.za, return to the clean root address
-   * after login. The middleware will then serve /rroi-sos.
-   */
-  loginUrl.searchParams.set(
-    "next",
-    shouldRewriteToSOS ? "/" : path
-  );
-return NextResponse.redirect(loginUrl);
-  
-}
+    const redirectResponse =
+      NextResponse.redirect(loginUrl);
+
+    /*
+     * Preserve any refreshed Supabase cookies when redirecting.
+     */
+    res.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie);
+    });
+
+    return redirectResponse;
+  }
 
   return res;
 }

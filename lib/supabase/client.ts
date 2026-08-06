@@ -7,16 +7,26 @@ export function createSupabaseBrowser() {
     {
       cookies: {
         getAll() {
-          if (typeof document === "undefined") return [];
+          if (typeof document === "undefined") {
+            return [];
+          }
 
           return document.cookie
             .split(";")
-            .map((c) => c.trim())
+            .map((cookie) => cookie.trim())
             .filter(Boolean)
-            .map((c) => {
-              const eq = c.indexOf("=");
-              const name = eq >= 0 ? c.slice(0, eq) : c;
-              const value = eq >= 0 ? c.slice(eq + 1) : "";
+            .map((cookie) => {
+              const separatorIndex = cookie.indexOf("=");
+
+              const name =
+                separatorIndex >= 0
+                  ? cookie.slice(0, separatorIndex)
+                  : cookie;
+
+              const value =
+                separatorIndex >= 0
+                  ? cookie.slice(separatorIndex + 1)
+                  : "";
 
               return {
                 name,
@@ -26,13 +36,23 @@ export function createSupabaseBrowser() {
         },
 
         setAll(cookiesToSet) {
-          if (typeof document === "undefined") return;
+          if (typeof document === "undefined") {
+            return;
+          }
+
+          const hostname = window.location.hostname.toLowerCase();
+
+          const isRROIDomain =
+            hostname === "rroi.co.za" ||
+            hostname === "www.rroi.co.za" ||
+            hostname.endsWith(".rroi.co.za");
 
           cookiesToSet.forEach(({ name, value, options }) => {
-            let cookie = `${name}=${encodeURIComponent(value)}`;
             const opts = options ?? {};
 
-            cookie += `; Path=${opts.path ?? "/"}`;
+            let cookie = `${name}=${encodeURIComponent(value)}`;
+
+            cookie += `; Path=/`;
 
             if (opts.maxAge !== undefined) {
               cookie += `; Max-Age=${opts.maxAge}`;
@@ -42,15 +62,18 @@ export function createSupabaseBrowser() {
               cookie += `; Expires=${opts.expires.toUTCString()}`;
             }
 
-            if (opts.domain) {
+            if (isRROIDomain) {
+              cookie += `; Domain=.rroi.co.za`;
+            } else if (opts.domain) {
               cookie += `; Domain=${opts.domain}`;
             }
 
-            if (opts.sameSite) {
-              cookie += `; SameSite=${opts.sameSite}`;
-            }
+            cookie += `; SameSite=${opts.sameSite ?? "lax"}`;
 
-            if (opts.secure) {
+            if (
+              window.location.protocol === "https:" ||
+              opts.secure === true
+            ) {
               cookie += `; Secure`;
             }
 
