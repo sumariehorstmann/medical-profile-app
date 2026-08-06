@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@supabase/ssr";
-import PageHeader from "@/components/PageHeader";
+import Image from "next/image";
 import RROISOSClient from "./RROISOSClient";
 
 export default async function RROISOSPage() {
@@ -59,7 +59,24 @@ export default async function RROISOSPage() {
           margin: "0 auto",
         }}
       >
-        <PageHeader />
+        <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: 32,
+  }}
+>
+  <Image
+    src="/icons/rroi-sos-512.png"
+    alt="RROI SOS"
+    width={140}
+    height={140}
+    priority
+    style={{
+      objectFit: "contain",
+    }}
+  />
+</div>
 
         <RROISOSClient
   isPremium={isPremium}

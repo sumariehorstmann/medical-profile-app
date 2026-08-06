@@ -318,7 +318,7 @@ const message =
       contact_number: contactNumber,
       recipient_name: recipientName,
       recipient_relationship: relationship ?? null,
-      recipient_phone: phone,
+      recipient_phone: formattedPhone,
       latitude,
       longitude,
       location_obtained: true,
