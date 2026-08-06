@@ -1428,7 +1428,7 @@ async function clearProfileSOSContact(contactNumber: 1 | 2) {
   }}
 >
   <Link
-    href="/rroi-sos"
+    href="https://sos.rroi.co.za"
     style={{
       display: "flex",
       justifyContent: "center",
