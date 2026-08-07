@@ -94,9 +94,9 @@ export async function POST(request: Request) {
       });
 
     if (
-      error ||
-      !data?.properties?.action_link
-    ) {
+  error ||
+  !data?.properties?.hashed_token
+) {
       console.error(
         "Unable to create RROI SOS handoff:",
         error
@@ -113,9 +113,33 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({
-      url: data.properties.action_link,
-    });
+    const sosCallbackUrl = new URL(
+  "https://sos.rroi.co.za/auth/callback"
+);
+
+sosCallbackUrl.searchParams.set(
+  "token_hash",
+  data.properties.hashed_token
+);
+
+sosCallbackUrl.searchParams.set(
+  "type",
+  "magiclink"
+);
+
+sosCallbackUrl.searchParams.set(
+  "handoff",
+  "sos"
+);
+
+sosCallbackUrl.searchParams.set(
+  "next",
+  "/"
+);
+
+return NextResponse.json({
+  url: sosCallbackUrl.toString(),
+});
   } catch (error) {
     console.error(
       "RROI SOS handoff error:",

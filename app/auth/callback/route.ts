@@ -5,22 +5,32 @@ import { createServerClient } from "@supabase/ssr";
 async function getSupabaseRouteClient() {
   const cookieStore = await cookies();
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
 
-  return createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value;
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(
+            ({ name, value, options }) => {
+              cookieStore.set(name, value, {
+                ...options,
+                path: options?.path ?? "/",
+                sameSite:
+                  options?.sameSite ?? "lax",
+                secure:
+                  options?.secure ?? true,
+              });
+            }
+          );
+        },
       },
-      set(name: string, value: string, options: any) {
-        cookieStore.set({ name, value, ...options });
-      },
-      remove(name: string, options: any) {
-        cookieStore.set({ name, value: "", ...options, maxAge: 0 });
-      },
-    },
-  });
+    }
+  );
 }
 
 export async function GET(request: Request) {
@@ -28,54 +38,97 @@ export async function GET(request: Request) {
   const origin = url.origin;
 
   const code = url.searchParams.get("code");
-  const token_hash = url.searchParams.get("token_hash");
-  const type = url.searchParams.get("type") ?? "signup";
-  const handoff = url.searchParams.get("handoff");
+  const tokenHash =
+    url.searchParams.get("token_hash");
 
-  const supabase = await getSupabaseRouteClient();
+  const type =
+    url.searchParams.get("type") ?? "signup";
+
+  const handoff =
+    url.searchParams.get("handoff");
+
+  const next =
+    url.searchParams.get("next");
+
+  const isSOSDomain =
+    url.hostname === "sos.rroi.co.za" ||
+    url.hostname === "www.sos.rroi.co.za";
+
+  const supabase =
+    await getSupabaseRouteClient();
 
   try {
     if (code) {
-      const { error } = await supabase.auth.exchangeCodeForSession(code);
-      if (error) throw error;
-    } else if (token_hash) {
-      const { error } = await supabase.auth.verifyOtp({
-        type: type as any,
-        token_hash,
-      });
-      if (error) throw error;
+      const { error } =
+        await supabase.auth.exchangeCodeForSession(
+          code
+        );
+
+      if (error) {
+        throw error;
+      }
+    } else if (tokenHash) {
+      const { error } =
+        await supabase.auth.verifyOtp({
+          type: type as any,
+          token_hash: tokenHash,
+        });
+
+      if (error) {
+        throw error;
+      }
     } else {
-      return NextResponse.redirect(`${origin}/login?error=missing_code`);
+      return NextResponse.redirect(
+        `${origin}/login?error=missing_code`
+      );
     }
 
-        const next = url.searchParams.get("next");
+    /*
+     * Any successful authentication callback
+     * taking place on the SOS domain must open
+     * the SOS dashboard.
+     */
+    if (
+      isSOSDomain ||
+      handoff === "sos"
+    ) {
+      return NextResponse.redirect(
+        `${origin}/`
+      );
+    }
 
-if (handoff === "sos") {
-  const safeNext =
-    next && next.startsWith("/") ? next : "/";
+    /*
+     * Normal RROI email verification.
+     */
+    if (
+      type === "signup" ||
+      type === "email"
+    ) {
+      return NextResponse.redirect(
+        `${origin}/login?verified=true`
+      );
+    }
 
-  return NextResponse.redirect(
-    `${origin}${safeNext}`
-  );
-}
+    const safeNext =
+      next && next.startsWith("/")
+        ? next
+        : "/profile";
 
-if (type === "signup" || type === "email") {
-  return NextResponse.redirect(
-    `${origin}/login?verified=true`
-  );
-}
+    return NextResponse.redirect(
+      `${origin}${safeNext}`
+    );
+  } catch (error: any) {
+    console.error(
+      "Auth callback failed:",
+      error
+    );
 
-const safeNext =
-  next && next.startsWith("/") ? next : "/profile";
+    const message = encodeURIComponent(
+      error?.message ?? "auth_failed"
+    );
 
-return NextResponse.redirect(
-  `${origin}${safeNext}`
-);
-  } catch (e: any) {
-  const message = encodeURIComponent(e?.message ?? "auth_failed");
-
-  return NextResponse.redirect(
-    `${origin}/login?error=email_not_confirmed&message=${message}`
-  );
-}
+    return NextResponse.redirect(
+      `${origin}/login?error=auth_failed&message=${message}`
+    );
+  }
 }
