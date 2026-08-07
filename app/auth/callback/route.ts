@@ -118,17 +118,37 @@ export async function GET(request: Request) {
       `${origin}${safeNext}`
     );
   } catch (error: any) {
-    console.error(
-      "Auth callback failed:",
-      error
-    );
+  console.error(
+    "Auth callback failed:",
+    error
+  );
 
-    const message = encodeURIComponent(
-      error?.message ?? "auth_failed"
-    );
-
+  /*
+   * Installed PWAs can occasionally trigger the SOS callback
+   * more than once.
+   *
+   * The first request may already have successfully consumed
+   * the one-time token and created the SOS session.
+   *
+   * If a duplicate request then reports that the email link is
+   * invalid, send it to the SOS root instead of showing login.
+   *
+   * Middleware will make the final decision:
+   * - valid SOS session -> open RROI SOS
+   * - no valid session -> redirect to /login?next=/
+   */
+  if (handoff === "sos" || isSOSDomain) {
     return NextResponse.redirect(
-      `${origin}/login?error=auth_failed&message=${message}`
+      `${origin}/`
     );
   }
+
+  const message = encodeURIComponent(
+    error?.message ?? "auth_failed"
+  );
+
+  return NextResponse.redirect(
+    `${origin}/login?error=auth_failed&message=${message}`
+  );
+}
 }
