@@ -307,9 +307,9 @@ const profileUrl =
   `https://rroi.co.za/e/${profile.public_id}`;
 
 const message =
-  `RROI SOS ${userName}. ` +
-  `${locationUrl} ` +
-  `${profileUrl}`;
+  `RROI SOS: ${userName} needs help.\n` +
+  `Map\n${locationUrl}\n` +
+  `Profile\n${profileUrl}`;
 
   const { data: alert, error: alertError } = await supabaseAdmin
     .from("sos_alerts")
