@@ -103,39 +103,47 @@ export default function SiteHeader() {
       </Link>
 
       <div style={styles.headerActions}>
-        {isSOSDomain === null ? null : isProtectedSOSPage ? (
-          <button
-            type="button"
-            onClick={handleLogout}
-            style={styles.logoutBtn}
-            disabled={loggingOut}
-          >
-            {loggingOut ? "Logging out..." : "Log out"}
-          </button>
-        ) : isLoggedIn === null ? null : isLoggedIn ? (
-          <button
-            type="button"
-            onClick={handleLogout}
-            style={styles.logoutBtn}
-            disabled={loggingOut}
-          >
-            {loggingOut ? "Logging out..." : "Log out"}
-          </button>
-        ) : showGuestButtons || !isLoggedIn ? (
-          <>
-            <Link href="/login" style={styles.loginLink}>
-              Log in
-            </Link>
+  {isSOSDomain === null ? null : isProtectedSOSPage ? (
+    <button
+      type="button"
+      onClick={handleLogout}
+      style={styles.logoutBtn}
+      disabled={loggingOut}
+    >
+      {loggingOut ? "Logging out..." : "Log out"}
+    </button>
+  ) : isLoggedIn === null ? null : isLoggedIn ? (
+    <>
+      {!isSOSDomain && (
+        <Link href="/profile" style={styles.profileLink}>
+          My Profile
+        </Link>
+      )}
 
-            <Link
-              href="/login?mode=signup"
-              style={styles.signupLink}
-            >
-              Sign up
-            </Link>
-          </>
-        ) : null}
-      </div>
+      <button
+        type="button"
+        onClick={handleLogout}
+        style={styles.logoutBtn}
+        disabled={loggingOut}
+      >
+        {loggingOut ? "Logging out..." : "Log out"}
+      </button>
+    </>
+  ) : (
+    <>
+      <Link href="/login" style={styles.loginLink}>
+        Log in
+      </Link>
+
+      <Link
+        href="/login?mode=signup"
+        style={styles.signupLink}
+      >
+        Sign up
+      </Link>
+    </>
+  )}
+</div>
     </header>
   );
 }
@@ -218,4 +226,15 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 10,
     whiteSpace: "nowrap",
   },
+
+  profileLink: {
+  textDecoration: "none",
+  fontWeight: 900,
+  color: "#FFFFFF",
+  background: BRAND_GREEN,
+  padding: "9px 12px",
+  borderRadius: 10,
+  fontSize: 14,
+  whiteSpace: "nowrap",
+},
 };
