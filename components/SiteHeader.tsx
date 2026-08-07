@@ -12,15 +12,29 @@ export default function SiteHeader() {
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [isSOSDomain, setIsSOSDomain] = useState<boolean | null>(null);
 
   const showGuestButtons =
-    pathname === "/" ||
-    pathname === "/login" ||
-    pathname === "/forgot-password" ||
-    pathname === "/reset-password";
+    isSOSDomain === false &&
+    (
+      pathname === "/" ||
+      pathname === "/login" ||
+      pathname === "/forgot-password" ||
+      pathname === "/reset-password"
+    );
+
+  const isProtectedSOSPage =
+    isSOSDomain === true && pathname === "/";
 
   useEffect(() => {
     let mounted = true;
+
+    const hostname = window.location.hostname.toLowerCase();
+
+    setIsSOSDomain(
+      hostname === "sos.rroi.co.za" ||
+      hostname === "www.sos.rroi.co.za"
+    );
 
     async function loadSession() {
       const {
@@ -28,6 +42,7 @@ export default function SiteHeader() {
       } = await supabase.auth.getSession();
 
       if (!mounted) return;
+
       setIsLoggedIn(!!session);
     }
 
@@ -37,6 +52,7 @@ export default function SiteHeader() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!mounted) return;
+
       setIsLoggedIn(!!session);
     });
 
@@ -47,27 +63,38 @@ export default function SiteHeader() {
   }, [supabase]);
 
   async function handleLogout() {
-  try {
-    setLoggingOut(true);
-    await supabase.auth.signOut();
+    try {
+      setLoggingOut(true);
 
-    const loginUrl =
-      pathname === "/rroi-sos"
-        ? "/login?redirect=/rroi-sos"
-        : "/login";
+      await supabase.auth.signOut();
 
-    window.location.href = loginUrl;
-  } finally {
-    setLoggingOut(false);
+      const loginUrl =
+        isSOSDomain === true
+          ? "/login?next=/"
+          : pathname === "/rroi-sos"
+            ? "/login?redirect=/rroi-sos"
+            : "/login";
+
+      window.location.href = loginUrl;
+    } finally {
+      setLoggingOut(false);
+    }
   }
-}
 
   return (
     <header style={styles.header}>
-      <Link href="/" style={styles.headerLogo} aria-label="RROI Home">
+      <Link
+        href="/"
+        style={styles.headerLogo}
+        aria-label={isSOSDomain ? "RROI SOS" : "RROI Home"}
+      >
         <Image
-          src="/logo.png"
-          alt="RROI"
+          src={
+            isSOSDomain
+              ? "/icons/rroi-sos-512.png"
+              : "/logo.png"
+          }
+          alt={isSOSDomain ? "RROI SOS" : "RROI"}
           width={64}
           height={64}
           priority
@@ -76,17 +103,7 @@ export default function SiteHeader() {
       </Link>
 
       <div style={styles.headerActions}>
-        {isLoggedIn === null ? null : showGuestButtons || !isLoggedIn ? (
-          <>
-            <Link href="/login" style={styles.loginLink}>
-              Log in
-            </Link>
-
-            <Link href="/login?mode=signup" style={styles.signupLink}>
-              Sign up
-            </Link>
-          </>
-        ) : (
+        {isSOSDomain === null ? null : isProtectedSOSPage ? (
           <button
             type="button"
             onClick={handleLogout}
@@ -95,7 +112,29 @@ export default function SiteHeader() {
           >
             {loggingOut ? "Logging out..." : "Log out"}
           </button>
-        )}
+        ) : isLoggedIn === null ? null : isLoggedIn ? (
+          <button
+            type="button"
+            onClick={handleLogout}
+            style={styles.logoutBtn}
+            disabled={loggingOut}
+          >
+            {loggingOut ? "Logging out..." : "Log out"}
+          </button>
+        ) : showGuestButtons || !isLoggedIn ? (
+          <>
+            <Link href="/login" style={styles.loginLink}>
+              Log in
+            </Link>
+
+            <Link
+              href="/login?mode=signup"
+              style={styles.signupLink}
+            >
+              Sign up
+            </Link>
+          </>
+        ) : null}
       </div>
     </header>
   );
