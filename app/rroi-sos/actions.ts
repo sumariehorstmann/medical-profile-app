@@ -307,7 +307,7 @@ const profileUrl =
   `https://rroi.co.za/e/${profile.public_id}`;
 
 const message =
-  `🆘 RROI SOS ALERT\n\n` +
+  `RROI SOS ALERT\n\n` +
   `${userName} has sent an emergency SOS alert.\n\n` +
   `Location:\n${locationUrl}\n\n` +
   `Emergency Profile:\n${profileUrl}`;
