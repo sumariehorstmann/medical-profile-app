@@ -30,6 +30,7 @@ export async function GET(request: Request) {
   const code = url.searchParams.get("code");
   const token_hash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type") ?? "signup";
+  const handoff = url.searchParams.get("handoff");
 
   const supabase = await getSupabaseRouteClient();
 
@@ -49,12 +50,27 @@ export async function GET(request: Request) {
 
         const next = url.searchParams.get("next");
 
-if (type === "signup" || type === "email") {
-  return NextResponse.redirect(`${origin}/login?verified=true`);
+if (handoff === "sos") {
+  const safeNext =
+    next && next.startsWith("/") ? next : "/";
+
+  return NextResponse.redirect(
+    `${origin}${safeNext}`
+  );
 }
 
-const safeNext = next && next.startsWith("/") ? next : "/profile";
-return NextResponse.redirect(`${origin}${safeNext}`);
+if (type === "signup" || type === "email") {
+  return NextResponse.redirect(
+    `${origin}/login?verified=true`
+  );
+}
+
+const safeNext =
+  next && next.startsWith("/") ? next : "/profile";
+
+return NextResponse.redirect(
+  `${origin}${safeNext}`
+);
   } catch (e: any) {
   const message = encodeURIComponent(e?.message ?? "auth_failed");
 
