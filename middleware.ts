@@ -8,11 +8,6 @@ export async function middleware(req: NextRequest) {
 
   const path = req.nextUrl.pathname;
 
-  const isRROIDomain =
-    hostname === "rroi.co.za" ||
-    hostname === "www.rroi.co.za" ||
-    hostname.endsWith(".rroi.co.za");
-
   const isSOSDomain =
     hostname === "sos.rroi.co.za" ||
     hostname === "www.sos.rroi.co.za";
@@ -47,24 +42,13 @@ export async function middleware(req: NextRequest) {
 
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
-            /*
-             * Make refreshed cookies available during this request.
-             */
             req.cookies.set(name, value);
 
-            /*
-             * Make the session available to www.rroi.co.za,
-             * rroi.co.za and sos.rroi.co.za.
-             */
             res.cookies.set(name, value, {
               ...options,
-              ...(isRROIDomain
-                ? { domain: ".rroi.co.za" }
-                : {}),
-              path: "/",
+              path: options?.path ?? "/",
               sameSite: options?.sameSite ?? "lax",
-              secure:
-                req.nextUrl.protocol === "https:",
+              secure: req.nextUrl.protocol === "https:",
             });
           });
         },
@@ -94,9 +78,6 @@ export async function middleware(req: NextRequest) {
     const redirectResponse =
       NextResponse.redirect(loginUrl);
 
-    /*
-     * Preserve any refreshed Supabase cookies when redirecting.
-     */
     res.cookies.getAll().forEach((cookie) => {
       redirectResponse.cookies.set(cookie);
     });

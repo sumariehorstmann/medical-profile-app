@@ -40,19 +40,12 @@ export function createSupabaseBrowser() {
             return;
           }
 
-          const hostname = window.location.hostname.toLowerCase();
-
-          const isRROIDomain =
-            hostname === "rroi.co.za" ||
-            hostname === "www.rroi.co.za" ||
-            hostname.endsWith(".rroi.co.za");
-
           cookiesToSet.forEach(({ name, value, options }) => {
             const opts = options ?? {};
 
             let cookie = `${name}=${encodeURIComponent(value)}`;
 
-            cookie += `; Path=/`;
+            cookie += `; Path=${opts.path ?? "/"}`;
 
             if (opts.maxAge !== undefined) {
               cookie += `; Max-Age=${opts.maxAge}`;
@@ -62,13 +55,9 @@ export function createSupabaseBrowser() {
               cookie += `; Expires=${opts.expires.toUTCString()}`;
             }
 
-            if (isRROIDomain) {
-              cookie += `; Domain=.rroi.co.za`;
-            } else if (opts.domain) {
-              cookie += `; Domain=${opts.domain}`;
+            if (opts.sameSite) {
+              cookie += `; SameSite=${opts.sameSite}`;
             }
-
-            cookie += `; SameSite=${opts.sameSite ?? "lax"}`;
 
             if (
               window.location.protocol === "https:" ||
