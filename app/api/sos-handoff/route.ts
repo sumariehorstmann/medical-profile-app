@@ -1,53 +1,87 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServer, supabaseAdmin } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/server";
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   try {
     const requestUrl = new URL(request.url);
 
     const hostname = requestUrl.hostname.toLowerCase();
 
-    // This handoff must only start from the main RROI website.
     const isMainRROIDomain =
       hostname === "www.rroi.co.za" ||
       hostname === "rroi.co.za" ||
       hostname === "localhost";
 
     if (!isMainRROIDomain) {
-      return NextResponse.redirect(
-        new URL("https://www.rroi.co.za/login")
+      return NextResponse.json(
+        {
+          error: "Invalid RROI handoff origin.",
+        },
+        {
+          status: 403,
+        }
       );
     }
 
-    const supabase = await createSupabaseServer();
+    const authorization =
+      request.headers.get("authorization");
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user || !user.email) {
-      const loginUrl = new URL(
-        "/login",
-        requestUrl.origin
+    if (
+      !authorization ||
+      !authorization.startsWith("Bearer ")
+    ) {
+      return NextResponse.json(
+        {
+          error: "Authentication required.",
+        },
+        {
+          status: 401,
+        }
       );
+    }
 
-      loginUrl.searchParams.set(
-        "next",
-        "/api/sos-handoff"
+    const accessToken =
+      authorization.slice("Bearer ".length).trim();
+
+    if (!accessToken) {
+      return NextResponse.json(
+        {
+          error: "Authentication required.",
+        },
+        {
+          status: 401,
+        }
       );
-
-      return NextResponse.redirect(loginUrl);
     }
 
     /*
-     * Create a secure one-time Supabase authentication link.
-     *
-     * No email is sent.
-     *
-     * The link signs this already-authenticated RROI user
-     * into the SOS subdomain and then sends them through
-     * the existing auth callback.
+     * Verify the logged-in RROI user's Supabase token.
+     * Never trust an email/user ID supplied by the browser.
+     */
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseAdmin.auth.getUser(accessToken);
+
+    if (userError || !user || !user.email) {
+      console.error(
+        "RROI SOS handoff user verification failed:",
+        userError
+      );
+
+      return NextResponse.json(
+        {
+          error: "Your RROI session is no longer valid. Please log in again.",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    /*
+     * Generate a one-time authentication link for the
+     * verified user. No email is sent.
      */
     const { data, error } =
       await supabaseAdmin.auth.admin.generateLink({
@@ -55,38 +89,47 @@ export async function GET(request: Request) {
         email: user.email,
         options: {
           redirectTo:
-  "https://sos.rroi.co.za/auth/callback?next=/&handoff=sos",
+            "https://sos.rroi.co.za/auth/callback?next=/&handoff=sos",
         },
       });
 
-    if (error || !data?.properties?.action_link) {
+    if (
+      error ||
+      !data?.properties?.action_link
+    ) {
       console.error(
         "Unable to create RROI SOS handoff:",
         error
       );
 
-      return NextResponse.redirect(
-        new URL(
-          "/profile?sos_error=handoff",
-          requestUrl.origin
-        )
+      return NextResponse.json(
+        {
+          error:
+            "RROI SOS could not be opened right now. Please try again.",
+        },
+        {
+          status: 500,
+        }
       );
     }
 
-    return NextResponse.redirect(
-      data.properties.action_link
-    );
+    return NextResponse.json({
+      url: data.properties.action_link,
+    });
   } catch (error) {
     console.error(
       "RROI SOS handoff error:",
       error
     );
 
-    return NextResponse.redirect(
-      new URL(
-        "/profile?sos_error=handoff",
-        "https://www.rroi.co.za"
-      )
+    return NextResponse.json(
+      {
+        error:
+          "RROI SOS could not be opened right now. Please try again.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

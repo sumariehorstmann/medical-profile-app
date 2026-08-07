@@ -6,7 +6,6 @@ import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
-import Link from "next/link";
 import SOSContactCard, {
   SOSContactForm,
 } from "@/app/rroi-sos/components/SOSContactCard";
@@ -621,6 +620,50 @@ emergency_button3_description: getText("emergency_button3_description"),
 async function clearProfileSOSContact(contactNumber: 1 | 2) {
   await clearSOSContact(contactNumber);
   await refreshSOSSettings();
+}
+async function handleOpenRROISOS() {
+  try {
+    setLoading(true);
+    setMessage(null);
+
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError || !session?.access_token) {
+      setMessage("❌ Your session has expired. Please log in again.");
+      return;
+    }
+
+    const response = await fetch("/api/sos-handoff", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data?.url) {
+      throw new Error(
+        data?.error ||
+          "RROI SOS could not be opened. Please try again."
+      );
+    }
+
+    window.location.href = data.url;
+  } catch (error) {
+    setMessage(
+      `❌ ${
+        error instanceof Error
+          ? error.message
+          : "RROI SOS could not be opened."
+      }`
+    );
+  } finally {
+    setLoading(false);
+  }
 }
 
   async function handleLogout() {
@@ -1427,28 +1470,30 @@ async function clearProfileSOSContact(contactNumber: 1 | 2) {
     marginBottom: 24,
   }}
 >
-  <Link
-  href="/api/sos-handoff"
-    style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-      maxWidth: 340,
-      minHeight: 48,
-      boxSizing: "border-box",
-      padding: "12px 18px",
-      borderRadius: 12,
-      background: "#C40000",
-      border: "1px solid #C40000",
-      color: "#FFFFFF",
-      textDecoration: "none",
-      fontWeight: 800,
-      textAlign: "center",
-    }}
-  >
-    🆘 OPEN RROI SOS
-  </Link>
+  <button
+  type="button"
+  onClick={handleOpenRROISOS}
+  disabled={loading}
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    maxWidth: 340,
+    minHeight: 48,
+    boxSizing: "border-box",
+    padding: "12px 18px",
+    borderRadius: 12,
+    background: "#C40000",
+    border: "1px solid #C40000",
+    color: "#FFFFFF",
+    fontWeight: 800,
+    textAlign: "center",
+    cursor: "pointer",
+  }}
+>
+  🆘 OPEN RROI SOS
+</button>
 </div>
 
 <Section
