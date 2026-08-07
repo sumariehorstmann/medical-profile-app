@@ -28,6 +28,22 @@ export const metadata: Metadata = {
     ],
     apple: "/icons/rroi-sos-192.png",
   },
+  openGraph: {
+  title: "RROI SOS",
+  description:
+    "Open your RROI SOS dashboard and send an emergency alert.",
+  url: "https://sos.rroi.co.za",
+  siteName: "RROI SOS",
+  type: "website",
+  images: [
+    {
+      url: "https://sos.rroi.co.za/icons/rroi-sos-512.png",
+      width: 512,
+      height: 512,
+      alt: "RROI SOS",
+    },
+  ],
+},
 };
 
 type RROISOSLayoutProps = {
