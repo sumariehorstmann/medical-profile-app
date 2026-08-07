@@ -677,9 +677,12 @@ and{" "}
         ) : null}
 
         <div style={styles.cardLinks}>
-  <Link href="/" style={styles.secondaryLink}>
-    Home
-  </Link>
+  <Link
+  href="https://www.rroi.co.za"
+  style={styles.secondaryLink}
+>
+  Home
+</Link>
 </div>
       </div>
     </main>

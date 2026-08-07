@@ -92,7 +92,10 @@ export async function POST(request: Request) {
             "https://sos.rroi.co.za/auth/callback?next=/&handoff=sos",
         },
       });
-
+console.log(
+  "RROI SOS Magic Link:",
+  data?.properties?.action_link
+);
     if (
   error ||
   !data?.properties?.hashed_token
