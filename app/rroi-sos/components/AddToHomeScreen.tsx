@@ -169,6 +169,11 @@ export default function AddToHomeScreen() {
 
   return;
 }
+if (device === "android") {
+  setShowInstructions(true);
+  return;
+}
+
     const promptEvent =
       installPrompt ??
       window.__rroiInstallPrompt ??
@@ -350,28 +355,19 @@ export default function AddToHomeScreen() {
                 }}
               >
                 <p style={{ marginTop: 0 }}>
-                  Automatic installation is not available from
-                  this screen.
-                </p>
+  RROI SOS works best from the official RROI Android app.
+</p>
 
-                <ol style={{ paddingLeft: 22 }}>
-                  <li>
-                    Open this page in the full Chrome browser.
-                  </li>
-                  <li>
-                    Tap the three-dot menu at the top right.
-                  </li>
-                  <li>
-                    Tap <strong>Install app</strong> or{" "}
-                    <strong>Add to Home screen</strong>.
-                  </li>
-                  <li>Tap Install or Add.</li>
-                </ol>
+<ol style={{ paddingLeft: 22 }}>
+  <li>Install the official RROI app from Google Play.</li>
+  <li>Open the RROI app and sign in.</li>
+  <li>Open <strong>RROI SOS</strong> from your dashboard.</li>
+  <li>Tap <strong>Add RROI SOS to Home Screen</strong>.</li>
+</ol>
 
-                <p style={{ marginBottom: 0 }}>
-                  When viewing RROI inside the Play Store app,
-                  use the browser menu and select Open in Chrome.
-                </p>
+<p style={{ marginBottom: 0 }}>
+  This creates a secure Android shortcut without installing a separate browser app.
+</p>
               </div>
             ) : (
               <div

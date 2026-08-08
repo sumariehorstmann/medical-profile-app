@@ -44,9 +44,9 @@ public class RroiSosShortcutPlugin extends Plugin {
 
         shortcutIntent.setAction(Intent.ACTION_VIEW);
         shortcutIntent.putExtra(
-            "rroi_target_url",
-            "https://sos.rroi.co.za"
-        );
+    "rroi_target_url",
+    "https://www.rroi.co.za/rroi-sos"
+);
 
         shortcutIntent.addFlags(
             Intent.FLAG_ACTIVITY_NEW_TASK |
