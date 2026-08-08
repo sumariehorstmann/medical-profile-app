@@ -6,6 +6,7 @@ import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
+import { Capacitor } from "@capacitor/core";
 import SOSContactCard, {
   SOSContactForm,
 } from "@/app/rroi-sos/components/SOSContactCard";
@@ -626,6 +627,14 @@ async function handleOpenRROISOS() {
     setLoading(true);
     setMessage(null);
 
+    // Inside the official Android app,
+    // stay inside the Capacitor WebView.
+    if (Capacitor.isNativePlatform()) {
+      router.push("/rroi-sos");
+      return;
+    }
+
+    // Website users continue to use the secure handoff.
     const {
       data: { session },
       error: sessionError,
@@ -665,20 +674,18 @@ async function handleOpenRROISOS() {
     setLoading(false);
   }
 }
+async function handleLogout() {
+  setMessage(null);
+  setLoading(true);
 
-  async function handleLogout() {
-    setMessage(null);
-    setLoading(true);
-
-    try {
-      await supabase.auth.signOut();
-      router.push("/login");
-      router.refresh();
-    } finally {
-      setLoading(false);
-    }
+  try {
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  } finally {
+    setLoading(false);
   }
-
+}
   return (
     <form onSubmit={handleSave}>
       <Section
