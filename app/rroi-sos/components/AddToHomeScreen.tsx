@@ -144,68 +144,60 @@ export default function AddToHomeScreen() {
   const isSOSDomain =
     window.location.hostname === "sos.rroi.co.za";
 
+  // Android: ALWAYS try the native shortcut first.
+  if (device === "android") {
+    try {
+      const result =
+        await RroiSosShortcut.addToHomeScreen();
+
+      if (result.requested) {
+        setShowInstructions(false);
+        return;
+      }
+    } catch (error) {
+      console.log(
+        "Native shortcut unavailable:",
+        error
+      );
+    }
+
+    setShowInstructions(true);
+    return;
+  }
+
+  // Non-Android browsers
   if (!isSOSDomain) {
     window.location.href = "https://sos.rroi.co.za";
     return;
   }
 
-  // Keep the rest of your existing handleInstall code below
-    if (Capacitor.isNativePlatform()) {
-  try {
-    const result =
-      await RroiSosShortcut.addToHomeScreen();
+  const promptEvent =
+    installPrompt ??
+    window.__rroiInstallPrompt ??
+    null;
 
-    if (!result.requested) {
-      setShowInstructions(true);
-    }
-  } catch (error) {
-    console.error(
-      "Android RROI SOS shortcut failed:",
-      error
-    );
+  if (promptEvent) {
+    try {
+      await promptEvent.prompt();
 
-    setShowInstructions(true);
-  }
+      const choice = await promptEvent.userChoice;
 
-  return;
-}
-if (device === "android") {
-  setShowInstructions(true);
-  return;
-}
-
-    const promptEvent =
-      installPrompt ??
-      window.__rroiInstallPrompt ??
-      null;
-
-    if (promptEvent) {
-      try {
-        await promptEvent.prompt();
-
-        const choice = await promptEvent.userChoice;
-
-        if (choice.outcome === "accepted") {
-          setIsInstalled(true);
-          setShowInstructions(false);
-        }
-
-        window.__rroiInstallPrompt = null;
-        setInstallPrompt(null);
-      } catch (error) {
-        console.error(
-          "RROI SOS installation prompt failed:",
-          error
-        );
-
-        setShowInstructions(true);
+      if (choice.outcome === "accepted") {
+        setIsInstalled(true);
+        setShowInstructions(false);
       }
 
-      return;
+      window.__rroiInstallPrompt = null;
+      setInstallPrompt(null);
+    } catch {
+      setShowInstructions(true);
     }
 
-    setShowInstructions(true);
+    return;
   }
+
+  setShowInstructions(true);
+}
 
   async function copySOSLink() {
     try {
