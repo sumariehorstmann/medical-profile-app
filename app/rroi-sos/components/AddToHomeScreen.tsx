@@ -347,18 +347,31 @@ export default function AddToHomeScreen() {
                 }}
               >
                 <p style={{ marginTop: 0 }}>
-  RROI SOS works best from the official RROI Android app.
+  Install RROI SOS to your Home Screen for quick one-tap access.
+</p>
+
+<p>
+  <strong>Android</strong>
 </p>
 
 <ol style={{ paddingLeft: 22 }}>
-  <li>Install the official RROI app from Google Play.</li>
-  <li>Open the RROI app and sign in.</li>
-  <li>Open <strong>RROI SOS</strong> from your dashboard.</li>
-  <li>Tap <strong>Add RROI SOS to Home Screen</strong>.</li>
+  <li>Tap the <strong>⋮</strong> menu in your browser.</li>
+  <li>Select <strong>Install app</strong> or <strong>Add to Home screen</strong>.</li>
+  <li>Tap <strong>Install</strong> or <strong>Add</strong>.</li>
+</ol>
+
+<p>
+  <strong>iPhone (Safari)</strong>
+</p>
+
+<ol style={{ paddingLeft: 22 }}>
+  <li>Tap the <strong>Share</strong> button.</li>
+  <li>Select <strong>Add to Home Screen</strong>.</li>
+  <li>Tap <strong>Add</strong>.</li>
 </ol>
 
 <p style={{ marginBottom: 0 }}>
-  This creates a secure Android shortcut without installing a separate browser app.
+  Once added, tap the <strong>RROI SOS</strong> icon on your Home Screen to open RROI SOS instantly.
 </p>
               </div>
             ) : (
