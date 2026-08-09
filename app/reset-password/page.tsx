@@ -16,21 +16,77 @@ export default function ResetPasswordPage() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error" | "">("");
 
-  // 🔐 Ensure user came from email link (has session)
   useEffect(() => {
-    const checkSession = async () => {
+  const handleRecoverySession = async () => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+
+      // If Supabase sent us back with a PKCE auth code,
+      // exchange it for a real authenticated session.
+      if (code) {
+        const { error } =
+          await supabase.auth.exchangeCodeForSession(code);
+
+        if (error) {
+          console.error(
+            "Password recovery code exchange failed:",
+            error
+          );
+
+          setMessageType("error");
+          setMessage(
+            "This password reset link is invalid or has expired. Please request a new one."
+          );
+          return;
+        }
+
+        // Remove the one-time code from the address bar.
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+      }
+
       const {
         data: { session },
+        error: sessionError,
       } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        console.error(
+          "Password recovery session error:",
+          sessionError
+        );
+      }
 
       if (!session) {
         setMessageType("error");
-        setMessage("Invalid or expired reset link.");
+        setMessage(
+          "This password reset link is invalid or has expired. Please request a new one."
+        );
+        return;
       }
-    };
 
-    checkSession();
-  }, [supabase]);
+      // Recovery session exists — user may now change password.
+      setMessage("");
+      setMessageType("");
+    } catch (error) {
+      console.error(
+        "Password recovery setup failed:",
+        error
+      );
+
+      setMessageType("error");
+      setMessage(
+        "Unable to verify your password reset link. Please request a new one."
+      );
+    }
+  };
+
+  void handleRecoverySession();
+}, [supabase]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
