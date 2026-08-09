@@ -323,7 +323,6 @@ const time = now.toLocaleTimeString("en-GB", {
 const message =
   `RROI SOS ALERT\n\n` +
   `${userName}\n\n` +
-  `${date}\n\n` +
   `Location:\n${locationUrl}\n\n` +
   `Profile:\n${profileUrl}`;
 
