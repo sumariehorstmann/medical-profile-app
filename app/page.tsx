@@ -289,7 +289,7 @@ useEffect(() => {
     </div>
 
     <div style={styles.sosPointTitle}>
-      Live Location Link
+      Current Location Link
     </div>
   </div>
 
