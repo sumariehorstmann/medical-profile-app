@@ -14,6 +14,9 @@ import {
   ArrowRight,
   CheckCircle2,
   Clock3,
+  ShieldAlert,
+  MapPinned,
+  FileHeart,
 } from "lucide-react";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 export default function HomePage() {
@@ -251,7 +254,72 @@ useEffect(() => {
         </div>
       </section>
 
+      
+
+      <section style={styles.sosSection}>
+        <div style={styles.container}>
+          <div style={styles.sosFeatureCard}>
+            <div style={styles.sosBadge}>
+              NEW • RROI SOS
+            </div>
+
+            <h2 style={styles.sosTitle}>
+              RROI SOS Emergency Alerts
+            </h2>
+
+            <p style={styles.sosText}>
+              Premium users can set up two RROI SOS contacts. Press an SOS button to instantly send an SMS alert containing a link to your current location and your RROI Emergency Profile.
+            </p>
+
+            <div style={styles.sosPoints}>
+
+  <div style={styles.sosPoint}>
+    <div style={styles.sosPointIcon}>
+  <UsersRound size={28} />
+</div>
+
+<div style={styles.sosPointTitle}>
+  Up to 2 SOS Contacts
+</div>
+  </div>
+
+  <div style={styles.sosPoint}>
+    <div style={styles.sosPointIcon}>
+      <MapPinned size={28} />
+    </div>
+
+    <div style={styles.sosPointTitle}>
+      Live Location Link
+    </div>
+  </div>
+
+  <div style={styles.sosPoint}>
+    <div style={styles.sosPointIcon}>
+      <FileHeart size={28} />
+    </div>
+
+    <div style={styles.sosPointTitle}>
+      Emergency Profile
+    </div>
+  </div>
+
+</div>
+
+            <p style={styles.sosPremiumText}>
+              Included with RROI Premium.
+            </p>
+
+            <Link
+              href="/login?mode=signup"
+              style={styles.sosButton}
+            >
+              Get Started
+            </Link>
+          </div>
+        </div>
+      </section>
       <section style={styles.sectionMuted}>
+
   <div style={styles.container}>
     <h2 style={styles.sectionTitle}>CHOOSE YOUR RROI EMERGENCY PROFILE</h2>
 
@@ -317,6 +385,7 @@ useEffect(() => {
         </p>
 
         <ul style={styles.list}>
+          <li>RROI SOS</li>
           <li>Profile photo</li>
           <li>First name and surname</li>
           <li>Multiple emergency contacts</li>
@@ -1765,5 +1834,107 @@ testimonialName: {
   fontSize: 15,
   fontWeight: 900,
   color: TEXT,
+},
+sosSection: {
+  padding: "clamp(40px, 7vw, 56px) 0",
+  background: "#FFFFFF",
+},
+
+sosFeatureCard: {
+  width: "100%",
+  maxWidth: 900,
+  margin: "0 auto",
+  padding: "clamp(24px, 5vw, 42px)",
+  boxSizing: "border-box",
+  borderRadius: 24,
+  border: "2px solid #991B1B",
+  background: "#FFF7F7",
+  textAlign: "center",
+  boxShadow: "0 16px 34px rgba(153, 27, 27, 0.10)",
+},
+
+sosBadge: {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "8px 14px",
+  marginBottom: 18,
+  borderRadius: 999,
+  background: "#FEE2E2",
+  color: "#991B1B",
+  fontSize: 13,
+  fontWeight: 950,
+},
+
+sosTitle: {
+  margin: "0 0 14px",
+  color: TEXT,
+  fontSize: "clamp(28px, 4vw, 40px)",
+  lineHeight: 1.1,
+  letterSpacing: "-0.03em",
+  fontWeight: 950,
+},
+
+sosText: {
+  maxWidth: 720,
+  margin: "0 auto",
+  color: "#334155",
+  fontSize: 17,
+  lineHeight: 1.65,
+},
+
+sosPoints: {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: 18,
+  marginTop: 28,
+},
+
+sosPoint: {
+  background: "#FFFFFF",
+  border: "1px solid #FECACA",
+  borderRadius: 18,
+  padding: 20,
+  textAlign: "center",
+},
+
+sosPointIcon: {
+  width: 58,
+  height: 58,
+  borderRadius: "50%",
+  background: "#FEE2E2",
+  color: "#991B1B",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  margin: "0 auto 14px",
+},
+
+sosPointTitle: {
+  fontSize: 16,
+  fontWeight: 900,
+  color: TEXT,
+  lineHeight: 1.3,
+},
+
+sosPremiumText: {
+  margin: "22px 0 16px",
+  color: "#991B1B",
+  fontSize: 15,
+  fontWeight: 900,
+},
+
+sosButton: {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: 52,
+  padding: "14px 24px",
+  borderRadius: 14,
+  background: "#991B1B",
+  color: "#FFFFFF",
+  textDecoration: "none",
+  fontSize: 16,
+  fontWeight: 900,
 },
 };
