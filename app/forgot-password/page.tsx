@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
-        redirectTo: "https://www.rroi.co.za/reset-password",
+        redirectTo: "https://www.rroi.co.za/auth/callback?next=/reset-password&type=recovery",
       });
 
       if (error) {
