@@ -700,6 +700,7 @@ useEffect(() => {
           </h4>
 
           <ul style={styles.bundleList}>
+            <li>RROI SOS</li>
             <li>1-year RROI Premium Emergency Profile Subscription</li>
             <li>Engraved Metal QR Card</li>
             <li>Engraved Metal QR Tag</li>
