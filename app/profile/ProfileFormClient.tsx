@@ -1402,7 +1402,7 @@ async function handleLogout() {
 
 <Section
   title="Section 8 — RROI SOS Contacts"
-  subtitle="These contacts receive your RROI SOS SMS alerts. Your SOS contacts are private and are not shown on your public emergency profile."
+  subtitle="Press an SOS button to instantly send an SMS to your selected contact with your current location and a secure link to your RROI Emergency Profile. Your SOS contacts are private and are never shown on your public emergency profile."
 >
   {sosLoading ? (
     <div

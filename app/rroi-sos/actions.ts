@@ -306,10 +306,27 @@ const locationUrl =
 const profileUrl =
   `https://rroi.co.za/e/${profile.public_id}`;
 
+const now = new Date();
+
+const date = now.toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+});
+
+const time = now.toLocaleTimeString("en-GB", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+
 const message =
-  `RROI SOS: ${userName} needs help.\n` +
-  `Map\n${locationUrl}\n` +
-  `Profile\n${profileUrl}`;
+  `RROI SOS\n\n` +
+  `${userName}\n\n` +
+  `${date}\n` +
+  `${time}\n\n` +
+  `Location:\n${locationUrl}\n\n` +
+  `Profile:\n${profileUrl}`;
 
   const { data: alert, error: alertError } = await supabaseAdmin
     .from("sos_alerts")
