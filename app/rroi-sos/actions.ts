@@ -321,12 +321,10 @@ const time = now.toLocaleTimeString("en-GB", {
 });
 
 const message =
-  `RROI SOS\n\n` +
-  `${userName}\n\n` +
-  `${date}\n` +
-  `${time}\n\n` +
-  `Location:\n${locationUrl}\n\n` +
-  `Profile:\n${profileUrl}`;
+  `RROI SOS ${userName}\n` +
+  `${date} ${time}\n` +
+  `${locationUrl}\n` +
+  `${profileUrl}`;
 
   const { data: alert, error: alertError } = await supabaseAdmin
     .from("sos_alerts")
