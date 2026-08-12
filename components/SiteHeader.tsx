@@ -66,9 +66,7 @@ export default function SiteHeader() {
     try {
       setLoggingOut(true);
 
-      await supabase.auth.signOut({
-  scope: "local",
-});
+      await supabase.auth.signOut();
 
       const loginUrl =
         isSOSDomain === true

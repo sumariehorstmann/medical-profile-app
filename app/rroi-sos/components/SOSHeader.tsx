@@ -58,9 +58,7 @@ const isProtectedSOSPage =
   async function handleLogout() {
   try {
     setLoggingOut(true);
-    await supabase.auth.signOut({
-  scope: "local",
-});
+    await supabase.auth.signOut();
 
     const loginUrl =
   isSOSDomain
