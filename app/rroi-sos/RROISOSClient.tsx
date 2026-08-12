@@ -130,6 +130,23 @@ export default function RROISOSClient({
           RROI SOS
         </h1>
 
+<section
+  style={{
+    padding: "14px 18px",
+    borderRadius: 14,
+    background: "#ECFDF5",
+    border: "1px solid #BBF7D0",
+    color: "#166534",
+    fontSize: 15,
+    lineHeight: 1.6,
+    fontWeight: 600,
+  }}
+>
+  <strong>Remember:</strong> Stay logged in for instant access to RROI SOS.
+<br />
+If you log out, you'll need to sign in again before you can use RROI SOS.
+</section>
+
         <p
           style={{
             margin: "0 auto 20px",
@@ -209,6 +226,23 @@ export default function RROISOSClient({
       >
         RROI SOS
       </h1>
+
+<section
+  style={{
+    padding: "14px 18px",
+    borderRadius: 14,
+    background: "#ECFDF5",
+    border: "1px solid #BBF7D0",
+    color: "#166534",
+    fontSize: 15,
+    lineHeight: 1.6,
+    fontWeight: 600,
+  }}
+>
+  <strong>Remember:</strong> Stay logged in for instant access to RROI SOS.
+<br />
+If you log out, you'll need to sign in again before you can use RROI SOS.
+</section>
 
       {sosMessage && (
         <section
