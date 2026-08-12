@@ -679,7 +679,10 @@ async function handleLogout() {
   setLoading(true);
 
   try {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({
+  scope: "local",
+});
+
     router.push("/login");
     router.refresh();
   } finally {
